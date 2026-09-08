@@ -5,6 +5,7 @@ import { getPlatformStatus } from '@/lib/platform-status'
 
 export const metadata: Metadata = {
   title: 'Sign in — Helix AI',
+  robots: { index: false, follow: false },
 }
 
 export default async function LoginPage() {

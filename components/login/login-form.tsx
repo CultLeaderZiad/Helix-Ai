@@ -1,7 +1,6 @@
 'use client'
 
 import { useActionState, useId, useState } from 'react'
-import Link from 'next/link'
 import { AlertCircle, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { signIn, type Portal, type SignInState } from '@/lib/auth/sign-in'
 import { Button } from '@/components/ui/button'
@@ -12,65 +11,22 @@ import { cn } from '@/lib/utils'
 const initialState: SignInState = { status: 'idle' }
 
 const PORTALS: { value: Portal; label: string; hint: string }[] = [
-  { value: 'admin', label: 'Agency console', hint: 'users.role = admin' },
-  { value: 'client', label: 'Client portal', hint: 'users.role = client' },
+  { value: 'admin', label: 'Agency console', hint: 'Agency administrators' },
+  { value: 'client', label: 'Client portal', hint: 'Client users and staff' },
 ]
-
-function formatExpiry(iso: string) {
-  return new Date(iso).toLocaleString([], {
-    weekday: 'short',
-    month: 'short',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
-}
 
 export function LoginForm() {
   const [state, formAction, pending] = useActionState(signIn, initialState)
   const [showPassword, setShowPassword] = useState(false)
-  const [remember, setRemember] = useState(false)
   const [email, setEmail] = useState('')
   const [portal, setPortal] = useState<Portal>(() =>
     state.status === 'field_error' || state.status === 'auth_error' ? state.values.portal : 'admin',
   )
   const ids = { email: useId(), password: useId(), emailErr: useId(), passwordErr: useId(), banner: useId() }
 
-  if (state.status === 'success') {
-    return (
-      <section aria-live="polite" className="flex flex-col gap-6">
-        <header className="flex flex-col gap-2">
-          <p className="flex items-center gap-2 text-small font-medium text-status-success">
-            <span aria-hidden="true" className="size-2 rounded-full bg-status-success" />
-            Session established
-          </p>
-          <h1 className="font-display text-h2 text-balance">Signed in as {state.user.full_name}</h1>
-        </header>
-
-        <dl className="grid grid-cols-[max-content_1fr] gap-x-6 gap-y-2 border-y py-4 text-small">
-          <dt className="text-muted-foreground">users.email</dt>
-          <dd className="truncate">{state.user.email}</dd>
-          <dt className="text-muted-foreground">users.role</dt>
-          <dd>{state.user.role}</dd>
-          <dt className="text-muted-foreground">sessions.expires_at</dt>
-          <dd className="tabular-nums">{formatExpiry(state.session.expires_at)}</dd>
-        </dl>
-
-        <Button
-          render={<Link href={state.redirect_to} />}
-          nativeButton={false}
-          size="lg"
-          className="h-10 w-full bg-accent text-accent-foreground hover:bg-accent/90"
-        >
-          Continue to {state.user.role === 'admin' ? 'Agency console' : 'Client portal'}
-        </Button>
-      </section>
-    )
-  }
-
   const fieldErrors = state.status === 'field_error' ? state.errors : {}
   const authError = state.status === 'auth_error' ? state as Extract<SignInState, { status: 'auth_error' }> : null
-  const locked = authError?.code === 'LOCKED'
+  const locked = false
 
   return (
     <form action={formAction} noValidate aria-busy={pending} className="flex flex-col gap-8">
@@ -88,13 +44,13 @@ export function LoginForm() {
           <AlertCircle aria-hidden="true" className="mt-px size-4 shrink-0 text-status-danger" />
           <div className="flex flex-col gap-2">
             <p>{authError.message}</p>
-            {authError.code === 'ROLE_MISMATCH' && authError.actual_role ? (
+            {authError.code === 'ROLE_MISMATCH' && authError.actual_portal ? (
               <button
                 type="button"
-                onClick={() => setPortal(authError.actual_role as Portal)}
+                onClick={() => setPortal(authError.actual_portal as Portal)}
                 className="self-start text-accent underline-offset-4 hover:underline"
               >
-                Switch to {authError.actual_role === 'admin' ? 'Agency console' : 'Client portal'}
+                Switch to {authError.actual_portal === 'admin' ? 'Agency console' : 'Client portal'}
               </button>
             ) : null}
           </div>
@@ -164,12 +120,14 @@ export function LoginForm() {
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <Label htmlFor={ids.password}>Password</Label>
-            <Link
-              href="/forgot-password"
-              className="text-small text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+            <button
+              type="button"
+              disabled
+              title="Password recovery — not yet implemented"
+              className="text-small text-muted-foreground disabled:cursor-not-allowed"
             >
-              Forgot password?
-            </Link>
+              Recovery — not yet implemented
+            </button>
           </div>
           <div className="relative">
             <Input
@@ -204,16 +162,13 @@ export function LoginForm() {
           <input
             type="checkbox"
             name="remember"
-            checked={remember}
-            onChange={e => setRemember(e.target.checked)}
-            disabled={pending || locked}
+            checked={false}
+            disabled
             className="mt-0.5 size-4 shrink-0 rounded-sm border-input accent-[var(--accent)]"
           />
           <span className="flex flex-col gap-1">
-            <span>Keep me signed in</span>
-            <span className="text-muted-foreground">
-              {remember ? 'Session expires after 30 days.' : 'Session expires after 12 hours of inactivity.'}
-            </span>
+            <span>Custom session duration — not yet implemented</span>
+            <span className="text-muted-foreground">Session lifetime is managed by Supabase Auth.</span>
           </span>
         </label>
       </div>
@@ -235,10 +190,7 @@ export function LoginForm() {
           )}
         </Button>
         <p className="text-small text-muted-foreground">
-          Every sign-in writes a <span className="font-mono text-[12px]">sessions</span> row with{' '}
-          <span className="font-mono text-[12px]">ip_address</span> and{' '}
-          <span className="font-mono text-[12px]">user_agent</span>. Contact your account manager if you did not
-          request access.
+          Authentication is managed by Supabase. Contact your account manager if you did not request access.
         </p>
       </div>
     </form>

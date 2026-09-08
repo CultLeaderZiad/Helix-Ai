@@ -5,10 +5,15 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "verify:tenants": "node scripts/verify-tenant-isolation.mjs --confirm-development",
+    "verify:crm": "node scripts/verify-crm-intelligence.mjs --confirm-development",
+    "verify:crm:e2e": "node scripts/verify-crm-intelligence.mjs --confirm-development --with-cron"
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",
+    "@supabase/ssr": "^0.12.6",
+    "@supabase/supabase-js": "^2.115.0",
     "@vercel/analytics": "1.6.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
