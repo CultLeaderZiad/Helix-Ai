@@ -3,12 +3,14 @@
 import { useActionState, useId, useState } from 'react'
 import { AlertCircle, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { signIn, type Portal, type SignInState } from '@/lib/auth/sign-in'
+import { resetPassword, type ResetState } from '@/lib/auth/reset-password'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
 
 const initialState: SignInState = { status: 'idle' }
+const initialResetState: ResetState = { status: 'idle' }
 
 const PORTALS: { value: Portal; label: string; hint: string }[] = [
   { value: 'admin', label: 'Agency console', hint: 'Agency administrators' },
@@ -17,12 +19,14 @@ const PORTALS: { value: Portal; label: string; hint: string }[] = [
 
 export function LoginForm() {
   const [state, formAction, pending] = useActionState(signIn, initialState)
+  const [resetOpen, setResetOpen] = useState(false)
+  const [resetState, resetAction, resetPending] = useActionState(resetPassword, initialResetState)
   const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState('')
   const [portal, setPortal] = useState<Portal>(() =>
     state.status === 'field_error' || state.status === 'auth_error' ? state.values.portal : 'admin',
   )
-  const ids = { email: useId(), password: useId(), emailErr: useId(), passwordErr: useId(), banner: useId() }
+  const ids = { email: useId(), password: useId(), emailErr: useId(), passwordErr: useId(), banner: useId(), resetTitle: useId(), resetEmail: useId() }
 
   const fieldErrors = state.status === 'field_error' ? state.errors : {}
   const authError = state.status === 'auth_error' ? state as Extract<SignInState, { status: 'auth_error' }> : null
@@ -122,11 +126,10 @@ export function LoginForm() {
             <Label htmlFor={ids.password}>Password</Label>
             <button
               type="button"
-              disabled
-              title="Password recovery — not yet implemented"
-              className="text-small text-muted-foreground disabled:cursor-not-allowed"
+              onClick={() => setResetOpen(true)}
+              className="text-small text-accent underline-offset-4 hover:underline"
             >
-              Recovery — not yet implemented
+              Forgot password?
             </button>
           </div>
           <div className="relative">
@@ -157,20 +160,6 @@ export function LoginForm() {
             </p>
           ) : null}
         </div>
-
-        <label className="flex items-start gap-3 text-small">
-          <input
-            type="checkbox"
-            name="remember"
-            checked={false}
-            disabled
-            className="mt-0.5 size-4 shrink-0 rounded-sm border-input accent-[var(--accent)]"
-          />
-          <span className="flex flex-col gap-1">
-            <span>Custom session duration — not yet implemented</span>
-            <span className="text-muted-foreground">Session lifetime is managed by Supabase Auth.</span>
-          </span>
-        </label>
       </div>
 
       <div className="flex flex-col gap-4">
@@ -193,6 +182,64 @@ export function LoginForm() {
           Authentication is managed by Supabase. Contact your account manager if you did not request access.
         </p>
       </div>
+
+      {resetOpen ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 p-4"
+          onClick={resetPending ? undefined : () => setResetOpen(false)}
+          role="presentation"
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={ids.resetTitle}
+            className="w-full max-w-sm border bg-panel p-6 shadow-lg"
+            onClick={event => event.stopPropagation()}
+          >
+            <h2 id={ids.resetTitle} className="font-display text-h3">Reset your password</h2>
+            {resetState.status === 'sent' ? (
+              <p role="status" className="mt-3 text-small text-foreground">
+                If an account exists for {resetState.email}, a reset link is on its way.
+              </p>
+            ) : (
+              <form action={resetAction} className="mt-4 flex flex-col gap-4">
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor={ids.resetEmail}>Work email</Label>
+                  <Input
+                    id={ids.resetEmail}
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    disabled={resetPending}
+                  />
+                </div>
+                {resetState.status === 'error' ? (
+                  <p role="alert" className="text-small text-status-danger">
+                    {resetState.message}
+                  </p>
+                ) : null}
+                <div className="flex gap-2">
+                  <Button type="submit" disabled={resetPending} className="gap-1.5">
+                    {resetPending ? (
+                      <Loader2 aria-hidden="true" className="size-4 animate-spin" />
+                    ) : null}
+                    Send reset link
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    disabled={resetPending}
+                    onClick={() => setResetOpen(false)}
+                  >
+                    Close
+                  </Button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      ) : null}
     </form>
   )
 }

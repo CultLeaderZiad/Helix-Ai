@@ -17,7 +17,7 @@ export async function POST() {
       return NextResponse.json({ error: 'Access denied.' }, { status: 403, headers })
     }
     return NextResponse.json(
-      { error: 'Not yet implemented: tenant-scoped generation and evidence review.' },
+      { error: 'Tenant-scoped generation is not part of the current delivery. Contact your account manager.' },
       { status: 501, headers },
     )
   } catch {

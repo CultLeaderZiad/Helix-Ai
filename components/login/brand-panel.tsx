@@ -13,6 +13,12 @@ export function BrandPanel({ status }: { status: PlatformStatus }) {
         </div>
       </div>
 
+      <div className="relative hidden max-w-2xl px-12 lg:block">
+        <h1 className="font-display text-h1 text-balance text-deep-foreground">
+          The operations console that shows its evidence.
+        </h1>
+      </div>
+
       <div className="relative hidden p-12 lg:block">
         <PlatformStatusReadout status={status} />
       </div>
