@@ -29,8 +29,8 @@ export async function signIn(_prev: SignInState, formData: FormData): Promise<Si
   const portal: Portal = formData.get('portal') === 'client' ? 'client' : 'admin'
   const values = { email, portal }
   const errors: Partial<Record<'email' | 'password', string>> = {}
-  if (!EMAIL_RE.test(email) || email.length > 254) errors.email = 'Enter a valid work email.'
-  if (!password || password.length > 4096) errors.password = 'Enter a valid password.'
+  if (!EMAIL_RE.test(email) || email.length > 254) errors.email = 'Enter the email address for your workspace.'
+  if (!password || password.length > 4096) errors.password = 'Enter your password.'
   if (errors.email || errors.password) return { status: 'field_error', errors, values }
 
   let portalPath: string | null = null
@@ -43,7 +43,7 @@ export async function signIn(_prev: SignInState, formData: FormData): Promise<Si
         code: 'INVALID_CREDENTIALS',
         message: error?.status === 429
           ? 'Too many sign-in requests. Please wait before trying again.'
-          : 'Sign-in could not be completed. Check your credentials and try again.',
+          : 'That email and password combination did not match. Check with your account manager if you have lost access.',
         values,
       }
     }
@@ -68,7 +68,7 @@ export async function signIn(_prev: SignInState, formData: FormData): Promise<Si
         status: 'auth_error',
         code: 'ROLE_MISMATCH',
         actual_portal: actualPortal,
-        message: 'This account belongs to the other workspace. Switch workspace and sign in again.',
+        message: `This account belongs to the ${actualPortal === 'admin' ? 'Agency console' : 'Client portal'}.`,
         values,
       }
     }
