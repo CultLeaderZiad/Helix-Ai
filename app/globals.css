@@ -211,3 +211,221 @@
     @apply bg-background text-foreground font-sans text-body;
   }
 }
+
+/* -------------------------------------------------------------------------- */
+/* HLX PillNav Component Styles (Demo & Screenshot Exact Specification)       */
+/* -------------------------------------------------------------------------- */
+.pill-nav-wrapper {
+  position: fixed;
+  top: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  pointer-events: auto;
+}
+
+@media (min-width: 768px) {
+  .pill-nav-wrapper {
+    top: 1.5rem;
+  }
+}
+
+.pill-nav {
+  --base: #ffffff;
+  --pill-bg: #0a0a0a;
+  --hover-text: #050505;
+  --pill-text: #ffffff;
+
+  display: flex;
+  align-items: center;
+  background-color: #000000;
+  border: 1.5px solid #ffffff;
+  border-radius: 9999px;
+  padding: 4px;
+  gap: 8px;
+  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.15);
+  user-select: none;
+  max-width: calc(100vw - 24px);
+}
+
+.pill-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 9999px;
+  background-color: #ffffff;
+  color: #000000;
+  font-family: var(--font-display, inherit);
+  font-weight: 900;
+  font-size: 13.5px;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  flex-shrink: 0;
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.pill-logo:hover {
+  transform: rotate(360deg);
+}
+
+.pill-nav-items {
+  background-color: var(--base, #ffffff);
+  border-radius: 9999px;
+  padding: 3px 4px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  width: auto;
+}
+
+.pill-list {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 3px;
+}
+
+.pill {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--pill-bg, #0a0a0a);
+  color: var(--pill-text, #ffffff);
+  border-radius: 9999px;
+  height: 36px;
+  padding: 0 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  white-space: nowrap;
+  transition: color 0.35s ease;
+}
+
+.pill .hover-circle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  background-color: var(--base, #ffffff);
+  transform-origin: 50% 100%;
+  transform: translate(-50%, 0%) scale(0, 0);
+  transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+  bottom: -20px;
+  left: 50%;
+  width: 140px;
+  height: 140px;
+}
+
+.pill:hover .hover-circle {
+  transform: translate(-50%, -50%) scale(1.6, 1.6);
+}
+
+.pill .label-stack {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  flex-direction: column;
+  height: 16px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.pill .pill-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 16px;
+  transform: translate(0px, 0px);
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
+}
+
+.pill .pill-label-hover {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 16px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transform: translate(0px, 120%);
+  opacity: 0;
+  color: var(--hover-text, #050505);
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
+}
+
+.pill:hover .pill-label {
+  transform: translate(0px, -120%);
+  opacity: 0;
+}
+
+.pill:hover .pill-label-hover {
+  transform: translate(0px, 0px);
+  opacity: 1;
+}
+
+.pill-silver {
+  background: linear-gradient(135deg, #dce4ed 0%, #cbd5e1 100%) !important;
+  color: #050505 !important;
+}
+
+.pill-silver .hover-circle {
+  background-color: #0a0a0a !important;
+}
+
+.pill-silver .pill-label-hover {
+  color: #ffffff !important;
+}
+
+/* Mobile responsive navigation */
+.mobile-nav-cta {
+  display: none;
+}
+
+.mobile-right-actions {
+  display: none;
+}
+
+@media (max-width: 980px) {
+  .desktop-only {
+    display: none !important;
+  }
+  .mobile-nav-cta {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, #dce4ed 0%, #cbd5e1 100%);
+    color: #050505;
+    border-radius: 9999px;
+    padding: 0 16px;
+    height: 36px;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: opacity 0.2s ease;
+  }
+  .mobile-nav-cta:hover {
+    opacity: 0.9;
+  }
+  .mobile-right-actions {
+    display: flex !important;
+    align-items: center;
+    gap: 4px;
+    padding-right: 4px;
+  }
+}
+

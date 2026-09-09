@@ -1,13 +1,20 @@
 'use client'
 
 import { useActionState, useId, useState } from 'react'
+import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import { AlertCircle, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { signIn, type Portal, type SignInState } from '@/lib/auth/sign-in'
-import { PasswordResetModal } from '@/components/login/password-reset-modal'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
+
+// Lazy load modal only if user triggers password recovery
+const PasswordResetModal = dynamic(
+  () => import('@/components/login/password-reset-modal').then((m) => m.PasswordResetModal),
+  { ssr: false }
+)
 
 const initialState: SignInState = { status: 'idle' }
 
@@ -32,28 +39,36 @@ export function LoginForm() {
 
   return (
     <>
-      <form action={formAction} noValidate aria-busy={pending} className="flex flex-col gap-8">
-        <header className="flex flex-col gap-2">
-          <h2 className="font-display text-h2 font-semibold text-balance text-foreground">Sign in</h2>
-          <p className="text-small text-muted-foreground">Helix AI operations console</p>
+      <form action={formAction} noValidate aria-busy={pending} className="flex flex-col gap-6">
+        <header className="flex flex-col gap-1.5">
+          <div className="flex items-center justify-between">
+            <h2 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Sign in</h2>
+            <Link
+              href="/"
+              className="text-xs text-muted-foreground transition-colors hover:text-foreground"
+            >
+              ← Back to home
+            </Link>
+          </div>
+          <p className="text-small text-muted-foreground">Access your Helix AI operations workspace</p>
         </header>
 
         {authError ? (
           <div
             id={ids.banner}
             role="alert"
-            className="flex gap-3 border border-status-danger/40 bg-status-danger/10 p-3 text-small text-foreground"
+            className="flex gap-3 rounded-lg border border-status-danger/40 bg-status-danger/10 p-3.5 text-small text-foreground"
           >
-            <AlertCircle aria-hidden="true" className="mt-px size-4 shrink-0 text-status-danger" />
+            <AlertCircle aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-status-danger" />
             <div className="flex flex-col gap-2">
               <p>{authError.message}</p>
               {authError.code === 'ROLE_MISMATCH' && authError.actual_portal ? (
                 <button
                   type="button"
                   onClick={() => setPortal(authError.actual_portal as Portal)}
-                  className="self-start text-accent underline-offset-4 hover:underline"
+                  className="self-start font-medium text-accent underline-offset-4 hover:underline"
                 >
-                  Switch to {authError.actual_portal === 'admin' ? 'Agency console' : 'Client portal'}
+                  Switch to {authError.actual_portal === 'admin' ? 'Agency console' : 'Client portal'} →
                 </button>
               ) : null}
             </div>
@@ -61,16 +76,24 @@ export function LoginForm() {
         ) : null}
 
         <fieldset className="flex flex-col gap-2" disabled={pending || locked}>
-          <legend className="pb-2 text-small font-medium text-foreground">Workspace</legend>
-          <div role="radiogroup" aria-label="Workspace" className="grid grid-cols-2 gap-px border bg-border">
+          <legend className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Select Workspace
+          </legend>
+          <div
+            role="radiogroup"
+            aria-label="Workspace"
+            className="grid grid-cols-2 gap-1 rounded-lg border border-border bg-raised p-1"
+          >
             {PORTALS.map(p => {
               const checked = portal === p.value
               return (
                 <label
                   key={p.value}
                   className={cn(
-                    'flex cursor-pointer flex-col gap-1 bg-panel p-3 transition-colors has-focus-visible:ring-2 has-focus-visible:ring-ring/60',
-                    checked ? 'bg-raised' : 'hover:bg-raised/60',
+                    'flex cursor-pointer flex-col gap-0.5 rounded-md p-2.5 transition-all text-left',
+                    checked
+                      ? 'bg-panel text-foreground shadow-xs font-medium'
+                      : 'text-muted-foreground hover:text-foreground',
                   )}
                 >
                   <input
@@ -81,26 +104,26 @@ export function LoginForm() {
                     onChange={() => setPortal(p.value)}
                     className="sr-only"
                   />
-                  <span className="flex items-center gap-2 text-small font-medium text-foreground">
+                  <div className="flex items-center gap-1.5 text-small font-semibold">
                     <span
                       aria-hidden="true"
                       className={cn(
-                        'size-2 rounded-full border',
-                        checked ? 'border-accent bg-accent' : 'border-muted-foreground',
+                        'size-2 rounded-full',
+                        checked ? 'bg-accent' : 'bg-muted-foreground/40',
                       )}
                     />
                     {p.label}
-                  </span>
-                  <span className="font-mono text-[11px] leading-4 text-muted-foreground">{p.hint}</span>
+                  </div>
+                  <span className="text-[11px] text-muted-foreground">{p.hint}</span>
                 </label>
               )
             })}
           </div>
         </fieldset>
 
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
-            <Label htmlFor={ids.email}>Email</Label>
+            <Label htmlFor={ids.email}>Work email</Label>
             <Input
               id={ids.email}
               name="email"
@@ -112,9 +135,10 @@ export function LoginForm() {
               value={email}
               onChange={e => setEmail(e.target.value)}
               disabled={pending || locked}
+              placeholder="jane@company.com"
               aria-invalid={Boolean(fieldErrors.email) || undefined}
               aria-describedby={fieldErrors.email ? ids.emailErr : undefined}
-              className="h-10 rounded-md bg-panel px-3 text-body"
+              className="h-11 rounded-lg bg-panel px-3 text-body"
             />
             {fieldErrors.email ? (
               <p id={ids.emailErr} className="text-small text-status-danger">
@@ -143,7 +167,7 @@ export function LoginForm() {
                 disabled={pending || locked}
                 aria-invalid={Boolean(fieldErrors.password) || undefined}
                 aria-describedby={fieldErrors.password ? ids.passwordErr : undefined}
-                className="h-10 rounded-md bg-panel px-3 pr-12 text-body"
+                className="h-11 rounded-lg bg-panel px-3 pr-12 text-body"
               />
               <button
                 type="button"
@@ -164,24 +188,32 @@ export function LoginForm() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3 pt-2">
           <Button
             type="submit"
             size="lg"
             disabled={pending || locked}
-            className="h-10 sm:h-11 w-full bg-accent text-accent-foreground hover:bg-accent/90 disabled:opacity-60"
+            className="h-11 w-full rounded-lg bg-accent font-semibold text-accent-foreground shadow-sm hover:bg-accent/90 disabled:opacity-60"
           >
             {pending ? (
               <>
                 <Loader2 aria-hidden="true" className="size-4 animate-spin" />
-                Verifying credentials
+                Verifying credentials...
               </>
             ) : (
-              'Sign in'
+              'Sign in to workspace'
             )}
           </Button>
-          <p className="text-small text-muted-foreground">
-            Authentication is managed by Supabase. Contact your account manager if you did not request access.
+
+          <div className="rounded-lg border border-border bg-raised/60 p-3 text-center text-small text-muted-foreground">
+            Don&apos;t have an account?{' '}
+            <Link href="/signup" className="font-semibold text-accent underline-offset-4 hover:underline">
+              Start 7-day free trial →
+            </Link>
+          </div>
+
+          <p className="text-center text-[11px] text-muted-foreground">
+            Authentication is secured by Supabase.
           </p>
         </div>
       </form>

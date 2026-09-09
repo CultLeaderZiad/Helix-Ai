@@ -245,8 +245,11 @@ const Lightfall: React.FC<LightfallProps> = ({
     const container = containerRef.current
     if (!container) return
 
+    // Cap devicePixelRatio to 1.5 to prevent extreme GPU fragment shader load on Retina/4K displays
+    const pixelRatio = dpr ?? (typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 1.5) : 1)
+
     const renderer = new Renderer({
-      dpr: dpr ?? (typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1),
+      dpr: pixelRatio,
       alpha: true,
       antialias: true,
     })
@@ -310,6 +313,16 @@ const Lightfall: React.FC<LightfallProps> = ({
     const ro = new ResizeObserver(resize)
     ro.observe(container)
 
+    // Stop GPU rendering when canvas is scrolled offscreen
+    let isVisible = true
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry ? entry.isIntersecting : true
+      },
+      { threshold: 0.01 }
+    )
+    io.observe(container)
+
     const onPointerMove = (e: PointerEvent) => {
       const rect = canvas.getBoundingClientRect()
       const scale = renderer.dpr || 1
@@ -321,11 +334,14 @@ const Lightfall: React.FC<LightfallProps> = ({
       }
     }
     if (mouseInteraction) {
-      canvas.addEventListener('pointermove', onPointerMove)
+      canvas.addEventListener('pointermove', onPointerMove, { passive: true })
     }
 
     const loop = (t: number) => {
       rafRef.current = requestAnimationFrame(loop)
+      // Skip render when hidden or offscreen to save battery and GPU
+      if (!isVisible || document.hidden || paused) return
+
       uniforms.iTime.value = t * 0.001
       if (mouseDampening > 0) {
         if (!lastTimeRef.current) lastTimeRef.current = t
@@ -341,7 +357,7 @@ const Lightfall: React.FC<LightfallProps> = ({
       } else {
         lastTimeRef.current = t
       }
-      if (!paused && programRef.current && meshRef.current) {
+      if (programRef.current && meshRef.current) {
         try {
           renderer.render({ scene: meshRef.current })
         } catch (e) {
@@ -355,6 +371,7 @@ const Lightfall: React.FC<LightfallProps> = ({
       if (rafRef.current) cancelAnimationFrame(rafRef.current)
       if (mouseInteraction) canvas.removeEventListener('pointermove', onPointerMove)
       ro.disconnect()
+      io.disconnect()
       if (canvas.parentElement === container) {
         container.removeChild(canvas)
       }
@@ -368,6 +385,8 @@ const Lightfall: React.FC<LightfallProps> = ({
       callIfFn(geometryRef.current, 'remove')
       callIfFn(meshRef.current, 'remove')
       callIfFn(rendererRef.current, 'destroy')
+      const ext = gl.getExtension('WEBGL_lose_context')
+      if (ext) ext.loseContext()
       programRef.current = null
       geometryRef.current = null
       meshRef.current = null
@@ -409,4 +428,6 @@ const Lightfall: React.FC<LightfallProps> = ({
   )
 }
 
+export { Lightfall }
 export default Lightfall
+

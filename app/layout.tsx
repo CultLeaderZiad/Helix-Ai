@@ -20,7 +20,6 @@ export const metadata: Metadata = {
   title: 'Helix AI — Operations console',
   description:
     'Sign in to the Helix AI operations console. Agency and client access to bookings, attribution, invoices and integration health.',
-  generator: 'v0.app',
   icons: {
     icon: [
       {
