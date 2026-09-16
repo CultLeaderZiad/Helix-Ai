@@ -1,26 +1,32 @@
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
 
-/**
- * The supplied logo is a 1053x587 canvas with the monogram occupying roughly
- * the centre third. The tile crops to the mark and keeps the logo's own
- * off-white ground so the navy stays legible on dark surfaces.
- */
-export function HelixMark({ size = 40, className }: { size?: number; className?: string }) {
+export function HelixMark({
+  size = 40,
+  className,
+  rounded = 'rounded-xl',
+}: {
+  size?: number
+  className?: string
+  rounded?: string
+}) {
   return (
     <span
       aria-hidden
-      className={cn('relative block shrink-0 overflow-hidden rounded-md bg-[#f5f6f8]', className)}
+      className={cn(
+        'relative inline-flex shrink-0 items-center justify-center overflow-hidden border border-white/15 bg-gradient-to-b from-[#141b2b] to-[#080d16] shadow-[0_4px_16px_rgba(0,0,0,0.6),inset_0_1px_0_0_rgba(255,255,255,0.15)] transition-all duration-300 hover:border-cyan-500/50 hover:shadow-[0_0_18px_rgba(0,210,255,0.35)]',
+        rounded,
+        className
+      )}
       style={{ width: size, height: size }}
     >
       <Image
-        src="/brand/helix-mark.png"
-        alt=""
-        width={1053}
-        height={587}
+        src="/brand/helix-logo.png"
+        alt="Helix AI Logo"
+        width={640}
+        height={640}
         priority
-        className="absolute top-1/2 left-1/2 h-auto -translate-x-1/2 -translate-y-1/2"
-        style={{ width: size * 3.0, maxWidth: 'none', marginTop: size * -0.02 }}
+        className="h-full w-full object-cover scale-125 -translate-y-[4%] select-none pointer-events-none"
       />
     </span>
   )

@@ -1,0 +1,41 @@
+[
+  {
+    "id": "rel-2-4-0",
+    "version": "v2.4.0",
+    "date": "September 2026",
+    "title": "Dual-workspace authentication & cross-tenant RLS isolation",
+    "category": "Core Architecture",
+    "is_published": true,
+    "highlights": [
+      "Segmented authentication supporting Agency Operator and Client Portal routing.",
+      "Hardware-level PostgreSQL RLS enforcement with tenant-scoped cryptographic tokens.",
+      "Public navigation redesign with high-contrast framing and mobile-first touch targets."
+    ]
+  },
+  {
+    "id": "rel-2-3-1",
+    "version": "v2.3.1",
+    "date": "August 2026",
+    "title": "Realtime telemetry ingest and webhook integrity validation",
+    "category": "Integrations",
+    "is_published": true,
+    "highlights": [
+      "Sub-50ms ingestion pipeline for Retell AI, Vapi, and Bland AI voice sessions.",
+      "Automated HMAC-SHA256 signature verification on incoming webhooks.",
+      "Real-time confidence scoring matrix for extracted caller intentions."
+    ]
+  },
+  {
+    "id": "rel-2-2-0",
+    "version": "v2.2.0",
+    "date": "July 2026",
+    "title": "Operational truth engine & human-in-the-loop review queues",
+    "category": "Security Hardening",
+    "is_published": true,
+    "highlights": [
+      "Tri-state evidence tagging: verified, probable, and possible assertions.",
+      "One-click dispute resolution for agency administrators with audit trails.",
+      "Automated CSV & JSON log exports for enterprise compliance audits."
+    ]
+  }
+]

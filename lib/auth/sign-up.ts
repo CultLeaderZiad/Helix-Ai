@@ -34,10 +34,12 @@ export async function signUpUser(_prev: SignUpState, formData: FormData): Promis
 
   try {
     const supabase = await createSupabaseServerClient()
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
+        emailRedirectTo: `${siteUrl}/auth/callback?next=/dashboard`,
         data: {
           full_name: fullName,
           company_name: companyName,
@@ -56,6 +58,12 @@ export async function signUpUser(_prev: SignUpState, formData: FormData): Promis
         status: 'auth_error',
         message: error.message || 'Account creation could not be completed. Try again.',
       }
+    }
+
+    if (data.user) {
+      // Pre-provision client workspace, role, and profile so user claims exist upon confirmation
+      const { ensureUserProvisioned } = await import('@/lib/auth/provisioning')
+      await ensureUserProvisioned(data.user.id)
     }
 
     if (data.session) {

@@ -1,6 +1,8 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Inter, Space_Grotesk } from 'next/font/google'
+import { AuthHashHandler } from '@/components/auth/auth-hash-handler'
+import { RealtimeProvider } from '@/components/realtime/realtime-provider'
 import './globals.css'
 
 const inter = Inter({
@@ -17,9 +19,32 @@ const spaceGrotesk = Space_Grotesk({
 })
 
 export const metadata: Metadata = {
-  title: 'Helix AI — Operations console',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
+  title: 'Helix AI — Autonomous CRM & Revenue AI Systems',
   description:
-    'Sign in to the Helix AI operations console. Agency and client access to bookings, attribution, invoices and integration health.',
+    'Enterprise-grade autonomous AI receptionists, missed-call triage, and CRM revenue intelligence for high-growth businesses across the GCC and MENA.',
+  keywords: [
+    'Helix AI',
+    'AI Receptionist',
+    'WhatsApp Business Automation',
+    'CRM Intelligence',
+    'Voice AI Middle East',
+    'Dubai AI Automation',
+    'Saudi Enterprise AI',
+  ],
+  authors: [{ name: 'Helix AI' }],
+  other: {
+    'geo.region': 'AE;SA;QA;EG;JO',
+    'geo.placename': 'Dubai, Riyadh, Doha, Cairo, Amman',
+  },
+  openGraph: {
+    title: 'Helix AI — Autonomous CRM & Revenue AI Systems',
+    description: 'Autonomous voice and WhatsApp AI infrastructure for modern enterprises.',
+    url: 'https://helixai.co',
+    siteName: 'Helix AI',
+    locale: 'en_US',
+    type: 'website',
+  },
   icons: {
     icon: [
       {
@@ -40,7 +65,10 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  colorScheme: 'light dark',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  colorScheme: 'dark light',
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#f4f6f9' },
     { media: '(prefers-color-scheme: dark)', color: '#0b0e13' },
@@ -56,11 +84,38 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${inter.variable} ${spaceGrotesk.variable} bg-background`}
+      suppressHydrationWarning
     >
-      <body className="antialiased">
-        {children}
+      <body className="antialiased" suppressHydrationWarning>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'SoftwareApplication',
+              name: 'Helix AI',
+              applicationCategory: 'BusinessApplication',
+              operatingSystem: 'Web',
+              offers: {
+                '@type': 'Offer',
+                priceCurrency: 'USD',
+                eligibleRegion: ['AE', 'SA', 'QA', 'EG', 'JO'],
+              },
+              areaServed: [
+                { '@type': 'Country', name: 'United Arab Emirates' },
+                { '@type': 'Country', name: 'Saudi Arabia' },
+                { '@type': 'Country', name: 'Qatar' },
+                { '@type': 'Country', name: 'Egypt' },
+                { '@type': 'Country', name: 'Jordan' },
+              ],
+            }),
+          }}
+        />
+        <AuthHashHandler />
+        <RealtimeProvider>{children}</RealtimeProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
   )
 }
+

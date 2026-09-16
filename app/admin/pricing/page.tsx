@@ -1,0 +1,30 @@
+import { redirect } from 'next/navigation'
+import { createSupabaseServerClient } from '@/lib/supabase'
+import { getVerifiedSession } from '@/lib/auth/session'
+import { ConsoleShell } from '@/components/shell/console-shell'
+import { AdminTabs } from '@/components/admin/admin-tabs'
+import { PricingManagerView } from '@/components/admin/pricing-manager-view'
+import { getPricingConfigs } from '@/lib/pricing/pricing-store'
+
+export const metadata = {
+  title: 'Pricing Management — Helix AI Admin',
+  robots: { index: false, follow: false },
+}
+
+export default async function AdminPricingPage() {
+  const supabase = await createSupabaseServerClient()
+  const session = await getVerifiedSession(supabase)
+  if (!session) redirect('/login')
+  if (session.claims.role !== 'agency_admin') redirect('/dashboard')
+
+  const configs = getPricingConfigs()
+
+  return (
+    <ConsoleShell variant="admin" email={session.user.email ?? ''} businessName={null}>
+      <div className="mx-auto w-full max-w-6xl">
+        <AdminTabs />
+        <PricingManagerView initialConfigs={configs} />
+      </div>
+    </ConsoleShell>
+  )
+}

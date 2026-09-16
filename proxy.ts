@@ -35,7 +35,13 @@ export async function proxy(request: NextRequest) {
 
   try {
     const session = await getVerifiedSession(supabase)
-    if (isLogin) return finish(response)
+    if (isLogin) {
+      if (session) {
+        const destination = session.claims.role === 'agency_admin' ? '/admin' : '/dashboard'
+        return finish(NextResponse.redirect(new URL(destination, request.url)))
+      }
+      return finish(response)
+    }
     if (!session) {
       return finish(isApi
         ? NextResponse.json({ error: 'Authentication required.' }, { status: 401 })
@@ -57,10 +63,11 @@ export async function proxy(request: NextRequest) {
 // requires a verified session.
 export const config = {
   matcher: [
+    '/login',
     '/login/:path*',
     '/admin/:path*',
     '/dashboard/:path*',
     '/client/:path*',
     '/api/((?!cron/).*)',
   ],
-}
+}

@@ -1,0 +1,56 @@
+[
+  {
+    "id": "faq-1",
+    "question": "Is it really a single platform?",
+    "answer": "Yes. Helix AI provides unified activity telemetry, multi-tenant CRM, autonomous WhatsApp and voice agents, and evidence band verification within a single cryptographic PostgreSQL foundation — replacing disjointed point solutions.",
+    "category": "Platform",
+    "display_order": 1,
+    "is_active": true,
+    "updated_at": "2026-09-10T04:00:00.000Z"
+  },
+  {
+    "id": "faq-2",
+    "question": "Can I migrate from Salesforce/Hubspot?",
+    "answer": "Absolutely. Helix includes bi-directional synchronization connectors for Salesforce, HubSpot, and custom webhook pipelines. Historical contacts, deals, and communication records can be ingested in minutes with full tenant isolation.",
+    "category": "Integrations",
+    "display_order": 2,
+    "is_active": true,
+    "updated_at": "2026-09-10T04:00:00.000Z"
+  },
+  {
+    "id": "faq-3",
+    "question": "What happens if I exceed my workflow limit?",
+    "answer": "Workflows, voice sessions, and WhatsApp delivery automatically scale with zero hard cutoffs or dropped customer inquiries. Overage activity is metered transparently at regional wholesale rates with live alerting.",
+    "category": "Billing",
+    "display_order": 3,
+    "is_active": true,
+    "updated_at": "2026-09-10T04:00:00.000Z"
+  },
+  {
+    "id": "faq-4",
+    "question": "Is my data secure?",
+    "answer": "Every tenant workspace is isolated at the database engine level via PostgreSQL Row-Level Security (RLS). All call transcripts and WhatsApp messages are encrypted at rest with AES-256 and verified through immutable SHA-256 evidence ledgers.",
+    "category": "Security",
+    "display_order": 4,
+    "is_active": true,
+    "updated_at": "2026-09-10T04:00:00.000Z"
+  },
+  {
+    "id": "faq-5",
+    "question": "How does the bilingual Arabic/English voice agent handle regional dialects?",
+    "answer": "Our speech models are calibrated specifically for Gulf Arabic (UAE, Saudi Najdi, and Hijazi), Egyptian Arabic, and modern white dialects alongside British and American English, executing with sub-400ms conversational response times.",
+    "category": "AI Voice",
+    "display_order": 5,
+    "is_active": true,
+    "updated_at": "2026-09-10T04:00:00.000Z"
+  },
+  {
+    "id": "faq-6",
+    "question": "Can agency admins control client permissions and brand styling?",
+    "answer": "Yes. Agency administrators have global supervision over all client workspaces, can invite team members with specific permission roles, and customize individual client portals with bespoke branding and WhatsApp API credentials.",
+    "category": "Agency",
+    "display_order": 6,
+    "is_active": true,
+    "updated_at": "2026-09-10T04:00:00.000Z"
+  }
+]

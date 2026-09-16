@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useEffect, useRef } from 'react'
-import { Renderer, Program, Mesh, Triangle } from 'ogl'
 
 export interface LightfallProps {
   className?: string
@@ -57,7 +56,7 @@ const prepColors = (input?: string[]) => {
   return { arr, count, avg }
 }
 
-const vertex = `
+const vertexSource = `
 attribute vec2 position;
 attribute vec2 uv;
 varying vec2 vUv;
@@ -67,7 +66,7 @@ void main() {
 }
 `
 
-const fragment = `
+const fragmentSource = `
 precision highp float;
 
 uniform vec3  iResolution;
@@ -207,18 +206,31 @@ void main() {
 }
 `
 
+function compileShader(gl: WebGLRenderingContext, type: number, src: string): WebGLShader | null {
+  const s = gl.createShader(type)
+  if (!s) return null
+  gl.shaderSource(s, src)
+  gl.compileShader(s)
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+    console.error('Lightfall shader compile error:', gl.getShaderInfoLog(s))
+    gl.deleteShader(s)
+    return null
+  }
+  return s
+}
+
 const Lightfall: React.FC<LightfallProps> = ({
   className,
   dpr,
   paused = false,
   colors = DEFAULT_COLORS,
-  backgroundColor = '#0A29FF',
-  speed = 0.5,
-  streakCount = 2,
+  backgroundColor = '#0B0F19',
+  speed = 0.6,
+  streakCount = 6,
   streakWidth = 1,
   streakLength = 1,
-  glow = 1,
-  density = 0.6,
+  glow = 0.8,
+  density = 0.7,
   twinkle = 1,
   zoom = 3,
   backgroundGlow = 0.5,
@@ -232,88 +244,179 @@ const Lightfall: React.FC<LightfallProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const rafRef = useRef<number | null>(null)
-  const programRef = useRef<Program | null>(null)
-  const meshRef = useRef<Mesh | null>(null)
-  const geometryRef = useRef<Triangle | null>(null)
-  const rendererRef = useRef<Renderer | null>(null)
   const mouseTargetRef = useRef<[number, number]>([0, 0])
   const lastTimeRef = useRef(0)
-  // Stable key so a new array literal with identical colors does not rebuild the GL context.
   const colorKey = colors.join('|')
 
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
 
-    // Cap devicePixelRatio to 1.5 to prevent extreme GPU fragment shader load on Retina/4K displays
-    const pixelRatio = dpr ?? (typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 1.5) : 1)
+    // Clean up any stale canvas from prior mounts to prevent context leaks
+    while (container.firstChild) {
+      container.removeChild(container.firstChild)
+    }
 
-    const renderer = new Renderer({
-      dpr: pixelRatio,
-      alpha: true,
-      antialias: true,
-    })
-    rendererRef.current = renderer
-    const gl = renderer.gl
-    const canvas = gl.canvas as HTMLCanvasElement
+    const renderCssFallback = () => {
+      while (container.firstChild) container.removeChild(container.firstChild)
+      const fallback = document.createElement('div')
+      fallback.style.position = 'absolute'
+      fallback.style.inset = '0'
+      fallback.style.pointerEvents = 'none'
+      fallback.style.background = `radial-gradient(ellipse 80% 60% at 50% -10%, rgba(56, 189, 248, 0.22), transparent 70%), radial-gradient(ellipse 60% 50% at 85% 25%, rgba(14, 165, 233, 0.15), transparent 60%), ${backgroundColor}`
+      container.appendChild(fallback)
+    }
 
+    const canvas = document.createElement('canvas')
     canvas.style.width = '100%'
     canvas.style.height = '100%'
     canvas.style.display = 'block'
     container.appendChild(canvas)
 
-    const { arr, count, avg } = prepColors(colorKey.split('|'))
-
-    const uniforms = {
-      iResolution: { value: [gl.drawingBufferWidth, gl.drawingBufferHeight, 1] },
-      iMouse: { value: [0, 0] },
-      iTime: { value: 0 },
-      uColor0: { value: arr[0] },
-      uColor1: { value: arr[1] },
-      uColor2: { value: arr[2] },
-      uColor3: { value: arr[3] },
-      uColor4: { value: arr[4] },
-      uColor5: { value: arr[5] },
-      uColor6: { value: arr[6] },
-      uColor7: { value: arr[7] },
-      uColorCount: { value: count },
-      uBgColor: { value: hexToRGB(backgroundColor) },
-      uMouseColor: { value: avg },
-      uSpeed: { value: speed },
-      uStreakCount: { value: Math.max(1, Math.min(16, Math.round(streakCount))) },
-      uStreakWidth: { value: streakWidth },
-      uStreakLength: { value: streakLength },
-      uGlow: { value: glow },
-      uDensity: { value: density },
-      uTwinkle: { value: twinkle },
-      uZoom: { value: zoom },
-      uBgGlow: { value: backgroundGlow },
-      uOpacity: { value: opacity },
-      uMouseEnabled: { value: mouseInteraction ? 1 : 0 },
-      uMouseStrength: { value: mouseStrength },
-      uMouseRadius: { value: mouseRadius },
-      uLightMode: { value: lightMode ? 1 : 0 },
+    let gl: WebGLRenderingContext | null = null
+    try {
+      gl = canvas.getContext('webgl', {
+        alpha: true,
+        antialias: false,
+        powerPreference: 'low-power',
+        depth: false,
+        stencil: false,
+        preserveDrawingBuffer: false,
+      })
+    } catch {
+      gl = null
     }
 
-    const program = new Program(gl, { vertex, fragment, uniforms })
-    programRef.current = program
+    if (!gl) {
+      renderCssFallback()
+      return () => {
+        while (container.firstChild) container.removeChild(container.firstChild)
+      }
+    }
 
-    const geometry = new Triangle(gl)
-    geometryRef.current = geometry
-    const mesh = new Mesh(gl, { geometry, program })
-    meshRef.current = mesh
+    // Cap DPR at 1.0 on mobile screens (<768px) and 1.25 on desktop to eliminate GPU throttling
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+    const pixelRatio = dpr ?? (typeof window !== 'undefined' ? (isMobile ? 1.0 : Math.min(window.devicePixelRatio || 1, 1.25)) : 1)
+
+    let vs: WebGLShader | null = null
+    let fs: WebGLShader | null = null
+    let program: WebGLProgram | null = null
+    let quadBuffer: WebGLBuffer | null = null
+
+    try {
+      vs = compileShader(gl, gl.VERTEX_SHADER, vertexSource)
+      fs = compileShader(gl, gl.FRAGMENT_SHADER, fragmentSource)
+      if (!vs || !fs) {
+        renderCssFallback()
+        return
+      }
+
+      program = gl.createProgram()
+      if (!program) {
+        renderCssFallback()
+        return
+      }
+
+      gl.attachShader(program, vs)
+      gl.attachShader(program, fs)
+      gl.linkProgram(program)
+
+      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+        renderCssFallback()
+        return
+      }
+
+      gl.useProgram(program)
+
+      quadBuffer = gl.createBuffer()
+      gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer)
+      gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array([
+          -1, -1, 0, 0,
+           3, -1, 2, 0,
+          -1,  3, 0, 2,
+        ]),
+        gl.STATIC_DRAW
+      )
+
+      const aPos = gl.getAttribLocation(program, 'position')
+      const aUv = gl.getAttribLocation(program, 'uv')
+      gl.enableVertexAttribArray(aPos)
+      gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 16, 0)
+      gl.enableVertexAttribArray(aUv)
+      gl.vertexAttribPointer(aUv, 2, gl.FLOAT, false, 16, 8)
+    } catch {
+      renderCssFallback()
+      return
+    }
+
+    const { arr, count, avg } = prepColors(colorKey.split('|'))
+
+    const uRes = gl.getUniformLocation(program, 'iResolution')
+    const uMouse = gl.getUniformLocation(program, 'iMouse')
+    const uTime = gl.getUniformLocation(program, 'iTime')
+    const uBgCol = gl.getUniformLocation(program, 'uBgColor')
+    const uMouseCol = gl.getUniformLocation(program, 'uMouseColor')
+    const uSpd = gl.getUniformLocation(program, 'uSpeed')
+    const uStrkCnt = gl.getUniformLocation(program, 'uStreakCount')
+    const uStrkWid = gl.getUniformLocation(program, 'uStreakWidth')
+    const uStrkLen = gl.getUniformLocation(program, 'uStreakLength')
+    const uGlw = gl.getUniformLocation(program, 'uGlow')
+    const uDens = gl.getUniformLocation(program, 'uDensity')
+    const uTwnk = gl.getUniformLocation(program, 'uTwinkle')
+    const uZm = gl.getUniformLocation(program, 'uZoom')
+    const uBgGlw = gl.getUniformLocation(program, 'uBgGlow')
+    const uOpac = gl.getUniformLocation(program, 'uOpacity')
+    const uMseEn = gl.getUniformLocation(program, 'uMouseEnabled')
+    const uMseStr = gl.getUniformLocation(program, 'uMouseStrength')
+    const uMseRad = gl.getUniformLocation(program, 'uMouseRadius')
+    const uLtMd = gl.getUniformLocation(program, 'uLightMode')
+    const uColCnt = gl.getUniformLocation(program, 'uColorCount')
+
+    for (let i = 0; i < 8; i++) {
+      const loc = gl.getUniformLocation(program, `uColor${i}`)
+      if (loc) gl.uniform3fv(loc, arr[i])
+    }
+    if (uColCnt) gl.uniform1i(uColCnt, count)
+    if (uBgCol) gl.uniform3fv(uBgCol, hexToRGB(backgroundColor))
+    if (uMouseCol) gl.uniform3fv(uMouseCol, avg)
+    if (uSpd) gl.uniform1f(uSpd, speed)
+    // Reduce streak count on mobile for buttery smooth 60fps
+    const targetStreak = isMobile ? Math.min(streakCount, 4) : streakCount
+    if (uStrkCnt) gl.uniform1i(uStrkCnt, Math.max(1, Math.min(16, Math.round(targetStreak))))
+    if (uStrkWid) gl.uniform1f(uStrkWid, streakWidth)
+    if (uStrkLen) gl.uniform1f(uStrkLen, streakLength)
+    if (uGlw) gl.uniform1f(uGlw, glow)
+    if (uDens) gl.uniform1f(uDens, isMobile ? Math.min(density, 0.4) : density)
+    if (uTwnk) gl.uniform1f(uTwnk, twinkle)
+    if (uZm) gl.uniform1f(uZm, zoom)
+    if (uBgGlw) gl.uniform1f(uBgGlw, backgroundGlow)
+    if (uOpac) gl.uniform1f(uOpac, opacity)
+    if (uMseEn) gl.uniform1f(uMseEn, mouseInteraction && !isMobile ? 1.0 : 0.0)
+    if (uMseStr) gl.uniform1f(uMseStr, mouseStrength)
+    if (uMseRad) gl.uniform1f(uMseRad, mouseRadius)
+    if (uLtMd) gl.uniform1f(uLtMd, lightMode ? 1.0 : 0.0)
+
+    let mouseCur = [0, 0]
 
     const resize = () => {
+      if (!container || !gl || gl.isContextLost()) return
       const rect = container.getBoundingClientRect()
-      renderer.setSize(rect.width, rect.height)
-      uniforms.iResolution.value = [gl.drawingBufferWidth, gl.drawingBufferHeight, 1]
+      const w = Math.floor(rect.width * pixelRatio)
+      const h = Math.floor(rect.height * pixelRatio)
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w
+        canvas.height = h
+        gl.viewport(0, 0, w, h)
+        if (uRes) gl.uniform3f(uRes, w, h, 1)
+      }
     }
 
     resize()
     const ro = new ResizeObserver(resize)
     ro.observe(container)
 
-    // Stop GPU rendering when canvas is scrolled offscreen
     let isVisible = true
     const io = new IntersectionObserver(
       ([entry]) => {
@@ -324,73 +427,70 @@ const Lightfall: React.FC<LightfallProps> = ({
     io.observe(container)
 
     const onPointerMove = (e: PointerEvent) => {
+      if (!gl || gl.isContextLost()) return
       const rect = canvas.getBoundingClientRect()
-      const scale = renderer.dpr || 1
-      const x = (e.clientX - rect.left) * scale
-      const y = (rect.height - (e.clientY - rect.top)) * scale
+      const x = (e.clientX - rect.left) * pixelRatio
+      const y = (rect.height - (e.clientY - rect.top)) * pixelRatio
       mouseTargetRef.current = [x, y]
-      if (mouseDampening <= 0) {
-        uniforms.iMouse.value = [x, y]
+      if (mouseDampening <= 0 && uMouse) {
+        gl.uniform2f(uMouse, x, y)
       }
     }
-    if (mouseInteraction) {
+    if (mouseInteraction && !isMobile) {
       canvas.addEventListener('pointermove', onPointerMove, { passive: true })
     }
 
+    // Graceful handling of WebGL context lost/restored (common on phone tab switching & Brave Shields)
+    const onContextLost = (e: Event) => {
+      e.preventDefault()
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+    }
+    canvas.addEventListener('webglcontextlost', onContextLost, false)
+
     const loop = (t: number) => {
       rafRef.current = requestAnimationFrame(loop)
-      // Skip render when hidden or offscreen to save battery and GPU
-      if (!isVisible || document.hidden || paused) return
+      if (!isVisible || document.hidden || paused || !gl || gl.isContextLost()) return
 
-      uniforms.iTime.value = t * 0.001
-      if (mouseDampening > 0) {
+      if (uTime) gl.uniform1f(uTime, t * 0.001)
+
+      if (mouseDampening > 0 && !isMobile) {
         if (!lastTimeRef.current) lastTimeRef.current = t
         const dt = (t - lastTimeRef.current) / 1000
         lastTimeRef.current = t
         const tau = Math.max(1e-4, mouseDampening)
-        let factor = 1 - Math.exp(-dt / tau)
-        if (factor > 1) factor = 1
+        const factor = Math.min(1.0, 1 - Math.exp(-dt / tau))
         const target = mouseTargetRef.current
-        const cur = uniforms.iMouse.value as number[]
-        cur[0] += (target[0] - cur[0]) * factor
-        cur[1] += (target[1] - cur[1]) * factor
+        mouseCur[0] += (target[0] - mouseCur[0]) * factor
+        mouseCur[1] += (target[1] - mouseCur[1]) * factor
+        if (uMouse) gl.uniform2f(uMouse, mouseCur[0], mouseCur[1])
       } else {
         lastTimeRef.current = t
       }
-      if (programRef.current && meshRef.current) {
-        try {
-          renderer.render({ scene: meshRef.current })
-        } catch (e) {
-          console.error(e)
-        }
-      }
+
+      gl.drawArrays(gl.TRIANGLES, 0, 3)
     }
+
     rafRef.current = requestAnimationFrame(loop)
 
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current)
-      if (mouseInteraction) canvas.removeEventListener('pointermove', onPointerMove)
+      if (mouseInteraction && !isMobile) {
+        canvas.removeEventListener('pointermove', onPointerMove)
+      }
+      canvas.removeEventListener('webglcontextlost', onContextLost)
       ro.disconnect()
       io.disconnect()
       if (canvas.parentElement === container) {
         container.removeChild(canvas)
       }
-      const callIfFn = (obj: unknown, key: string) => {
-        const fn = obj && (obj as Record<string, unknown>)[key]
-        if (typeof fn === 'function') {
-          ;(fn as () => void).call(obj)
+      try {
+        if (gl && !gl.isContextLost()) {
+          if (quadBuffer) gl.deleteBuffer(quadBuffer)
+          if (program) gl.deleteProgram(program)
+          if (vs) gl.deleteShader(vs)
+          if (fs) gl.deleteShader(fs)
         }
-      }
-      callIfFn(programRef.current, 'remove')
-      callIfFn(geometryRef.current, 'remove')
-      callIfFn(meshRef.current, 'remove')
-      callIfFn(rendererRef.current, 'destroy')
-      const ext = gl.getExtension('WEBGL_lose_context')
-      if (ext) ext.loseContext()
-      programRef.current = null
-      geometryRef.current = null
-      meshRef.current = null
-      rendererRef.current = null
+      } catch {}
     }
   }, [
     dpr,
@@ -430,4 +530,3 @@ const Lightfall: React.FC<LightfallProps> = ({
 
 export { Lightfall }
 export default Lightfall
-

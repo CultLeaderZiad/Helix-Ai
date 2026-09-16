@@ -1,15 +1,17 @@
 import type { Metadata } from 'next'
 import { PillNav } from '@/components/navigation/pill-nav'
+import { getNavAuth } from '@/lib/auth/nav-auth'
 
 export const metadata: Metadata = {
   title: 'Terms of Service — Helix AI',
   description: 'Commercial terms of service, platform warranty, and usage guidelines.',
 }
 
-export default function TermsPage() {
+export default async function TermsPage() {
+  const navAuth = await getNavAuth()
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <PillNav />
+      <PillNav isAuthenticated={navAuth.isAuthenticated} consoleHref={navAuth.consoleHref} />
 
       <main className="mx-auto max-w-5xl px-4 pt-28 pb-24 md:pt-36">
         <header className="border-b border-border pb-8">

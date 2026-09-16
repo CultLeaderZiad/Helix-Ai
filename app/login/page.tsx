@@ -1,14 +1,22 @@
 import type { Metadata } from 'next'
+import { redirect } from 'next/navigation'
 import { BrandPanel } from '@/components/login/brand-panel'
 import { LoginForm } from '@/components/login/login-form'
 import { getPlatformStatus } from '@/lib/platform-status'
+import { getNavAuth } from '@/lib/auth/nav-auth'
 
 export const metadata: Metadata = {
-  title: 'Sign in — Helix AI',
+  title: 'Console — Helix AI',
   robots: { index: false, follow: false },
 }
 
 export default async function LoginPage() {
+  // If user is already authenticated, redirect to their console — no flash
+  const navAuth = await getNavAuth()
+  if (navAuth.isAuthenticated) {
+    redirect(navAuth.consoleHref)
+  }
+
   const status = await getPlatformStatus()
 
   return (

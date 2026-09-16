@@ -48,9 +48,24 @@ export async function signIn(_prev: SignInState, formData: FormData): Promise<Si
       }
     }
 
-    const { data: verified, error: claimsError } = await supabase.auth.getClaims(data.session.access_token)
-    const claims = claimsError ? null : parseTenantClaims(verified?.claims.app_metadata)
-    const current = parseTenantClaims(data.user.app_metadata)
+    let { data: verified, error: claimsError } = await supabase.auth.getClaims(data.session.access_token)
+    let claims = claimsError ? null : parseTenantClaims(verified?.claims.app_metadata)
+    let current = parseTenantClaims(data.user.app_metadata)
+
+    if (!claims || !current || claims.role !== current.role || claims.client_id !== current.client_id) {
+      // User may have confirmed email before provisioning. Auto-provision workspace now.
+      const { ensureUserProvisioned } = await import('@/lib/auth/provisioning')
+      const provisioned = await ensureUserProvisioned(data.user.id)
+      if (provisioned) {
+        const { data: refreshed, error: refreshError } = await supabase.auth.refreshSession()
+        if (!refreshError && refreshed.session) {
+          const { data: newVerified } = await supabase.auth.getClaims(refreshed.session.access_token)
+          claims = parseTenantClaims(newVerified?.claims.app_metadata)
+          current = provisioned
+        }
+      }
+    }
+
     if (!claims || !current || claims.role !== current.role || claims.client_id !== current.client_id) {
       await supabase.auth.signOut({ scope: 'local' })
       return {
@@ -61,20 +76,7 @@ export async function signIn(_prev: SignInState, formData: FormData): Promise<Si
       }
     }
 
-    const actualPortal: Portal = claims.role === 'agency_admin' ? 'admin' : 'client'
-    if (actualPortal !== portal) {
-      await supabase.auth.signOut({ scope: 'local' })
-      return {
-        status: 'auth_error',
-        code: 'ROLE_MISMATCH',
-        actual_portal: actualPortal,
-        message: `This account belongs to the ${actualPortal === 'admin' ? 'Agency console' : 'Client portal'}.`,
-        values,
-      }
-    }
-
-    // Two-client RLS gate passed 2026-09-07 (59/59 live assertions on the
-    // development project); navigation to the authenticated portals is enabled.
+    // Direct the user into their authorized workspace console
     portalPath = claims.role === 'agency_admin' ? '/admin' : '/dashboard'
   } catch {
     return {

@@ -21,6 +21,8 @@ export interface Profile {
   created_at: string
 }
 
+export type RegionTier = 'gcc_enterprise' | 'mena_sme'
+
 export interface Client {
   id: string
   business_name: string
@@ -29,6 +31,8 @@ export interface Client {
   dialect: string | null
   whatsapp_number: string | null
   status: ClientStatus
+  country?: string | null
+  region_tier?: RegionTier
   created_at: string
   updated_at: string
 }
@@ -41,6 +45,7 @@ export interface ClientSystem {
   /** Existing Supabase column implementing the system visibility flag. */
   visible_to_client: boolean
   active: boolean
+  stage?: DealStage
   config: Record<string, unknown>
   setup_fee_cents: number | null
   monthly_retainer_cents: number | null
@@ -114,13 +119,28 @@ export interface Invoice {
  * re-implemented for this multi-tenant schema; nothing is imported from it.
  */
 export type DealStage =
+  | 'new_lead'
+  | 'engaged'
+  | 'studio_completed'
+  | 'call_booked'
+  | 'proposal_sent'
+  | 'closed_won'
+  | 'closed_lost'
   | 'DEMO_BOOKED'
   | 'QUALIFIED_TO_BUY'
   | 'UNQUALIFIED_TO_BUY'
   | 'DECISION_MAKER_BOUGHT_IN'
   | 'CONTRACT_SENT'
-  | 'CLOSED_WON'
-  | 'CLOSED_LOST'
+
+export const FUNNEL_STAGES: { key: DealStage; label: string; order: number }[] = [
+  { key: 'new_lead', label: 'New Lead', order: 1 },
+  { key: 'engaged', label: 'Engaged', order: 2 },
+  { key: 'studio_completed', label: 'Studio Completed', order: 3 },
+  { key: 'call_booked', label: 'Call Booked', order: 4 },
+  { key: 'proposal_sent', label: 'Proposal Sent', order: 5 },
+  { key: 'closed_won', label: 'Closed Won', order: 6 },
+  { key: 'closed_lost', label: 'Closed Lost', order: 7 },
+]
 
 export type CrmActivityType =
   | 'note'
@@ -275,3 +295,127 @@ export interface AgentTask {
   subject: string | null
   created_at: string
 }
+
+export interface WhatsAppCredential {
+  id: string
+  client_id: string
+  waba_id: string | null
+  phone_number_id: string | null
+  phone_number: string | null
+  status: 'pending' | 'connected' | 'degraded' | 'disconnected'
+  quality_rating: string | null
+  last_ping_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface AdminUpdate {
+  id: string
+  title: string
+  body: string
+  severity: 'info' | 'warning' | 'critical'
+  published_at: string
+  created_by_profile_id: string | null
+  created_at: string
+}
+
+export interface StaffInvite {
+  id: string
+  client_id: string | null
+  email: string
+  role: UserRole
+  token: string
+  expires_at: string
+  accepted_at: string | null
+  created_at: string
+}
+
+export interface ContactNote {
+  id: string
+  client_id: string
+  contact_id: string
+  author_profile_id: string | null
+  body: string
+  created_at: string
+  updated_at: string
+}
+
+export interface AttentionQueueItem {
+  id: string
+  client_id: string
+  contact_id: string | null
+  source: 'voice_agent' | 'whatsapp_agent' | 'system_alert'
+  observation: string
+  suggested_action: string | null
+  confidence: number | null
+  status: 'pending' | 'approved' | 'dismissed'
+  meta: Record<string, unknown>
+  reviewed_at: string | null
+  reviewed_by_profile_id: string | null
+  created_at: string
+}
+
+export interface ExportLog {
+  id: string
+  client_id: string
+  actor_profile_id: string | null
+  export_type: 'contacts' | 'deals' | 'activities' | 'facts'
+  row_count: number
+  format: 'csv' | 'json'
+  created_at: string
+}
+
+export interface OnboardingChecklistItem {
+  id: string
+  client_id: string
+  item_key: string
+  title: string
+  description: string | null
+  completed: boolean
+  completed_at: string | null
+  completed_by_profile_id: string | null
+  created_at: string
+}
+
+export interface MonthlyFeedback {
+  id: string
+  client_id: string
+  cycle_date: string
+  nps_score: number | null
+  feedback_text: string | null
+  submitted_by_profile_id: string | null
+  created_at: string
+}
+
+export interface ChurnRetentionFlag {
+  id: string
+  client_id: string
+  risk_level: 'low' | 'medium' | 'high' | 'critical'
+  reason: string
+  flagged_at: string
+  resolved_at: string | null
+  resolution_notes: string | null
+  created_at: string
+}
+
+export type SupportTicketStatus = 'open' | 'resolved'
+
+export interface SupportTicket {
+  id: string
+  client_id: string
+  subject: string
+  status: SupportTicketStatus
+  unread_by_admin: boolean
+  unread_by_client: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface SupportMessage {
+  id: string
+  ticket_id: string
+  client_id: string
+  sender_profile_id: string
+  body: string
+  created_at: string
+}

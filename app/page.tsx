@@ -3,6 +3,11 @@ import type { Metadata } from 'next'
 import { PillNav } from '@/components/navigation/pill-nav'
 import { LightfallCanvas } from '@/components/lightfall-canvas'
 import { ShieldCheck, Activity, Database } from 'lucide-react'
+import { StudioMotionDemo } from '@/components/studio/studio-motion-demo'
+import { HelixFooter } from '@/components/footer/helix-footer'
+import { FaqAccordion } from '@/components/faq/faq-accordion'
+import { getPublicFaqs } from '@/lib/faq/actions'
+import { getNavAuth } from '@/lib/auth/nav-auth'
 
 export const metadata: Metadata = {
   title: 'Helix AI — The operations console for autonomous intelligence',
@@ -10,8 +15,11 @@ export const metadata: Metadata = {
     'Realtime activity telemetry, multi-tenant CRM, and human-verified agent observations. Know exactly what your autonomous systems did.',
 }
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const [faqs, navAuth] = await Promise.all([getPublicFaqs(), getNavAuth()])
   return (
+
+
     <div className="relative min-h-screen bg-[#0B0F19] text-[#F8FAFC]">
       {/* Lightfall WebGL Background */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
@@ -29,7 +37,7 @@ export default function LandingPage() {
       </div>
 
       {/* Global Public Navigation */}
-      <PillNav />
+      <PillNav isAuthenticated={navAuth.isAuthenticated} consoleHref={navAuth.consoleHref} />
 
       {/* Hero Section */}
       <main className="relative z-10 mx-auto flex min-h-[calc(100vh-80px)] max-w-5xl flex-col items-center justify-center px-4 pt-28 pb-16 text-center md:pt-36">
@@ -65,11 +73,31 @@ export default function LandingPage() {
 
         <p className="mt-4 text-xs text-slate-400">7-day unrestricted trial. No credit card required.</p>
 
+        {/* Studio Animated Motion Showcase (Hero Video Style Frame) */}
+        <section
+          aria-label="Studio Live Workflow Preview"
+          className="mt-14 w-full scroll-mt-28"
+        >
+          <div className="mb-4 text-center">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-purple-500/30 bg-purple-500/10 px-3 py-0.5 text-xs font-semibold uppercase tracking-wider text-purple-300">
+              Interactive System Architecture
+            </span>
+            <h2 className="mt-2 font-display text-2xl font-bold tracking-tight text-white sm:text-3xl">
+              Watch How Helix AI Powers Real Autonomous Workflows
+            </h2>
+            <p className="mt-1 text-xs sm:text-sm text-slate-400 max-w-xl mx-auto">
+              A pre-choreographed walkthrough demonstrating automated voice reception, instant WhatsApp confirmation, and live CRM telemetry.
+            </p>
+          </div>
+
+          <StudioMotionDemo autoplay={true} loop={true} />
+        </section>
+
         {/* Feature Proof Pillars */}
         <section
           id="features"
           aria-label="Capabilities"
-          className="mt-24 scroll-mt-28 grid w-full grid-cols-1 gap-6 text-left md:grid-cols-3"
+          className="mt-20 scroll-mt-28 grid w-full grid-cols-1 gap-6 text-left md:grid-cols-3"
         >
           <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-6 backdrop-blur-md">
             <div className="flex size-10 items-center justify-center rounded-lg bg-sky-500/10 text-[#38BDF8]">
@@ -162,29 +190,13 @@ export default function LandingPage() {
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="relative z-10 border-t border-slate-800/80 bg-[#0B0F19]/80 py-8 backdrop-blur-md">
-        <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 px-4 text-xs text-slate-400 sm:flex-row">
-          <p>© 2026 Helix AI Technologies. All rights reserved.</p>
-          <div className="flex items-center gap-6">
-            <Link href="/pricing" className="hover:text-white transition-colors">
-              Pricing
-            </Link>
-            <Link href="/about" className="hover:text-white transition-colors">
-              About
-            </Link>
-            <Link href="/contact" className="hover:text-white transition-colors">
-              Contact
-            </Link>
-            <Link href="/terms" className="hover:text-white transition-colors">
-              Terms
-            </Link>
-            <Link href="/privacy" className="hover:text-white transition-colors">
-              Privacy
-            </Link>
-          </div>
-        </div>
-      </footer>
+      {/* FAQ Section — Inline on Home Page */}
+      <section id="faq" aria-label="Frequently Asked Questions" className="relative z-10">
+        <FaqAccordion initialFaqs={faqs} />
+      </section>
+
+      {/* Detailed Helix Watermark Footer */}
+      <HelixFooter />
     </div>
   )
 }

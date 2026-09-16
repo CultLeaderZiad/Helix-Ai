@@ -2,49 +2,21 @@ import type { Metadata } from 'next'
 import { PillNav } from '@/components/navigation/pill-nav'
 import { Sparkles, ArrowUpRight } from 'lucide-react'
 import Link from 'next/link'
+import { HelixFooter } from '@/components/footer/helix-footer'
+import { getUpdates } from '@/lib/updates/updates-store'
+import { getNavAuth } from '@/lib/auth/nav-auth'
 
 export const metadata: Metadata = {
   title: 'Updates — Helix AI',
   description: 'Changelog, system upgrades, and platform releases for Helix AI.',
 }
 
-const RELEASES = [
-  {
-    version: 'v2.4.0',
-    date: 'September 2026',
-    title: 'Dual-workspace authentication & cross-tenant RLS isolation',
-    highlights: [
-      'Segmented authentication supporting Agency Operator and Client Portal routing.',
-      'Hardware-level PostgreSQL RLS enforcement with tenant-scoped cryptographic tokens.',
-      'Public navigation redesign with high-contrast framing and mobile-first touch targets.',
-    ],
-  },
-  {
-    version: 'v2.3.1',
-    date: 'August 2026',
-    title: 'Realtime telemetry ingest and webhook integrity validation',
-    highlights: [
-      'Sub-50ms ingestion pipeline for Retell AI, Vapi, and Bland AI voice sessions.',
-      'Automated HMAC-SHA256 signature verification on incoming webhooks.',
-      'Real-time confidence scoring matrix for extracted caller intentions.',
-    ],
-  },
-  {
-    version: 'v2.2.0',
-    date: 'July 2026',
-    title: 'Operational truth engine & human-in-the-loop review queues',
-    highlights: [
-      'Tri-state evidence tagging: verified, probable, and possible assertions.',
-      'One-click dispute resolution for agency administrators with audit trails.',
-      'Automated CSV & JSON log exports for enterprise compliance audits.',
-    ],
-  },
-]
+export default async function UpdatesPage() {
+  const [releases, navAuth] = await Promise.all([Promise.resolve(getUpdates(false)), getNavAuth()])
 
-export default function UpdatesPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <PillNav />
+      <PillNav isAuthenticated={navAuth.isAuthenticated} consoleHref={navAuth.consoleHref} />
 
       <main className="mx-auto max-w-4xl px-4 pt-28 pb-24 md:pt-36">
         <header className="text-center">
@@ -61,7 +33,7 @@ export default function UpdatesPage() {
         </header>
 
         <div className="mt-16 space-y-12">
-          {RELEASES.map((release) => (
+          {releases.map((release) => (
             <article
               key={release.version}
               className="rounded-2xl border border-border bg-panel p-6 sm:p-8 transition-colors"
@@ -97,6 +69,8 @@ export default function UpdatesPage() {
           ))}
         </div>
       </main>
+
+      <HelixFooter />
     </div>
   )
 }

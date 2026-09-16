@@ -300,6 +300,11 @@ const TABS = ['Overview', 'Systems', 'Billing', 'Facts', 'Queue'] as const
 type Tab = (typeof TABS)[number]
 
 const OPEN_STAGES: DealStage[] = [
+  'new_lead',
+  'engaged',
+  'studio_completed',
+  'call_booked',
+  'proposal_sent',
   'DEMO_BOOKED',
   'QUALIFIED_TO_BUY',
   'DECISION_MAKER_BOUGHT_IN',

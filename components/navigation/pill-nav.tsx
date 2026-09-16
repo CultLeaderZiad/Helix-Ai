@@ -1,287 +1,206 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { ArrowRight, Menu, X, ChevronRight } from 'lucide-react'
 
 interface PillNavProps {
   isAuthenticated?: boolean
   consoleHref?: string
 }
 
+const NAV_ITEMS = [
+  { label: 'Updates', href: '/updates' },
+  { label: 'Pricing', href: '/pricing' },
+  { label: 'About', href: '/about' },
+] as const
+
 export function PillNav({
-  isAuthenticated: propAuthenticated,
+  isAuthenticated: propAuthenticated = false,
   consoleHref: propConsoleHref = '/dashboard',
 }: PillNavProps) {
   const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [lang, setLang] = useState<'EN' | 'AR'>('AR')
-  const [isAuthenticated, setIsAuthenticated] = useState(propAuthenticated ?? false)
-  const [consoleHref, setConsoleHref] = useState(propConsoleHref)
-
-  // Non-blocking client auth check: allows parent page to be 100% static
-  useEffect(() => {
-    if (propAuthenticated !== undefined) {
-      setIsAuthenticated(propAuthenticated)
-      return
-    }
-    try {
-      const hasAuthCookie = document.cookie
-        .split(';')
-        .some((c) => c.trim().startsWith('sb-') && c.includes('-auth-token'))
-      if (hasAuthCookie) {
-        setIsAuthenticated(true)
-        setConsoleHref('/dashboard')
-      }
-    } catch {
-      // Safe fallback
-    }
-  }, [propAuthenticated])
-
-  const toggleLang = () => {
-    setLang((prev) => (prev === 'AR' ? 'EN' : 'AR'))
-  }
-
-  const buildHref = isAuthenticated ? consoleHref : '/signup'
-  const buildLabel = isAuthenticated ? 'Console' : 'Start Build'
+  const isAuthenticated = propAuthenticated
+  const consoleHref = propConsoleHref
 
   return (
-    <header className="pill-nav-wrapper">
-      <nav
-        className="pill-nav"
-        aria-label="Primary"
-        style={
-          {
-            '--base': '#ffffff',
-            '--pill-bg': '#0a0a0a',
-            '--hover-text': '#050505',
-            '--pill-text': '#ffffff',
-          } as React.CSSProperties
-        }
-      >
-        {/* Brand Logo - White disc with HLX */}
-        <Link
-          className="pill-logo"
-          href="/"
-          aria-label="Home"
-          id="pillLogo"
-          prefetch={false}
-        >
-          <span>HLX</span>
-        </Link>
-
-        {/* Desktop Navigation Items inside White Pill Enclosure */}
-        <div className="pill-nav-items desktop-only" id="navItems">
-          <ul className="pill-list" role="menubar">
-            {/* Features */}
-            <li role="none">
-              <Link role="menuitem" href="/#features" className="pill">
-                <span className="hover-circle" aria-hidden="true" />
-                <span className="label-stack">
-                  <span className="pill-label">Features</span>
-                  <span className="pill-label-hover" aria-hidden="true">Features</span>
-                </span>
-              </Link>
-            </li>
-
-            {/* How It Works */}
-            <li role="none">
-              <Link role="menuitem" href="/#how" className="pill">
-                <span className="hover-circle" aria-hidden="true" />
-                <span className="label-stack">
-                  <span className="pill-label">How It Works</span>
-                  <span className="pill-label-hover" aria-hidden="true">How It Works</span>
-                </span>
-              </Link>
-            </li>
-
-            {/* Pricing */}
-            <li role="none">
-              <Link role="menuitem" href="/pricing" prefetch={false} className="pill">
-                <span className="hover-circle" aria-hidden="true" />
-                <span className="label-stack">
-                  <span className="pill-label">Pricing</span>
-                  <span className="pill-label-hover" aria-hidden="true">Pricing</span>
-                </span>
-              </Link>
-            </li>
-
-            {/* Team */}
-            <li role="none">
-              <Link role="menuitem" href="/team" prefetch={false} className="pill">
-                <span className="hover-circle" aria-hidden="true" />
-                <span className="label-stack">
-                  <span className="pill-label">Team</span>
-                  <span className="pill-label-hover" aria-hidden="true">Team</span>
-                </span>
-              </Link>
-            </li>
-
-            {/* Start Build (Silver Pill) */}
-            <li role="none" style={{ marginLeft: '1.25rem' }}>
-              <Link role="menuitem" href={buildHref} prefetch={false} className="pill pill-silver">
-                <span className="hover-circle" aria-hidden="true" />
-                <span className="label-stack" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <span className="pill-label">
-                    {buildLabel}{' '}
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M5 12h14M12 5l7 7-7 7" />
-                    </svg>
-                  </span>
-                  <span className="pill-label-hover" aria-hidden="true">
-                    {buildLabel}{' '}
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M5 12h14M12 5l7 7-7 7" />
-                    </svg>
-                  </span>
-                </span>
-              </Link>
-            </li>
-
-            {/* Language Switcher */}
-            <li role="none" style={{ marginLeft: '0.5rem' }}>
-              <button
-                type="button"
-                role="menuitem"
-                onClick={toggleLang}
-                className="pill"
-                style={{ minWidth: '42px', padding: '0 12px', justifyContent: 'center', fontWeight: 800, fontSize: '13px', letterSpacing: '0.5px' }}
-                aria-label={`Switch language to ${lang === 'AR' ? 'Arabic' : 'English'}`}
-              >
-                <span className="hover-circle" aria-hidden="true" />
-                <span className="label-stack">
-                  <span className="pill-label">{lang}</span>
-                  <span className="pill-label-hover" aria-hidden="true">{lang}</span>
-                </span>
-              </button>
-            </li>
-          </ul>
-        </div>
-
-        {/* Mobile: Start Build CTA shown directly in nav */}
-        <Link href={buildHref} className="mobile-nav-cta">
-          {buildLabel}
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M5 12h14M12 5l7 7-7 7" />
-          </svg>
-        </Link>
-
-        {/* Mobile: Right actions (Language + Hamburger) */}
-        <div className="mobile-right-actions">
-          <button
-            type="button"
-            onClick={toggleLang}
-            style={{
-              color: '#fff',
-              fontWeight: 800,
-              fontSize: '13px',
-              textDecoration: 'none',
-              padding: '0 8px',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-            }}
-            aria-label="Toggle language"
-          >
-            {lang}
-          </button>
-
-          <button
-            type="button"
-            id="hamburgerBtn"
-            onClick={() => setMobileOpen((prev) => !prev)}
-            aria-label="Menu"
-            aria-expanded={mobileOpen}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              gap: '4px',
-              padding: '6px',
-            }}
-          >
-            <span
-              className="hamburger-line"
-              style={{
-                width: '18px',
-                height: '2px',
-                backgroundColor: '#fff',
-                transition: '0.3s transform ease, 0.3s opacity ease',
-                borderRadius: '2px',
-                transform: mobileOpen ? 'translateY(3px) rotate(45deg)' : 'none',
-              }}
-            />
-            <span
-              className="hamburger-line"
-              style={{
-                width: '18px',
-                height: '2px',
-                backgroundColor: '#fff',
-                transition: '0.3s transform ease, 0.3s opacity ease',
-                borderRadius: '2px',
-                transform: mobileOpen ? 'translateY(-3px) rotate(-45deg)' : 'none',
-              }}
-            />
-          </button>
-        </div>
-      </nav>
-
-      {/* Mobile Menu Dropdown */}
-      {mobileOpen && (
+    <header className="fixed top-[max(0.75rem,env(safe-area-inset-top))] sm:top-5 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center pointer-events-auto max-w-[calc(100vw-24px)]">
+      {/* Floating Dark Cyber-Glass Capsule */}
+      <div className="relative flex items-center justify-between gap-1.5 sm:gap-2 rounded-full border border-white/15 bg-[#090D14]/85 px-2 py-1.5 shadow-[0_16px_40px_-10px_rgba(0,0,0,0.8),0_0_0_1px_rgba(255,255,255,0.06),inset_0_1px_0_0_rgba(255,255,255,0.18)] backdrop-blur-2xl transition-all duration-300 hover:border-white/25">
+        {/* Subtle top cyan ambient glow highlight */}
         <div
-          className="mt-2 flex w-[calc(100vw-32px)] max-w-[343px] flex-col gap-1 rounded-2xl border border-white/20 bg-black/95 p-3 shadow-2xl backdrop-blur-xl md:hidden"
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-[1px] left-8 right-8 h-[1px] bg-gradient-to-r from-transparent via-[#38C6E0]/50 to-transparent"
+        />
+
+        {/* Brand Mark: Clean circular badge showing "HLX AI" */}
+        <Link
+          href="/"
+          aria-label="HLX AI Home"
+          prefetch={false}
+          className="group flex items-center gap-2 rounded-full py-0.5 pl-0.5 pr-2.5 transition-all duration-200 active:scale-95"
         >
-          <Link
-            href="/#features"
-            onClick={() => setMobileOpen(false)}
-            className="flex h-11 items-center rounded-lg px-3 text-sm font-semibold uppercase tracking-wider text-white/80 hover:bg-white/10 hover:text-white"
-          >
-            Features
-          </Link>
-          <Link
-            href="/#how"
-            onClick={() => setMobileOpen(false)}
-            className="flex h-11 items-center rounded-lg px-3 text-sm font-semibold uppercase tracking-wider text-white/80 hover:bg-white/10 hover:text-white"
-          >
-            How It Works
-          </Link>
-          <Link
-            href="/pricing"
-            onClick={() => setMobileOpen(false)}
-            className="flex h-11 items-center rounded-lg px-3 text-sm font-semibold uppercase tracking-wider text-white/80 hover:bg-white/10 hover:text-white"
-          >
-            Pricing
-          </Link>
-          <Link
-            href="/team"
-            onClick={() => setMobileOpen(false)}
-            className="flex h-11 items-center rounded-lg px-3 text-sm font-semibold uppercase tracking-wider text-white/80 hover:bg-white/10 hover:text-white"
-          >
-            Team
-          </Link>
-          <div className="mt-2 border-t border-white/10 pt-2">
+          <div className="flex h-7.5 w-7.5 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-white text-black font-black text-[11px] sm:text-[12px] tracking-tight shadow-[0_0_12px_rgba(255,255,255,0.4)] transition-transform group-hover:scale-105">
+            HLX
+          </div>
+          <span className="font-display text-[13px] sm:text-[14px] font-bold tracking-wider text-white group-hover:text-cyan-300 transition-colors">
+            AI
+          </span>
+        </Link>
+
+        {/* Desktop Navigation Links */}
+        <nav aria-label="Main Navigation" className="hidden lg:flex items-center gap-1 px-1">
+          {NAV_ITEMS.map((item) => {
+            const isActive = pathname.startsWith(item.href)
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                prefetch={false}
+                className={`relative flex items-center gap-1.5 whitespace-nowrap rounded-full border px-3.5 py-1.5 text-[13px] tracking-wide transition-all duration-200 ${
+                  isActive
+                    ? 'border-white/20 bg-white/12 font-semibold text-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.2)]'
+                    : 'border-white/10 bg-white/[0.05] font-medium text-slate-300 hover:border-white/15 hover:bg-white/[0.10] hover:text-white'
+                }`}
+              >
+                {isActive && (
+                  <span
+                    className="h-1.5 w-1.5 rounded-full bg-[#38C6E0] shadow-[0_0_8px_#38C6E0]"
+                    aria-hidden="true"
+                  />
+                )}
+                <span>{item.label}</span>
+              </Link>
+            )
+          })}
+        </nav>
+
+        {/* Desktop Actions */}
+        <div className="hidden lg:flex items-center gap-2 pl-1">
+          <div className="h-4 w-[1px] bg-white/15" aria-hidden="true" />
+
+          {isAuthenticated ? (
             <Link
-              href={buildHref}
-              onClick={() => setMobileOpen(false)}
-              className="flex h-11 items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-slate-200 to-slate-300 text-sm font-bold uppercase tracking-wider text-black"
+              href={consoleHref}
+              prefetch={false}
+              className="group flex items-center gap-2 whitespace-nowrap rounded-full bg-gradient-to-r from-[#38C6E0] to-[#0284C7] px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#050B14] shadow-[0_0_18px_rgba(56,198,224,0.35)] transition-all duration-200 hover:shadow-[0_0_26px_rgba(56,198,224,0.55)] active:scale-95"
             >
-              {buildLabel}
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+              </span>
+              <span>Console</span>
+              <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
             </Link>
-            {!isAuthenticated && (
+          ) : (
+            <>
               <Link
                 href="/login"
-                onClick={() => setMobileOpen(false)}
-                className="mt-2 flex h-11 items-center justify-center rounded-lg border border-white/20 text-sm font-semibold uppercase tracking-wider text-white hover:bg-white/10"
+                prefetch={false}
+                className="whitespace-nowrap rounded-full px-3 py-1.5 text-[13px] font-medium text-slate-300 transition-all duration-200 hover:bg-white/[0.08] hover:text-white"
               >
-                Sign in
+                Console
               </Link>
+              <Link
+                href="/signup"
+                prefetch={false}
+                className="group flex items-center gap-1.5 whitespace-nowrap rounded-full bg-gradient-to-r from-[#38C6E0] to-[#0284C7] px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#050B14] shadow-[0_0_18px_rgba(56,198,224,0.35)] transition-all duration-200 hover:shadow-[0_0_26px_rgba(56,198,224,0.55)] active:scale-95"
+              >
+                <span>Get Started</span>
+                <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
+              </Link>
+            </>
+          )}
+        </div>
+
+        {/* Mobile / Tablet View (<1024px) */}
+        <div className="flex lg:hidden items-center gap-1.5 sm:gap-2">
+          <Link
+            href={isAuthenticated ? consoleHref : '/signup'}
+            prefetch={false}
+            className="flex items-center gap-1 rounded-full bg-gradient-to-r from-[#38C6E0] to-[#0284C7] px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-[#050B14] shadow-[0_0_14px_rgba(56,198,224,0.35)]"
+          >
+            <span>{isAuthenticated ? 'Console' : 'Get Started'}</span>
+            <ArrowRight className="h-3 w-3" />
+          </Link>
+
+          <button
+            type="button"
+            onClick={() => setMobileOpen((prev) => !prev)}
+            aria-label={mobileOpen ? 'Close Navigation Menu' : 'Open Navigation Menu'}
+            aria-expanded={mobileOpen}
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-white/15 bg-white/5 text-slate-200 transition-colors hover:bg-white/10 hover:text-white active:scale-95"
+          >
+            {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Drawer Menu */}
+      {mobileOpen && (
+        <div className="mt-2 w-[calc(100vw-32px)] max-w-sm rounded-2xl border border-white/15 bg-[#090D14]/95 p-3 shadow-2xl backdrop-blur-2xl lg:hidden">
+          <div className="flex flex-col gap-1">
+            {NAV_ITEMS.map((item) => {
+              const isActive = pathname.startsWith(item.href)
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  prefetch={false}
+                  onClick={() => setMobileOpen(false)}
+                  className={`flex items-center justify-between rounded-xl border px-3.5 py-2.5 text-sm transition-colors ${
+                    isActive
+                      ? 'border-white/15 bg-white/10 font-semibold text-white'
+                      : 'border-white/8 bg-white/[0.04] text-slate-300 hover:border-white/12 hover:bg-white/[0.08] hover:text-white'
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    {isActive && (
+                      <span className="h-1.5 w-1.5 rounded-full bg-[#38C6E0] shadow-[0_0_6px_#38C6E0]" />
+                    )}
+                    <span>{item.label}</span>
+                  </span>
+                  <ChevronRight className="h-4 w-4 text-slate-500" />
+                </Link>
+              )
+            })}
+          </div>
+
+          <div className="mt-3 flex flex-col gap-2 border-t border-white/10 pt-3">
+            {isAuthenticated ? (
+              <Link
+                href={consoleHref}
+                prefetch={false}
+                onClick={() => setMobileOpen(false)}
+                className="flex h-10 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#38C6E0] to-[#0284C7] text-xs font-bold uppercase tracking-wider text-[#050B14] shadow-[0_0_16px_rgba(56,198,224,0.35)]"
+              >
+                <span>Open Console</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/signup"
+                  prefetch={false}
+                  onClick={() => setMobileOpen(false)}
+                  className="flex h-10 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#38C6E0] to-[#0284C7] text-xs font-bold uppercase tracking-wider text-[#050B14] shadow-[0_0_16px_rgba(56,198,224,0.35)]"
+                >
+                  <span>Get Started Free</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+                <Link
+                  href="/login"
+                  prefetch={false}
+                  onClick={() => setMobileOpen(false)}
+                  className="flex h-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-xs font-semibold uppercase tracking-wider text-slate-200 hover:bg-white/10"
+                >
+                  Console
+                </Link>
+              </>
             )}
           </div>
         </div>

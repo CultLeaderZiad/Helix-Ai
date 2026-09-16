@@ -28,9 +28,16 @@ export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [showResetModal, setShowResetModal] = useState(false)
   const [email, setEmail] = useState('')
-  const [portal, setPortal] = useState<Portal>(() =>
-    state.status === 'field_error' || state.status === 'auth_error' ? state.values.portal : 'admin',
-  )
+  const [portal, setPortal] = useState<Portal>(() => {
+    if (state.status === 'field_error' || state.status === 'auth_error') {
+      return state.values.portal
+    }
+    if (typeof window !== 'undefined') {
+      const p = new URLSearchParams(window.location.search).get('portal')
+      if (p === 'admin') return 'admin'
+    }
+    return 'client'
+  })
   const ids = { email: useId(), password: useId(), emailErr: useId(), passwordErr: useId(), banner: useId() }
 
   const fieldErrors = state.status === 'field_error' ? state.errors : {}
@@ -42,7 +49,7 @@ export function LoginForm() {
       <form action={formAction} noValidate aria-busy={pending} className="flex flex-col gap-6">
         <header className="flex flex-col gap-1.5">
           <div className="flex items-center justify-between">
-            <h2 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Sign in</h2>
+            <h2 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Console</h2>
             <Link
               href="/"
               className="text-xs text-muted-foreground transition-colors hover:text-foreground"
@@ -201,7 +208,7 @@ export function LoginForm() {
                 Verifying credentials...
               </>
             ) : (
-              'Sign in to workspace'
+              'Open workspace'
             )}
           </Button>
 
