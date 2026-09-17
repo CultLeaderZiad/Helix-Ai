@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import { PillNav } from '@/components/navigation/pill-nav'
 import { LightfallCanvas } from '@/components/lightfall-canvas'
 import { ShieldCheck, Activity, Database } from 'lucide-react'
-import { StudioMotionDemo } from '@/components/studio/studio-motion-demo'
+import { LandingDemo } from '@/components/studio/landing-demo'
 import { HelixFooter } from '@/components/footer/helix-footer'
 import { FaqAccordion } from '@/components/faq/faq-accordion'
 import { getPublicFaqs } from '@/lib/faq/actions'
@@ -21,8 +21,8 @@ export default async function LandingPage() {
 
 
     <div className="relative min-h-screen bg-[#0B0F19] text-[#F8FAFC]">
-      {/* Lightfall WebGL Background */}
-      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+      {/* Lightfall WebGL Ambient Canvas - Scoped to Hero Section to eliminate idle GPU load on scroll */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[100vh] max-h-[960px] overflow-hidden z-0">
         <LightfallCanvas
           colors={['#38BDF8', '#0EA5E9', '#0284C7']}
           backgroundColor="#0B0F19"
@@ -33,7 +33,9 @@ export default async function LandingPage() {
           mouseInteraction={true}
           className="h-full w-full opacity-80"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0B0F19]/40 via-transparent to-[#0B0F19]" />
+        {/* Fine gradient dissolve masks */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0B0F19]/25 via-transparent to-[#0B0F19]" />
+        <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[#0B0F19] to-transparent" />
       </div>
 
       {/* Global Public Navigation */}
@@ -41,37 +43,41 @@ export default async function LandingPage() {
 
       {/* Hero Section */}
       <main className="relative z-10 mx-auto flex min-h-[calc(100vh-80px)] max-w-5xl flex-col items-center justify-center px-4 pt-28 pb-16 text-center md:pt-36">
-        <div className="inline-flex items-center gap-2 rounded-full border border-sky-500/30 bg-sky-500/10 px-3.5 py-1 text-xs font-medium uppercase tracking-widest text-[#38BDF8]">
-          AI Operations Platform
+        <div className="inline-flex items-center gap-2 rounded-full border border-sky-500/30 bg-sky-500/10 px-3.5 py-1 text-xs font-semibold uppercase tracking-widest text-[#38BDF8] shadow-[0_0_12px_rgba(56,189,248,0.15)]">
+          <Activity className="size-3.5" />
+          Autonomous AI Operations Platform
         </div>
 
         <h1 className="mt-6 font-display text-4xl font-bold tracking-tight text-balance sm:text-5xl md:text-6xl lg:text-7xl">
           The console that tells you exactly what happened.
         </h1>
 
-        <p className="mt-6 max-w-2xl text-base text-slate-300 text-pretty sm:text-lg">
+        <p className="mt-6 max-w-2xl text-base text-slate-300 text-pretty sm:text-lg leading-relaxed">
           Realtime activity telemetry, multi-tenant CRM, and human-verified agent observations. Stop
           guessing what your autonomous systems did.
         </p>
 
-        <div className="mt-10 flex w-full flex-col items-center justify-center gap-3 sm:w-auto sm:flex-row sm:gap-4">
+        {/* CTA Buttons */}
+        <div className="mt-9 flex w-full flex-col items-center justify-center gap-3.5 sm:w-auto sm:flex-row sm:gap-4">
           <Link
             href="/signup"
-            prefetch={false}
-            className="flex h-12 w-full items-center justify-center rounded-md bg-[#0EA5E9] px-8 text-base font-medium text-white shadow-lg transition-transform hover:scale-[1.02] sm:w-auto"
+            className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-sky-400 to-sky-500 px-8 text-sm font-semibold text-slate-950 shadow-[0_0_24px_rgba(56,189,248,0.3)] transition-all duration-200 hover:shadow-[0_0_32px_rgba(56,189,248,0.5)] hover:brightness-105 active:scale-[0.98] sm:w-auto"
           >
             Start free trial
           </Link>
           <Link
             href="/login"
-            prefetch={false}
-            className="flex h-12 w-full items-center justify-center rounded-md border border-slate-700 bg-slate-900/60 px-8 text-base font-medium text-slate-200 backdrop-blur-xs transition-colors hover:bg-slate-800/80 sm:w-auto"
+            className="flex h-12 w-full items-center justify-center rounded-xl border border-slate-700/80 bg-slate-900/80 px-8 text-sm font-medium text-slate-200 backdrop-blur-md transition-all duration-200 hover:border-slate-600 hover:bg-slate-800 hover:text-white active:scale-[0.98] sm:w-auto"
           >
-            Sign in
+            Sign in to Console
           </Link>
         </div>
 
-        <p className="mt-4 text-xs text-slate-400">7-day unrestricted trial. No credit card required.</p>
+        {/* Value Micro-Pill */}
+        <div className="mt-6 flex items-center justify-center gap-2 text-xs text-slate-400">
+          <ShieldCheck className="size-3.5 text-sky-400" />
+          <span>7-day unrestricted trial • No credit card required • Instant tenant isolation</span>
+        </div>
 
         {/* Studio Animated Motion Showcase (Hero Video Style Frame) */}
         <section
@@ -90,7 +96,7 @@ export default async function LandingPage() {
             </p>
           </div>
 
-          <StudioMotionDemo autoplay={true} loop={true} />
+          <LandingDemo />
         </section>
 
         {/* Feature Proof Pillars */}

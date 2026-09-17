@@ -17,8 +17,8 @@ export default async function PricingPage() {
 
   return (
     <div className="relative min-h-screen bg-[#0B0F19] text-[#F8FAFC]">
-      {/* Lightfall Canvas Background */}
-      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+      {/* Lightfall Ambient Banner - Scoped to top for smooth performance */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[650px] overflow-hidden z-0">
         <LightfallCanvas
           colors={['#38BDF8', '#0EA5E9', '#0284C7']}
           backgroundColor="#0B0F19"
@@ -29,7 +29,7 @@ export default async function PricingPage() {
           mouseInteraction={true}
           className="h-full w-full opacity-60"
         />
-        <div className="absolute inset-0 bg-[#0B0F19]/40 backdrop-blur-xs" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0B0F19]/20 via-transparent to-[#0B0F19]" />
       </div>
 
       <PillNav isAuthenticated={navAuth.isAuthenticated} consoleHref={navAuth.consoleHref} />

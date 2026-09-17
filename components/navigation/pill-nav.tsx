@@ -28,7 +28,7 @@ export function PillNav({
   return (
     <header className="fixed top-[max(0.75rem,env(safe-area-inset-top))] sm:top-5 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center pointer-events-auto max-w-[calc(100vw-24px)]">
       {/* Floating Dark Cyber-Glass Capsule */}
-      <div className="relative flex items-center justify-between gap-1.5 sm:gap-2 rounded-full border border-white/15 bg-[#090D14]/85 px-2 py-1.5 shadow-[0_16px_40px_-10px_rgba(0,0,0,0.8),0_0_0_1px_rgba(255,255,255,0.06),inset_0_1px_0_0_rgba(255,255,255,0.18)] backdrop-blur-2xl transition-all duration-300 hover:border-white/25">
+      <div className="relative flex items-center justify-between gap-1.5 sm:gap-2 rounded-full border border-white/15 bg-[#080D17]/95 px-2 py-1.5 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.95),0_0_0_1px_rgba(255,255,255,0.08),inset_0_1px_0_0_rgba(255,255,255,0.2)] backdrop-blur-2xl transition-all duration-300 hover:border-white/25">
         {/* Subtle top cyan ambient glow highlight */}
         <div
           aria-hidden="true"
@@ -39,7 +39,6 @@ export function PillNav({
         <Link
           href="/"
           aria-label="HLX AI Home"
-          prefetch={false}
           className="group flex items-center gap-2 rounded-full py-0.5 pl-0.5 pr-2.5 transition-all duration-200 active:scale-95"
         >
           <div className="flex h-7.5 w-7.5 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-white text-black font-black text-[11px] sm:text-[12px] tracking-tight shadow-[0_0_12px_rgba(255,255,255,0.4)] transition-transform group-hover:scale-105">
@@ -59,7 +58,6 @@ export function PillNav({
               <Link
                 key={item.href}
                 href={item.href}
-                prefetch={false}
                 className={`relative flex items-center gap-1.5 whitespace-nowrap rounded-full border px-3.5 py-1.5 text-[13px] tracking-wide transition-all duration-200 ${
                   isActive
                     ? 'border-white/20 bg-white/12 font-semibold text-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.2)]'
@@ -85,7 +83,6 @@ export function PillNav({
           {isAuthenticated ? (
             <Link
               href={consoleHref}
-              prefetch={false}
               className="group flex items-center gap-2 whitespace-nowrap rounded-full bg-gradient-to-r from-[#38C6E0] to-[#0284C7] px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#050B14] shadow-[0_0_18px_rgba(56,198,224,0.35)] transition-all duration-200 hover:shadow-[0_0_26px_rgba(56,198,224,0.55)] active:scale-95"
             >
               <span className="relative flex h-2 w-2">
@@ -99,14 +96,12 @@ export function PillNav({
             <>
               <Link
                 href="/login"
-                prefetch={false}
                 className="whitespace-nowrap rounded-full px-3 py-1.5 text-[13px] font-medium text-slate-300 transition-all duration-200 hover:bg-white/[0.08] hover:text-white"
               >
                 Console
               </Link>
               <Link
                 href="/signup"
-                prefetch={false}
                 className="group flex items-center gap-1.5 whitespace-nowrap rounded-full bg-gradient-to-r from-[#38C6E0] to-[#0284C7] px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#050B14] shadow-[0_0_18px_rgba(56,198,224,0.35)] transition-all duration-200 hover:shadow-[0_0_26px_rgba(56,198,224,0.55)] active:scale-95"
               >
                 <span>Get Started</span>
@@ -120,7 +115,6 @@ export function PillNav({
         <div className="flex lg:hidden items-center gap-1.5 sm:gap-2">
           <Link
             href={isAuthenticated ? consoleHref : '/signup'}
-            prefetch={false}
             className="flex items-center gap-1 rounded-full bg-gradient-to-r from-[#38C6E0] to-[#0284C7] px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-[#050B14] shadow-[0_0_14px_rgba(56,198,224,0.35)]"
           >
             <span>{isAuthenticated ? 'Console' : 'Get Started'}</span>
@@ -141,7 +135,7 @@ export function PillNav({
 
       {/* Mobile Drawer Menu */}
       {mobileOpen && (
-        <div className="mt-2 w-[calc(100vw-32px)] max-w-sm rounded-2xl border border-white/15 bg-[#090D14]/95 p-3 shadow-2xl backdrop-blur-2xl lg:hidden">
+        <div className="mt-2 w-[calc(100vw-32px)] max-w-sm rounded-2xl border border-white/15 bg-[#080D17]/98 p-3 shadow-2xl backdrop-blur-2xl lg:hidden">
           <div className="flex flex-col gap-1">
             {NAV_ITEMS.map((item) => {
               const isActive = pathname.startsWith(item.href)
@@ -174,7 +168,6 @@ export function PillNav({
             {isAuthenticated ? (
               <Link
                 href={consoleHref}
-                prefetch={false}
                 onClick={() => setMobileOpen(false)}
                 className="flex h-10 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#38C6E0] to-[#0284C7] text-xs font-bold uppercase tracking-wider text-[#050B14] shadow-[0_0_16px_rgba(56,198,224,0.35)]"
               >
@@ -185,7 +178,6 @@ export function PillNav({
               <>
                 <Link
                   href="/signup"
-                  prefetch={false}
                   onClick={() => setMobileOpen(false)}
                   className="flex h-10 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#38C6E0] to-[#0284C7] text-xs font-bold uppercase tracking-wider text-[#050B14] shadow-[0_0_16px_rgba(56,198,224,0.35)]"
                 >
@@ -194,7 +186,6 @@ export function PillNav({
                 </Link>
                 <Link
                   href="/login"
-                  prefetch={false}
                   onClick={() => setMobileOpen(false)}
                   className="flex h-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-xs font-semibold uppercase tracking-wider text-slate-200 hover:bg-white/10"
                 >

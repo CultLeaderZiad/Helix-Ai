@@ -113,16 +113,20 @@ export default async function ClientDashboardPage() {
   // each against that system's real table. A failed count degrades to null and
   // the card simply reports no measured activity.
   const activityEntries = await Promise.all(
-    systems.map(async s => {
+    systems.filter(s => s.visible_to_client && s.active).map(async s => {
       const source = ACTIVITY_SOURCE[s.system_type as SystemType]
       if (!source) return null
-      const { data } = await supabase
+      const { data, count, error } = await supabase
         .from(source.table)
-        .select(source.ts)
+        .select(source.ts, { count: 'exact' })
+        .eq('client_id', clientId)
         .gte(source.ts, weekAgoIso)
+        .order(source.ts, { ascending: false })
+        .limit(1)
+      if (error) throw new Error('System activity could not be loaded.')
       const rows = (data ?? []) as unknown as Array<Record<string, string>>
-      const last = rows.length > 0 ? rows.reduce((a, r) => (r[source.ts] > a ? r[source.ts] : a), rows[0][source.ts]) : null
-      return { systemId: s.id, count: rows.length, last, label: source.label }
+      const last: string | null = rows.length ? rows[0][source.ts] : null
+      return { systemId: s.id, count: count ?? 0, last, label: source.label }
     }),
   )
   const activityBySystem = new Map(

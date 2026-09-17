@@ -3,6 +3,7 @@
 import { useActionState } from 'react'
 import { Check, Loader2, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import { reviewFact, type FactReviewState } from '@/lib/crm/fact-review'
 
@@ -19,12 +20,6 @@ export interface ReviewableFact {
   observed_at: string
   contact_id: string
   contact: { full_name: string | null; company_name: string | null } | null
-}
-
-const BAND_STYLES: Record<ReviewableFact['evidence_band'], string> = {
-  verified: 'border-status-success/40 bg-status-success/10 text-status-success',
-  probable: 'border-status-warning/40 bg-status-warning/10 text-status-warning',
-  possible: 'border-border bg-raised text-muted-foreground',
 }
 
 const initialState: FactReviewState = { status: 'idle' }
@@ -45,28 +40,23 @@ function FactRow({ fact }: { fact: ReviewableFact }) {
   const where = fact.contact?.company_name ? ` · ${fact.contact.company_name}` : ''
 
   return (
-    <li className="border bg-panel p-4">
+    <li className="rounded-xl border border-white/10 bg-[#0D121F] p-4.5 shadow-sm hover:border-white/20 transition-all">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <span
-              className={cn(
-                'rounded-sm border px-1.5 py-0.5 text-xs font-medium uppercase tracking-wide',
-                BAND_STYLES[fact.evidence_band],
-              )}
-            >
+            <Badge variant={fact.evidence_band} dot={fact.evidence_band === 'verified'}>
               {fact.evidence_band}
-            </span>
-            <p className="text-small font-medium text-foreground">
+            </Badge>
+            <p className="text-xs font-semibold text-white">
               {who}
-              <span className="text-muted-foreground">{where}</span>
+              <span className="text-slate-400 font-normal">{where}</span>
             </p>
           </div>
-          <p className="mt-2 text-body text-foreground">
-            <span className="font-medium">{fact.field_name.replace(/_/g, ' ')}:</span>{' '}
+          <p className="mt-2 text-sm text-slate-200">
+            <span className="font-semibold text-white capitalize">{fact.field_name.replace(/_/g, ' ')}:</span>{' '}
             {fact.field_value}
           </p>
-          <p className="mt-1 text-small text-muted-foreground">
+          <p className="mt-1 text-xs text-slate-400 font-mono">
             Observed by {fact.source_tool}
             {fact.score != null ? ` · ledger score ${fact.score}` : ''} ·{' '}
             {new Date(fact.observed_at).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}

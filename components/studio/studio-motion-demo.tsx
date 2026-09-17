@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useInView, useReducedMotion } from 'framer-motion'
 import {
   Sparkles,
   Play,
@@ -69,13 +69,23 @@ export function StudioMotionDemo({
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   const typingTimerRef = useRef<NodeJS.Timeout | null>(null)
 
+  const inView = useInView(containerRef, { amount: 0.1 })
+  const reducedMotion = useReducedMotion()
+  const [pageVisible, setPageVisible] = useState(false)
+  const canPlay = isPlaying && inView && pageVisible && (!reducedMotion || hasInteracted)
+
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768)
+    const mobile = window.matchMedia('(max-width: 767px)')
+    const updateSize = () => setIsMobile(mobile.matches)
+    const updateVisibility = () => setPageVisible(!document.hidden)
+    updateSize()
+    updateVisibility()
+    mobile.addEventListener('change', updateSize)
+    document.addEventListener('visibilitychange', updateVisibility)
+    return () => {
+      mobile.removeEventListener('change', updateSize)
+      document.removeEventListener('visibilitychange', updateVisibility)
     }
-    handleResize()
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
   }, [])
 
   // Reset entire timeline
@@ -107,8 +117,9 @@ export function StudioMotionDemo({
 
   // Master choreographed timeline effect
   useEffect(() => {
-    if (!isPlaying) {
+    if (!canPlay) {
       if (timerRef.current) clearTimeout(timerRef.current)
+      if (typingTimerRef.current) clearTimeout(typingTimerRef.current)
       return
     }
 
@@ -117,7 +128,7 @@ export function StudioMotionDemo({
       setCursorPos(isMobile ? { x: 140, y: 70 } : { x: 180, y: 155 })
       timerRef.current = setTimeout(() => {
         setIsClicking(true)
-        setTimeout(() => {
+        timerRef.current = setTimeout(() => {
           setIsClicking(false)
           setCurrentStep(1)
         }, 220)
@@ -152,7 +163,7 @@ export function StudioMotionDemo({
       setCursorPos(isMobile ? { x: 160, y: 170 } : { x: 190, y: 235 })
       timerRef.current = setTimeout(() => {
         setIsClicking(true)
-        setTimeout(() => {
+        timerRef.current = setTimeout(() => {
           setIsClicking(false)
           setCurrentStep(3)
         }, 250)
@@ -183,7 +194,7 @@ export function StudioMotionDemo({
       if (timerRef.current) clearTimeout(timerRef.current)
       if (typingTimerRef.current) clearTimeout(typingTimerRef.current)
     }
-  }, [currentStep, isPlaying, loop, isMobile])
+  }, [currentStep, canPlay, loop, isMobile])
 
   return (
     <div

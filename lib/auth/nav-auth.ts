@@ -1,5 +1,6 @@
 import 'server-only'
 
+import { cache } from 'react'
 import { createSupabaseServerClient } from '@/lib/supabase'
 import { parseTenantClaims } from '@/lib/auth/claims'
 
@@ -8,7 +9,8 @@ import { parseTenantClaims } from '@/lib/auth/claims'
  * Returns { isAuthenticated, consoleHref } without throwing or redirecting.
  * Does NOT validate JWT claims alignment — use getVerifiedSession for protected routes.
  */
-export async function getNavAuth(): Promise<{ isAuthenticated: boolean; consoleHref: string }> {
+// Request-scoped only: never share authorization or personalized output across users.
+export const getNavAuth = cache(async (): Promise<{ isAuthenticated: boolean; consoleHref: string }> => {
   try {
     const supabase = await createSupabaseServerClient()
     const { data, error } = await supabase.auth.getUser()
@@ -21,4 +23,4 @@ export async function getNavAuth(): Promise<{ isAuthenticated: boolean; consoleH
   } catch {
     return { isAuthenticated: false, consoleHref: '/dashboard' }
   }
-}
+})

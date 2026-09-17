@@ -29,12 +29,15 @@ import {
 } from 'lucide-react'
 import { SYSTEM_TEMPLATES, type SystemTemplate } from '@/lib/studio/templates'
 import { requestSystemBuild, type RequestBuildResult } from '@/lib/studio/request-build'
-import { StudioMotionDemo } from '@/components/studio/studio-motion-demo'
-import { StudioPipelineVisualizer } from '@/components/studio/studio-pipeline-visualizer'
-import { StudioInteractiveSimulator } from '@/components/studio/studio-interactive-simulator'
-import { StudioDirectivesGuardrails } from '@/components/studio/studio-directives-guardrails'
-import { StudioRoiCalculator } from '@/components/studio/studio-roi-calculator'
-import { StudioAgentIde } from '@/components/studio/studio-agent-ide'
+import dynamic from 'next/dynamic'
+
+const panelLoading = () => <p role="status" className="min-h-64 p-8 text-slate-400">Loading studio panel…</p>
+const StudioMotionDemo = dynamic(() => import('./studio-motion-demo').then(mod => mod.StudioMotionDemo), { loading: panelLoading })
+const StudioPipelineVisualizer = dynamic(() => import('./studio-pipeline-visualizer').then(mod => mod.StudioPipelineVisualizer), { loading: panelLoading })
+const StudioInteractiveSimulator = dynamic(() => import('./studio-interactive-simulator').then(mod => mod.StudioInteractiveSimulator), { loading: panelLoading })
+const StudioDirectivesGuardrails = dynamic(() => import('./studio-directives-guardrails').then(mod => mod.StudioDirectivesGuardrails), { loading: panelLoading })
+const StudioRoiCalculator = dynamic(() => import('./studio-roi-calculator').then(mod => mod.StudioRoiCalculator), { loading: panelLoading })
+const StudioAgentIde = dynamic(() => import('./studio-agent-ide').then(mod => mod.StudioAgentIde), { loading: panelLoading })
 import { cn } from '@/lib/utils'
 
 const COLOR_PRESETS = [

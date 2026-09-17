@@ -2,7 +2,6 @@
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { createSupabaseBrowserClient } from '@/lib/supabase-browser'
 
 export function AuthHashHandler() {
   const router = useRouter()
@@ -25,18 +24,20 @@ export function AuthHashHandler() {
     // 2. If email confirmation link redirected with hash fragment #access_token=
     const hash = window.location.hash
     if (hash && (hash.includes('access_token=') || hash.includes('type='))) {
-      try {
-        const supabase = createSupabaseBrowserClient()
-        supabase.auth.getSession().then(({ data, error }) => {
+      void (async () => {
+        try {
+          const { createSupabaseBrowserClient } = await import('@/lib/supabase-browser')
+          const supabase = createSupabaseBrowserClient()
+          const { data, error } = await supabase.auth.getSession()
           if (!error && data.session) {
             window.history.replaceState(null, '', window.location.pathname)
             router.push('/dashboard')
             router.refresh()
           }
-        })
-      } catch (err) {
-        console.error('Error handling auth hash:', err)
-      }
+        } catch (err) {
+          console.error('Error handling auth hash:', err)
+        }
+      })()
     }
   }, [router])
 

@@ -2,7 +2,6 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Inter, Space_Grotesk } from 'next/font/google'
 import { AuthHashHandler } from '@/components/auth/auth-hash-handler'
-import { RealtimeProvider } from '@/components/realtime/realtime-provider'
 import './globals.css'
 
 const inter = Inter({
@@ -71,7 +70,7 @@ export const viewport: Viewport = {
   colorScheme: 'dark light',
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#f4f6f9' },
-    { media: '(prefers-color-scheme: dark)', color: '#0b0e13' },
+    { media: '(prefers-color-scheme: dark)', color: '#080C14' },
   ],
 }
 
@@ -83,7 +82,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${spaceGrotesk.variable} bg-background`}
+      className={`${inter.variable} ${spaceGrotesk.variable} dark bg-background`}
       suppressHydrationWarning
     >
       <body className="antialiased" suppressHydrationWarning>
@@ -112,7 +111,7 @@ export default function RootLayout({
           }}
         />
         <AuthHashHandler />
-        <RealtimeProvider>{children}</RealtimeProvider>
+        {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
