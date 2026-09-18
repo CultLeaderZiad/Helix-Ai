@@ -17,9 +17,10 @@ export function NotificationBell({ isAdmin, clientId }: { isAdmin: boolean; clie
 
   useEffect(() => {
     if (!supabase) return
+    const client = supabase
 
     async function checkUnread() {
-      let query = supabase.from('support_tickets').select('id', { count: 'exact', head: true })
+      let query = client.from('support_tickets').select('id', { count: 'exact', head: true })
       
       if (isAdmin) {
         query = query.eq('unread_by_admin', true)
@@ -39,7 +40,7 @@ export function NotificationBell({ isAdmin, clientId }: { isAdmin: boolean; clie
 
     const filter = isAdmin ? `unread_by_admin=eq.true` : `client_id=eq.${clientId}`
     
-    const channel = supabase
+    const channel = client
       .channel('public:support_tickets')
       .on(
         'postgres_changes',
@@ -63,7 +64,7 @@ export function NotificationBell({ isAdmin, clientId }: { isAdmin: boolean; clie
       .subscribe()
 
     return () => {
-      supabase.removeChannel(channel)
+      client.removeChannel(channel)
     }
   }, [supabase, isAdmin, clientId])
 
