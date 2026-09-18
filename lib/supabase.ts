@@ -2,12 +2,13 @@ import 'server-only'
 
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+import { getSupabaseAnonKey, getSupabaseUrl, SupabaseConfigError } from '@/lib/supabase-env'
 
 /** User-scoped Supabase client. All database requests remain subject to RLS. */
 export async function createSupabaseServerClient() {
-  const url = process.env.SUPABASE_URL
-  const key = process.env.SUPABASE_ANON_KEY
-  if (!url || !key) throw new Error('Supabase server configuration is missing.')
+  const url = getSupabaseUrl()
+  const key = getSupabaseAnonKey()
+  if (!url || !key) throw new SupabaseConfigError()
 
   const cookieStore = await cookies()
   return createServerClient(url, key, {

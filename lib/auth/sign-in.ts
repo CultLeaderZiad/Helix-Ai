@@ -2,6 +2,7 @@
 
 import { createSupabaseServerClient } from '@/lib/supabase'
 import { parseTenantClaims } from '@/lib/auth/claims'
+import { SupabaseConfigError } from '@/lib/supabase-env'
 import { redirect } from 'next/navigation'
 
 export type Portal = 'admin' | 'client'
@@ -22,6 +23,19 @@ export type SignInState =
     }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+
+function unavailable(values: { email: string; portal: Portal }, err: unknown): SignInState {
+  console.error('signIn failed:', err)
+  const configMissing = err instanceof SupabaseConfigError
+  return {
+    status: 'auth_error',
+    code: 'UNAVAILABLE',
+    message: configMissing
+      ? 'Authentication is not configured. Add SUPABASE_URL and SUPABASE_ANON_KEY to .env.local and restart the app.'
+      : 'Authentication is temporarily unavailable. Please try again later.',
+    values,
+  }
+}
 
 export async function signIn(_prev: SignInState, formData: FormData): Promise<SignInState> {
   const email = String(formData.get('email') ?? '').trim().toLowerCase()
@@ -48,21 +62,30 @@ export async function signIn(_prev: SignInState, formData: FormData): Promise<Si
       }
     }
 
-    let { data: verified, error: claimsError } = await supabase.auth.getClaims(data.session.access_token)
-    let claims = claimsError ? null : parseTenantClaims(verified?.claims.app_metadata)
+    let claims = null
+    try {
+      const { data: verified, error: claimsError } = await supabase.auth.getClaims(data.session.access_token)
+      claims = claimsError ? null : parseTenantClaims(verified?.claims.app_metadata)
+    } catch (claimsReadError) {
+      console.error('signIn getClaims failed:', claimsReadError)
+    }
     let current = parseTenantClaims(data.user.app_metadata)
 
     if (!claims || !current || claims.role !== current.role || claims.client_id !== current.client_id) {
       // User may have confirmed email before provisioning. Auto-provision workspace now.
-      const { ensureUserProvisioned } = await import('@/lib/auth/provisioning')
-      const provisioned = await ensureUserProvisioned(data.user.id)
-      if (provisioned) {
-        const { data: refreshed, error: refreshError } = await supabase.auth.refreshSession()
-        if (!refreshError && refreshed.session) {
-          const { data: newVerified } = await supabase.auth.getClaims(refreshed.session.access_token)
-          claims = parseTenantClaims(newVerified?.claims.app_metadata)
-          current = provisioned
+      try {
+        const { ensureUserProvisioned } = await import('@/lib/auth/provisioning')
+        const provisioned = await ensureUserProvisioned(data.user.id)
+        if (provisioned) {
+          const { data: refreshed, error: refreshError } = await supabase.auth.refreshSession()
+          if (!refreshError && refreshed.session) {
+            const { data: newVerified } = await supabase.auth.getClaims(refreshed.session.access_token)
+            claims = parseTenantClaims(newVerified?.claims.app_metadata)
+            current = provisioned
+          }
         }
+      } catch (provisionError) {
+        console.error('signIn provisioning failed:', provisionError)
       }
     }
 
@@ -78,13 +101,8 @@ export async function signIn(_prev: SignInState, formData: FormData): Promise<Si
 
     // Direct the user into their authorized workspace console
     portalPath = claims.role === 'agency_admin' ? '/admin' : '/dashboard'
-  } catch {
-    return {
-      status: 'auth_error',
-      code: 'UNAVAILABLE',
-      message: 'Authentication is temporarily unavailable. Please try again later.',
-      values,
-    }
+  } catch (err) {
+    return unavailable(values, err)
   }
 
   // redirect() throws its own control-flow signal; it must run outside the

@@ -1,6 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import { getVerifiedSession } from '@/lib/auth/session'
+import { getSupabaseAnonKey, getSupabaseUrl } from '@/lib/supabase-env'
 
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request })
@@ -15,8 +16,8 @@ export async function proxy(request: NextRequest) {
     return result
   }
 
-  const url = process.env.SUPABASE_URL
-  const key = process.env.SUPABASE_ANON_KEY
+  const url = getSupabaseUrl()
+  const key = getSupabaseAnonKey()
   if (!url || !key) {
     if (isLogin) return finish(response)
     return finish(NextResponse.json({ error: 'Authentication unavailable.' }, { status: 503 }))
@@ -65,7 +66,9 @@ export const config = {
   matcher: [
     '/login',
     '/login/:path*',
+    '/admin',
     '/admin/:path*',
+    '/dashboard',
     '/dashboard/:path*',
     '/client/:path*',
     '/api/((?!cron/).*)',

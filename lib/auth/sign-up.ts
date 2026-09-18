@@ -1,6 +1,9 @@
 'use server'
 
 import { createSupabaseServerClient } from '@/lib/supabase'
+import { parseTenantClaims } from '@/lib/auth/claims'
+import { SupabaseConfigError } from '@/lib/supabase-env'
+import { redirect } from 'next/navigation'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 
@@ -9,6 +12,17 @@ export interface SignUpState {
   errors?: Partial<Record<'full_name' | 'company_name' | 'email' | 'password' | 'confirm_password' | 'terms', string>>
   message?: string
   email?: string
+}
+
+function unavailable(err: unknown): SignUpState {
+  console.error('signUp failed:', err)
+  const configMissing = err instanceof SupabaseConfigError
+  return {
+    status: 'auth_error',
+    message: configMissing
+      ? 'Authentication is not configured. Add SUPABASE_URL and SUPABASE_ANON_KEY to .env.local and restart the app.'
+      : 'Authentication service is temporarily unavailable. Try again shortly.',
+  }
 }
 
 export async function signUpUser(_prev: SignUpState, formData: FormData): Promise<SignUpState> {
@@ -32,6 +46,7 @@ export async function signUpUser(_prev: SignUpState, formData: FormData): Promis
     return { status: 'field_error', errors }
   }
 
+  let destination: string | null = null
   try {
     const supabase = await createSupabaseServerClient()
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
@@ -61,22 +76,26 @@ export async function signUpUser(_prev: SignUpState, formData: FormData): Promis
     }
 
     if (data.user) {
-      // Pre-provision client workspace, role, and profile so user claims exist upon confirmation
-      const { ensureUserProvisioned } = await import('@/lib/auth/provisioning')
-      await ensureUserProvisioned(data.user.id)
+      try {
+        const { ensureUserProvisioned } = await import('@/lib/auth/provisioning')
+        await ensureUserProvisioned(data.user.id)
+      } catch (provisionError) {
+        console.error('signUp provisioning failed:', provisionError)
+      }
     }
 
-    if (data.session) {
-      // User created and auto-authenticated
+    if (!data.session) {
       return { status: 'success', email }
     }
 
-    // User created, confirmation email sent
-    return { status: 'success', email }
-  } catch {
-    return {
-      status: 'auth_error',
-      message: 'Authentication service is temporarily unavailable. Try again shortly.',
-    }
+    const { data: refreshed } = await supabase.auth.refreshSession()
+    const { data: userData } = await supabase.auth.getUser()
+    const claims = parseTenantClaims(userData?.user?.app_metadata ?? refreshed?.user?.app_metadata)
+    destination = claims?.role === 'agency_admin' ? '/admin' : '/dashboard'
+  } catch (err) {
+    return unavailable(err)
   }
+
+  if (!destination) return { status: 'success', email }
+  redirect(destination)
 }
