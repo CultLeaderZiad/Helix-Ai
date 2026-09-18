@@ -119,7 +119,7 @@ export async function evaluateProspectAndSaveDeal(
       contact_id: contact?.id ?? null,
       deal_id: deal?.id ?? null,
       type: 'enrichment',
-      body: `AI Engine recommendation generated: ${recommendation.systemName}. Match: ${recommendation.matchScore}%. ROI: ${recommendation.estimatedMonthlyRoi}`,
+      body: `Engine recommendation: ${recommendation.systemName}. Match: ${recommendation.matchScore}%.`,
     })
 
     return {

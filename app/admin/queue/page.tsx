@@ -73,16 +73,16 @@ export default async function AdminQueuePage() {
             <div className="inline-flex items-center gap-2 rounded-full border border-purple-500/30 bg-purple-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-purple-300">
               <ShieldAlert className="size-3.5" /> Agency Supervisor Queue
             </div>
-            <h1 className="mt-2 font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            <h1 className="mt-2 font-display text-3xl font-bold tracking-tight text-helix-ink sm:text-4xl">
               Cross-Client Attention Queue
             </h1>
-            <p className="mt-1 text-sm text-slate-400">
+            <p className="mt-1 text-sm text-helix-muted">
               Fleet-wide observation ledger and escalations requiring human supervisor approval.
             </p>
           </div>
         </div>
 
-        <div className="mt-8 rounded-2xl border border-slate-800 bg-[#0e1422] p-6 shadow-xl">
+        <div className="mt-8 rounded-2xl border border-helix-border bg-helix-surface p-6 shadow-xl">
           <FactReviewList facts={facts} />
         </div>
       </div>

@@ -188,19 +188,19 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
   return (
     <div className="space-y-8">
       {/* Top Banner & Quick Links */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-helix-border pb-6">
         <div>
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-xs font-semibold text-emerald-400">
               <DollarSign className="size-3.5" />
               LIVE PRICING ENGINE
             </span>
-            <span className="text-xs text-slate-500 font-mono">// Instant sync with /pricing</span>
+            <span className="text-xs text-helix-muted font-mono">// Instant sync with /pricing</span>
           </div>
-          <h1 className="mt-2 text-2xl font-bold tracking-tight text-white sm:text-3xl font-display">
+          <h1 className="mt-2 text-2xl font-bold tracking-tight text-helix-ink sm:text-3xl font-display">
             Pricing & Commercial Tier Control
           </h1>
-          <p className="mt-1 text-sm text-slate-400">
+          <p className="mt-1 text-sm text-helix-muted">
             Control retainers, setup fees, feature bullets, and bilingual currencies across GCC and MENA markets.
           </p>
         </div>
@@ -209,7 +209,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
           <Link
             href="/pricing"
             target="_blank"
-            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-800/80 px-3.5 py-2 text-xs font-semibold text-slate-200 hover:border-slate-600 hover:text-white transition-all shadow-sm"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-helix-border bg-slate-800/80 px-3.5 py-2 text-xs font-semibold text-helix-ink hover:border-slate-600 hover:text-helix-ink transition-all shadow-sm"
           >
             <span>Preview /pricing</span>
             <ExternalLink className="size-3.5" />
@@ -241,7 +241,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
       )}
 
       {/* Region Selector Switcher */}
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-800 bg-[#0B0F19] p-2">
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-helix-border bg-helix-canvas p-2">
         <div className="flex items-center gap-2">
           <button
             type="button"
@@ -251,8 +251,8 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
             }}
             className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-all ${
               selectedTier === 'gcc_enterprise'
-                ? 'bg-gradient-to-r from-sky-500 to-cyan-500 text-slate-950 shadow-[0_0_15px_rgba(56,189,248,0.35)]'
-                : 'text-slate-400 hover:bg-slate-800/60 hover:text-white'
+                ? 'bg-gradient-to-r from-sky-500 to-cyan-500 text-white shadow-[0_0_15px_rgba(56,189,248,0.35)]'
+                : 'text-helix-muted hover:bg-slate-800/60 hover:text-helix-ink'
             }`}
           >
             <Building2 className="size-4" />
@@ -267,8 +267,8 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
             }}
             className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-all ${
               selectedTier === 'mena_sme'
-                ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 shadow-[0_0_15px_rgba(245,158,11,0.35)]'
-                : 'text-slate-400 hover:bg-slate-800/60 hover:text-white'
+                ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-[0_0_15px_rgba(245,158,11,0.35)]'
+                : 'text-helix-muted hover:bg-slate-800/60 hover:text-helix-ink'
             }`}
           >
             <Globe2 className="size-4" />
@@ -293,7 +293,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
             })
             setShowAddPlanModal(true)
           }}
-          className="inline-flex items-center gap-1.5 rounded-xl bg-cyan-500 px-3.5 py-2 text-xs font-bold text-slate-950 hover:bg-cyan-400 transition-all shadow-md"
+          className="inline-flex items-center gap-1.5 rounded-xl bg-helix-ink px-3.5 py-2 text-xs font-bold text-white hover:bg-helix-ink/90 transition-all shadow-md"
         >
           <Plus className="size-3.5" />
           <span>Add New Plan</span>
@@ -301,53 +301,53 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
       </div>
 
       {/* Tier Header Config Box */}
-      <div className="rounded-2xl border border-slate-800 bg-[#0e1628]/70 p-5">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-300 mb-3 flex items-center gap-2">
-          <Tag className="size-4 text-cyan-400" />
+      <div className="rounded-2xl border border-helix-border bg-helix-canvas/70 p-5">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-helix-ink/80 mb-3 flex items-center gap-2">
+          <Tag className="size-4 text-helix-accent" />
           Regional Tier Description & Badge
         </h3>
         <form onSubmit={handleSaveHeader} className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="text-xs font-semibold text-slate-400">Badge Label (EN)</label>
+            <label className="text-xs font-semibold text-helix-muted">Badge Label (EN)</label>
             <input
               name="badge"
               defaultValue={currentTierConfig.badge}
-              className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900/90 px-3.5 py-2 text-xs font-medium text-white focus:border-cyan-500 focus:outline-none"
+              className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3.5 py-2 text-xs font-medium text-helix-ink focus:border-cyan-500 focus:outline-none"
             />
           </div>
           <div>
-            <label className="text-xs font-semibold text-slate-400">Badge Label (AR)</label>
+            <label className="text-xs font-semibold text-helix-muted">Badge Label (AR)</label>
             <input
               name="badgeAr"
               dir="rtl"
               defaultValue={currentTierConfig.badgeAr}
-              className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900/90 px-3.5 py-2 text-xs font-medium text-white focus:border-cyan-500 focus:outline-none"
+              className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3.5 py-2 text-xs font-medium text-helix-ink focus:border-cyan-500 focus:outline-none"
             />
           </div>
           <div>
-            <label className="text-xs font-semibold text-slate-400">Description (EN)</label>
+            <label className="text-xs font-semibold text-helix-muted">Description (EN)</label>
             <textarea
               name="description"
               rows={2}
               defaultValue={currentTierConfig.description}
-              className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900/90 px-3.5 py-2 text-xs text-white focus:border-cyan-500 focus:outline-none"
+              className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3.5 py-2 text-xs text-helix-ink focus:border-cyan-500 focus:outline-none"
             />
           </div>
           <div>
-            <label className="text-xs font-semibold text-slate-400">Description (AR)</label>
+            <label className="text-xs font-semibold text-helix-muted">Description (AR)</label>
             <textarea
               name="descriptionAr"
               rows={2}
               dir="rtl"
               defaultValue={currentTierConfig.descriptionAr}
-              className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900/90 px-3.5 py-2 text-xs text-white focus:border-cyan-500 focus:outline-none"
+              className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3.5 py-2 text-xs text-helix-ink focus:border-cyan-500 focus:outline-none"
             />
           </div>
           <div className="md:col-span-2 flex justify-end">
             <button
               type="submit"
               disabled={isPending}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-800 px-4 py-1.5 text-xs font-semibold text-slate-200 hover:bg-slate-700 hover:text-white transition-all"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-helix-border bg-slate-800 px-4 py-1.5 text-xs font-semibold text-helix-ink hover:bg-slate-700 hover:text-helix-ink transition-all"
             >
               <Save className="size-3.5" />
               <span>Update Tier Header</span>
@@ -360,7 +360,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Left Column: List of Plans in this Tier */}
         <div className="space-y-2">
-          <div className="text-xs font-bold uppercase tracking-wider text-slate-400 px-1">
+          <div className="text-xs font-bold uppercase tracking-wider text-helix-muted px-1">
             Plans ({currentTierConfig.plans.length})
           </div>
           {currentTierConfig.plans.map((p) => {
@@ -372,20 +372,20 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                 onClick={() => setActivePlanId(p.id)}
                 className={`w-full text-left rounded-xl p-3 border transition-all ${
                   isSelected
-                    ? 'border-cyan-500/60 bg-cyan-950/30 text-white shadow-sm'
-                    : 'border-slate-800 bg-[#0c121e]/80 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+                    ? 'border-cyan-500/60 bg-cyan-950/30 text-helix-ink shadow-sm'
+                    : 'border-helix-border bg-helix-surface/80 text-helix-muted hover:border-helix-border hover:text-helix-ink'
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-sm text-white">{p.name}</span>
+                  <span className="font-bold text-sm text-helix-ink">{p.name}</span>
                   {p.featured && (
-                    <span className="rounded-full bg-cyan-500/20 px-2 py-0.5 text-[10px] font-bold text-cyan-300">
+                    <span className="rounded-full bg-helix-accent-soft px-2 py-0.5 text-[10px] font-bold text-helix-accent">
                       Popular
                     </span>
                   )}
                 </div>
-                <div className="text-[11px] text-slate-400 mt-1 truncate">{p.tagline}</div>
-                <div className="text-xs font-mono font-semibold text-cyan-400 mt-2">
+                <div className="text-[11px] text-helix-muted mt-1 truncate">{p.tagline}</div>
+                <div className="text-xs font-mono font-semibold text-helix-accent mt-2">
                   {selectedTier === 'gcc_enterprise'
                     ? `${p.prices.AED?.toLocaleString()} AED / mo`
                     : `${p.prices.EGP?.toLocaleString()} EGP / mo`}
@@ -397,11 +397,11 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
 
         {/* Right Column: Active Plan Editor */}
         {currentPlan ? (
-          <div className="lg:col-span-3 rounded-2xl border border-slate-800 bg-[#0e1628]/80 p-6 space-y-6">
-            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-4">
+          <div className="lg:col-span-3 rounded-2xl border border-helix-border bg-helix-canvas/80 p-6 space-y-6">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-helix-border pb-4">
               <div>
-                <span className="text-xs font-mono text-cyan-400">ID: {currentPlan.id}</span>
-                <h2 className="text-xl font-bold text-white mt-0.5">{currentPlan.name}</h2>
+                <span className="text-xs font-mono text-helix-accent">ID: {currentPlan.id}</span>
+                <h2 className="text-xl font-bold text-helix-ink mt-0.5">{currentPlan.name}</h2>
               </div>
               <div className="flex items-center gap-2">
                 <button
@@ -417,7 +417,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                   type="button"
                   onClick={() => handleSavePlan(currentPlan)}
                   disabled={isPending}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-cyan-500 to-sky-500 px-4 py-1.5 text-xs font-bold text-slate-950 hover:brightness-110 transition-all shadow-md"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-cyan-500 to-sky-500 px-4 py-1.5 text-xs font-bold text-white hover:brightness-110 transition-all shadow-md"
                 >
                   <Save className="size-3.5" />
                   <span>Save Plan Changes</span>
@@ -428,7 +428,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
             {/* Plan Details Form */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-semibold text-slate-400">Plan Name (English)</label>
+                <label className="text-xs font-semibold text-helix-muted">Plan Name (English)</label>
                 <input
                   value={currentPlan.name}
                   onChange={(e) => {
@@ -443,12 +443,12 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                       },
                     }))
                   }}
-                  className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900/90 px-3.5 py-2 text-xs font-semibold text-white focus:border-cyan-500 focus:outline-none"
+                  className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3.5 py-2 text-xs font-semibold text-helix-ink focus:border-cyan-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-slate-400">Plan Name (Arabic)</label>
+                <label className="text-xs font-semibold text-helix-muted">Plan Name (Arabic)</label>
                 <input
                   dir="rtl"
                   value={currentPlan.nameAr}
@@ -464,12 +464,12 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                       },
                     }))
                   }}
-                  className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900/90 px-3.5 py-2 text-xs font-semibold text-white focus:border-cyan-500 focus:outline-none"
+                  className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3.5 py-2 text-xs font-semibold text-helix-ink focus:border-cyan-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-slate-400">Tagline (English)</label>
+                <label className="text-xs font-semibold text-helix-muted">Tagline (English)</label>
                 <textarea
                   rows={2}
                   value={currentPlan.tagline}
@@ -485,12 +485,12 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                       },
                     }))
                   }}
-                  className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900/90 px-3.5 py-2 text-xs text-white focus:border-cyan-500 focus:outline-none"
+                  className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3.5 py-2 text-xs text-helix-ink focus:border-cyan-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-slate-400">Tagline (Arabic)</label>
+                <label className="text-xs font-semibold text-helix-muted">Tagline (Arabic)</label>
                 <textarea
                   rows={2}
                   dir="rtl"
@@ -507,12 +507,12 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                       },
                     }))
                   }}
-                  className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900/90 px-3.5 py-2 text-xs text-white focus:border-cyan-500 focus:outline-none"
+                  className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3.5 py-2 text-xs text-helix-ink focus:border-cyan-500 focus:outline-none"
                 />
               </div>
 
               {/* Featured Badge Toggle */}
-              <div className="md:col-span-2 flex items-center gap-3 border-y border-slate-800 py-3">
+              <div className="md:col-span-2 flex items-center gap-3 border-y border-helix-border py-3">
                 <input
                   type="checkbox"
                   id="featuredToggle"
@@ -529,21 +529,21 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                       },
                     }))
                   }}
-                  className="h-4 w-4 rounded border-slate-700 bg-slate-900 text-cyan-500 focus:ring-cyan-500"
+                  className="h-4 w-4 rounded border-helix-border bg-slate-900 text-cyan-500 focus:ring-cyan-500"
                 />
-                <label htmlFor="featuredToggle" className="text-xs font-bold text-slate-200 cursor-pointer">
+                <label htmlFor="featuredToggle" className="text-xs font-bold text-helix-ink cursor-pointer">
                   Mark as &quot;Featured / Most Popular&quot; tier (highlights card with glowing border on /pricing)
                 </label>
               </div>
 
               {/* Pricing in Currencies */}
               <div className="md:col-span-2 space-y-3">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-helix-ink/80">
                   Monthly Retainer Prices
                 </h4>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-400">USD ($)</label>
+                    <label className="text-[11px] font-semibold text-helix-muted">USD ($)</label>
                     <input
                       type="number"
                       value={currentPlan.prices.USD ?? 0}
@@ -559,13 +559,13 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                           },
                         }))
                       }}
-                      className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900/90 px-3 py-1.5 text-xs text-white font-mono"
+                      className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3 py-1.5 text-xs text-helix-ink font-mono"
                     />
                   </div>
                   {selectedTier === 'gcc_enterprise' ? (
                     <>
                       <div>
-                        <label className="text-[11px] font-semibold text-slate-400">AED (د.إ)</label>
+                        <label className="text-[11px] font-semibold text-helix-muted">AED (د.إ)</label>
                         <input
                           type="number"
                           value={currentPlan.prices.AED ?? 0}
@@ -581,11 +581,11 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                               },
                             }))
                           }}
-                          className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900/90 px-3 py-1.5 text-xs text-white font-mono"
+                          className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3 py-1.5 text-xs text-helix-ink font-mono"
                         />
                       </div>
                       <div>
-                        <label className="text-[11px] font-semibold text-slate-400">SAR (ر.س)</label>
+                        <label className="text-[11px] font-semibold text-helix-muted">SAR (ر.س)</label>
                         <input
                           type="number"
                           value={currentPlan.prices.SAR ?? 0}
@@ -601,14 +601,14 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                               },
                             }))
                           }}
-                          className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900/90 px-3 py-1.5 text-xs text-white font-mono"
+                          className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3 py-1.5 text-xs text-helix-ink font-mono"
                         />
                       </div>
                     </>
                   ) : (
                     <>
                       <div>
-                        <label className="text-[11px] font-semibold text-slate-400">EGP (ج.م)</label>
+                        <label className="text-[11px] font-semibold text-helix-muted">EGP (ج.م)</label>
                         <input
                           type="number"
                           value={currentPlan.prices.EGP ?? 0}
@@ -624,11 +624,11 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                               },
                             }))
                           }}
-                          className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900/90 px-3 py-1.5 text-xs text-white font-mono"
+                          className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3 py-1.5 text-xs text-helix-ink font-mono"
                         />
                       </div>
                       <div>
-                        <label className="text-[11px] font-semibold text-slate-400">JOD (د.أ)</label>
+                        <label className="text-[11px] font-semibold text-helix-muted">JOD (د.أ)</label>
                         <input
                           type="number"
                           value={currentPlan.prices.JOD ?? 0}
@@ -644,7 +644,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                               },
                             }))
                           }}
-                          className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900/90 px-3 py-1.5 text-xs text-white font-mono"
+                          className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3 py-1.5 text-xs text-helix-ink font-mono"
                         />
                       </div>
                     </>
@@ -654,12 +654,12 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
 
               {/* Setup Fees */}
               <div className="md:col-span-2 space-y-3">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-helix-ink/80">
                   One-Time Setup & Calibration Fees
                 </h4>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-400">USD ($)</label>
+                    <label className="text-[11px] font-semibold text-helix-muted">USD ($)</label>
                     <input
                       type="number"
                       value={currentPlan.setupFee.USD ?? 0}
@@ -675,13 +675,13 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                           },
                         }))
                       }}
-                      className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900/90 px-3 py-1.5 text-xs text-white font-mono"
+                      className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3 py-1.5 text-xs text-helix-ink font-mono"
                     />
                   </div>
                   {selectedTier === 'gcc_enterprise' ? (
                     <>
                       <div>
-                        <label className="text-[11px] font-semibold text-slate-400">AED (د.إ)</label>
+                        <label className="text-[11px] font-semibold text-helix-muted">AED (د.إ)</label>
                         <input
                           type="number"
                           value={currentPlan.setupFee.AED ?? 0}
@@ -697,11 +697,11 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                               },
                             }))
                           }}
-                          className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900/90 px-3 py-1.5 text-xs text-white font-mono"
+                          className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3 py-1.5 text-xs text-helix-ink font-mono"
                         />
                       </div>
                       <div>
-                        <label className="text-[11px] font-semibold text-slate-400">SAR (ر.س)</label>
+                        <label className="text-[11px] font-semibold text-helix-muted">SAR (ر.س)</label>
                         <input
                           type="number"
                           value={currentPlan.setupFee.SAR ?? 0}
@@ -717,14 +717,14 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                               },
                             }))
                           }}
-                          className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900/90 px-3 py-1.5 text-xs text-white font-mono"
+                          className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3 py-1.5 text-xs text-helix-ink font-mono"
                         />
                       </div>
                     </>
                   ) : (
                     <>
                       <div>
-                        <label className="text-[11px] font-semibold text-slate-400">EGP (ج.م)</label>
+                        <label className="text-[11px] font-semibold text-helix-muted">EGP (ج.م)</label>
                         <input
                           type="number"
                           value={currentPlan.setupFee.EGP ?? 0}
@@ -740,11 +740,11 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                               },
                             }))
                           }}
-                          className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900/90 px-3 py-1.5 text-xs text-white font-mono"
+                          className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3 py-1.5 text-xs text-helix-ink font-mono"
                         />
                       </div>
                       <div>
-                        <label className="text-[11px] font-semibold text-slate-400">JOD (د.أ)</label>
+                        <label className="text-[11px] font-semibold text-helix-muted">JOD (د.أ)</label>
                         <input
                           type="number"
                           value={currentPlan.setupFee.JOD ?? 0}
@@ -760,7 +760,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                               },
                             }))
                           }}
-                          className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900/90 px-3 py-1.5 text-xs text-white font-mono"
+                          className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3 py-1.5 text-xs text-helix-ink font-mono"
                         />
                       </div>
                     </>
@@ -771,7 +771,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
               {/* Feature Bullets Editor */}
               <div className="md:col-span-2 space-y-3">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-helix-ink/80">
                     Feature Inclusions (Bilingual EN / AR)
                   </h4>
                   <button
@@ -793,7 +793,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                         },
                       }))
                     }}
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-cyan-400 hover:text-cyan-300"
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-helix-accent hover:text-helix-accent"
                   >
                     <Plus className="size-3.5" />
                     <span>Add Bullet Point</span>
@@ -823,7 +823,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                             },
                           }))
                         }}
-                        className="flex-1 rounded-xl border border-slate-700 bg-slate-900/80 px-3 py-1.5 text-xs text-white"
+                        className="flex-1 rounded-xl border border-helix-border bg-slate-900/80 px-3 py-1.5 text-xs text-helix-ink"
                       />
                       <input
                         dir="rtl"
@@ -846,7 +846,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                             },
                           }))
                         }}
-                        className="flex-1 rounded-xl border border-slate-700 bg-slate-900/80 px-3 py-1.5 text-xs text-white"
+                        className="flex-1 rounded-xl border border-helix-border bg-slate-900/80 px-3 py-1.5 text-xs text-helix-ink"
                       />
                       <button
                         type="button"
@@ -867,7 +867,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                             },
                           }))
                         }}
-                        className="p-1.5 text-slate-500 hover:text-rose-400 transition-colors"
+                        className="p-1.5 text-helix-muted hover:text-rose-400 transition-colors"
                       >
                         <Trash2 className="size-3.5" />
                       </button>
@@ -878,12 +878,12 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
             </div>
 
             {/* Bottom Save Action */}
-            <div className="flex justify-end pt-4 border-t border-slate-800">
+            <div className="flex justify-end pt-4 border-t border-helix-border">
               <button
                 type="button"
                 onClick={() => handleSavePlan(currentPlan)}
                 disabled={isPending}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-cyan-500 px-5 py-2 text-xs font-bold text-slate-950 hover:bg-cyan-400 transition-all shadow-md"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-helix-ink px-5 py-2 text-xs font-bold text-white hover:bg-helix-ink/90 transition-all shadow-md"
               >
                 <Save className="size-4" />
                 <span>Save All Changes for &quot;{currentPlan.name}&quot;</span>
@@ -891,7 +891,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
             </div>
           </div>
         ) : (
-          <div className="lg:col-span-3 rounded-2xl border border-dashed border-slate-800 p-12 text-center text-slate-400">
+          <div className="lg:col-span-3 rounded-2xl border border-dashed border-helix-border p-12 text-center text-helix-muted">
             No plan selected. Click a plan on the left or add a new one.
           </div>
         )}
@@ -900,65 +900,65 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
       {/* Modal: Add New Plan */}
       {showAddPlanModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-          <div className="w-full max-w-lg rounded-2xl border border-slate-800 bg-[#0c121e] p-6 shadow-2xl space-y-4">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <Sparkles className="size-4 text-cyan-400" />
+          <div className="w-full max-w-lg rounded-2xl border border-helix-border bg-helix-surface p-6 shadow-2xl space-y-4">
+            <h3 className="text-lg font-bold text-helix-ink flex items-center gap-2">
+              <Sparkles className="size-4 text-helix-accent" />
               Create New Pricing Plan
             </h3>
 
             <form onSubmit={handleCreatePlan} className="space-y-4">
               <div>
-                <label className="text-xs font-semibold text-slate-400">Unique Plan ID (e.g. enterprise-pro)</label>
+                <label className="text-xs font-semibold text-helix-muted">Unique Plan ID (e.g. enterprise-pro)</label>
                 <input
                   required
                   value={newPlan.id}
                   onChange={(e) => setNewPlan({ ...newPlan, id: e.target.value.toLowerCase().replace(/\s+/g, '-') })}
-                  className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900 px-3.5 py-2 text-xs text-white font-mono"
+                  className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900 px-3.5 py-2 text-xs text-helix-ink font-mono"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-semibold text-slate-400">Name (EN)</label>
+                  <label className="text-xs font-semibold text-helix-muted">Name (EN)</label>
                   <input
                     required
                     value={newPlan.name}
                     onChange={(e) => setNewPlan({ ...newPlan, name: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900 px-3.5 py-2 text-xs text-white"
+                    className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900 px-3.5 py-2 text-xs text-helix-ink"
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-semibold text-slate-400">Name (AR)</label>
+                  <label className="text-xs font-semibold text-helix-muted">Name (AR)</label>
                   <input
                     dir="rtl"
                     value={newPlan.nameAr}
                     onChange={(e) => setNewPlan({ ...newPlan, nameAr: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900 px-3.5 py-2 text-xs text-white"
+                    className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900 px-3.5 py-2 text-xs text-helix-ink"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-slate-400">Tagline</label>
+                <label className="text-xs font-semibold text-helix-muted">Tagline</label>
                 <input
                   value={newPlan.tagline}
                   onChange={(e) => setNewPlan({ ...newPlan, tagline: e.target.value })}
-                  className="mt-1 w-full rounded-xl border border-slate-700 bg-slate-900 px-3.5 py-2 text-xs text-white"
+                  className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900 px-3.5 py-2 text-xs text-helix-ink"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-helix-border">
                 <button
                   type="button"
                   onClick={() => setShowAddPlanModal(false)}
-                  className="rounded-xl border border-slate-700 bg-slate-800 px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white"
+                  className="rounded-xl border border-helix-border bg-slate-800 px-4 py-2 text-xs font-semibold text-helix-ink/80 hover:text-helix-ink"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="rounded-xl bg-cyan-500 px-4 py-2 text-xs font-bold text-slate-950 hover:bg-cyan-400"
+                  className="rounded-xl bg-helix-ink px-4 py-2 text-xs font-bold text-white hover:bg-helix-ink/90"
                 >
                   Create Plan
                 </button>

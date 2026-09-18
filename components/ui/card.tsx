@@ -6,7 +6,7 @@ function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
     <div
       data-slot="card"
       className={cn(
-        'relative rounded-xl border border-white/10 bg-[#0D121F] p-6 text-slate-100 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_12px_28px_-6px_rgba(0,0,0,0.5)] transition-all',
+        'relative rounded-[16px] border border-helix-border bg-helix-surface p-6 text-helix-ink shadow-helix',
         className
       )}
       {...props}
@@ -28,7 +28,7 @@ function CardTitle({ className, ...props }: React.HTMLAttributes<HTMLHeadingElem
   return (
     <h3
       data-slot="card-title"
-      className={cn('font-display text-lg font-bold tracking-tight text-white', className)}
+      className={cn('helix-title text-22', className)}
       {...props}
     />
   )
@@ -38,7 +38,7 @@ function CardDescription({ className, ...props }: React.HTMLAttributes<HTMLParag
   return (
     <p
       data-slot="card-description"
-      className={cn('text-xs text-slate-400 leading-relaxed', className)}
+      className={cn('text-13 text-helix-muted leading-relaxed', className)}
       {...props}
     />
   )
@@ -54,7 +54,7 @@ function CardFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement
   return (
     <div
       data-slot="card-footer"
-      className={cn('flex items-center pt-4 border-t border-white/8', className)}
+      className={cn('flex items-center pt-4 border-t border-helix-border', className)}
       {...props}
     />
   )

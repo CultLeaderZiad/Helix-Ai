@@ -40,23 +40,23 @@ function FactRow({ fact }: { fact: ReviewableFact }) {
   const where = fact.contact?.company_name ? ` · ${fact.contact.company_name}` : ''
 
   return (
-    <li className="rounded-xl border border-white/10 bg-[#0D121F] p-4.5 shadow-sm hover:border-white/20 transition-all">
+    <li className="rounded-xl border border-white/10 bg-helix-surface p-4.5 shadow-sm hover:border-white/20 transition-all">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <Badge variant={fact.evidence_band} dot={fact.evidence_band === 'verified'}>
               {fact.evidence_band}
             </Badge>
-            <p className="text-xs font-semibold text-white">
+            <p className="text-xs font-semibold text-helix-ink">
               {who}
-              <span className="text-slate-400 font-normal">{where}</span>
+              <span className="text-helix-muted font-normal">{where}</span>
             </p>
           </div>
-          <p className="mt-2 text-sm text-slate-200">
-            <span className="font-semibold text-white capitalize">{fact.field_name.replace(/_/g, ' ')}:</span>{' '}
+          <p className="mt-2 text-sm text-helix-ink">
+            <span className="font-semibold text-helix-ink capitalize">{fact.field_name.replace(/_/g, ' ')}:</span>{' '}
             {fact.field_value}
           </p>
-          <p className="mt-1 text-xs text-slate-400 font-mono">
+          <p className="mt-1 text-xs text-helix-muted font-mono">
             Observed by {fact.source_tool}
             {fact.score != null ? ` · ledger score ${fact.score}` : ''} ·{' '}
             {new Date(fact.observed_at).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}

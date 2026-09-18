@@ -1,24 +1,18 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import {
-  Sparkles,
-  ArrowRight,
-  DollarSign,
-  Building2,
-  CheckCircle2,
-  Clock,
-  FileCheck2,
-  Loader2,
-} from 'lucide-react'
+import { FileCheck2, Loader2 } from 'lucide-react'
 import { generateProposalAction } from '@/lib/proposals/actions'
 import { ProposalModal } from '@/components/proposals/proposal-modal'
+import { EmptyState } from '@/components/ui/helix'
+import { Button } from '@/components/ui/button'
 import type { ProposalDocument } from '@/lib/proposals/generator'
 import type { Deal } from '@/lib/schema'
 
 interface StudioRequestsViewProps {
   deals: Deal[]
   clientMap: Record<string, string>
+  studioUrl?: string
 }
 
 function formatCurrency(cents: number): string {
@@ -27,10 +21,11 @@ function formatCurrency(cents: number): string {
   )
 }
 
-export function StudioRequestsView({ deals, clientMap }: StudioRequestsViewProps) {
+export function StudioRequestsView({ deals, clientMap, studioUrl = '/dashboard/studio' }: StudioRequestsViewProps) {
   const [activeProposal, setActiveProposal] = useState<ProposalDocument | null>(null)
   const [loadingDealId, setLoadingDealId] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
+  const [copied, setCopied] = useState(false)
 
   const handleGenerateProposal = (dealId: string) => {
     setLoadingDealId(dealId)
@@ -45,55 +40,75 @@ export function StudioRequestsView({ deals, clientMap }: StudioRequestsViewProps
     })
   }
 
+  const shareStudio = async () => {
+    const url = typeof window === 'undefined' ? studioUrl : `${window.location.origin}${studioUrl}`
+    try {
+      await navigator.clipboard.writeText(url)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      setCopied(false)
+    }
+  }
+
+  if (deals.length === 0) {
+    return (
+      <>
+        <EmptyState
+          title="No inbound build requests yet"
+          body="When a client hits Request build, it lands here."
+          action={
+            <Button variant="secondary" size="sm" onClick={shareStudio}>
+              {copied ? 'Link copied' : 'Share studio link'}
+            </Button>
+          }
+        />
+        {activeProposal && (
+          <ProposalModal proposal={activeProposal} onClose={() => setActiveProposal(null)} />
+        )}
+      </>
+    )
+  }
+
   return (
     <>
-      <div className="mt-4 divide-y divide-slate-800/80">
-        {deals.length > 0 ? (
-          deals.map(deal => (
-            <div key={deal.id} className="flex flex-wrap items-center justify-between gap-4 py-4">
-              <div>
-                <p className="font-semibold text-white">{deal.name}</p>
-                <p className="text-xs text-slate-400">
-                  Client Workspace:{' '}
-                  <span className="text-cyan-300 font-medium">
-                    {clientMap[deal.client_id] ?? 'Client Workspace'}
-                  </span>{' '}
-                  • Stage:{' '}
-                  <span className="text-emerald-400 uppercase font-mono font-medium">
-                    {deal.stage}
-                  </span>
-                </p>
-              </div>
-              <div className="flex items-center gap-4">
-                <span className="font-display text-base font-bold text-white">
-                  {formatCurrency(deal.value_cents ?? 195000)}
-                </span>
-                <button
-                  type="button"
-                  disabled={isPending && loadingDealId === deal.id}
-                  onClick={() => handleGenerateProposal(deal.id)}
-                  className="flex items-center gap-1.5 rounded-xl border border-cyan-500/40 bg-cyan-500/10 px-4 py-2 text-xs font-semibold text-cyan-300 hover:bg-cyan-500/20 transition-colors disabled:opacity-50"
-                >
-                  {isPending && loadingDealId === deal.id ? (
-                    <>
-                      <Loader2 className="size-3.5 animate-spin" />
-                      Generating...
-                    </>
-                  ) : (
-                    <>
-                      <FileCheck2 className="size-3.5" />
-                      Generate Proposal →
-                    </>
-                  )}
-                </button>
-              </div>
+      <div className="mt-2 divide-y divide-helix-border">
+        {deals.map(deal => (
+          <div key={deal.id} className="flex flex-wrap items-center justify-between gap-4 py-4">
+            <div>
+              <p className="font-medium text-helix-ink">{deal.name}</p>
+              <p className="text-12 text-helix-muted">
+                {clientMap[deal.client_id] ?? 'Client workspace'} · {deal.stage.replaceAll('_', ' ')}
+              </p>
             </div>
-          ))
-        ) : (
-          <div className="py-8 text-center text-xs text-slate-400">
-            No active build requests found in database. Build requests created in the Studio or AI Engine will appear here.
+            <div className="flex items-center gap-3">
+              {typeof deal.value_cents === 'number' ? (
+                <span className="text-14 font-medium tabular-nums text-helix-ink">
+                  {formatCurrency(deal.value_cents)}
+                </span>
+              ) : null}
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                disabled={isPending && loadingDealId === deal.id}
+                onClick={() => handleGenerateProposal(deal.id)}
+              >
+                {isPending && loadingDealId === deal.id ? (
+                  <>
+                    <Loader2 className="size-3.5 animate-spin" />
+                    Generating
+                  </>
+                ) : (
+                  <>
+                    <FileCheck2 className="size-3.5" />
+                    Generate proposal
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
-        )}
+        ))}
       </div>
 
       {activeProposal && (

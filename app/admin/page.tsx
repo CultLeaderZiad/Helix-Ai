@@ -2,7 +2,6 @@ import { redirect } from 'next/navigation'
 import { createSupabaseServerClient } from '@/lib/supabase'
 import { getVerifiedSession } from '@/lib/auth/session'
 import { ConsoleShell } from '@/components/shell/console-shell'
-import { AdminTabs } from '@/components/admin/admin-tabs'
 import { ClientsRosterView, type ClientRosterItem } from '@/components/admin/clients-roster-view'
 import type { IntegrationStatus, ClientStatus, RegionTier } from '@/lib/schema'
 
@@ -45,7 +44,7 @@ export default async function AdminPage() {
   const [clientsRes, systemsRes, integrationsRes, pendingFactsRes, dealsRes] = await Promise.all([
     supabase
       .from('clients')
-      .select('id, business_name, vertical, status, updated_at')
+      .select('id, business_name, vertical, status, country, region_tier, updated_at')
       .order('business_name'),
     supabase.from('client_systems').select('client_id'),
     supabase.from('client_integrations').select('client_id, status'),
@@ -97,8 +96,6 @@ export default async function AdminPage() {
   return (
     <ConsoleShell variant="admin" email={session.user.email ?? ''} businessName={null}>
       <div className="mx-auto w-full max-w-6xl">
-        <AdminTabs />
-
         {error ? (
           <div role="alert" className="mt-8 rounded-xl border border-red-500/30 bg-red-500/10 p-4">
             <p className="text-xs text-red-300">

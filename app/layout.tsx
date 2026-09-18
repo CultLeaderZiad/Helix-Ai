@@ -67,10 +67,10 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
-  colorScheme: 'dark light',
+  colorScheme: 'light',
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#f4f6f9' },
-    { media: '(prefers-color-scheme: dark)', color: '#080C14' },
+    { media: '(prefers-color-scheme: light)', color: '#F4F4F2' },
+    { media: '(prefers-color-scheme: dark)', color: '#0F1115' },
   ],
 }
 
@@ -82,7 +82,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${spaceGrotesk.variable} dark bg-background`}
+      className={`${inter.variable} ${spaceGrotesk.variable} bg-background`}
       suppressHydrationWarning
     >
       <body className="antialiased" suppressHydrationWarning>

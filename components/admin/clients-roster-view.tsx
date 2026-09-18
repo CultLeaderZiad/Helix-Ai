@@ -2,29 +2,10 @@
 
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
-import {
-  Building2,
-  Search,
-  Filter,
-  ArrowUpRight,
-  ShieldCheck,
-  Server,
-  Layers,
-  Activity,
-  CheckCircle2,
-  AlertCircle,
-  Clock,
-  Sparkles,
-  ExternalLink,
-  Plus,
-  RefreshCw,
-  Globe,
-} from 'lucide-react'
 import type { ClientStatus, IntegrationStatus, RegionTier } from '@/lib/schema'
 import { cn } from '@/lib/utils'
-import { KpiCard } from '@/components/ui/kpi-card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { PageHeader, HelixKpi, EmptyState, Pill } from '@/components/ui/helix'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from '@/components/ui/table'
 
@@ -42,188 +23,95 @@ export interface ClientRosterItem {
   funnelStage: string
 }
 
-const STAGE_CONFIG: Record<string, { label: string; dot: string; pill: string }> = {
-  new_lead: {
-    label: 'New Lead',
-    dot: 'bg-blue-400',
-    pill: 'border-blue-500/30 bg-blue-500/10 text-blue-300',
-  },
-  engaged: {
-    label: 'Engaged',
-    dot: 'bg-cyan-400',
-    pill: 'border-cyan-500/30 bg-cyan-500/10 text-cyan-300',
-  },
-  studio_completed: {
-    label: 'Studio Done',
-    dot: 'bg-purple-400',
-    pill: 'border-purple-500/30 bg-purple-500/10 text-purple-300',
-  },
-  call_booked: {
-    label: 'Call Booked',
-    dot: 'bg-amber-400',
-    pill: 'border-amber-500/30 bg-amber-500/10 text-amber-300',
-  },
-  proposal_sent: {
-    label: 'Proposal Sent',
-    dot: 'bg-orange-400',
-    pill: 'border-orange-500/30 bg-orange-500/10 text-orange-300',
-  },
-  closed_won: {
-    label: 'Closed Won',
-    dot: 'bg-emerald-400',
-    pill: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300',
-  },
-  closed_lost: {
-    label: 'Closed Lost',
-    dot: 'bg-rose-400',
-    pill: 'border-rose-500/30 bg-rose-500/10 text-rose-300',
-  },
-  DEMO_BOOKED: {
-    label: 'Call Booked',
-    dot: 'bg-amber-400',
-    pill: 'border-amber-500/30 bg-amber-500/10 text-amber-300',
-  },
-  QUALIFIED_TO_BUY: {
-    label: 'Studio Done',
-    dot: 'bg-purple-400',
-    pill: 'border-purple-500/30 bg-purple-500/10 text-purple-300',
-  },
+const STAGE_LABEL: Record<string, string> = {
+  new_lead: 'New lead',
+  engaged: 'Engaged',
+  studio_completed: 'Studio done',
+  call_booked: 'Call booked',
+  proposal_sent: 'Proposal sent',
+  closed_won: 'Closed won',
+  closed_lost: 'Closed lost',
+  DEMO_BOOKED: 'Call booked',
+  QUALIFIED_TO_BUY: 'Studio done',
 }
 
-const STATUS_CONFIG: Record<ClientStatus, { label: string; dot: string; pill: string }> = {
-  active: {
-    label: 'Active',
-    dot: 'bg-emerald-400',
-    pill: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300',
-  },
-  onboarding: {
-    label: 'Onboarding',
-    dot: 'bg-amber-400',
-    pill: 'border-amber-500/30 bg-amber-500/10 text-amber-300',
-  },
-  paused: {
-    label: 'Paused',
-    dot: 'bg-slate-400',
-    pill: 'border-white/[0.1] bg-white/[0.04] text-slate-400',
-  },
-  churned: {
-    label: 'Churned',
-    dot: 'bg-rose-400',
-    pill: 'border-rose-500/30 bg-rose-500/10 text-rose-300',
-  },
+function regionLabel(row: ClientRosterItem) {
+  const country = row.country || '—'
+  const tier = row.region_tier === 'mena_sme' ? 'MENA SME' : 'GCC'
+  return `${country} · ${tier}`
+}
+
+function integrationLabel(row: ClientRosterItem) {
+  if (row.integration === 'connected' || (!row.integration && row.systemCount > 0)) {
+    return { label: 'Connected', tone: 'ok' as const }
+  }
+  if (row.integration === 'degraded') {
+    return { label: 'Degraded', tone: 'warn' as const }
+  }
+  return { label: 'Disconnected', tone: 'muted' as const }
 }
 
 export function ClientsRosterView({ clients }: { clients: ClientRosterItem[] }) {
   const [search, setSearch] = useState('')
   const [selectedStage, setSelectedStage] = useState<string>('ALL')
-  const [selectedStatus, setSelectedStatus] = useState<string>('ALL')
 
   const filteredClients = useMemo(() => {
-    return clients.filter((c) => {
+    return clients.filter(c => {
       const matchesSearch =
         c.business_name.toLowerCase().includes(search.toLowerCase()) ||
         (c.vertical?.toLowerCase().includes(search.toLowerCase()) ?? false) ||
         (c.country?.toLowerCase().includes(search.toLowerCase()) ?? false)
-
       const matchesStage = selectedStage === 'ALL' || c.funnelStage === selectedStage
-      const matchesStatus = selectedStatus === 'ALL' || c.status === selectedStatus
-
-      return matchesSearch && matchesStage && matchesStatus
+      return matchesSearch && matchesStage
     })
-  }, [clients, search, selectedStage, selectedStatus])
+  }, [clients, search, selectedStage])
 
-  // Executive summary stats
   const totalSystems = clients.reduce((acc, c) => acc + c.systemCount, 0)
-  const connectedCount = clients.filter((c) => c.integration === 'connected' || (!c.integration && c.systemCount > 0)).length
+  const connectedCount = clients.filter(
+    c => c.integration === 'connected' || (!c.integration && c.systemCount > 0)
+  ).length
   const pendingCount = clients.reduce((acc, c) => acc + c.pendingFacts, 0)
+  const healthyDenom = Math.max(clients.length, 0)
 
   return (
     <div className="space-y-6">
-      {/* Header & Actions Bar */}
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <div className="inline-flex items-center gap-2 rounded-md border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 text-[11px] font-mono font-medium text-slate-300">
-            <span className="size-1.5 rounded-full bg-cyan-400 animate-pulse" />
-            OPERATIONAL ROSTER • {clients.length} WORKSPACES
-          </div>
-          <h1 className="mt-2.5 font-display text-2xl font-bold tracking-tight text-white sm:text-3xl">
-            Client Workspaces
-          </h1>
-          <p className="mt-1 text-xs text-slate-400 max-w-2xl">
-            Regional tenant partitioning, CRM progression stages, and active telemetry connections across provisioned environments.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2.5">
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => window.location.reload()}
-          >
-            <RefreshCw className="size-3.5" />
-            <span>Sync</span>
-          </Button>
-          <Link href="/admin/crm">
-            <Button variant="default" size="sm">
-              <Plus className="size-3.5" />
-              <span>Open CRM Pipeline</span>
+      <PageHeader
+        title="Client workspaces"
+        subtitle={`${clients.length} workspace${clients.length === 1 ? '' : 's'} · regional isolation on`}
+        actions={
+          <>
+            <Button variant="secondary" size="sm" onClick={() => window.location.reload()}>
+              Sync
             </Button>
-          </Link>
-        </div>
+            <Link href="/admin/crm" className={buttonVariants({ size: 'sm' })}>
+              Open pipeline
+            </Link>
+          </>
+        }
+      />
+
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <HelixKpi value={clients.length} label="Workspaces" />
+        <HelixKpi value={totalSystems} label="Systems active" />
+        <HelixKpi
+          value={healthyDenom > 0 ? `${connectedCount}/${healthyDenom}` : '0'}
+          label="Integrations healthy"
+        />
+        <HelixKpi value={pendingCount} label="Facts to review" />
       </div>
 
-      {/* KPI Metric Strip */}
-      <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
-        <KpiCard
-          label="Workspaces"
-          value={clients.length}
-          delta="100% PROVISIONED"
-          deltaType="positive"
-          subtext="Autonomous multi-tenant clusters"
-          icon={Building2}
-        />
-        <KpiCard
-          label="Systems Active"
-          value={totalSystems}
-          delta="VOICE / WEB / CRM"
-          deltaType="neutral"
-          subtext="Connected production nodes"
-          icon={Server}
-        />
-        <KpiCard
-          label="Integrations"
-          value={`${connectedCount} / ${clients.length}`}
-          delta="HEALTHY"
-          deltaType="positive"
-          subtext="Zero degraded webhooks"
-          icon={Activity}
-        />
-        <KpiCard
-          label="Fact Review"
-          value={pendingCount}
-          delta={pendingCount > 0 ? `${pendingCount} PENDING` : 'CLEARED'}
-          deltaType={pendingCount > 0 ? 'negative' : 'positive'}
-          subtext="Ground-truth verification queue"
-          icon={ShieldCheck}
-        />
-      </div>
-
-      {/* Search & Filter Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/10 bg-[#0D121F]/90 p-2.5 shadow-sm">
-        <div className="relative min-w-[260px] flex-1">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-3.5 text-slate-400 z-10" />
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="min-w-[220px] flex-1">
           <Input
-            type="text"
-            placeholder="Search workspace, region, or vertical..."
+            type="search"
+            placeholder="Search workspace or region"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-9 h-9 text-xs"
+            onChange={e => setSearch(e.target.value)}
+            className="h-9"
           />
         </div>
-
-        <div className="flex items-center gap-1.5 overflow-x-auto">
-          {['ALL', 'new_lead', 'engaged', 'studio_completed', 'closed_won'].map((stage) => {
-            const config = STAGE_CONFIG[stage]
+        <div className="flex items-center gap-1 overflow-x-auto">
+          {['ALL', 'new_lead', 'engaged', 'studio_completed', 'closed_won'].map(stage => {
             const isSelected = selectedStage === stage
             return (
               <button
@@ -231,175 +119,98 @@ export function ClientsRosterView({ clients }: { clients: ClientRosterItem[] }) 
                 type="button"
                 onClick={() => setSelectedStage(stage)}
                 className={cn(
-                  'rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all whitespace-nowrap',
+                  'rounded-full px-3 py-1.5 text-13 transition-colors whitespace-nowrap',
                   isSelected
-                    ? 'bg-white/[0.1] text-white border border-white/[0.12] font-semibold'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.04] border border-transparent'
+                    ? 'bg-helix-ink text-white'
+                    : 'text-helix-muted hover:bg-helix-canvas hover:text-helix-ink'
                 )}
               >
-                {stage === 'ALL' ? 'All Stages' : config?.label ?? stage}
+                {stage === 'ALL' ? 'All stages' : STAGE_LABEL[stage] ?? stage}
               </button>
             )
           })}
         </div>
       </div>
 
-      {/* Main Table Panel */}
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Workspace</TableHead>
-            <TableHead>Region</TableHead>
-            <TableHead>Funnel Stage</TableHead>
-            <TableHead>Vertical</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="text-center">Systems</TableHead>
-            <TableHead>Integrations</TableHead>
-            <TableHead className="text-right">Pending</TableHead>
-            <TableHead className="text-right">Action</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {filteredClients.length > 0 ? (
-            filteredClients.map((row) => {
-              const stageConfig = STAGE_CONFIG[row.funnelStage] ?? {
-                label: row.funnelStage,
-                dot: 'bg-slate-400',
-                pill: 'border-white/10 bg-white/5 text-slate-300',
-              }
-              const statusConfig = STATUS_CONFIG[row.status] ?? {
-                label: row.status,
-                dot: 'bg-slate-400',
-                pill: 'border-white/10 bg-white/5 text-slate-300',
-              }
-              const initial = row.business_name.charAt(0).toUpperCase()
-
+      {filteredClients.length === 0 ? (
+        <EmptyState
+          title="No matching workspaces"
+          body="Clear search or stage filters to see the roster again."
+          action={
+            <Button variant="secondary" size="sm" onClick={() => { setSearch(''); setSelectedStage('ALL') }}>
+              Reset filters
+            </Button>
+          }
+        />
+      ) : (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Workspace</TableHead>
+              <TableHead>Region</TableHead>
+              <TableHead>Stage</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Systems</TableHead>
+              <TableHead>Integrations</TableHead>
+              <TableHead className="text-right"> </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredClients.map(row => {
+              const integration = integrationLabel(row)
               return (
-                <TableRow key={row.id} className="group">
-                  {/* Workspace Avatar & Name */}
+                <TableRow key={row.id}>
                   <TableCell className="font-medium">
-                    <div className="flex items-center gap-3">
-                      <div className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-slate-800 text-xs font-bold text-sky-400 shadow-xs">
-                        {initial}
-                      </div>
-                      <div>
-                        <Link
-                          href={`/admin/clients/${row.id}`}
-                          className="font-medium text-white group-hover:text-sky-300 transition-colors inline-flex items-center gap-1"
-                        >
-                          <span>{row.business_name}</span>
-                          <ArrowUpRight className="size-3 opacity-0 group-hover:opacity-100 transition-opacity text-sky-400" />
-                        </Link>
-                        <p className="text-[10px] text-slate-400 font-mono mt-0.5">
-                          {row.vertical || 'Enterprise Client'}
-                        </p>
-                      </div>
-                    </div>
+                    <Link href={`/admin/clients/${row.id}`} className="text-helix-ink hover:underline">
+                      {row.business_name}
+                    </Link>
                   </TableCell>
-
-                  {/* Region Badge */}
+                  <TableCell className="text-helix-muted">{regionLabel(row)}</TableCell>
                   <TableCell>
-                    <span className="inline-flex items-center gap-1.5 rounded-md border border-white/8 bg-white/4 px-2 py-1 font-mono text-[10px] text-slate-300">
-                      <Globe className="size-2.5 text-slate-400" />
-                      <span>{row.country || 'AE'}</span>
-                      <span className="text-slate-500">•</span>
-                      <span>{row.region_tier === 'mena_sme' ? 'MENA SME' : 'GCC Ent.'}</span>
-                    </span>
+                    <Pill tone={row.funnelStage === 'engaged' || row.funnelStage === 'closed_won' ? 'live' : 'demo'}>
+                      {STAGE_LABEL[row.funnelStage] ?? row.funnelStage.replaceAll('_', ' ')}
+                    </Pill>
                   </TableCell>
-
-                  {/* Funnel Stage */}
                   <TableCell>
                     <span
                       className={cn(
-                        'inline-flex items-center gap-1.5 rounded-md border px-2 py-0.5 text-[11px] font-medium',
-                        stageConfig.pill
+                        'text-13 font-medium',
+                        row.status === 'active' && 'text-helix-ok',
+                        row.status === 'onboarding' && 'text-helix-warn',
+                        row.status === 'paused' && 'text-helix-muted',
+                        row.status === 'churned' && 'text-helix-danger'
                       )}
                     >
-                      <span className={cn('size-1.5 rounded-full', stageConfig.dot)} />
-                      {stageConfig.label}
+                      {row.status === 'onboarding' ? 'Onboarding' : row.status.charAt(0).toUpperCase() + row.status.slice(1)}
                     </span>
                   </TableCell>
-
-                  {/* Vertical */}
-                  <TableCell className="text-slate-400 font-mono text-[11px]">
-                    {row.vertical || '—'}
-                  </TableCell>
-
-                  {/* Status */}
+                  <TableCell className="tabular-nums">{row.systemCount}</TableCell>
                   <TableCell>
-                    <Badge
-                      variant={row.status === 'active' ? 'verified' : row.status === 'onboarding' ? 'probable' : 'default'}
-                      dot
+                    <span
+                      className={cn(
+                        'text-13 font-medium',
+                        integration.tone === 'ok' && 'text-helix-ok',
+                        integration.tone === 'warn' && 'text-helix-warn',
+                        integration.tone === 'muted' && 'text-helix-muted'
+                      )}
                     >
-                      {statusConfig.label}
-                    </Badge>
-                  </TableCell>
-
-                  {/* Systems */}
-                  <TableCell className="text-center">
-                    <span className="inline-flex items-center justify-center rounded border border-white/8 bg-white/2 px-2 py-0.5 font-mono text-xs text-slate-200 tabular-nums">
-                      {row.systemCount}
+                      {integration.label}
                     </span>
                   </TableCell>
-
-                  {/* Integrations */}
-                  <TableCell>
-                    {row.integration === 'connected' || (!row.integration && row.systemCount > 0) ? (
-                      <span className="inline-flex items-center gap-1.5 text-[11px] text-emerald-400 font-medium">
-                        <span className="size-1.5 rounded-full bg-emerald-400" />
-                        Connected
-                      </span>
-                    ) : row.integration === 'degraded' ? (
-                      <span className="inline-flex items-center gap-1.5 text-[11px] text-amber-400 font-medium">
-                        <span className="size-1.5 rounded-full bg-amber-400" />
-                        Degraded
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-500">
-                        <span className="size-1.5 rounded-full bg-slate-600" />
-                        Disconnected
-                      </span>
-                    )}
-                  </TableCell>
-
-                  {/* Pending Facts */}
                   <TableCell className="text-right">
-                    {row.pendingFacts > 0 ? (
-                      <Badge variant="probable">
-                        {row.pendingFacts}
-                      </Badge>
-                    ) : (
-                      <span className="font-mono text-xs text-slate-500 tabular-nums">0</span>
-                    )}
-                  </TableCell>
-
-                  {/* Action */}
-                  <TableCell className="text-right">
-                    <Link href={`/admin/clients/${row.id}`}>
-                      <Button variant="outline" size="xs">
-                        Inspect
-                      </Button>
+                    <Link
+                      href={`/admin/clients/${row.id}`}
+                      className="text-13 text-helix-muted hover:text-helix-ink"
+                    >
+                      Inspect →
                     </Link>
                   </TableCell>
                 </TableRow>
               )
-            })
-          ) : (
-            <TableRow>
-              <TableCell colSpan={9} className="py-10 text-center text-slate-500">
-                <p className="text-sm font-medium">No matching client workspaces found.</p>
-                <p className="text-xs mt-1">Try clearing your search query or filters.</p>
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-
-      {/* Table Footer / Scannability Bar */}
-      <div className="flex items-center justify-between border-t border-white/6 bg-white/[0.01] px-4 py-3 text-[11px] text-slate-400 font-mono">
-        <span>Showing {filteredClients.length} of {clients.length} workspaces</span>
-        <span className="hidden sm:inline">REGIONAL ISOLATION: ACTIVE (AES-256)</span>
-      </div>
+            })}
+          </TableBody>
+        </Table>
+      )}
     </div>
   )
 }

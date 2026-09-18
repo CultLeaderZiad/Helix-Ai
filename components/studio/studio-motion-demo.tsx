@@ -225,7 +225,7 @@ export function StudioMotionDemo({
             <span>Choreographed Studio Demo</span>
           </div>
 
-          <span className="hidden md:inline text-[11px] text-slate-400 font-mono">
+          <span className="hidden md:inline text-[11px] text-helix-muted font-mono">
             // Scripted Architecture Walkthrough
           </span>
         </div>
@@ -233,7 +233,7 @@ export function StudioMotionDemo({
         {/* Timeline Interaction Toolbar */}
         <div className="flex items-center gap-2 text-xs">
           {/* Step indicator pills */}
-          <div className="hidden sm:flex items-center gap-1 bg-slate-900/80 rounded-lg p-1 border border-slate-800">
+          <div className="hidden sm:flex items-center gap-1 bg-slate-900/80 rounded-lg p-1 border border-helix-border">
             {STEP_METADATA.map((item) => (
               <button
                 key={item.step}
@@ -242,8 +242,8 @@ export function StudioMotionDemo({
                 className={cn(
                   'px-2 py-0.5 text-[10px] rounded transition-colors',
                   currentStep === item.step
-                    ? 'bg-purple-600 text-white font-medium shadow-xs'
-                    : 'text-slate-400 hover:text-slate-200'
+                    ? 'bg-purple-600 text-helix-ink font-medium shadow-xs'
+                    : 'text-helix-muted hover:text-helix-ink'
                 )}
               >
                 {item.label}
@@ -255,7 +255,7 @@ export function StudioMotionDemo({
           <button
             type="button"
             onClick={togglePlay}
-            className="flex size-7 items-center justify-center rounded-lg border border-slate-800 bg-slate-900/80 text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+            className="flex size-7 items-center justify-center rounded-lg border border-helix-border bg-slate-900/80 text-helix-ink/80 hover:bg-slate-800 hover:text-helix-ink transition-colors"
             title={isPlaying ? 'Pause Demo' : 'Play Demo'}
             aria-label={isPlaying ? 'Pause Demo' : 'Play Demo'}
           >
@@ -269,7 +269,7 @@ export function StudioMotionDemo({
               resetTimeline()
               setIsPlaying(true)
             }}
-            className="flex size-7 items-center justify-center rounded-lg border border-slate-800 bg-slate-900/80 text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+            className="flex size-7 items-center justify-center rounded-lg border border-helix-border bg-slate-900/80 text-helix-ink/80 hover:bg-slate-800 hover:text-helix-ink transition-colors"
             title="Replay sequence"
             aria-label="Replay sequence"
           >
@@ -330,23 +330,23 @@ export function StudioMotionDemo({
         <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
           {/* Left Column: Simulated Configuration Inputs (40% width) */}
           <div className="md:col-span-5 space-y-3.5">
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-helix-muted">
               1. Prospect Business Details
             </div>
 
             {/* Input 1: Business Name with Character Typing */}
             <div
               className={cn(
-                'rounded-xl border p-3 transition-all duration-300 bg-[#0e1628]',
+                'rounded-xl border p-3 transition-all duration-300 bg-helix-canvas',
                 currentStep === 1
                   ? 'border-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.3)] ring-1 ring-purple-500/50'
-                  : 'border-slate-800'
+                  : 'border-helix-border'
               )}
             >
-              <label className="block text-[10px] uppercase font-medium text-slate-400 mb-1">
+              <label className="block text-[10px] uppercase font-medium text-helix-muted mb-1">
                 Business / Clinic Name
               </label>
-              <div className="flex items-center h-8 font-mono text-xs text-white">
+              <div className="flex items-center h-8 font-mono text-xs text-helix-ink">
                 <span>{typedText || (currentStep === 0 ? 'Clicking input...' : '')}</span>
                 {currentStep === 1 && (
                   <span className="inline-block w-1.5 h-4 ml-1 bg-purple-400 animate-pulse" />
@@ -356,7 +356,7 @@ export function StudioMotionDemo({
 
             {/* Selector: System Architecture Option */}
             <div className="space-y-2">
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+              <div className="text-[11px] font-semibold uppercase tracking-wider text-helix-muted">
                 2. System Architecture
               </div>
 
@@ -366,39 +366,39 @@ export function StudioMotionDemo({
                   'rounded-xl border p-3 transition-all duration-300 text-xs flex items-center justify-between cursor-pointer',
                   currentStep >= 2
                     ? 'border-cyan-500 bg-cyan-950/30 shadow-[0_0_15px_rgba(6,182,212,0.25)]'
-                    : 'border-slate-800 bg-[#0e1628] opacity-80'
+                    : 'border-helix-border bg-helix-canvas opacity-80'
                 )}
               >
                 <div className="flex items-center gap-2.5">
                   <div
                     className={cn(
                       'flex size-7 items-center justify-center rounded-lg text-xs',
-                      currentStep >= 2 ? 'bg-cyan-500/20 text-cyan-300' : 'bg-slate-800 text-slate-400'
+                      currentStep >= 2 ? 'bg-helix-accent-soft text-helix-accent' : 'bg-slate-800 text-helix-muted'
                     )}
                   >
                     <PhoneCall className="size-3.5" />
                   </div>
                   <div>
-                    <p className="font-semibold text-white text-[11px]">Booking Receptionist</p>
-                    <p className="text-[10px] text-slate-400">Voice AI + WhatsApp Delivery</p>
+                    <p className="font-semibold text-helix-ink text-[11px]">Booking Receptionist</p>
+                    <p className="text-[10px] text-helix-muted">Voice AI + WhatsApp Delivery</p>
                   </div>
                 </div>
                 {currentStep >= 2 ? (
-                  <CheckCircle2 className="size-4 text-cyan-400" />
+                  <CheckCircle2 className="size-4 text-helix-accent" />
                 ) : (
                   <span className="size-2 rounded-full bg-slate-700" />
                 )}
               </div>
 
               {/* Option B: WhatsApp Lead Triage (Secondary) */}
-              <div className="rounded-xl border border-slate-800/80 bg-[#0e1628]/60 p-3 text-xs flex items-center justify-between opacity-60">
+              <div className="rounded-xl border border-helix-border/80 bg-helix-canvas/60 p-3 text-xs flex items-center justify-between opacity-60">
                 <div className="flex items-center gap-2.5">
-                  <div className="flex size-7 items-center justify-center rounded-lg bg-slate-800 text-slate-400">
+                  <div className="flex size-7 items-center justify-center rounded-lg bg-slate-800 text-helix-muted">
                     <MessageSquare className="size-3.5" />
                   </div>
                   <div>
-                    <p className="font-semibold text-slate-300 text-[11px]">Missed-Call Triage</p>
-                    <p className="text-[10px] text-slate-500">5-Second Auto Dispatch</p>
+                    <p className="font-semibold text-helix-ink/80 text-[11px]">Missed-Call Triage</p>
+                    <p className="text-[10px] text-helix-muted">5-Second Auto Dispatch</p>
                   </div>
                 </div>
                 <span className="size-2 rounded-full bg-slate-800" />
@@ -406,7 +406,7 @@ export function StudioMotionDemo({
             </div>
 
             {/* Regional Currency / WhatsApp API Notice */}
-            <div className="rounded-lg border border-slate-800 bg-[#0a0f1d] p-2.5 text-[10px] text-slate-400 flex items-center gap-2">
+            <div className="rounded-lg border border-helix-border bg-helix-surface p-2.5 text-[10px] text-helix-muted flex items-center gap-2">
               <ShieldCheck className="size-3.5 text-emerald-400 shrink-0" />
               <span>GCC Enterprise Ready • Official WhatsApp Business Cloud API</span>
             </div>
@@ -422,13 +422,13 @@ export function StudioMotionDemo({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="rounded-xl border border-dashed border-slate-800 bg-[#0a101f]/50 p-8 text-center flex flex-col items-center justify-center min-h-[290px]"
+                  className="rounded-xl border border-dashed border-helix-border bg-[#0a101f]/50 p-8 text-center flex flex-col items-center justify-center min-h-[290px]"
                 >
                   <div className="size-10 rounded-full bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-300 mb-3">
                     <Sparkles className="size-5 animate-pulse" />
                   </div>
-                  <h4 className="text-sm font-semibold text-slate-200">Awaiting Profile Selection</h4>
-                  <p className="mt-1 text-xs text-slate-400 max-w-xs">
+                  <h4 className="text-sm font-semibold text-helix-ink">Awaiting Profile Selection</h4>
+                  <p className="mt-1 text-xs text-helix-muted max-w-xs">
                     Watch the synthetic cursor select clinic parameters to preview the resulting
                     autonomous booking pipeline.
                   </p>
@@ -443,16 +443,16 @@ export function StudioMotionDemo({
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.96 }}
                   transition={{ duration: 0.25 }}
-                  className="rounded-xl border border-cyan-500/40 bg-cyan-950/20 p-8 text-center flex flex-col items-center justify-center min-h-[290px]"
+                  className="rounded-xl border border-helix-border bg-cyan-950/20 p-8 text-center flex flex-col items-center justify-center min-h-[290px]"
                 >
                   <div className="relative size-12 mb-3">
                     <div className="absolute inset-0 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin" />
-                    <div className="absolute inset-0 flex items-center justify-center text-cyan-300">
+                    <div className="absolute inset-0 flex items-center justify-center text-helix-accent">
                       <Zap className="size-5 animate-pulse" />
                     </div>
                   </div>
-                  <h4 className="text-sm font-semibold text-cyan-200">Calibrating Architecture...</h4>
-                  <p className="mt-1 text-xs text-slate-300 font-mono">
+                  <h4 className="text-sm font-semibold text-helix-accent">Calibrating Architecture...</h4>
+                  <p className="mt-1 text-xs text-helix-ink/80 font-mono">
                     Routing Retell Voice Engine // Meta WhatsApp Gateway
                   </p>
                   <div className="mt-4 w-44 h-1.5 bg-slate-800 rounded-full overflow-hidden">
@@ -481,7 +481,7 @@ export function StudioMotionDemo({
                       <span className="text-[9px] font-mono uppercase tracking-widest text-emerald-400">
                         SYSTEM GENERATED • 24/7 AUTONOMOUS RECEPTIONIST
                       </span>
-                      <h4 className="text-xs font-bold text-white">
+                      <h4 className="text-xs font-bold text-helix-ink">
                         {typedText || DEMO_BUSINESS_NAME}
                       </h4>
                     </div>
@@ -501,11 +501,11 @@ export function StudioMotionDemo({
                       <span className="text-[9px] font-mono text-emerald-400/80">✓✓ Delivered 14:32</span>
                     </div>
 
-                    <div className="space-y-1.5 text-slate-200 text-[11px]">
-                      <p className="font-semibold text-white">
+                    <div className="space-y-1.5 text-helix-ink text-[11px]">
+                      <p className="font-semibold text-helix-ink">
                         Welcome to {typedText || DEMO_BUSINESS_NAME}!
                       </p>
-                      <p className="text-slate-300 leading-snug">
+                      <p className="text-helix-ink/80 leading-snug">
                         Your dental consultation has been confirmed for Thursday at 3:00 PM with Dr.
                         Tariq.
                       </p>
@@ -513,7 +513,7 @@ export function StudioMotionDemo({
                         <span className="inline-flex items-center gap-1 rounded bg-emerald-500/20 px-2 py-0.5 text-[10px] font-medium text-emerald-300">
                           <Calendar className="size-2.5" /> Add to Calendar
                         </span>
-                        <span className="inline-flex items-center gap-1 rounded bg-cyan-500/20 px-2 py-0.5 text-[10px] font-medium text-cyan-300">
+                        <span className="inline-flex items-center gap-1 rounded bg-helix-accent-soft px-2 py-0.5 text-[10px] font-medium text-helix-accent">
                           <MapPin className="size-2.5" /> Abu Dhabi Clinic Map
                         </span>
                       </div>
@@ -521,15 +521,15 @@ export function StudioMotionDemo({
                   </div>
 
                   {/* Voice Telemetry Audio Snippet */}
-                  <div className="rounded-xl border border-slate-800 bg-[#0e1628] p-3 text-xs">
-                    <div className="flex items-center justify-between text-slate-400 pb-1.5 border-b border-slate-800/60">
-                      <span className="font-semibold text-white flex items-center gap-1.5 text-[11px]">
-                        <PhoneCall className="size-3 text-cyan-400" />
+                  <div className="rounded-xl border border-helix-border bg-helix-canvas p-3 text-xs">
+                    <div className="flex items-center justify-between text-helix-muted pb-1.5 border-b border-helix-border/60">
+                      <span className="font-semibold text-helix-ink flex items-center gap-1.5 text-[11px]">
+                        <PhoneCall className="size-3 text-helix-accent" />
                         Inbound Voice Telemetry
                       </span>
-                      <span className="text-[10px] font-mono text-slate-400">Duration: 1m 18s • Retell Voice AI</span>
+                      <span className="text-[10px] font-mono text-helix-muted">Duration: 1m 18s • Retell Voice AI</span>
                     </div>
-                    <p className="mt-2 text-[10.5px] text-slate-300 italic leading-relaxed">
+                    <p className="mt-2 text-[10.5px] text-helix-ink/80 italic leading-relaxed">
                       &ldquo;Agent: Thank you for calling {typedText || 'Apex'}. I have confirmed Thursday at 3:00 PM. Your direct itinerary and location pin have been dispatched to your WhatsApp.&rdquo;
                     </p>
                   </div>
@@ -542,7 +542,7 @@ export function StudioMotionDemo({
 
       {/* Honest Footer Caption & Action Callout */}
       <div className="border-t border-purple-500/20 bg-[#070b14] px-5 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-        <div className="text-slate-400 text-[11px] max-w-xl leading-relaxed text-center sm:text-left">
+        <div className="text-helix-muted text-[11px] max-w-xl leading-relaxed text-center sm:text-left">
           <span className="text-purple-300 font-semibold">Honest Architecture Notice:</span> This
           scripted timeline demonstrates how Helix AI standardizes pre-tested, deterministic agent
           workflows. Real prospects configure customized parameters inside the interactive Studio
@@ -553,14 +553,14 @@ export function StudioMotionDemo({
           <button
             type="button"
             onClick={onCloseOrSkip}
-            className="shrink-0 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 px-3.5 py-1.5 text-xs font-medium text-white shadow-md hover:from-purple-500 hover:to-indigo-500 transition-all"
+            className="shrink-0 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 px-3.5 py-1.5 text-xs font-medium text-helix-ink shadow-md hover:from-purple-500 hover:to-indigo-500 transition-all"
           >
             Configure Your Real System &rarr;
           </button>
         ) : (
           <a
             href="/dashboard/studio"
-            className="shrink-0 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 px-3.5 py-1.5 text-xs font-medium text-white shadow-md hover:from-purple-500 hover:to-indigo-500 transition-all"
+            className="shrink-0 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 px-3.5 py-1.5 text-xs font-medium text-helix-ink shadow-md hover:from-purple-500 hover:to-indigo-500 transition-all"
           >
             Open Interactive Studio &rarr;
           </a>

@@ -46,7 +46,7 @@ export function StudioPipelineVisualizer({
         : 'Sub-50ms ingestion via Retell Voice AI & Meta WhatsApp Cloud API',
       specs: [
         { label: isAr ? 'بروتوكول البث' : 'Streaming Protocol', value: 'WebSocket Dual-Channel' },
-        { label: isAr ? 'معدل التشفير' : 'Encryption Standard', value: 'AES-256 GCM' },
+        { label: isAr ? 'العزل' : 'Isolation', value: 'Postgres RLS' },
         { label: isAr ? 'ضمان التوافر' : 'Uptime SLA', value: '99.99% Dedicated Gateway' },
       ],
     },
@@ -105,13 +105,13 @@ export function StudioPipelineVisualizer({
   return (
     <div className="space-y-6">
       {/* Visual Pipeline Topology Flow */}
-      <div className="rounded-2xl border border-slate-800 bg-[#090e1a] p-5 sm:p-6 shadow-inner">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800/80 pb-4 mb-6">
+      <div className="rounded-2xl border border-helix-border bg-[#090e1a] p-5 sm:p-6 shadow-inner">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-helix-border/80 pb-4 mb-6">
           <div>
-            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-cyan-400">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-helix-accent">
               SYSTEM TOPOLOGY // {template.en.category.toUpperCase()}
             </span>
-            <h3 className="font-display text-base sm:text-lg font-bold text-white">
+            <h3 className="font-display text-base sm:text-lg font-bold text-helix-ink">
               {brandName} — {template[isAr ? 'ar' : 'en'].name}
             </h3>
           </div>
@@ -121,7 +121,7 @@ export function StudioPipelineVisualizer({
               <span className="size-1.5 rounded-full bg-emerald-400 animate-ping" />
               PIPELINE LIVE
             </span>
-            <span className="hidden sm:inline-block rounded-full border border-slate-800 bg-slate-900 px-2.5 py-1 text-[10px] font-mono text-slate-400">
+            <span className="hidden sm:inline-block rounded-full border border-helix-border bg-slate-900 px-2.5 py-1 text-[10px] font-mono text-helix-muted">
               E2E Latency: ~255ms
             </span>
           </div>
@@ -141,41 +141,41 @@ export function StudioPipelineVisualizer({
                   'group relative rounded-xl border p-4 transition-all duration-200 cursor-pointer text-left',
                   isSelected
                     ? 'border-cyan-500 bg-cyan-950/20 shadow-[0_0_20px_rgba(6,182,212,0.25)] ring-1 ring-cyan-500/40'
-                    : 'border-slate-800/90 bg-[#0c1424]/80 hover:border-slate-700 hover:bg-[#0e182c]'
+                    : 'border-helix-border/90 bg-helix-surface/80 hover:border-helix-border hover:bg-[#0e182c]'
                 )}
               >
                 <div className="flex items-center justify-between mb-3">
                   <div
                     className={cn(
                       'flex size-8 items-center justify-center rounded-lg transition-colors',
-                      isSelected ? 'bg-cyan-500/20 text-cyan-300' : 'bg-slate-800 text-slate-400'
+                      isSelected ? 'bg-helix-accent-soft text-helix-accent' : 'bg-slate-800 text-helix-muted'
                     )}
                   >
                     <Icon className="size-4" />
                   </div>
-                  <span className="rounded-full bg-slate-900 border border-slate-800 px-2 py-0.5 text-[9px] font-mono text-slate-400">
+                  <span className="rounded-full bg-slate-900 border border-helix-border px-2 py-0.5 text-[9px] font-mono text-helix-muted">
                     {node.latency}
                   </span>
                 </div>
 
-                <div className="text-[10px] font-mono text-slate-500 mb-1">
+                <div className="text-[10px] font-mono text-helix-muted mb-1">
                   NODE 0{node.id + 1}
                 </div>
-                <h4 className="font-semibold text-xs sm:text-sm text-white line-clamp-1 mb-1">
+                <h4 className="font-semibold text-xs sm:text-sm text-helix-ink line-clamp-1 mb-1">
                   {node.title}
                 </h4>
-                <p className="text-[11px] text-slate-400 leading-snug line-clamp-2">
+                <p className="text-[11px] text-helix-muted leading-snug line-clamp-2">
                   {node.summary}
                 </p>
 
                 {/* Status Dot */}
-                <div className="mt-3 pt-2 border-t border-slate-800/60 flex items-center justify-between text-[10px] font-mono">
-                  <span className="text-slate-500">{node.protocol}</span>
+                <div className="mt-3 pt-2 border-t border-helix-border/60 flex items-center justify-between text-[10px] font-mono">
+                  <span className="text-helix-muted">{node.protocol}</span>
                   <span
                     className={cn(
                       'font-semibold',
                       node.status === 'ONLINE' && 'text-emerald-400',
-                      node.status === 'VERIFIED' && 'text-cyan-400',
+                      node.status === 'VERIFIED' && 'text-helix-accent',
                       node.status === 'LOCKED' && 'text-purple-400',
                       node.status === 'READY' && 'text-amber-400'
                     )}
@@ -190,15 +190,15 @@ export function StudioPipelineVisualizer({
       </div>
 
       {/* Deep Node Inspection Matrix */}
-      <div className="rounded-2xl border border-slate-800 bg-[#0c1424] p-5 sm:p-6">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800/80 pb-3">
+      <div className="rounded-2xl border border-helix-border bg-helix-surface p-5 sm:p-6">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-helix-border/80 pb-3">
           <div className="flex items-center gap-2">
-            <Server className="size-4 text-cyan-400" />
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-200">
+            <Server className="size-4 text-helix-accent" />
+            <span className="text-xs font-bold uppercase tracking-wider text-helix-ink">
               {activeNode.title} — {isAr ? 'المواصفات الفنية المباشرة' : 'Live Technical Specifications'}
             </span>
           </div>
-          <span className="text-[11px] text-slate-400 font-mono">
+          <span className="text-[11px] text-helix-muted font-mono">
             Protocol: {activeNode.protocol}
           </span>
         </div>
@@ -207,10 +207,10 @@ export function StudioPipelineVisualizer({
           {activeNode.specs.map((spec, idx) => (
             <div
               key={idx}
-              className="rounded-xl border border-slate-800/80 bg-[#080d18] p-3.5 space-y-1"
+              className="rounded-xl border border-helix-border/80 bg-[#080d18] p-3.5 space-y-1"
             >
-              <div className="text-[10px] uppercase font-mono text-slate-500">{spec.label}</div>
-              <div className="font-semibold text-white text-xs sm:text-sm">{spec.value}</div>
+              <div className="text-[10px] uppercase font-mono text-helix-muted">{spec.label}</div>
+              <div className="font-semibold text-helix-ink text-xs sm:text-sm">{spec.value}</div>
             </div>
           ))}
         </div>

@@ -101,17 +101,17 @@ export default async function AttentionQueuePage() {
             <div className="inline-flex items-center gap-2 rounded-full border border-purple-500/30 bg-purple-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-purple-300">
               <ShieldAlert className="size-3.5" /> Human-in-the-Loop Triage
             </div>
-            <h1 className="mt-2 font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            <h1 className="mt-2 font-display text-3xl font-bold tracking-tight text-helix-ink sm:text-4xl">
               Attention Queue
             </h1>
-            <p className="mt-1 text-sm text-slate-400">
+            <p className="mt-1 text-sm text-helix-muted">
               AI observations, degraded integrations, and items requiring a human supervisory decision.
             </p>
           </div>
 
-          <div className="flex items-center gap-2 rounded-xl border border-slate-800 bg-[#101726] px-4 py-2">
+          <div className="flex items-center gap-2 rounded-xl border border-helix-border bg-helix-surface px-4 py-2">
             <span className="size-2 rounded-full bg-cyan-400 animate-pulse" />
-            <span className="text-xs font-medium text-slate-300">
+            <span className="text-xs font-medium text-helix-ink/80">
               {facts.length} Pending Observation{facts.length === 1 ? '' : 's'}
             </span>
           </div>
@@ -137,13 +137,13 @@ export default async function AttentionQueuePage() {
         )}
 
         {/* Pending Fact Suggestions List */}
-        <div className="mt-8 rounded-2xl border border-slate-800 bg-[#0e1422] p-6 shadow-xl">
-          <div className="flex items-center justify-between border-b border-slate-800/80 pb-4">
+        <div className="mt-8 rounded-2xl border border-helix-border bg-helix-surface p-6 shadow-xl">
+          <div className="flex items-center justify-between border-b border-helix-border/80 pb-4">
             <div>
-              <h2 className="font-display text-lg font-bold text-white flex items-center gap-2">
-                <Sparkles className="size-4 text-cyan-400" /> Evidence Review Ledger
+              <h2 className="font-display text-lg font-bold text-helix-ink flex items-center gap-2">
+                <Sparkles className="size-4 text-helix-accent" /> Evidence Review Ledger
               </h2>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs text-helix-muted mt-0.5">
                 Approve to commit directly to contact profile; Dismiss to reject with cryptographic audit log.
               </p>
             </div>

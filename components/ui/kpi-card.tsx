@@ -40,14 +40,14 @@ export function KpiCard({
     if (!IconOrElement) return null
     if (React.isValidElement(IconOrElement)) {
       return (
-        <div className="flex size-7 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-slate-300">
+        <div className="flex size-7 items-center justify-center rounded-[10px] border border-helix-border bg-helix-canvas text-helix-muted">
           {IconOrElement}
         </div>
       )
     }
     const IconComponent = IconOrElement as React.ComponentType<{ className?: string }>
     return (
-      <div className="flex size-7 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-slate-300">
+      <div className="flex size-7 items-center justify-center rounded-[10px] border border-helix-border bg-helix-canvas text-helix-muted">
         <IconComponent className="size-3.5" />
       </div>
     )
@@ -56,52 +56,45 @@ export function KpiCard({
   return (
     <div
       className={cn(
-        'relative flex flex-col justify-between rounded-xl border border-white/10 bg-[#0D121F] p-5 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_8px_20px_-4px_rgba(0,0,0,0.4)] transition-all duration-200 hover:border-white/20',
+        'relative flex flex-col justify-between rounded-[16px] border border-helix-border bg-helix-surface px-5 py-4',
         className
       )}
       {...props}
     >
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          {renderIcon()}
-          <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-            {displayLabel}
-          </span>
+      {(IconOrElement || badge) && (
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">{renderIcon()}</div>
+          {badge && (
+            <span className="rounded-full bg-helix-accent-soft px-2 py-0.5 text-11 font-medium text-helix-accent">
+              {badge}
+            </span>
+          )}
         </div>
+      )}
 
-        {badge && (
-          <span className="rounded-md border border-sky-500/20 bg-sky-500/10 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-sky-400">
-            {badge}
-          </span>
-        )}
-      </div>
-
-      <div className="mt-4 flex items-baseline justify-between gap-2">
-        <div className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-white">
-          {value}
-        </div>
-
-        {delta && (
+      <div className="flex items-baseline justify-between gap-2">
+        <div className="helix-title text-28 tabular-nums">{value}</div>
+        {displayDelta && (
           <div
             className={cn(
-              'inline-flex items-center gap-0.5 rounded-md px-1.5 py-0.5 font-mono text-[11px] font-medium',
-              deltaType === 'positive' && 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20',
-              deltaType === 'negative' && 'bg-rose-500/10 text-rose-400 border border-rose-500/20',
-              deltaType === 'neutral' && 'bg-slate-800 text-slate-400 border border-slate-700'
+              'inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-11 font-medium',
+              effectiveDeltaType === 'positive' && 'bg-helix-accent-soft text-helix-ok',
+              effectiveDeltaType === 'negative' && 'bg-helix-danger/10 text-helix-danger',
+              effectiveDeltaType === 'neutral' && 'bg-helix-canvas text-helix-muted'
             )}
           >
-            {deltaType === 'positive' && <ArrowUpRight className="size-3" />}
-            {deltaType === 'negative' && <ArrowDownRight className="size-3" />}
-            {deltaType === 'neutral' && <Minus className="size-3" />}
-            <span>{delta}</span>
+            {effectiveDeltaType === 'positive' && <ArrowUpRight className="size-3" />}
+            {effectiveDeltaType === 'negative' && <ArrowDownRight className="size-3" />}
+            {effectiveDeltaType === 'neutral' && <Minus className="size-3" />}
+            <span>{displayDelta}</span>
           </div>
         )}
       </div>
 
-      {subtext && (
-        <div className="mt-2 text-[11px] text-slate-400 leading-normal">
-          {subtext}
-        </div>
+      <div className="mt-1 text-13 text-helix-muted">{displayLabel}</div>
+
+      {displaySubtext && (
+        <div className="mt-1 text-12 text-helix-muted leading-normal">{displaySubtext}</div>
       )}
     </div>
   )

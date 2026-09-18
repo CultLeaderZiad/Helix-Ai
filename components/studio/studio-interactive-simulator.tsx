@@ -135,22 +135,22 @@ export function StudioInteractiveSimulator({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
       {/* Interactive Chat Canvas (7 cols) */}
-      <div className="lg:col-span-7 flex flex-col rounded-2xl border border-slate-800 bg-[#090e1a] shadow-xl overflow-hidden min-h-[460px]">
+      <div className="lg:col-span-7 flex flex-col rounded-2xl border border-helix-border bg-[#090e1a] shadow-xl overflow-hidden min-h-[460px]">
         {/* Simulator Bar */}
-        <div className="flex items-center justify-between border-b border-slate-800/80 bg-[#0e1628] px-4 py-3">
+        <div className="flex items-center justify-between border-b border-helix-border/80 bg-helix-canvas px-4 py-3">
           <div className="flex items-center gap-2.5">
-            <div className="flex size-7 items-center justify-center rounded-lg bg-cyan-500/20 text-cyan-300">
+            <div className="flex size-7 items-center justify-center rounded-lg bg-helix-accent-soft text-helix-accent">
               <Bot className="size-4" />
             </div>
             <div>
-              <h4 className="text-xs font-bold text-white flex items-center gap-2">
+              <h4 className="text-xs font-bold text-helix-ink flex items-center gap-2">
                 <span>{brandName} AI Simulator</span>
                 <span className="inline-flex items-center gap-1 text-[9px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.2 rounded">
                   <span className="size-1 rounded-full bg-emerald-400 animate-ping" />
                   ONLINE
                 </span>
               </h4>
-              <p className="text-[10px] text-slate-400">
+              <p className="text-[10px] text-helix-muted">
                 Official WhatsApp Business Cloud API &amp; Voice Telemetry
               </p>
             </div>
@@ -159,7 +159,7 @@ export function StudioInteractiveSimulator({
           <button
             type="button"
             onClick={resetChat}
-            className="flex items-center gap-1 rounded-lg border border-slate-800 bg-slate-900/80 px-2 py-1 text-[11px] text-slate-400 hover:text-white transition-colors"
+            className="flex items-center gap-1 rounded-lg border border-helix-border bg-slate-900/80 px-2 py-1 text-[11px] text-helix-muted hover:text-helix-ink transition-colors"
             title="Reset Simulator"
           >
             <RotateCcw className="size-3" />
@@ -181,12 +181,12 @@ export function StudioInteractiveSimulator({
                 className={cn(
                   'rounded-2xl p-3.5 text-xs leading-relaxed shadow-md',
                   m.sender === 'user'
-                    ? 'bg-cyan-600 text-white rounded-br-xs'
-                    : 'bg-[#121c32] border border-slate-800 text-slate-200 rounded-bl-xs'
+                    ? 'bg-cyan-600 text-helix-ink rounded-br-xs'
+                    : 'bg-[#121c32] border border-helix-border text-helix-ink rounded-bl-xs'
                 )}
               >
-                <div className="flex items-center justify-between gap-3 text-[10px] text-slate-400 mb-1 border-b border-white/10 pb-1">
-                  <span className="font-semibold text-slate-300">
+                <div className="flex items-center justify-between gap-3 text-[10px] text-helix-muted mb-1 border-b border-white/10 pb-1">
+                  <span className="font-semibold text-helix-ink/80">
                     {m.sender === 'user' ? (isAr ? 'العميل' : 'Customer') : brandName}
                   </span>
                   <span className="font-mono text-[9px]">{m.time} ✓✓</span>
@@ -195,7 +195,7 @@ export function StudioInteractiveSimulator({
 
                 {/* Ground Truth Facts Extracted */}
                 {m.verifiedFacts && m.verifiedFacts.length > 0 && (
-                  <div className="mt-2.5 pt-2 border-t border-slate-700/60 space-y-1">
+                  <div className="mt-2.5 pt-2 border-t border-helix-border/60 space-y-1">
                     <span className="text-[9px] font-mono uppercase tracking-wider text-emerald-400 font-semibold flex items-center gap-1">
                       <ShieldCheck className="size-3 text-emerald-400" />
                       {isAr ? 'حقائق مستخلصة ومحققة في سجل العمليات' : 'Verified Evidence Extracted:'}
@@ -217,11 +217,11 @@ export function StudioInteractiveSimulator({
           ))}
 
           {isProcessing && (
-            <div className="mr-auto flex items-center gap-2 rounded-xl bg-[#121c32] border border-slate-800 px-3 py-2 text-xs text-slate-400">
+            <div className="mr-auto flex items-center gap-2 rounded-xl bg-[#121c32] border border-helix-border px-3 py-2 text-xs text-helix-muted">
               <span className="size-1.5 rounded-full bg-cyan-400 animate-pulse" />
               <span className="size-1.5 rounded-full bg-cyan-400 animate-pulse delay-100" />
               <span className="size-1.5 rounded-full bg-cyan-400 animate-pulse delay-200" />
-              <span className="font-mono text-[10px] text-cyan-300 ml-1">
+              <span className="font-mono text-[10px] text-helix-accent ml-1">
                 Reasoning &amp; Fact-Checking...
               </span>
             </div>
@@ -229,7 +229,7 @@ export function StudioInteractiveSimulator({
         </div>
 
         {/* Input Bar */}
-        <div className="border-t border-slate-800/80 bg-[#0e1628] p-3 flex items-center gap-2">
+        <div className="border-t border-helix-border/80 bg-helix-canvas p-3 flex items-center gap-2">
           <input
             type="text"
             value={inputMessage}
@@ -240,13 +240,13 @@ export function StudioInteractiveSimulator({
                 ? 'اكتب رسالة تجريبية لاختبار رد واستجابة الوكيل الذكي...'
                 : 'Type a message to simulate live agent response...'
             }
-            className="flex-1 rounded-xl border border-slate-700 bg-[#090e1a] px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-hidden"
+            className="flex-1 rounded-xl border border-helix-border bg-[#090e1a] px-3.5 py-2 text-xs text-helix-ink placeholder-slate-500 focus:border-cyan-500 focus:outline-hidden"
           />
           <button
             type="button"
             onClick={() => handleSend()}
             disabled={isProcessing || !inputMessage.trim()}
-            className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-cyan-500 text-slate-950 hover:bg-cyan-400 disabled:opacity-50 transition-colors shadow-sm"
+            className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-helix-ink text-white hover:bg-helix-ink/90 disabled:opacity-50 transition-colors shadow-sm"
           >
             <Send className="size-3.5" />
           </button>
@@ -256,15 +256,15 @@ export function StudioInteractiveSimulator({
       {/* Simulator Control & Telemetry Panel (5 cols) */}
       <div className="lg:col-span-5 space-y-4">
         {/* Preset Inquiries */}
-        <div className="rounded-2xl border border-slate-800 bg-[#0c1424] p-4 space-y-3">
-          <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-300">
-            <Sparkles className="size-3.5 text-cyan-400" />
+        <div className="rounded-2xl border border-helix-border bg-helix-surface p-4 space-y-3">
+          <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-helix-ink/80">
+            <Sparkles className="size-3.5 text-helix-accent" />
             <span>{isAr ? 'سيناريوهات اختبار سريعة' : 'Quick Scenario Presets'}</span>
           </div>
-          <p className="text-[11px] text-slate-400">
+          <p className="text-[11px] text-helix-muted">
             {isAr
               ? 'اضغط لاختبار استجابة النظام الفورية مع مختلف حالات العملاء.'
-              : 'Click any scenario below to trigger instant agent telemetry:'}
+              : 'Click a scenario to run the demo script:'}
           </p>
           <div className="space-y-2">
             {PRESETS.map((p, idx) => (
@@ -275,22 +275,22 @@ export function StudioInteractiveSimulator({
                   setActivePreset(idx)
                   handleSend(p.text)
                 }}
-                className="w-full text-left rounded-xl border border-slate-800 bg-[#090e1a] p-2.5 text-xs hover:border-cyan-500/50 hover:bg-slate-850 transition-colors"
+                className="w-full text-left rounded-xl border border-helix-border bg-[#090e1a] p-2.5 text-xs hover:border-helix-border hover:bg-slate-850 transition-colors"
               >
-                <div className="font-semibold text-white text-[11px] flex items-center justify-between">
+                <div className="font-semibold text-helix-ink text-[11px] flex items-center justify-between">
                   <span>{p.label}</span>
-                  <Zap className="size-3 text-cyan-400" />
+                  <Zap className="size-3 text-helix-accent" />
                 </div>
-                <p className="text-[10px] text-slate-400 mt-1 truncate">{p.text}</p>
+                <p className="text-[10px] text-helix-muted mt-1 truncate">{p.text}</p>
               </button>
             ))}
           </div>
         </div>
 
         {/* Live Audio Telemetry Card */}
-        <div className="rounded-2xl border border-slate-800 bg-[#0c1424] p-4 space-y-3">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-            <span className="flex items-center gap-1.5 text-xs font-semibold text-white">
+        <div className="rounded-2xl border border-helix-border bg-helix-surface p-4 space-y-3">
+          <div className="flex items-center justify-between border-b border-helix-border pb-2">
+            <span className="flex items-center gap-1.5 text-xs font-semibold text-helix-ink">
               <Volume2 className="size-3.5 text-emerald-400" />
               <span>{isAr ? 'محاكاة المكالمة الصوتية' : 'Voice Telemetry Simulation'}</span>
             </span>
@@ -299,8 +299,8 @@ export function StudioInteractiveSimulator({
             </span>
           </div>
 
-          <div className="rounded-xl border border-slate-800/80 bg-[#080d18] p-3 space-y-2 text-xs">
-            <div className="flex items-center justify-between text-[10px] text-slate-400 font-mono">
+          <div className="rounded-xl border border-helix-border/80 bg-[#080d18] p-3 space-y-2 text-xs">
+            <div className="flex items-center justify-between text-[10px] text-helix-muted font-mono">
               <span>{isAr ? 'المتصل: +971 50 892 4102' : 'Caller: +971 50 892 4102'}</span>
               <span>1m 18s • 24kHz HD</span>
             </div>
@@ -316,7 +316,7 @@ export function StudioInteractiveSimulator({
                 )
               )}
             </div>
-            <p className="text-[10px] text-slate-300 italic">
+            <p className="text-[10px] text-helix-ink/80 italic">
               {isAr
                 ? `وكيل ${brandName}: أهلاً بك! تم حجز الموعد وتثبيت بياناتك وسنرسل إشعار الموعد والموقع إلى واتسابك فوراً.`
                 : `Agent: Thank you for contacting ${brandName}. Your reservation is confirmed and direct itinerary has been sent to your WhatsApp.`}

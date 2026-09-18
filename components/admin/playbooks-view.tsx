@@ -32,18 +32,15 @@ export function PlaybooksView() {
   return (
     <div className="mx-auto w-full max-w-6xl" dir={isAr ? 'rtl' : 'ltr'}>
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-6">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-helix-border pb-6">
         <div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-cyan-400">
-            <BookOpen className="size-3.5" /> Agency Sales & Outreach Engine
-          </div>
-          <h1 className="mt-2 font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            {isAr ? 'أدلة التوزيع والمكالمات الباردة' : 'Distribution Playbooks & Cold-Call Scripts'}
+          <h1 className="helix-title text-28">
+            {isAr ? 'أدلة الأنظمة والتوزيع' : 'Guides'}
           </h1>
-          <p className="mt-1 text-sm text-slate-400">
+          <p className="mt-1 text-13 text-helix-muted">
             {isAr
-              ? 'نصوص المكالمات الهاتفية، قوالب الواتساب الثنائية، والروابط التجريبية الحية لمنطقة الخليج ومصر والأردن.'
-              : 'Battle-tested cold scripts, bilingual WhatsApp cadences, and production demonstration assets.'}
+              ? 'نصوص المكالمات، قوالب الواتساب، وروابط العروض التجريبية.'
+              : 'Call scripts, WhatsApp cadences, and demo links for GCC and MENA.'}
           </p>
         </div>
 
@@ -51,7 +48,7 @@ export function PlaybooksView() {
         <button
           type="button"
           onClick={() => setLanguage(l => (l === 'en' ? 'ar' : 'en'))}
-          className="flex items-center gap-1.5 rounded-xl border border-slate-800 bg-[#121c2e] px-3.5 py-2 text-xs font-semibold text-slate-300 hover:text-white"
+          className="flex items-center gap-1.5 rounded-xl border border-helix-border bg-[#121c2e] px-3.5 py-2 text-xs font-semibold text-helix-ink/80 hover:text-helix-ink"
         >
           <Languages className="size-3.5" />
           {isAr ? 'English' : 'العربية'}
@@ -59,7 +56,7 @@ export function PlaybooksView() {
       </div>
 
       {/* Tabs */}
-      <div className="mt-6 flex items-center gap-2 border-b border-slate-800 pb-2 overflow-x-auto">
+      <div className="mt-6 flex items-center gap-2 border-b border-helix-border pb-2 overflow-x-auto">
         {[
           { id: 'scripts', label: isAr ? 'نصوص المكالمات الهاتفية' : 'Phone Cold Scripts', icon: PhoneCall },
           { id: 'whatsapp', label: isAr ? 'سلاسل رسائل الواتساب' : 'WhatsApp Outreach', icon: MessageSquare },
@@ -76,8 +73,8 @@ export function PlaybooksView() {
               className={cn(
                 'flex shrink-0 items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold transition-all',
                 isActive
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-xs'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                  ? 'bg-helix-accent-soft text-helix-accent border border-helix-border shadow-xs'
+                  : 'text-helix-muted hover:text-helix-ink hover:bg-slate-800/60'
               )}
             >
               <Icon className="size-3.5" />
@@ -91,13 +88,13 @@ export function PlaybooksView() {
       {activeTab === 'scripts' && (
         <div className="mt-8 space-y-6">
           {/* Script A: Night Test */}
-          <div className="rounded-2xl border border-slate-800 bg-[#0e1628] p-6 shadow-xl">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
+          <div className="rounded-2xl border border-helix-border bg-helix-canvas p-6 shadow-xl">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-helix-border pb-3">
               <div>
-                <span className="rounded-full bg-cyan-500/10 border border-cyan-500/20 px-2.5 py-0.5 text-[10px] text-cyan-300 font-mono">
+                <span className="rounded-full bg-helix-accent-soft border border-cyan-500/20 px-2.5 py-0.5 text-[10px] text-helix-accent font-mono">
                   CLINICS & HIGH-TICKET SERVICES
                 </span>
-                <h3 className="mt-1.5 font-display text-lg font-bold text-white">
+                <h3 className="mt-1.5 font-display text-lg font-bold text-helix-ink">
                   {isAr ? 'سيناريو مكالمة المساء (The Night Test)' : 'Script A: The "Night Test" Angle'}
                 </h3>
               </div>
@@ -109,13 +106,13 @@ export function PlaybooksView() {
                     `Hi [Name], quick question—have you ever called your own clinic line at 8:30 PM to see what a new patient hears? When patients search for appointments after hours, they hang up and book with whoever answers first. We deployed an autonomous bilingual voice receptionist that answers in < 400ms in Gulf Arabic, confirms calendar slots on Cal.com, and sends an instant WhatsApp itinerary. Can I send you a 1-minute test sandbox to test on your phone?`
                   )
                 }
-                className="flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-200 hover:text-white"
+                className="flex items-center gap-1.5 rounded-lg border border-helix-border bg-slate-800 px-3 py-1.5 text-xs font-medium text-helix-ink hover:text-helix-ink"
               >
                 {copiedKey === 'script-a' ? <Check className="size-3.5 text-emerald-400" /> : <Copy className="size-3.5" />}
                 {copiedKey === 'script-a' ? (isAr ? 'تم النسخ!' : 'Copied!') : (isAr ? 'نسخ النص' : 'Copy Pitch')}
               </button>
             </div>
-            <div className="mt-4 text-xs text-slate-300 space-y-2 leading-relaxed bg-[#121c2e] p-4 rounded-xl border border-slate-800/80">
+            <div className="mt-4 text-xs text-helix-ink/80 space-y-2 leading-relaxed bg-[#121c2e] p-4 rounded-xl border border-helix-border/80">
               <p>
                 <strong>{isAr ? 'المتصل (الممثل):' : 'Caller (Rep):'}</strong> "
                 {isAr
@@ -138,13 +135,13 @@ export function PlaybooksView() {
           </div>
 
           {/* Script B: 5-Second Rescue */}
-          <div className="rounded-2xl border border-slate-800 bg-[#0e1628] p-6 shadow-xl">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
+          <div className="rounded-2xl border border-helix-border bg-helix-canvas p-6 shadow-xl">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-helix-border pb-3">
               <div>
                 <span className="rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 text-[10px] text-emerald-300 font-mono">
                   CONTRACTORS & HOME SERVICES
                 </span>
-                <h3 className="mt-1.5 font-display text-lg font-bold text-white">
+                <h3 className="mt-1.5 font-display text-lg font-bold text-helix-ink">
                   {isAr ? 'سيناريو إنقاذ المكالمة الفائتة في 5 ثوانٍ' : 'Script B: The "5-Second Rescue"'}
                 </h3>
               </div>
@@ -156,13 +153,13 @@ export function PlaybooksView() {
                     `Hi [Name], in emergency home services, 70% of missed calls hire a competitor within 3 minutes. When your line is busy, Helix AI fires a WhatsApp in under 4 seconds: 'Hi, we missed your call—what emergency service do you need right now?' It captures the address and pings your technician dispatch queue instantly.`
                   )
                 }
-                className="flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-200 hover:text-white"
+                className="flex items-center gap-1.5 rounded-lg border border-helix-border bg-slate-800 px-3 py-1.5 text-xs font-medium text-helix-ink hover:text-helix-ink"
               >
                 {copiedKey === 'script-b' ? <Check className="size-3.5 text-emerald-400" /> : <Copy className="size-3.5" />}
                 {copiedKey === 'script-b' ? (isAr ? 'تم النسخ!' : 'Copied!') : (isAr ? 'نسخ النص' : 'Copy Pitch')}
               </button>
             </div>
-            <div className="mt-4 text-xs text-slate-300 space-y-2 leading-relaxed bg-[#121c2e] p-4 rounded-xl border border-slate-800/80">
+            <div className="mt-4 text-xs text-helix-ink/80 space-y-2 leading-relaxed bg-[#121c2e] p-4 rounded-xl border border-helix-border/80">
               <p>
                 <strong>{isAr ? 'المتصل (الممثل):' : 'Caller (Rep):'}</strong> "
                 {isAr
@@ -200,7 +197,7 @@ export function PlaybooksView() {
                 {copiedKey === 'wa-touch-1' ? 'Copied!' : 'Copy Template'}
               </button>
             </div>
-            <p className="mt-4 text-xs text-slate-200 leading-relaxed font-mono bg-[#0f2a22] p-4 rounded-xl border border-emerald-500/20">
+            <p className="mt-4 text-xs text-helix-ink leading-relaxed font-mono bg-[#0f2a22] p-4 rounded-xl border border-emerald-500/20">
               {isAr
                 ? 'مرحباً أستاذ [الاسم]، لاحظنا تميز أعمالكم في [الشركة]. عندما يتصل عميل مهتم خارج أوقات الدوام، هل يُفقد الاتصال أم يُثبت حجزه فوراً؟ قمنا بتطوير موظف استقبال صوتي ذكي يجيب خلال 400 ميلي ثانية باللهجة الخليجية ويثبت الموعد ويرسل تأكيد الواتساب فوراً. جرب المختبر التفاعلي هنا: https://helixai.com/dashboard/studio'
                 : 'Hi [Name], when prospective high-value clients call [Business] after hours, do they get sent to voicemail or booked instantly? Our autonomous voice & WhatsApp agent picks up in < 400ms in Gulf Arabic/English, coordinates Cal.com bookings, and sends instant WhatsApp itineraries: https://helixai.com/dashboard/studio'}
@@ -246,18 +243,18 @@ export function PlaybooksView() {
           ].map(link => (
             <div
               key={link.title}
-              className="flex items-center justify-between rounded-xl border border-slate-800 bg-[#0e1628] p-4 text-xs"
+              className="flex items-center justify-between rounded-xl border border-helix-border bg-helix-canvas p-4 text-xs"
             >
               <div>
-                <h4 className="font-bold text-white text-sm">{link.title}</h4>
-                <p className="mt-1 text-slate-400">{link.desc}</p>
-                <span className="mt-2 block font-mono text-[11px] text-cyan-400">
+                <h4 className="font-bold text-helix-ink text-sm">{link.title}</h4>
+                <p className="mt-1 text-helix-muted">{link.desc}</p>
+                <span className="mt-2 block font-mono text-[11px] text-helix-accent">
                   {link.href}
                 </span>
               </div>
               <Link
                 href={link.href}
-                className="flex items-center gap-1 rounded-lg bg-cyan-500/10 border border-cyan-500/30 px-3 py-1.5 text-xs font-semibold text-cyan-300 hover:bg-cyan-500/20"
+                className="flex items-center gap-1 rounded-lg bg-helix-accent-soft border border-helix-border px-3 py-1.5 text-xs font-semibold text-helix-accent hover:bg-helix-accent-soft"
               >
                 Open <ExternalLink className="size-3" />
               </Link>
@@ -269,22 +266,22 @@ export function PlaybooksView() {
       {/* Tab 4: Objection Handling */}
       {activeTab === 'objections' && (
         <div className="mt-8 space-y-4">
-          <div className="rounded-xl border border-slate-800 bg-[#0e1628] p-5 text-xs space-y-2">
-            <h4 className="font-bold text-white text-sm">
+          <div className="rounded-xl border border-helix-border bg-helix-canvas p-5 text-xs space-y-2">
+            <h4 className="font-bold text-helix-ink text-sm">
               {isAr ? 'الاعتراض: هل يبدو الصوت آلياً أو مزعجاً للعميل؟' : 'Objection: Does the voice sound robotic?'}
             </h4>
-            <p className="text-slate-300 leading-relaxed">
+            <p className="text-helix-ink/80 leading-relaxed">
               {isAr
                 ? 'الإجابة: إطلاقاً. نستخدم محركات توليد صوت عصبي فائق التطور مخصص للهجات الخليجية والمصرية والشامية بزمن استجابة أقل من 400 ميلي ثانية، مع قدرة ذكية على التوقف عند مقاطعة المتصل كما يتحدث البشر تماماً.'
                 : 'Response: Not at all. We utilize ultra-low latency neural speech models (< 400ms response) tuned specifically for Gulf and regional Arabic dialects with natural conversational interruptions.'}
             </p>
           </div>
 
-          <div className="rounded-xl border border-slate-800 bg-[#0e1628] p-5 text-xs space-y-2">
-            <h4 className="font-bold text-white text-sm">
+          <div className="rounded-xl border border-helix-border bg-helix-canvas p-5 text-xs space-y-2">
+            <h4 className="font-bold text-helix-ink text-sm">
               {isAr ? 'الاعتراض: ماذا لو ارتكب الذكاء الاصطناعي أخطاء في الأسعار؟' : 'Objection: What if the AI hallucinates prices?'}
             </h4>
-            <p className="text-slate-300 leading-relaxed">
+            <p className="text-helix-ink/80 leading-relaxed">
               {isAr
                 ? 'الإجابة: صممنا سجل تدقيق حقائق مشفر (Evidence Ledger). أي استفسار غير مألوف أو تقل نسبة الثقة فيه عن 85% يُحوّل تلقائياً إلى طابور مراجعة الإدارة قبل تأكيد أي معاملة.'
                 : 'Response: Our Cryptographic Ground-Truth Ledger routes any inquiry with confidence < 85% to supervisory attention queues before any commitment is confirmed.'}

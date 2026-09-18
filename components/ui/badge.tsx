@@ -3,31 +3,29 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const badgeVariants = cva(
-  'inline-flex items-center gap-1.5 rounded-md border font-mono text-[11px] font-semibold uppercase tracking-wider transition-colors select-none focus:outline-hidden',
+  'inline-flex items-center gap-1 rounded-full border font-medium select-none',
   {
     variants: {
       variant: {
-        default:
-          'border-white/10 bg-white/5 text-slate-300 hover:bg-white/8',
-        outline:
-          'border-white/15 bg-transparent text-slate-300',
-        cyan:
-          'border-sky-500/30 bg-sky-500/10 text-sky-400 shadow-[0_0_12px_rgba(56,189,248,0.15)]',
-        verified:
-          'border-emerald-500/30 bg-emerald-500/10 text-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.15)]',
-        probable:
-          'border-amber-500/30 bg-amber-500/10 text-amber-400 shadow-[0_0_12px_rgba(245,158,11,0.15)]',
-        possible:
-          'border-indigo-500/30 bg-indigo-500/10 text-indigo-400 shadow-[0_0_12px_rgba(99,102,241,0.15)]',
-        danger:
-          'border-rose-500/30 bg-rose-500/10 text-rose-400 shadow-[0_0_12px_rgba(244,63,94,0.15)]',
-        muted:
-          'border-slate-800 bg-slate-900/60 text-slate-500',
+        default: 'border-transparent bg-helix-ink text-white',
+        outline: 'border-helix-border bg-transparent text-helix-muted',
+        core: 'border-transparent bg-helix-ink text-white',
+        demo: 'border-transparent bg-helix-accent-soft text-helix-accent',
+        preview: 'border-helix-border bg-helix-canvas text-helix-muted',
+        live: 'border-transparent bg-helix-accent-soft text-helix-ok',
+        cyan: 'border-transparent bg-helix-accent-soft text-helix-accent',
+        verified: 'border-transparent bg-helix-accent-soft text-helix-ok',
+        probable: 'border-transparent bg-[#f8eedd] text-helix-warn',
+        possible: 'border-helix-border bg-helix-canvas text-helix-muted',
+        danger: 'border-transparent bg-helix-danger/10 text-helix-danger',
+        muted: 'border-helix-border bg-helix-canvas text-helix-muted',
+        b2b: 'border-transparent bg-[#f8eedd] text-helix-warn',
+        accent: 'border-transparent bg-helix-accent text-white',
       },
       size: {
-        sm: 'px-2 py-0.5 text-[10px]',
-        default: 'px-2.5 py-0.5 text-[11px]',
-        lg: 'px-3 py-1 text-xs',
+        sm: 'px-2 py-0.5 text-11',
+        default: 'px-2.5 py-0.5 text-12',
+        lg: 'px-3 py-1 text-13',
       },
     },
     defaultVariants: {
@@ -45,14 +43,20 @@ export interface BadgeProps
 
 function Badge({ className, variant, size, dot, children, ...props }: BadgeProps) {
   const dotColorClass = {
-    default: 'bg-slate-400',
-    outline: 'bg-slate-400',
-    cyan: 'bg-sky-400',
-    verified: 'bg-emerald-400',
-    probable: 'bg-amber-400',
-    possible: 'bg-indigo-400',
-    danger: 'bg-rose-400',
-    muted: 'bg-slate-600',
+    default: 'bg-white',
+    outline: 'bg-helix-muted',
+    core: 'bg-white',
+    demo: 'bg-helix-accent',
+    preview: 'bg-helix-muted',
+    live: 'bg-helix-ok',
+    cyan: 'bg-helix-accent',
+    verified: 'bg-helix-ok',
+    probable: 'bg-helix-warn',
+    possible: 'bg-helix-muted',
+    danger: 'bg-helix-danger',
+    muted: 'bg-helix-muted',
+    b2b: 'bg-helix-warn',
+    accent: 'bg-white',
   }[variant ?? 'default']
 
   return (

@@ -64,11 +64,11 @@ export function NotificationBell({ isAdmin, clientId }: { isAdmin: boolean; clie
   return (
     <Link
       href={href}
-      className="relative flex size-8 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-colors"
+      className="relative flex size-8 items-center justify-center rounded-[10px] text-helix-muted hover:bg-helix-canvas hover:text-helix-ink transition-colors"
     >
       <Bell className="size-4" />
       {hasUnread && (
-        <span className="absolute right-2 top-2 size-2 rounded-full bg-status-danger ring-2 ring-[#0B0F19]" />
+        <span className="absolute right-2 top-2 size-2 rounded-full bg-status-danger ring-2 ring-helix-surface" />
       )}
     </Link>
   )

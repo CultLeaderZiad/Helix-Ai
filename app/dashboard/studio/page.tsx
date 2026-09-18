@@ -9,7 +9,12 @@ export const metadata = {
   robots: { index: false, follow: false },
 }
 
-export default async function StudioPage() {
+export default async function StudioPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ system?: string }>
+}) {
+  const { system } = await searchParams
   const supabase = await createSupabaseServerClient()
   const session = await getVerifiedSession(supabase)
   if (!session) redirect('/login')
@@ -42,7 +47,7 @@ export default async function StudioPage() {
       email={session.user.email ?? ''}
       businessName={isAdmin ? null : businessName}
     >
-      <StudioWorkspace initialClientName={businessName} />
+      <StudioWorkspace initialClientName={businessName} initialSystemId={system} />
     </ConsoleShell>
   )
 }

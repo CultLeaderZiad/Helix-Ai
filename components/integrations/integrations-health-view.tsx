@@ -86,14 +86,14 @@ export function IntegrationsHealthView({ initialIntegrations, pingAction }: Inte
     <div>
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-cyan-400">
+          <div className="inline-flex items-center gap-2 rounded-full border border-helix-border bg-helix-accent-soft px-3 py-1 text-xs font-semibold uppercase tracking-wider text-helix-accent">
             <PlugZap className="size-3.5" /> Channel Telemetry
           </div>
-          <h1 className="mt-2 font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+          <h1 className="mt-2 font-display text-3xl font-bold tracking-tight text-helix-ink sm:text-4xl">
             Integration Health
           </h1>
-          <p className="mt-1 text-sm text-slate-400">
-            Live status and telemetry for connected communication channels and workflow engines.
+          <p className="mt-1 text-sm text-helix-muted">
+            Status of connected WhatsApp, voice, and workflow channels.
           </p>
         </div>
 
@@ -101,11 +101,11 @@ export function IntegrationsHealthView({ initialIntegrations, pingAction }: Inte
           type="button"
           onClick={handlePing}
           disabled={isPending}
-          className="flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-800/80 px-4 py-2 text-xs font-semibold text-slate-200 hover:bg-slate-700 transition-colors disabled:opacity-50"
+          className="flex items-center gap-2 rounded-xl border border-helix-border bg-slate-800/80 px-4 py-2 text-xs font-semibold text-helix-ink hover:bg-slate-700 transition-colors disabled:opacity-50"
         >
           {isPending ? (
             <>
-              <Loader2 className="size-3.5 animate-spin text-cyan-400" /> Pinging Endpoints...
+              <Loader2 className="size-3.5 animate-spin text-helix-accent" /> Pinging Endpoints...
             </>
           ) : (
             <>
@@ -116,8 +116,8 @@ export function IntegrationsHealthView({ initialIntegrations, pingAction }: Inte
       </div>
 
       {pingMessage && (
-        <div className="mt-4 flex items-center gap-2 rounded-xl border border-cyan-500/30 bg-cyan-500/10 p-3 text-xs text-cyan-300">
-          <CheckCircle2 className="size-4 shrink-0 text-cyan-400" />
+        <div className="mt-4 flex items-center gap-2 rounded-xl border border-helix-border bg-helix-accent-soft p-3 text-xs text-helix-accent">
+          <CheckCircle2 className="size-4 shrink-0 text-helix-accent" />
           <span>{pingMessage}</span>
         </div>
       )}
@@ -133,9 +133,9 @@ export function IntegrationsHealthView({ initialIntegrations, pingAction }: Inte
           const isConnected = int.status === 'connected'
 
           return (
-            <div key={int.id} className="rounded-2xl border border-slate-800 bg-[#0e1422] p-5 shadow-lg">
+            <div key={int.id} className="rounded-2xl border border-helix-border bg-helix-surface p-5 shadow-lg">
               <div className="flex items-center justify-between">
-                <div className="flex size-10 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-400 ring-1 ring-cyan-500/30">
+                <div className="flex size-10 items-center justify-center rounded-xl bg-helix-accent-soft text-helix-accent ring-1 ring-cyan-500/30">
                   <Icon className="size-5" />
                 </div>
                 <span
@@ -150,11 +150,11 @@ export function IntegrationsHealthView({ initialIntegrations, pingAction }: Inte
                 </span>
               </div>
 
-              <h2 className="mt-4 font-display text-base font-bold text-white">{meta.name}</h2>
-              <p className="mt-1 text-xs text-slate-400 leading-relaxed">{meta.details}</p>
+              <h2 className="mt-4 font-display text-base font-bold text-helix-ink">{meta.name}</h2>
+              <p className="mt-1 text-xs text-helix-muted leading-relaxed">{meta.details}</p>
 
-              <div className="mt-4 border-t border-slate-800/80 pt-3 flex items-center justify-between text-xs text-slate-400">
-                <span>Latency: <strong className="text-white font-mono">{int.status === 'connected' ? '42ms' : 'Timeout'}</strong></span>
+              <div className="mt-4 border-t border-helix-border/80 pt-3 flex items-center justify-between text-xs text-helix-muted">
+                <span>Latency: <strong className="text-helix-ink font-mono">{int.status === 'connected' ? '42ms' : 'Timeout'}</strong></span>
                 <span>Ping: {formatLastPing(int.last_ping_at)}</span>
               </div>
             </div>

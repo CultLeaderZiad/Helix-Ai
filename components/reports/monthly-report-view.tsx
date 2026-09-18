@@ -67,10 +67,10 @@ export function MonthlyReportView({ report }: MonthlyReportViewProps) {
             </Badge>
           </div>
 
-          <h1 className="mt-3 font-display text-2xl font-bold tracking-tight text-white sm:text-3xl">
+          <h1 className="mt-3 font-display text-2xl font-bold tracking-tight text-helix-ink sm:text-3xl">
             {isAr ? 'تقرير الأداء والتحصيل الشهري' : 'Monthly Performance & ROI Report'}
           </h1>
-          <p className="mt-1 text-xs text-slate-400 font-mono">
+          <p className="mt-1 text-xs text-helix-muted font-mono">
             {report.clientBusinessName} • {report.cyclePeriod} • GCC ENTERPRISE TENANT
           </p>
         </div>
@@ -146,7 +146,7 @@ export function MonthlyReportView({ report }: MonthlyReportViewProps) {
         <div className="flex items-center justify-between gap-4 border-b border-white/[0.06] pb-3.5 mb-4">
           <div className="flex items-center gap-2">
             <Sparkles className="size-4 text-sky-400" />
-            <h2 className="font-display text-sm font-semibold tracking-tight text-white uppercase">
+            <h2 className="font-display text-sm font-semibold tracking-tight text-helix-ink uppercase">
               {isAr ? 'الملخص التنفيذي للأداء الشهري' : 'Executive Retainer Narrative & Briefing'}
             </h2>
           </div>
@@ -154,7 +154,7 @@ export function MonthlyReportView({ report }: MonthlyReportViewProps) {
             CRYPTOGRAPHIC LEDGER AUDIT
           </Badge>
         </div>
-        <p className="text-sm text-slate-300 leading-relaxed font-sans">
+        <p className="text-sm text-helix-ink/80 leading-relaxed font-sans">
           {isAr ? report.executiveSummaryAr : report.executiveSummary}
         </p>
       </Card>
@@ -163,11 +163,11 @@ export function MonthlyReportView({ report }: MonthlyReportViewProps) {
       <Card className="p-6 space-y-4">
         <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
           <div>
-            <h2 className="font-display text-sm font-semibold tracking-tight text-white uppercase">
+            <h2 className="font-display text-sm font-semibold tracking-tight text-helix-ink uppercase">
               {isAr ? 'تفاصيل أداء الأنظمة التشغيلية' : 'System Architecture Telemetry & Throughput'}
             </h2>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Partitioned cluster execution statistics and autonomous completion telemetry.
+            <p className="text-xs text-helix-muted mt-0.5">
+              What ran this period — bookings, conversations, and facts reviewed.
             </p>
           </div>
           <Badge variant="verified" dot>
@@ -182,15 +182,15 @@ export function MonthlyReportView({ report }: MonthlyReportViewProps) {
               className="flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 text-xs hover:border-white/[0.12] transition-colors"
             >
               <div>
-                <p className="font-semibold text-white text-sm">
+                <p className="font-semibold text-helix-ink text-sm">
                   {isAr ? item.systemAr : item.system}
                 </p>
-                <p className="mt-0.5 text-slate-400 font-mono text-[11px]">
+                <p className="mt-0.5 text-helix-muted font-mono text-[11px]">
                   {isAr ? item.metricAr : item.metric}
                 </p>
               </div>
               <div className="text-right">
-                <span className="font-display text-2xl font-bold text-white tabular-nums">
+                <span className="font-display text-2xl font-bold text-helix-ink tabular-nums">
                   {item.count}
                 </span>
                 <span className="block text-[10px] text-sky-400 font-mono uppercase">
@@ -206,18 +206,18 @@ export function MonthlyReportView({ report }: MonthlyReportViewProps) {
       <Card className="p-6 space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/[0.06] pb-4">
           <div>
-            <h2 className="font-display text-sm font-semibold tracking-tight text-white uppercase">
+            <h2 className="font-display text-sm font-semibold tracking-tight text-helix-ink uppercase">
               {isAr ? 'سجل الفواتير والدفعات الشهرية' : 'Retainer Invoicing & Financial Ledger'}
             </h2>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-helix-muted mt-0.5">
               {isAr
                 ? 'تدقيق مالي مباشر مرتبط بحساب العميل وسجلات الدفع الإلكتروني.'
                 : 'Direct financial settlement ledger tied to your tenant retainer contract.'}
             </p>
           </div>
           <div className="inline-flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-xs font-mono">
-            <span className="text-slate-400">{isAr ? 'الاشتراك الشهري:' : 'Active Monthly Retainer:'}</span>
-            <strong className="text-white font-semibold">{formatMoney(report.monthlyRetainerCents)}</strong>
+            <span className="text-helix-muted">{isAr ? 'الاشتراك الشهري:' : 'Active Monthly Retainer:'}</span>
+            <strong className="text-helix-ink font-semibold">{formatMoney(report.monthlyRetainerCents)}</strong>
           </div>
         </div>
 
@@ -235,9 +235,9 @@ export function MonthlyReportView({ report }: MonthlyReportViewProps) {
               {report.recentInvoices.length > 0 ? (
                 report.recentInvoices.map((inv) => (
                   <TableRow key={inv.id}>
-                    <TableCell className="font-mono font-medium text-white">{inv.id}</TableCell>
-                    <TableCell className="text-slate-400 font-mono">{inv.date}</TableCell>
-                    <TableCell className="font-semibold text-slate-200">
+                    <TableCell className="font-mono font-medium text-helix-ink">{inv.id}</TableCell>
+                    <TableCell className="text-helix-muted font-mono">{inv.date}</TableCell>
+                    <TableCell className="font-semibold text-helix-ink">
                       {formatMoney(inv.amountCents)}
                     </TableCell>
                     <TableCell className="text-right">
@@ -249,7 +249,7 @@ export function MonthlyReportView({ report }: MonthlyReportViewProps) {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={4} className="py-8 text-center text-slate-500 font-mono text-xs">
+                  <TableCell colSpan={4} className="py-8 text-center text-helix-muted font-mono text-xs">
                     {isAr ? 'لا توجد فواتير سابقة مسجلة' : 'No previous invoices logged for this billing cycle.'}
                   </TableCell>
                 </TableRow>

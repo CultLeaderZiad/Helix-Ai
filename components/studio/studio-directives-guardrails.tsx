@@ -50,11 +50,11 @@ Mandatory Rules:
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
       {/* Left Column: Directives & Prompt Window (7 cols) */}
       <div className="lg:col-span-7 space-y-4">
-        <div className="rounded-2xl border border-slate-800 bg-[#090e1a] p-5 shadow-xl space-y-3">
-          <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
+        <div className="rounded-2xl border border-helix-border bg-[#090e1a] p-5 shadow-xl space-y-3">
+          <div className="flex items-center justify-between border-b border-helix-border/80 pb-3">
             <div className="flex items-center gap-2">
               <FileCode className="size-4 text-purple-400" />
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-200">
+              <span className="text-xs font-bold uppercase tracking-wider text-helix-ink">
                 {isAr ? 'موجهات وتعليمات النظام الذكي (System Directives)' : 'System Prompt Directives'}
               </span>
             </div>
@@ -63,11 +63,11 @@ Mandatory Rules:
             </span>
           </div>
 
-          <div className="rounded-xl border border-slate-800 bg-[#060a14] p-4 font-mono text-xs text-slate-300 leading-relaxed whitespace-pre-line shadow-inner max-h-[280px] overflow-y-auto">
+          <div className="rounded-xl border border-helix-border bg-[#060a14] p-4 font-mono text-xs text-helix-ink/80 leading-relaxed whitespace-pre-line shadow-inner max-h-[280px] overflow-y-auto">
             {promptSnippet}
           </div>
 
-          <div className="flex items-center justify-between text-[11px] text-slate-500 font-mono pt-1">
+          <div className="flex items-center justify-between text-[11px] text-helix-muted font-mono pt-1">
             <span>Estimated Token Size: ~240 Tokens</span>
             <span className="text-emerald-400 flex items-center gap-1">
               <CheckCircle2 className="size-3" />
@@ -80,9 +80,9 @@ Mandatory Rules:
       {/* Right Column: Guardrails & Regional Dialect Tuning (5 cols) */}
       <div className="lg:col-span-5 space-y-4">
         {/* Dialect Engine */}
-        <div className="rounded-2xl border border-slate-800 bg-[#0c1424] p-4 space-y-3">
-          <div className="flex items-center gap-2 text-xs font-bold text-white uppercase tracking-wider">
-            <Globe className="size-4 text-cyan-400" />
+        <div className="rounded-2xl border border-helix-border bg-helix-surface p-4 space-y-3">
+          <div className="flex items-center gap-2 text-xs font-bold text-helix-ink uppercase tracking-wider">
+            <Globe className="size-4 text-helix-accent" />
             <span>{isAr ? 'محرك اللهجات الإقليمية' : 'Regional Dialect Engine'}</span>
           </div>
           <div className="grid grid-cols-2 gap-2 text-xs">
@@ -92,12 +92,12 @@ Mandatory Rules:
               className={cn(
                 'rounded-xl border p-2.5 text-left transition-colors',
                 dialect === 'gulf'
-                  ? 'border-cyan-500 bg-cyan-950/30 text-white font-semibold'
-                  : 'border-slate-800 bg-[#080d18] text-slate-400 hover:text-white'
+                  ? 'border-cyan-500 bg-cyan-950/30 text-helix-ink font-semibold'
+                  : 'border-helix-border bg-[#080d18] text-helix-muted hover:text-helix-ink'
               )}
             >
               <div className="text-[11px] font-semibold">{isAr ? 'اللهجة الخليجية' : 'Gulf Arabic'}</div>
-              <div className="text-[9px] text-slate-500">UAE, KSA, Qatar</div>
+              <div className="text-[9px] text-helix-muted">UAE, KSA, Qatar</div>
             </button>
 
             <button
@@ -106,12 +106,12 @@ Mandatory Rules:
               className={cn(
                 'rounded-xl border p-2.5 text-left transition-colors',
                 dialect === 'egyptian'
-                  ? 'border-cyan-500 bg-cyan-950/30 text-white font-semibold'
-                  : 'border-slate-800 bg-[#080d18] text-slate-400 hover:text-white'
+                  ? 'border-cyan-500 bg-cyan-950/30 text-helix-ink font-semibold'
+                  : 'border-helix-border bg-[#080d18] text-helix-muted hover:text-helix-ink'
               )}
             >
               <div className="text-[11px] font-semibold">{isAr ? 'اللهجة المصرية' : 'Egyptian Arabic'}</div>
-              <div className="text-[9px] text-slate-500">High-velocity SME</div>
+              <div className="text-[9px] text-helix-muted">High-velocity SME</div>
             </button>
 
             <button
@@ -120,12 +120,12 @@ Mandatory Rules:
               className={cn(
                 'rounded-xl border p-2.5 text-left transition-colors',
                 dialect === 'white'
-                  ? 'border-cyan-500 bg-cyan-950/30 text-white font-semibold'
-                  : 'border-slate-800 bg-[#080d18] text-slate-400 hover:text-white'
+                  ? 'border-cyan-500 bg-cyan-950/30 text-helix-ink font-semibold'
+                  : 'border-helix-border bg-[#080d18] text-helix-muted hover:text-helix-ink'
               )}
             >
               <div className="text-[11px] font-semibold">{isAr ? 'العربية البيضاء' : 'Modern Standard'}</div>
-              <div className="text-[9px] text-slate-500">Pan-Arab Corporate</div>
+              <div className="text-[9px] text-helix-muted">Pan-Arab Corporate</div>
             </button>
 
             <button
@@ -134,26 +134,26 @@ Mandatory Rules:
               className={cn(
                 'rounded-xl border p-2.5 text-left transition-colors',
                 dialect === 'english'
-                  ? 'border-cyan-500 bg-cyan-950/30 text-white font-semibold'
-                  : 'border-slate-800 bg-[#080d18] text-slate-400 hover:text-white'
+                  ? 'border-cyan-500 bg-cyan-950/30 text-helix-ink font-semibold'
+                  : 'border-helix-border bg-[#080d18] text-helix-muted hover:text-helix-ink'
               )}
             >
               <div className="text-[11px] font-semibold">Global English</div>
-              <div className="text-[9px] text-slate-500">Multinational GCC</div>
+              <div className="text-[9px] text-helix-muted">Multinational GCC</div>
             </button>
           </div>
         </div>
 
         {/* Safety & Human Escalation */}
-        <div className="rounded-2xl border border-slate-800 bg-[#0c1424] p-4 space-y-3">
-          <div className="flex items-center gap-2 text-xs font-bold text-white uppercase tracking-wider">
+        <div className="rounded-2xl border border-helix-border bg-helix-surface p-4 space-y-3">
+          <div className="flex items-center gap-2 text-xs font-bold text-helix-ink uppercase tracking-wider">
             <ShieldAlert className="size-4 text-emerald-400" />
             <span>{isAr ? 'صمامات الأمان والتحويل البشري' : 'Safety & Escalation Controls'}</span>
           </div>
 
           <div className="space-y-2.5 text-xs">
-            <label className="flex items-center justify-between rounded-xl border border-slate-800 bg-[#080d18] p-2.5 cursor-pointer">
-              <span className="text-slate-300 text-[11px]">
+            <label className="flex items-center justify-between rounded-xl border border-helix-border bg-[#080d18] p-2.5 cursor-pointer">
+              <span className="text-helix-ink/80 text-[11px]">
                 {isAr ? 'تحويل فوري للمشرف عند رصد استياء' : 'Escalate on Negative Sentiment'}
               </span>
               <input
@@ -164,8 +164,8 @@ Mandatory Rules:
               />
             </label>
 
-            <label className="flex items-center justify-between rounded-xl border border-slate-800 bg-[#080d18] p-2.5 cursor-pointer">
-              <span className="text-slate-300 text-[11px]">
+            <label className="flex items-center justify-between rounded-xl border border-helix-border bg-[#080d18] p-2.5 cursor-pointer">
+              <span className="text-helix-ink/80 text-[11px]">
                 {isAr ? 'إرسال خريطة الموقع الجغرافي تلقائياً' : 'Auto-Dispatch WhatsApp GPS Location'}
               </span>
               <input
