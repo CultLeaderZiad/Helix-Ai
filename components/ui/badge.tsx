@@ -7,9 +7,9 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default: 'border-transparent bg-helix-ink text-white',
+        default: 'border-transparent bg-helix-ink text-helix-surface',
         outline: 'border-helix-border bg-transparent text-helix-muted',
-        core: 'border-transparent bg-helix-ink text-white',
+        core: 'border-transparent bg-helix-ink text-helix-surface',
         demo: 'border-transparent bg-helix-accent-soft text-helix-accent',
         preview: 'border-helix-border bg-helix-canvas text-helix-muted',
         live: 'border-transparent bg-helix-accent-soft text-helix-ok',
@@ -20,12 +20,12 @@ const badgeVariants = cva(
         danger: 'border-transparent bg-helix-danger/10 text-helix-danger',
         muted: 'border-helix-border bg-helix-canvas text-helix-muted',
         b2b: 'border-transparent bg-[#f8eedd] text-helix-warn',
-        accent: 'border-transparent bg-helix-accent text-white',
+        accent: 'border-transparent bg-helix-accent text-helix-surface',
       },
       size: {
-        sm: 'px-2 py-0.5 text-11',
-        default: 'px-2.5 py-0.5 text-12',
-        lg: 'px-3 py-1 text-13',
+        sm: 'px-2 py-0.5 text-[11px]',
+        default: 'px-2.5 py-0.5 text-[12px]',
+        lg: 'px-3 py-1 text-[13px]',
       },
     },
     defaultVariants: {

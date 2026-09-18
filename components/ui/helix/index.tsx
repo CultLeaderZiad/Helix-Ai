@@ -84,7 +84,7 @@ export function Pill({
     <span
       className={cn(
         'inline-flex items-center rounded-full px-2 py-0.5 text-11 font-medium',
-        tone === 'core' && 'bg-helix-ink text-white',
+        tone === 'core' && 'bg-helix-ink text-helix-surface',
         tone === 'demo' && 'bg-helix-accent-soft text-helix-accent',
         tone === 'preview' && 'border border-helix-border bg-helix-canvas text-helix-muted',
         tone === 'live' && 'bg-helix-accent-soft text-helix-ok',
@@ -116,7 +116,7 @@ export function JobSubnav({
             className={cn(
               'rounded-full px-3 py-1.5 text-13 transition-colors',
               active
-                ? 'bg-helix-ink text-white'
+                ? 'bg-helix-ink text-helix-surface'
                 : 'text-helix-muted hover:bg-helix-canvas hover:text-helix-ink'
             )}
           >

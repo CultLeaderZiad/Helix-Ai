@@ -69,7 +69,7 @@ export function StudioWorkspace({
           view === 'catalog'
             ? isAr
               ? 'حزم الإنتاج الأساسية وإضافات المعاينة. العرض التجريبي ≠ التشغيل الحي.'
-              : 'Core production packs + preview add-ons. Demo ≠ live.'
+              : 'Core production packs + preview add-ons. Demo is not live.'
             : content.description
         }
         actions={
@@ -80,7 +80,7 @@ export function StudioWorkspace({
                 onClick={() => setLanguage('en')}
                 className={cn(
                   'rounded-[10px] px-2.5 py-1 text-12',
-                  language === 'en' ? 'bg-helix-ink text-white' : 'text-helix-muted'
+                  language === 'en' ? 'bg-helix-ink text-helix-surface' : 'text-helix-muted'
                 )}
               >
                 EN
@@ -90,7 +90,7 @@ export function StudioWorkspace({
                 onClick={() => setLanguage('ar')}
                 className={cn(
                   'rounded-[10px] px-2.5 py-1 text-12',
-                  language === 'ar' ? 'bg-helix-ink text-white' : 'text-helix-muted'
+                  language === 'ar' ? 'bg-helix-ink text-helix-surface' : 'text-helix-muted'
                 )}
               >
                 عربي
@@ -166,7 +166,7 @@ export function StudioWorkspace({
                 onClick={() => setMachineTab(tab.id)}
                 className={cn(
                   'rounded-full px-3 py-1.5 text-13',
-                  machineTab === tab.id ? 'bg-helix-ink text-white' : 'text-helix-muted hover:bg-helix-canvas'
+                  machineTab === tab.id ? 'bg-helix-ink text-helix-surface' : 'text-helix-muted hover:bg-helix-canvas'
                 )}
               >
                 {tab.label}
@@ -270,7 +270,7 @@ function CatalogCard({
         <span
           className={cn(
             'rounded-full px-2 py-0.5 text-11 font-medium',
-            template.lane === 'core' ? 'bg-helix-ink text-white' : 'border border-helix-border text-helix-muted'
+            template.lane === 'core' ? 'bg-helix-ink text-helix-surface' : 'border border-helix-border text-helix-muted'
           )}
         >
           {template.lane === 'core' ? (isAr ? 'أساسي' : 'Core') : isAr ? 'معاينة' : 'Preview'}

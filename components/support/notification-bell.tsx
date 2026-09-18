@@ -7,9 +7,17 @@ import { createSupabaseBrowserClient } from '@/lib/supabase-browser'
 
 export function NotificationBell({ isAdmin, clientId }: { isAdmin: boolean; clientId?: string | null }) {
   const [hasUnread, setHasUnread] = useState(false)
-  const supabase = createSupabaseBrowserClient()
+  const supabase = (() => {
+    try {
+      return createSupabaseBrowserClient()
+    } catch {
+      return null
+    }
+  })()
 
   useEffect(() => {
+    if (!supabase) return
+
     async function checkUnread() {
       let query = supabase.from('support_tickets').select('id', { count: 'exact', head: true })
       

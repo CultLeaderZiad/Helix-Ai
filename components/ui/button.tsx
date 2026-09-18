@@ -8,15 +8,15 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          'border border-transparent bg-helix-ink text-white hover:bg-helix-ink/90',
+          'border border-transparent bg-helix-ink text-helix-surface hover:bg-helix-ink/90',
         primary:
-          'border border-transparent bg-helix-ink text-white hover:bg-helix-ink/90',
+          'border border-transparent bg-helix-ink text-helix-surface hover:bg-helix-ink/90',
         secondary:
           'border border-helix-border bg-helix-surface text-helix-ink hover:bg-helix-canvas',
         outline:
           'border border-helix-border bg-transparent text-helix-ink hover:bg-helix-canvas',
         accent:
-          'border border-transparent bg-helix-accent text-white hover:bg-helix-accent/90',
+          'border border-transparent bg-helix-accent text-helix-surface hover:bg-helix-accent/90',
         ghost:
           'text-helix-muted hover:bg-helix-canvas hover:text-helix-ink',
         destructive:
@@ -24,10 +24,10 @@ const buttonVariants = cva(
         link: 'text-helix-accent underline-offset-4 hover:underline',
       },
       size: {
-        default: 'h-10 gap-2 px-4 text-13',
-        xs: 'h-7 gap-1 px-2.5 text-12',
-        sm: 'h-8 gap-1.5 px-3 text-13',
-        lg: 'h-11 gap-2 px-5 text-14 font-semibold',
+        default: 'h-10 gap-2 px-4 text-[13px]',
+        xs: 'h-7 gap-1 px-2.5 text-[12px]',
+        sm: 'h-8 gap-1.5 px-3 text-[13px]',
+        lg: 'h-11 gap-2 px-5 text-[14px] font-semibold',
         icon: 'size-9 rounded-[12px]',
         'icon-xs': 'size-6 rounded-[8px]',
         'icon-sm': 'size-8 rounded-[10px]',

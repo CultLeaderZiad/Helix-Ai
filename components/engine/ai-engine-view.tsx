@@ -115,7 +115,7 @@ export function AiEngineView({
               onClick={() => setLanguage('en')}
               className={cn(
                 'rounded-[10px] px-3 py-1.5 text-13',
-                language === 'en' ? 'bg-helix-ink text-white' : 'text-helix-muted hover:text-helix-ink'
+                language === 'en' ? 'bg-helix-ink text-helix-surface' : 'text-helix-muted hover:text-helix-ink'
               )}
             >
               English
@@ -125,7 +125,7 @@ export function AiEngineView({
               onClick={() => setLanguage('ar')}
               className={cn(
                 'rounded-[10px] px-3 py-1.5 text-13',
-                language === 'ar' ? 'bg-helix-ink text-white' : 'text-helix-muted hover:text-helix-ink'
+                language === 'ar' ? 'bg-helix-ink text-helix-surface' : 'text-helix-muted hover:text-helix-ink'
               )}
             >
               العربية
@@ -145,7 +145,7 @@ export function AiEngineView({
               className={cn(
                 'flex size-6 items-center justify-center rounded-full text-11 font-medium',
                 step === item.n
-                  ? 'bg-helix-ink text-white'
+                  ? 'bg-helix-ink text-helix-surface'
                   : step > item.n
                     ? 'bg-helix-accent-soft text-helix-accent'
                     : 'bg-helix-canvas text-helix-muted'

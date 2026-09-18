@@ -36,7 +36,7 @@ export default async function AdminStudioPage() {
       <div className="mx-auto w-full max-w-6xl space-y-8">
         <PageHeader
           title="System catalog"
-          subtitle={`Core production packs + preview add-ons. Demo ≠ live. ${CORE_SYSTEM_COUNT} core · ${PREVIEW_SYSTEM_COUNT} preview.`}
+          subtitle={`Core production packs + preview add-ons. Demo is not live. ${CORE_SYSTEM_COUNT} core · ${PREVIEW_SYSTEM_COUNT} preview.`}
           actions={
             <Link href="/dashboard/studio" className={buttonVariants({ size: 'sm' })}>
               Launch studio demo →

@@ -121,7 +121,7 @@ export function ClientsRosterView({ clients }: { clients: ClientRosterItem[] }) 
                 className={cn(
                   'rounded-full px-3 py-1.5 text-13 transition-colors whitespace-nowrap',
                   isSelected
-                    ? 'bg-helix-ink text-white'
+                    ? 'bg-helix-ink text-helix-surface'
                     : 'text-helix-muted hover:bg-helix-canvas hover:text-helix-ink'
                 )}
               >
