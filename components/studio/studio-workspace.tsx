@@ -195,7 +195,6 @@ export function StudioWorkspace({
               <StudioDirectivesGuardrails
                 template={selectedTemplate}
                 brandName={brandName}
-                accentColor={accentColor}
                 isAr={isAr}
               />
             )}
