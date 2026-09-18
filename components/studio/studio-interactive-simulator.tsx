@@ -159,7 +159,7 @@ export function StudioInteractiveSimulator({
           <button
             type="button"
             onClick={resetChat}
-            className="flex items-center gap-1 rounded-lg border border-helix-border bg-slate-900/80 px-2 py-1 text-[11px] text-helix-muted hover:text-helix-ink transition-colors"
+            className="flex items-center gap-1 rounded-lg border border-helix-border bg-helix-canvas px-2 py-1 text-[11px] text-helix-muted hover:text-helix-ink transition-colors"
             title="Reset Simulator"
           >
             <RotateCcw className="size-3" />
@@ -181,8 +181,8 @@ export function StudioInteractiveSimulator({
                 className={cn(
                   'rounded-2xl p-3.5 text-xs leading-relaxed shadow-md',
                   m.sender === 'user'
-                    ? 'bg-cyan-600 text-helix-ink rounded-br-xs'
-                    : 'bg-[#121c32] border border-helix-border text-helix-ink rounded-bl-xs'
+                    ? 'bg-helix-ink text-helix-surface rounded-br-xs'
+                    : 'bg-helix-canvas border border-helix-border text-helix-ink rounded-bl-xs'
                 )}
               >
                 <div className="flex items-center justify-between gap-3 text-[10px] text-helix-muted mb-1 border-b border-white/10 pb-1">
@@ -217,10 +217,10 @@ export function StudioInteractiveSimulator({
           ))}
 
           {isProcessing && (
-            <div className="mr-auto flex items-center gap-2 rounded-xl bg-[#121c32] border border-helix-border px-3 py-2 text-xs text-helix-muted">
-              <span className="size-1.5 rounded-full bg-cyan-400 animate-pulse" />
-              <span className="size-1.5 rounded-full bg-cyan-400 animate-pulse delay-100" />
-              <span className="size-1.5 rounded-full bg-cyan-400 animate-pulse delay-200" />
+            <div className="mr-auto flex items-center gap-2 rounded-xl bg-helix-canvas border border-helix-border px-3 py-2 text-xs text-helix-muted">
+              <span className="size-1.5 rounded-full bg-helix-accent animate-pulse" />
+              <span className="size-1.5 rounded-full bg-helix-accent animate-pulse delay-100" />
+              <span className="size-1.5 rounded-full bg-helix-accent animate-pulse delay-200" />
               <span className="font-mono text-[10px] text-helix-accent ml-1">
                 Reasoning &amp; Fact-Checking...
               </span>
@@ -240,7 +240,7 @@ export function StudioInteractiveSimulator({
                 ? 'اكتب رسالة تجريبية لاختبار رد واستجابة الوكيل الذكي...'
                 : 'Type a message to simulate live agent response...'
             }
-            className="flex-1 rounded-xl border border-helix-border bg-[#090e1a] px-3.5 py-2 text-xs text-helix-ink placeholder-slate-500 focus:border-cyan-500 focus:outline-hidden"
+            className="flex-1 rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs text-helix-ink placeholder:text-helix-muted focus:border-helix-ink focus:outline-hidden"
           />
           <button
             type="button"
@@ -275,7 +275,7 @@ export function StudioInteractiveSimulator({
                   setActivePreset(idx)
                   handleSend(p.text)
                 }}
-                className="w-full text-left rounded-xl border border-helix-border bg-[#090e1a] p-2.5 text-xs hover:border-helix-border hover:bg-slate-850 transition-colors"
+                className="w-full text-left rounded-xl border border-helix-border bg-helix-canvas p-2.5 text-xs hover:border-helix-ink/20 hover:bg-helix-surface transition-colors"
               >
                 <div className="font-semibold text-helix-ink text-[11px] flex items-center justify-between">
                   <span>{p.label}</span>
@@ -299,7 +299,7 @@ export function StudioInteractiveSimulator({
             </span>
           </div>
 
-          <div className="rounded-xl border border-helix-border/80 bg-[#080d18] p-3 space-y-2 text-xs">
+          <div className="rounded-xl border border-helix-border/80 bg-helix-canvas p-3 space-y-2 text-xs">
             <div className="flex items-center justify-between text-[10px] text-helix-muted font-mono">
               <span>{isAr ? 'المتصل: +971 50 892 4102' : 'Caller: +971 50 892 4102'}</span>
               <span>1m 18s • 24kHz HD</span>
@@ -310,7 +310,7 @@ export function StudioInteractiveSimulator({
                 (h, idx) => (
                   <span
                     key={idx}
-                    className="flex-1 bg-cyan-400/70 rounded-full"
+                    className="flex-1 bg-helix-accent/70 rounded-full"
                     style={{ height: `${h}%` }}
                   />
                 )

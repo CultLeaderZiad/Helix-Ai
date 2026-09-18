@@ -58,18 +58,18 @@ interface WholeCrmViewProps {
   totalFactCount: number
 }
 
-const STAGE_CONFIG: Record<string, { label: string; variant: 'verified' | 'probable' | 'possible' | 'cyan' | 'default' }> = {
-  new_lead: { label: 'New Lead', variant: 'cyan' },
-  engaged: { label: 'Engaged', variant: 'cyan' },
+const STAGE_CONFIG: Record<string, { label: string; variant: 'verified' | 'probable' | 'possible' | 'demo' | 'default' }> = {
+  new_lead: { label: 'New Lead', variant: 'demo' },
+  engaged: { label: 'Engaged', variant: 'demo' },
   studio_completed: { label: 'Studio Done', variant: 'possible' },
   call_booked: { label: 'Call Booked', variant: 'probable' },
   proposal_sent: { label: 'Proposal Sent', variant: 'probable' },
   closed_won: { label: 'Closed Won', variant: 'verified' },
   closed_lost: { label: 'Closed Lost', variant: 'default' },
   // Legacy
-  QUALIFIED_TO_BUY: { label: 'Qualified', variant: 'cyan' },
+  QUALIFIED_TO_BUY: { label: 'Qualified', variant: 'demo' },
   CONTRACT_SENT: { label: 'Contract Sent', variant: 'possible' },
-  DEMO_BOOKED: { label: 'Demo Booked', variant: 'cyan' },
+  DEMO_BOOKED: { label: 'Demo Booked', variant: 'demo' },
   CLOSED_WON: { label: 'Closed Won', variant: 'verified' },
   CLOSED_LOST: { label: 'Closed Lost', variant: 'default' },
 }
@@ -121,7 +121,7 @@ export function WholeCrmView({
       {/* Header & Title */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <Badge variant="cyan" dot className="mb-2">
+          <Badge variant="demo" dot className="mb-2">
             CRM INTELLIGENCE & TELEMETRY
           </Badge>
           <h1 className="font-display text-2xl font-bold tracking-tight text-helix-ink sm:text-3xl">
@@ -357,7 +357,7 @@ export function WholeCrmView({
                 <h3 className="text-[11px] font-mono font-semibold uppercase tracking-wider text-helix-muted">
                   Recent Telemetry & Audit Trace
                 </h3>
-                <Badge variant="cyan" dot>
+                <Badge variant="demo" dot>
                   Live Synced
                 </Badge>
               </div>

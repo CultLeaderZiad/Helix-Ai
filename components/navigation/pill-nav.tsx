@@ -29,10 +29,10 @@ export function PillNav({
     <header className="fixed top-[max(0.75rem,env(safe-area-inset-top))] sm:top-5 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center pointer-events-auto max-w-[calc(100vw-24px)]">
       {/* Floating Dark Cyber-Glass Capsule */}
       <div className="relative flex items-center justify-between gap-1.5 sm:gap-2 rounded-full border border-white/15 bg-[#080D17]/95 px-2 py-1.5 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.95),0_0_0_1px_rgba(255,255,255,0.08),inset_0_1px_0_0_rgba(255,255,255,0.2)] backdrop-blur-2xl transition-all duration-300 hover:border-white/25">
-        {/* Subtle top cyan ambient glow highlight */}
+        {/* Subtle top highlight */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -top-[1px] left-8 right-8 h-[1px] bg-gradient-to-r from-transparent via-[#38C6E0]/50 to-transparent"
+          className="pointer-events-none absolute -top-[1px] left-8 right-8 h-[1px] bg-gradient-to-r from-transparent via-white/50 to-transparent"
         />
 
         {/* Brand Mark: Clean circular badge showing "HLX AI" */}
@@ -44,7 +44,7 @@ export function PillNav({
           <div className="flex h-7.5 w-7.5 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-white text-black font-black text-[11px] sm:text-[12px] tracking-tight shadow-[0_0_12px_rgba(255,255,255,0.4)] transition-transform group-hover:scale-105">
             HLX
           </div>
-          <span className="font-display text-[13px] sm:text-[14px] font-bold tracking-wider text-white group-hover:text-cyan-300 transition-colors">
+          <span className="font-display text-[13px] sm:text-[14px] font-bold tracking-wider text-white group-hover:text-white/80 transition-colors">
             AI
           </span>
         </Link>
@@ -66,7 +66,7 @@ export function PillNav({
               >
                 {isActive && (
                   <span
-                    className="h-1.5 w-1.5 rounded-full bg-[#38C6E0] shadow-[0_0_8px_#38C6E0]"
+                    className="h-1.5 w-1.5 rounded-full bg-white"
                     aria-hidden="true"
                   />
                 )}
@@ -83,7 +83,7 @@ export function PillNav({
           {isAuthenticated ? (
             <Link
               href={consoleHref}
-              className="group flex items-center gap-2 whitespace-nowrap rounded-full bg-gradient-to-r from-[#38C6E0] to-[#0284C7] px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#050B14] shadow-[0_0_18px_rgba(56,198,224,0.35)] transition-all duration-200 hover:shadow-[0_0_26px_rgba(56,198,224,0.55)] active:scale-95"
+              className="group flex items-center gap-2 whitespace-nowrap rounded-full bg-white px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#050B14] transition-all duration-200 hover:bg-white/90 active:scale-95"
             >
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
@@ -102,7 +102,7 @@ export function PillNav({
               </Link>
               <Link
                 href="/signup"
-                className="group flex items-center gap-1.5 whitespace-nowrap rounded-full bg-gradient-to-r from-[#38C6E0] to-[#0284C7] px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#050B14] shadow-[0_0_18px_rgba(56,198,224,0.35)] transition-all duration-200 hover:shadow-[0_0_26px_rgba(56,198,224,0.55)] active:scale-95"
+                className="group flex items-center gap-1.5 whitespace-nowrap rounded-full bg-white px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#050B14] transition-all duration-200 hover:bg-white/90 active:scale-95"
               >
                 <span>Get Started</span>
                 <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
@@ -115,7 +115,7 @@ export function PillNav({
         <div className="flex lg:hidden items-center gap-1.5 sm:gap-2">
           <Link
             href={isAuthenticated ? consoleHref : '/signup'}
-            className="flex items-center gap-1 rounded-full bg-gradient-to-r from-[#38C6E0] to-[#0284C7] px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-[#050B14] shadow-[0_0_14px_rgba(56,198,224,0.35)]"
+            className="flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-[#050B14]"
           >
             <span>{isAuthenticated ? 'Console' : 'Get Started'}</span>
             <ArrowRight className="h-3 w-3" />
@@ -154,7 +154,7 @@ export function PillNav({
                 >
                   <span className="flex items-center gap-2">
                     {isActive && (
-                      <span className="h-1.5 w-1.5 rounded-full bg-[#38C6E0] shadow-[0_0_6px_#38C6E0]" />
+                      <span className="h-1.5 w-1.5 rounded-full bg-white" />
                     )}
                     <span>{item.label}</span>
                   </span>
@@ -169,7 +169,7 @@ export function PillNav({
               <Link
                 href={consoleHref}
                 onClick={() => setMobileOpen(false)}
-                className="flex h-10 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#38C6E0] to-[#0284C7] text-xs font-bold uppercase tracking-wider text-[#050B14] shadow-[0_0_16px_rgba(56,198,224,0.35)]"
+                className="flex h-10 items-center justify-center gap-2 rounded-xl bg-white text-xs font-bold uppercase tracking-wider text-[#050B14]"
               >
                 <span>Open Console</span>
                 <ArrowRight className="h-3.5 w-3.5" />
@@ -179,7 +179,7 @@ export function PillNav({
                 <Link
                   href="/signup"
                   onClick={() => setMobileOpen(false)}
-                  className="flex h-10 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#38C6E0] to-[#0284C7] text-xs font-bold uppercase tracking-wider text-[#050B14] shadow-[0_0_16px_rgba(56,198,224,0.35)]"
+                  className="flex h-10 items-center justify-center gap-2 rounded-xl bg-white text-xs font-bold uppercase tracking-wider text-[#050B14]"
                 >
                   <span>Get Started Free</span>
                   <ArrowRight className="h-3.5 w-3.5" />

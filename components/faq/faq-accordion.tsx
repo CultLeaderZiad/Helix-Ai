@@ -50,14 +50,14 @@ export function FaqAccordion({ initialFaqs }: FaqAccordionProps) {
                 className="flex w-full items-center justify-between gap-6 text-left focus:outline-hidden"
                 aria-expanded={isOpen}
               >
-                <span className="font-display text-base sm:text-lg md:text-xl font-bold tracking-tight text-white transition-colors hover:text-cyan-300">
+                <span className="font-display text-base sm:text-lg md:text-xl font-bold tracking-tight text-white transition-colors hover:text-white/80">
                   {faq.question}
                 </span>
 
                 <span
                   className={cn(
                     'flex size-8 shrink-0 items-center justify-center rounded-full text-slate-400 transition-transform duration-200',
-                    isOpen ? 'rotate-45 text-cyan-400' : 'text-slate-400 hover:text-white'
+                    isOpen ? 'rotate-45 text-white' : 'text-slate-400 hover:text-white'
                   )}
                 >
                   <Plus className="size-5" />

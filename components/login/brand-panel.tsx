@@ -6,7 +6,7 @@ export function BrandPanel({ status }: { status: PlatformStatus }) {
   return (
     <aside className="relative flex h-[224px] flex-col justify-between overflow-hidden bg-deep text-deep-foreground lg:h-full lg:min-h-svh">
       <div className="relative flex items-center gap-3 p-6 lg:p-12">
-        <HelixMark size={44} rounded="rounded-2xl" className="shadow-[0_0_20px_rgba(0,210,255,0.25)]" />
+        <HelixMark size={44} rounded="rounded-2xl" />
         <div className="flex flex-col">
           <span className="font-display text-h3 leading-none tracking-tight text-white">Helix AI</span>
           <span className="text-small text-slate-400">Operations console</span>

@@ -91,7 +91,7 @@ export function PlaybooksView() {
           <div className="rounded-2xl border border-helix-border bg-helix-canvas p-6 shadow-xl">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-helix-border pb-3">
               <div>
-                <span className="rounded-full bg-helix-accent-soft border border-cyan-500/20 px-2.5 py-0.5 text-[10px] text-helix-accent font-mono">
+                <span className="rounded-full bg-helix-accent-soft border border-helix-accent/20 px-2.5 py-0.5 text-[10px] text-helix-accent font-mono">
                   CLINICS & HIGH-TICKET SERVICES
                 </span>
                 <h3 className="mt-1.5 font-display text-lg font-bold text-helix-ink">

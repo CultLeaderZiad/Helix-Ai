@@ -119,7 +119,7 @@ export function ProposalModal({ proposal, onClose }: ProposalModalProps) {
                   </p>
                 </div>
                 <div className="text-right">
-                  <span className="rounded-full bg-helix-accent-soft border border-cyan-500/20 px-2 py-0.5 text-[10px] text-helix-accent font-mono">
+                  <span className="rounded-full bg-helix-accent-soft border border-helix-accent/20 px-2 py-0.5 text-[10px] text-helix-accent font-mono">
                     {item.type === 'setup'
                       ? isAr
                         ? 'إعداد وتأسيس'

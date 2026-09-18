@@ -75,7 +75,7 @@ export default async function BillingPage() {
             </Link>
             <button
               type="button"
-              className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-2 text-xs font-bold text-white  hover:opacity-95 transition-opacity"
+              className="flex items-center gap-2 rounded-xl bg-helix-ink px-4 py-2 text-xs font-bold text-helix-surface hover:bg-helix-ink/90 transition-opacity"
             >
               <Sparkles className="size-3.5" /> Upgrade Plan
             </button>

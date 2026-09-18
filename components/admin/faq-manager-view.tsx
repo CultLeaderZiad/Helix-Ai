@@ -313,7 +313,7 @@ export function FaqManagerView({ initialFaqs }: FaqManagerViewProps) {
                   value={formQuestion}
                   onChange={(e) => setFormQuestion(e.target.value)}
                   placeholder="e.g. Can I migrate from Salesforce/HubSpot?"
-                  className="w-full rounded-xl border border-helix-border bg-[#090e1a] px-3.5 py-2.5 text-xs text-helix-ink placeholder-slate-500 focus:border-cyan-500 focus:outline-hidden"
+                  className="w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2.5 text-xs text-helix-ink placeholder:text-helix-muted focus:border-helix-ink focus:outline-hidden"
                 />
               </div>
 
@@ -326,7 +326,7 @@ export function FaqManagerView({ initialFaqs }: FaqManagerViewProps) {
                   value={formAnswer}
                   onChange={(e) => setFormAnswer(e.target.value)}
                   placeholder="Provide clear, authoritative answer..."
-                  className="w-full rounded-xl border border-helix-border bg-[#090e1a] px-3.5 py-2.5 text-xs text-helix-ink placeholder-slate-500 focus:border-cyan-500 focus:outline-hidden leading-relaxed"
+                  className="w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2.5 text-xs text-helix-ink placeholder:text-helix-muted focus:border-helix-ink focus:outline-hidden leading-relaxed"
                 />
               </div>
 
@@ -340,7 +340,7 @@ export function FaqManagerView({ initialFaqs }: FaqManagerViewProps) {
                     value={formCategory}
                     onChange={(e) => setFormCategory(e.target.value)}
                     placeholder="Platform, Security, Billing, Integrations"
-                    className="w-full rounded-xl border border-helix-border bg-[#090e1a] px-3 py-2 text-xs text-helix-ink placeholder-slate-500 focus:border-cyan-500 focus:outline-hidden"
+                    className="w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-2 text-xs text-helix-ink placeholder:text-helix-muted focus:border-helix-ink focus:outline-hidden"
                   />
                 </div>
 

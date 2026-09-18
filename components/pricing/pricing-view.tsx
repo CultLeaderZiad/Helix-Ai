@@ -65,7 +65,7 @@ export function PricingView({
             className={cn(
               'flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold transition-all',
               regionTier === 'gcc_enterprise'
-                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-[0_0_15px_rgba(0,210,255,0.2)]'
+                ? 'bg-white/15 text-white border border-white/30'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
             )}
           >
@@ -79,7 +79,7 @@ export function PricingView({
             className={cn(
               'flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold transition-all',
               regionTier === 'mena_sme'
-                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-[0_0_15px_rgba(0,210,255,0.2)]'
+                ? 'bg-white/15 text-white border border-white/30'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
             )}
           >
@@ -100,7 +100,7 @@ export function PricingView({
                 className={cn(
                   'rounded-lg px-2.5 py-1 text-xs font-bold font-mono transition-colors',
                   currency === curr
-                    ? 'bg-slate-800 text-cyan-300 shadow-xs'
+                    ? 'bg-slate-800 text-white shadow-xs'
                     : 'text-slate-400 hover:text-white'
                 )}
               >
@@ -138,7 +138,7 @@ export function PricingView({
       {/* Region Context Subheader */}
       <div className="mt-4 flex items-center justify-between text-xs text-slate-400 px-2">
         <span>{isAr ? currentConfig.descriptionAr : currentConfig.description}</span>
-        <span className="shrink-0 rounded-md bg-cyan-500/10 border border-cyan-500/20 px-2.5 py-0.5 text-cyan-400 font-mono">
+        <span className="shrink-0 rounded-md bg-white/10 border border-white/20 px-2.5 py-0.5 text-white font-mono">
           {isAr ? currentConfig.badgeAr : currentConfig.badge}
         </span>
       </div>
@@ -155,14 +155,14 @@ export function PricingView({
               className={cn(
                 'relative flex flex-col justify-between rounded-2xl p-8 backdrop-blur-md transition-all duration-300',
                 plan.featured
-                  ? 'border-2 border-cyan-500 bg-[#0c162a]/95 shadow-[0_0_35px_rgba(0,210,255,0.18)]'
+                  ? 'border-2 border-white bg-[#0c162a]/95'
                   : 'border border-slate-800 bg-[#0a1120]/80 hover:border-slate-700'
               )}
             >
               {plan.featured && (
                 <div
                   className={cn(
-                    'absolute -top-3.5 rounded-full bg-cyan-500 px-3.5 py-0.5 text-xs font-bold uppercase tracking-wider text-slate-950 shadow-md',
+                    'absolute -top-3.5 rounded-full bg-white px-3.5 py-0.5 text-xs font-bold uppercase tracking-wider text-slate-950 shadow-md',
                     isAr ? 'left-6' : 'right-6'
                   )}
                 >
@@ -199,7 +199,7 @@ export function PricingView({
                 <ul className="mt-8 space-y-3.5 text-sm text-slate-300">
                   {(isAr ? plan.featuresAr : plan.features).map(feat => (
                     <li key={feat} className="flex items-start gap-3">
-                      <Check className="size-4 shrink-0 text-cyan-400 mt-0.5" />
+                      <Check className="size-4 shrink-0 text-emerald-400 mt-0.5" />
                       <span className="leading-snug">{feat}</span>
                     </li>
                   ))}
@@ -214,7 +214,7 @@ export function PricingView({
                   className={cn(
                     'flex h-11 w-full items-center justify-center rounded-xl text-sm font-semibold transition-all shadow-md',
                     plan.featured
-                      ? 'bg-cyan-500 text-slate-950 hover:bg-cyan-400 shadow-[0_0_20px_rgba(0,210,255,0.3)]'
+                      ? 'bg-white text-slate-950 hover:bg-white/90'
                       : 'border border-slate-700 bg-slate-800/80 text-white hover:bg-slate-700'
                   )}
                 >

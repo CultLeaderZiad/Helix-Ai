@@ -336,7 +336,7 @@ export function StudioAgentIde({
               className={cn(
                 'flex items-center gap-1.5 rounded-lg px-3 py-1 text-xs font-semibold transition-all',
                 systemLayer === 'inbound'
-                  ? 'bg-helix-accent-soft text-helix-accent shadow-[0_0_12px_rgba(0,210,255,0.25)] border border-helix-border'
+                  ? 'bg-helix-accent-soft text-helix-accent border border-helix-border'
                   : 'text-helix-muted hover:text-helix-ink'
               )}
             >
@@ -371,7 +371,7 @@ export function StudioAgentIde({
               type="button"
               onClick={handleRequestBuild}
               disabled={isPending}
-              className="flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 px-3 py-1 text-xs font-bold text-white shadow-[0_0_16px_rgba(0,210,255,0.35)] hover:from-cyan-400 hover:to-blue-500 transition-all active:scale-95"
+              className="flex items-center gap-1.5 rounded-lg bg-helix-ink px-3 py-1 text-xs font-bold text-helix-surface hover:bg-helix-ink/90 transition-all active:scale-95"
             >
               <Sparkles className="size-3.5" />
               <span>{isPending ? 'Deploying...' : 'Deploy System'}</span>
@@ -466,7 +466,7 @@ export function StudioAgentIde({
                               className={cn(
                                 'size-1.5 rounded-full shrink-0',
                                 task.status === 'active'
-                                  ? 'bg-cyan-400 shadow-[0_0_8px_rgba(0,210,255,0.8)]'
+                                  ? 'bg-helix-accent'
                                   : 'bg-slate-600'
                               )}
                             />
@@ -532,7 +532,7 @@ export function StudioAgentIde({
             {/* Bottom Profile Bar (Matching Ryan Bot in Image 1) */}
             <div className="pt-3 border-t border-helix-border/80 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="relative flex size-8 items-center justify-center rounded-full bg-gradient-to-tr from-cyan-500 to-purple-600 text-[11px] font-black text-white shadow-[0_0_12px_rgba(0,210,255,0.4)]">
+                <div className="relative flex size-8 items-center justify-center rounded-full bg-helix-ink text-[11px] font-black text-helix-surface">
                   HA
                   <span className="absolute bottom-0 right-0 size-2 rounded-full bg-emerald-400 ring-2 ring-[#090d15]" />
                 </div>
@@ -666,7 +666,7 @@ export function StudioAgentIde({
                       <motion.div
                         animate={{ rotate: 360 }}
                         transition={{ repeat: Infinity, duration: 2, ease: 'linear' }}
-                        className="absolute inset-0 rounded-full border-2 border-t-cyan-400 border-r-transparent border-b-purple-500 border-l-transparent"
+                        className="absolute inset-0 rounded-full border-2 border-t-helix-accent border-r-transparent border-b-helix-ink border-l-transparent"
                       />
                       <Cpu className="size-8 text-helix-accent animate-pulse" />
                     </div>
@@ -751,7 +751,7 @@ export function StudioAgentIde({
                     <motion.div
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="rounded-xl border border-helix-border bg-gradient-to-r from-cyan-950/40 via-slate-900/60 to-purple-950/40 p-3 shadow-lg"
+                      className="rounded-xl border border-helix-border bg-helix-canvas p-3 shadow-lg"
                     >
                       <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
                         <div className="flex items-center gap-2">
@@ -812,7 +812,7 @@ export function StudioAgentIde({
                     {/* Simulated Site Header */}
                     <div className="flex items-center justify-between border-b border-helix-border pb-4">
                       <div className="flex items-center gap-3">
-                        <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 text-sm font-black text-white">
+                        <div className="flex size-9 items-center justify-center rounded-xl bg-helix-ink text-sm font-black text-helix-surface">
                           {brandName.slice(0, 2).toUpperCase()}
                         </div>
                         <div>
@@ -834,7 +834,7 @@ export function StudioAgentIde({
                         <button
                           type="button"
                           onClick={() => setIsSimulatingCall(true)}
-                          className="flex items-center gap-1.5 rounded-xl bg-helix-ink px-3.5 py-1.5 text-xs font-bold text-white shadow-[0_0_16px_rgba(0,210,255,0.4)] hover:bg-helix-ink/90 transition-all active:scale-95"
+                          className="flex items-center gap-1.5 rounded-xl bg-helix-ink px-3.5 py-1.5 text-xs font-bold text-white hover:bg-helix-ink/90 transition-all active:scale-95"
                         >
                           <PhoneCall className="size-3.5" />
                           <span>Call Inbound AI</span>
@@ -863,7 +863,7 @@ export function StudioAgentIde({
                                 onClick={() => setIsSimulatingCall(true)}
                                 className="flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-xs font-bold text-white hover:bg-slate-200 transition-colors shadow-md"
                               >
-                                <PhoneCall className="size-3.5 text-cyan-600" />
+                                <PhoneCall className="size-3.5 text-helix-accent" />
                                 <span>Speak with Receptionist</span>
                               </button>
                               <button
@@ -1052,7 +1052,7 @@ export function StudioAgentIde({
                                 key={i}
                                 animate={{ height: [height * 0.4, height, height * 0.4] }}
                                 transition={{ repeat: Infinity, duration: 0.8, delay: i * 0.05 }}
-                                className="w-1 rounded-full bg-gradient-to-t from-cyan-500 to-blue-400"
+                                className="w-1 rounded-full bg-helix-accent"
                               />
                             ))}
                           </div>
@@ -1121,7 +1121,7 @@ export function StudioAgentIde({
                         className={cn(
                           'relative flex flex-col justify-between rounded-2xl border p-4 transition-all duration-300',
                           mod.enabled
-                            ? 'border-helix-border bg-[#0c1628] shadow-[0_0_20px_rgba(0,210,255,0.08)]'
+                            ? 'border-helix-border bg-helix-canvas'
                             : 'border-helix-border bg-helix-surface opacity-60'
                         )}
                       >
@@ -1150,7 +1150,7 @@ export function StudioAgentIde({
                             className={cn(
                               'flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition-all',
                               mod.enabled
-                                ? 'bg-helix-ink text-white shadow-[0_0_12px_rgba(0,210,255,0.3)]'
+                                ? 'bg-helix-ink text-white'
                                 : 'border border-helix-border bg-slate-800 text-helix-ink/80 hover:text-helix-ink'
                             )}
                           >
@@ -1291,7 +1291,7 @@ export function StudioAgentIde({
 
                   <button
                     type="submit"
-                    className="flex size-7 items-center justify-center rounded-lg bg-helix-ink text-white shadow-[0_0_10px_rgba(0,210,255,0.3)] hover:bg-helix-ink/90 transition-colors"
+                    className="flex size-7 items-center justify-center rounded-lg bg-helix-ink text-white hover:bg-helix-ink/90 transition-colors"
                   >
                     <Send className="size-3.5" />
                   </button>

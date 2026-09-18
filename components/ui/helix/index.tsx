@@ -2,6 +2,21 @@ import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 
+export { Button }
+export { Badge } from '@/components/ui/badge'
+export { KpiCard } from '@/components/ui/kpi-card'
+export { Input } from '@/components/ui/input'
+export {
+  Table,
+  TableHeader,
+  TableBody,
+  TableFooter,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableCaption,
+} from '@/components/ui/table'
+
 export function PageHeader({
   title,
   subtitle,
@@ -140,4 +155,4 @@ export function HelixSelect({
   )
 }
 
-export { Button }
+export const KPI = HelixKpi

@@ -121,7 +121,7 @@ export function StudioPipelineVisualizer({
               <span className="size-1.5 rounded-full bg-emerald-400 animate-ping" />
               PIPELINE LIVE
             </span>
-            <span className="hidden sm:inline-block rounded-full border border-helix-border bg-slate-900 px-2.5 py-1 text-[10px] font-mono text-helix-muted">
+            <span className="hidden sm:inline-block rounded-full border border-helix-border bg-helix-canvas px-2.5 py-1 text-[10px] font-mono text-helix-muted">
               E2E Latency: ~255ms
             </span>
           </div>
@@ -140,20 +140,20 @@ export function StudioPipelineVisualizer({
                 className={cn(
                   'group relative rounded-xl border p-4 transition-all duration-200 cursor-pointer text-left',
                   isSelected
-                    ? 'border-cyan-500 bg-cyan-950/20 shadow-[0_0_20px_rgba(6,182,212,0.25)] ring-1 ring-cyan-500/40'
-                    : 'border-helix-border/90 bg-helix-surface/80 hover:border-helix-border hover:bg-[#0e182c]'
+                    ? 'border-helix-ink bg-helix-accent-soft ring-1 ring-helix-ink/10'
+                    : 'border-helix-border bg-helix-surface hover:border-helix-ink/20 hover:bg-helix-canvas'
                 )}
               >
                 <div className="flex items-center justify-between mb-3">
                   <div
                     className={cn(
                       'flex size-8 items-center justify-center rounded-lg transition-colors',
-                      isSelected ? 'bg-helix-accent-soft text-helix-accent' : 'bg-slate-800 text-helix-muted'
+                      isSelected ? 'bg-helix-accent-soft text-helix-accent' : 'bg-helix-canvas text-helix-muted'
                     )}
                   >
                     <Icon className="size-4" />
                   </div>
-                  <span className="rounded-full bg-slate-900 border border-helix-border px-2 py-0.5 text-[9px] font-mono text-helix-muted">
+                  <span className="rounded-full bg-helix-canvas border border-helix-border px-2 py-0.5 text-[9px] font-mono text-helix-muted">
                     {node.latency}
                   </span>
                 </div>

@@ -186,7 +186,7 @@ export function UpdatesManagerView({ initialUpdates }: UpdatesManagerViewProps) 
           <button
             type="button"
             onClick={handleOpenCreate}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-sky-500 to-cyan-500 px-4 py-2 text-xs font-bold text-white hover:brightness-110 transition-all shadow-md"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-helix-ink px-4 py-2 text-xs font-bold text-helix-surface hover:bg-helix-ink/90 transition-all"
           >
             <Plus className="size-3.5" />
             <span>Create New Release</span>
@@ -279,7 +279,7 @@ export function UpdatesManagerView({ initialUpdates }: UpdatesManagerViewProps) 
                 <ul className="mt-3 space-y-2">
                   {update.highlights.map((h, i) => (
                     <li key={i} className="flex items-start gap-2.5 text-xs sm:text-sm text-helix-ink/80">
-                      <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-cyan-400" />
+                      <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-helix-accent" />
                       <span>{h}</span>
                     </li>
                   ))}
@@ -415,7 +415,7 @@ export function UpdatesManagerView({ initialUpdates }: UpdatesManagerViewProps) 
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="rounded-xl bg-gradient-to-r from-sky-500 to-cyan-500 px-4 py-2 text-xs font-bold text-white hover:brightness-110"
+                  className="rounded-xl bg-helix-ink px-4 py-2 text-xs font-bold text-helix-surface hover:bg-helix-ink/90"
                 >
                   {editingId ? 'Save Changes' : 'Publish Release'}
                 </button>

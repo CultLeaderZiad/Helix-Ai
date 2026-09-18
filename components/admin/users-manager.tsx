@@ -181,7 +181,7 @@ export function UsersManager({ initialUsers, clients, currentUserId }: UsersMana
       {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <Badge variant="cyan" dot className="mb-2">
+          <Badge variant="demo" dot className="mb-2">
             IDENTITY & ACCESS CONTROL
           </Badge>
           <h1 className="font-display text-2xl font-bold tracking-tight text-helix-ink sm:text-3xl">
@@ -347,7 +347,7 @@ export function UsersManager({ initialUsers, clients, currentUserId }: UsersMana
                         </Badge>
                       )}
                       {user.role === 'client_user' && (
-                        <Badge variant="cyan" dot>
+                        <Badge variant="demo" dot>
                           Client Owner
                         </Badge>
                       )}

@@ -45,7 +45,7 @@ export function HelixFooter() {
                 <li>
                   <Link
                     href="/dashboard/crm"
-                    className="hover:text-cyan-300 transition-colors"
+                    className="hover:text-white transition-colors"
                   >
                     CRM
                   </Link>
@@ -53,7 +53,7 @@ export function HelixFooter() {
                 <li>
                   <Link
                     href="/dashboard/studio"
-                    className="hover:text-cyan-300 transition-colors"
+                    className="hover:text-white transition-colors"
                   >
                     Studio Sandbox
                   </Link>
@@ -61,7 +61,7 @@ export function HelixFooter() {
                 <li>
                   <Link
                     href="/dashboard/engine"
-                    className="hover:text-cyan-300 transition-colors"
+                    className="hover:text-white transition-colors"
                   >
                     AI Engine
                   </Link>
@@ -69,7 +69,7 @@ export function HelixFooter() {
                 <li>
                   <Link
                     href="/dashboard/integrations"
-                    className="hover:text-cyan-300 transition-colors"
+                    className="hover:text-white transition-colors"
                   >
                     Integrations
                   </Link>
@@ -77,7 +77,7 @@ export function HelixFooter() {
                 <li>
                   <Link
                     href="/pricing"
-                    className="hover:text-cyan-300 transition-colors"
+                    className="hover:text-white transition-colors"
                   >
                     Pricing
                   </Link>
@@ -85,7 +85,7 @@ export function HelixFooter() {
                 <li>
                   <Link
                     href="/faq"
-                    className="hover:text-cyan-300 transition-colors"
+                    className="hover:text-white transition-colors"
                   >
                     FAQ
                   </Link>
@@ -93,7 +93,7 @@ export function HelixFooter() {
                 <li>
                   <Link
                     href="/updates"
-                    className="hover:text-cyan-300 transition-colors"
+                    className="hover:text-white transition-colors"
                   >
                     Changelog
                   </Link>
@@ -108,32 +108,32 @@ export function HelixFooter() {
               </h3>
               <ul className="mt-4 space-y-2.5 text-sm">
                 <li>
-                  <Link href="/about" className="hover:text-cyan-300 transition-colors">
+                  <Link href="/about" className="hover:text-white transition-colors">
                     About
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact" className="hover:text-cyan-300 transition-colors">
+                  <Link href="/contact" className="hover:text-white transition-colors">
                     Contact
                   </Link>
                 </li>
                 <li>
-                  <Link href="/faq" className="hover:text-cyan-300 transition-colors">
+                  <Link href="/faq" className="hover:text-white transition-colors">
                     FAQ
                   </Link>
                 </li>
                 <li>
-                  <Link href="/updates" className="hover:text-cyan-300 transition-colors">
+                  <Link href="/updates" className="hover:text-white transition-colors">
                     Updates &amp; Releases
                   </Link>
                 </li>
                 <li>
-                  <Link href="/about#careers" className="hover:text-cyan-300 transition-colors">
+                  <Link href="/about#careers" className="hover:text-white transition-colors">
                     Careers
                   </Link>
                 </li>
                 <li>
-                  <Link href="/admin" className="hover:text-cyan-300 transition-colors">
+                  <Link href="/admin" className="hover:text-white transition-colors">
                     Agency Console
                   </Link>
                 </li>
@@ -147,22 +147,22 @@ export function HelixFooter() {
               </h3>
               <ul className="mt-4 space-y-2.5 text-sm">
                 <li>
-                  <Link href="/about#terms" className="hover:text-cyan-300 transition-colors">
+                  <Link href="/about#terms" className="hover:text-white transition-colors">
                     Terms of Service
                   </Link>
                 </li>
                 <li>
-                  <Link href="/about#privacy" className="hover:text-cyan-300 transition-colors">
+                  <Link href="/about#privacy" className="hover:text-white transition-colors">
                     Privacy Policy
                   </Link>
                 </li>
                 <li>
-                  <Link href="/about#security" className="hover:text-cyan-300 transition-colors">
+                  <Link href="/about#security" className="hover:text-white transition-colors">
                     Security &amp; Sovereign Data
                   </Link>
                 </li>
                 <li>
-                  <Link href="/about#cookies" className="hover:text-cyan-300 transition-colors">
+                  <Link href="/about#cookies" className="hover:text-white transition-colors">
                     Cookie Policy
                   </Link>
                 </li>

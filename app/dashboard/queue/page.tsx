@@ -110,7 +110,7 @@ export default async function AttentionQueuePage() {
           </div>
 
           <div className="flex items-center gap-2 rounded-xl border border-helix-border bg-helix-surface px-4 py-2">
-            <span className="size-2 rounded-full bg-cyan-400 animate-pulse" />
+            <span className="size-2 rounded-full bg-helix-accent animate-pulse" />
             <span className="text-xs font-medium text-helix-ink/80">
               {facts.length} Pending Observation{facts.length === 1 ? '' : 's'}
             </span>

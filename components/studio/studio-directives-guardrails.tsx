@@ -92,8 +92,8 @@ Mandatory Rules:
               className={cn(
                 'rounded-xl border p-2.5 text-left transition-colors',
                 dialect === 'gulf'
-                  ? 'border-cyan-500 bg-cyan-950/30 text-helix-ink font-semibold'
-                  : 'border-helix-border bg-[#080d18] text-helix-muted hover:text-helix-ink'
+                  ? 'border-helix-ink bg-helix-accent-soft text-helix-ink font-semibold'
+                  : 'border-helix-border bg-helix-canvas text-helix-muted hover:text-helix-ink'
               )}
             >
               <div className="text-[11px] font-semibold">{isAr ? 'اللهجة الخليجية' : 'Gulf Arabic'}</div>
@@ -106,8 +106,8 @@ Mandatory Rules:
               className={cn(
                 'rounded-xl border p-2.5 text-left transition-colors',
                 dialect === 'egyptian'
-                  ? 'border-cyan-500 bg-cyan-950/30 text-helix-ink font-semibold'
-                  : 'border-helix-border bg-[#080d18] text-helix-muted hover:text-helix-ink'
+                  ? 'border-helix-ink bg-helix-accent-soft text-helix-ink font-semibold'
+                  : 'border-helix-border bg-helix-canvas text-helix-muted hover:text-helix-ink'
               )}
             >
               <div className="text-[11px] font-semibold">{isAr ? 'اللهجة المصرية' : 'Egyptian Arabic'}</div>
@@ -120,8 +120,8 @@ Mandatory Rules:
               className={cn(
                 'rounded-xl border p-2.5 text-left transition-colors',
                 dialect === 'white'
-                  ? 'border-cyan-500 bg-cyan-950/30 text-helix-ink font-semibold'
-                  : 'border-helix-border bg-[#080d18] text-helix-muted hover:text-helix-ink'
+                  ? 'border-helix-ink bg-helix-accent-soft text-helix-ink font-semibold'
+                  : 'border-helix-border bg-helix-canvas text-helix-muted hover:text-helix-ink'
               )}
             >
               <div className="text-[11px] font-semibold">{isAr ? 'العربية البيضاء' : 'Modern Standard'}</div>
@@ -134,8 +134,8 @@ Mandatory Rules:
               className={cn(
                 'rounded-xl border p-2.5 text-left transition-colors',
                 dialect === 'english'
-                  ? 'border-cyan-500 bg-cyan-950/30 text-helix-ink font-semibold'
-                  : 'border-helix-border bg-[#080d18] text-helix-muted hover:text-helix-ink'
+                  ? 'border-helix-ink bg-helix-accent-soft text-helix-ink font-semibold'
+                  : 'border-helix-border bg-helix-canvas text-helix-muted hover:text-helix-ink'
               )}
             >
               <div className="text-[11px] font-semibold">Global English</div>
@@ -152,7 +152,7 @@ Mandatory Rules:
           </div>
 
           <div className="space-y-2.5 text-xs">
-            <label className="flex items-center justify-between rounded-xl border border-helix-border bg-[#080d18] p-2.5 cursor-pointer">
+            <label className="flex items-center justify-between rounded-xl border border-helix-border bg-helix-canvas p-2.5 cursor-pointer">
               <span className="text-helix-ink/80 text-[11px]">
                 {isAr ? 'تحويل فوري للمشرف عند رصد استياء' : 'Escalate on Negative Sentiment'}
               </span>
@@ -160,11 +160,11 @@ Mandatory Rules:
                 type="checkbox"
                 checked={escalateOnDispute}
                 onChange={(e) => setEscalateOnDispute(e.target.checked)}
-                className="size-4 accent-cyan-500"
+                className="size-4 accent-helix-accent"
               />
             </label>
 
-            <label className="flex items-center justify-between rounded-xl border border-helix-border bg-[#080d18] p-2.5 cursor-pointer">
+            <label className="flex items-center justify-between rounded-xl border border-helix-border bg-helix-canvas p-2.5 cursor-pointer">
               <span className="text-helix-ink/80 text-[11px]">
                 {isAr ? 'إرسال خريطة الموقع الجغرافي تلقائياً' : 'Auto-Dispatch WhatsApp GPS Location'}
               </span>
@@ -172,7 +172,7 @@ Mandatory Rules:
                 type="checkbox"
                 checked={autoShareLocation}
                 onChange={(e) => setAutoShareLocation(e.target.checked)}
-                className="size-4 accent-cyan-500"
+                className="size-4 accent-helix-accent"
               />
             </label>
           </div>

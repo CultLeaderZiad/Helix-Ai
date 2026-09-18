@@ -365,7 +365,7 @@ export function StudioMotionDemo({
                 className={cn(
                   'rounded-xl border p-3 transition-all duration-300 text-xs flex items-center justify-between cursor-pointer',
                   currentStep >= 2
-                    ? 'border-cyan-500 bg-cyan-950/30 shadow-[0_0_15px_rgba(6,182,212,0.25)]'
+                    ? 'border-helix-ink bg-helix-accent-soft'
                     : 'border-helix-border bg-helix-canvas opacity-80'
                 )}
               >
@@ -422,7 +422,7 @@ export function StudioMotionDemo({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="rounded-xl border border-dashed border-helix-border bg-[#0a101f]/50 p-8 text-center flex flex-col items-center justify-center min-h-[290px]"
+                  className="rounded-xl border border-dashed border-helix-border bg-helix-canvas/50 p-8 text-center flex flex-col items-center justify-center min-h-[290px]"
                 >
                   <div className="size-10 rounded-full bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-300 mb-3">
                     <Sparkles className="size-5 animate-pulse" />
@@ -443,10 +443,10 @@ export function StudioMotionDemo({
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.96 }}
                   transition={{ duration: 0.25 }}
-                  className="rounded-xl border border-helix-border bg-cyan-950/20 p-8 text-center flex flex-col items-center justify-center min-h-[290px]"
+                  className="rounded-xl border border-helix-border bg-helix-accent-soft p-8 text-center flex flex-col items-center justify-center min-h-[290px]"
                 >
                   <div className="relative size-12 mb-3">
-                    <div className="absolute inset-0 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin" />
+                    <div className="absolute inset-0 rounded-full border-2 border-helix-accent border-t-transparent animate-spin" />
                     <div className="absolute inset-0 flex items-center justify-center text-helix-accent">
                       <Zap className="size-5 animate-pulse" />
                     </div>
@@ -457,7 +457,7 @@ export function StudioMotionDemo({
                   </p>
                   <div className="mt-4 w-44 h-1.5 bg-slate-800 rounded-full overflow-hidden">
                     <motion.div
-                      className="h-full bg-gradient-to-r from-cyan-400 to-purple-500"
+                      className="h-full bg-helix-ink"
                       initial={{ width: '0%' }}
                       animate={{ width: '100%' }}
                       transition={{ duration: 0.9, ease: 'easeInOut' }}

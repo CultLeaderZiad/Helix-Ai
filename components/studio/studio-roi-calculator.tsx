@@ -93,7 +93,7 @@ export function StudioRoiCalculator({
             step={50}
             value={monthlyInboundCalls}
             onChange={(e) => setMonthlyInboundCalls(Number(e.target.value))}
-            className="w-full accent-cyan-400 cursor-pointer h-2 bg-slate-800 rounded-lg"
+            className="w-full accent-helix-accent cursor-pointer h-2 bg-helix-canvas rounded-lg"
           />
           <div className="flex justify-between text-[10px] text-helix-muted font-mono">
             <span>100</span>
@@ -119,7 +119,7 @@ export function StudioRoiCalculator({
             step={50}
             value={avgTicketValue}
             onChange={(e) => setAvgTicketValue(Number(e.target.value))}
-            className="w-full accent-emerald-400 cursor-pointer h-2 bg-slate-800 rounded-lg"
+            className="w-full accent-helix-accent cursor-pointer h-2 bg-helix-canvas rounded-lg"
           />
           <div className="flex justify-between text-[10px] text-helix-muted font-mono">
             <span>$100</span>
@@ -203,7 +203,7 @@ export function StudioRoiCalculator({
             type="button"
             disabled={isPending}
             onClick={onRequestBuild}
-            className="w-full flex h-12 items-center justify-center gap-2 rounded-xl bg-helix-ink font-semibold text-white transition-all hover:bg-helix-ink/90 disabled:opacity-50 shadow-[0_0_25px_rgba(0,210,255,0.35)] text-sm active:scale-98"
+            className="w-full flex h-12 items-center justify-center gap-2 rounded-xl bg-helix-ink font-semibold text-white transition-all hover:bg-helix-ink/90 disabled:opacity-50 text-sm active:scale-98"
           >
             <Send className="size-4" />
             {isPending

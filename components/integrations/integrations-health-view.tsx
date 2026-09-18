@@ -135,7 +135,7 @@ export function IntegrationsHealthView({ initialIntegrations, pingAction }: Inte
           return (
             <div key={int.id} className="rounded-2xl border border-helix-border bg-helix-surface p-5 shadow-lg">
               <div className="flex items-center justify-between">
-                <div className="flex size-10 items-center justify-center rounded-xl bg-helix-accent-soft text-helix-accent ring-1 ring-cyan-500/30">
+                <div className="flex size-10 items-center justify-center rounded-xl bg-helix-accent-soft text-helix-accent ring-1 ring-helix-accent/20">
                   <Icon className="size-5" />
                 </div>
                 <span

@@ -251,8 +251,8 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
             }}
             className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-all ${
               selectedTier === 'gcc_enterprise'
-                ? 'bg-gradient-to-r from-sky-500 to-cyan-500 text-white shadow-[0_0_15px_rgba(56,189,248,0.35)]'
-                : 'text-helix-muted hover:bg-slate-800/60 hover:text-helix-ink'
+                ? 'bg-helix-ink text-helix-surface'
+                : 'text-helix-muted hover:bg-helix-canvas hover:text-helix-ink'
             }`}
           >
             <Building2 className="size-4" />
@@ -268,7 +268,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
             className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-all ${
               selectedTier === 'mena_sme'
                 ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-[0_0_15px_rgba(245,158,11,0.35)]'
-                : 'text-helix-muted hover:bg-slate-800/60 hover:text-helix-ink'
+                : 'text-helix-muted hover:bg-helix-canvas hover:text-helix-ink'
             }`}
           >
             <Globe2 className="size-4" />
@@ -312,7 +312,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
             <input
               name="badge"
               defaultValue={currentTierConfig.badge}
-              className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3.5 py-2 text-xs font-medium text-helix-ink focus:border-cyan-500 focus:outline-none"
+              className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs font-medium text-helix-ink focus:border-helix-ink focus:outline-none"
             />
           </div>
           <div>
@@ -321,7 +321,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
               name="badgeAr"
               dir="rtl"
               defaultValue={currentTierConfig.badgeAr}
-              className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3.5 py-2 text-xs font-medium text-helix-ink focus:border-cyan-500 focus:outline-none"
+              className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs font-medium text-helix-ink focus:border-helix-ink focus:outline-none"
             />
           </div>
           <div>
@@ -330,7 +330,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
               name="description"
               rows={2}
               defaultValue={currentTierConfig.description}
-              className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3.5 py-2 text-xs text-helix-ink focus:border-cyan-500 focus:outline-none"
+              className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs text-helix-ink focus:border-helix-ink focus:outline-none"
             />
           </div>
           <div>
@@ -340,7 +340,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
               rows={2}
               dir="rtl"
               defaultValue={currentTierConfig.descriptionAr}
-              className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3.5 py-2 text-xs text-helix-ink focus:border-cyan-500 focus:outline-none"
+              className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs text-helix-ink focus:border-helix-ink focus:outline-none"
             />
           </div>
           <div className="md:col-span-2 flex justify-end">
@@ -372,7 +372,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                 onClick={() => setActivePlanId(p.id)}
                 className={`w-full text-left rounded-xl p-3 border transition-all ${
                   isSelected
-                    ? 'border-cyan-500/60 bg-cyan-950/30 text-helix-ink shadow-sm'
+                    ? 'border-helix-ink bg-helix-accent-soft text-helix-ink shadow-sm'
                     : 'border-helix-border bg-helix-surface/80 text-helix-muted hover:border-helix-border hover:text-helix-ink'
                 }`}
               >
@@ -417,7 +417,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                   type="button"
                   onClick={() => handleSavePlan(currentPlan)}
                   disabled={isPending}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-cyan-500 to-sky-500 px-4 py-1.5 text-xs font-bold text-white hover:brightness-110 transition-all shadow-md"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-helix-ink px-4 py-1.5 text-xs font-bold text-helix-surface hover:bg-helix-ink/90 transition-all"
                 >
                   <Save className="size-3.5" />
                   <span>Save Plan Changes</span>
@@ -443,7 +443,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                       },
                     }))
                   }}
-                  className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3.5 py-2 text-xs font-semibold text-helix-ink focus:border-cyan-500 focus:outline-none"
+                  className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs font-semibold text-helix-ink focus:border-helix-ink focus:outline-none"
                 />
               </div>
 
@@ -464,7 +464,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                       },
                     }))
                   }}
-                  className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3.5 py-2 text-xs font-semibold text-helix-ink focus:border-cyan-500 focus:outline-none"
+                  className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs font-semibold text-helix-ink focus:border-helix-ink focus:outline-none"
                 />
               </div>
 
@@ -485,7 +485,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                       },
                     }))
                   }}
-                  className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3.5 py-2 text-xs text-helix-ink focus:border-cyan-500 focus:outline-none"
+                  className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs text-helix-ink focus:border-helix-ink focus:outline-none"
                 />
               </div>
 
@@ -507,7 +507,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                       },
                     }))
                   }}
-                  className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3.5 py-2 text-xs text-helix-ink focus:border-cyan-500 focus:outline-none"
+                  className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs text-helix-ink focus:border-helix-ink focus:outline-none"
                 />
               </div>
 
@@ -529,7 +529,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                       },
                     }))
                   }}
-                  className="h-4 w-4 rounded border-helix-border bg-slate-900 text-cyan-500 focus:ring-cyan-500"
+                  className="h-4 w-4 rounded border-helix-border bg-helix-surface text-helix-accent focus:ring-helix-ink"
                 />
                 <label htmlFor="featuredToggle" className="text-xs font-bold text-helix-ink cursor-pointer">
                   Mark as &quot;Featured / Most Popular&quot; tier (highlights card with glowing border on /pricing)
@@ -559,7 +559,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                           },
                         }))
                       }}
-                      className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3 py-1.5 text-xs text-helix-ink font-mono"
+                      className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-helix-ink font-mono"
                     />
                   </div>
                   {selectedTier === 'gcc_enterprise' ? (
@@ -581,7 +581,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                               },
                             }))
                           }}
-                          className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3 py-1.5 text-xs text-helix-ink font-mono"
+                          className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-helix-ink font-mono"
                         />
                       </div>
                       <div>
@@ -601,7 +601,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                               },
                             }))
                           }}
-                          className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3 py-1.5 text-xs text-helix-ink font-mono"
+                          className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-helix-ink font-mono"
                         />
                       </div>
                     </>
@@ -624,7 +624,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                               },
                             }))
                           }}
-                          className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3 py-1.5 text-xs text-helix-ink font-mono"
+                          className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-helix-ink font-mono"
                         />
                       </div>
                       <div>
@@ -644,7 +644,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                               },
                             }))
                           }}
-                          className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3 py-1.5 text-xs text-helix-ink font-mono"
+                          className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-helix-ink font-mono"
                         />
                       </div>
                     </>
@@ -675,7 +675,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                           },
                         }))
                       }}
-                      className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3 py-1.5 text-xs text-helix-ink font-mono"
+                      className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-helix-ink font-mono"
                     />
                   </div>
                   {selectedTier === 'gcc_enterprise' ? (
@@ -697,7 +697,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                               },
                             }))
                           }}
-                          className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3 py-1.5 text-xs text-helix-ink font-mono"
+                          className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-helix-ink font-mono"
                         />
                       </div>
                       <div>
@@ -717,7 +717,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                               },
                             }))
                           }}
-                          className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3 py-1.5 text-xs text-helix-ink font-mono"
+                          className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-helix-ink font-mono"
                         />
                       </div>
                     </>
@@ -740,7 +740,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                               },
                             }))
                           }}
-                          className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3 py-1.5 text-xs text-helix-ink font-mono"
+                          className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-helix-ink font-mono"
                         />
                       </div>
                       <div>
@@ -760,7 +760,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                               },
                             }))
                           }}
-                          className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900/90 px-3 py-1.5 text-xs text-helix-ink font-mono"
+                          className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-helix-ink font-mono"
                         />
                       </div>
                     </>
@@ -823,7 +823,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                             },
                           }))
                         }}
-                        className="flex-1 rounded-xl border border-helix-border bg-slate-900/80 px-3 py-1.5 text-xs text-helix-ink"
+                        className="flex-1 rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-helix-ink"
                       />
                       <input
                         dir="rtl"
@@ -846,7 +846,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                             },
                           }))
                         }}
-                        className="flex-1 rounded-xl border border-helix-border bg-slate-900/80 px-3 py-1.5 text-xs text-helix-ink"
+                        className="flex-1 rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-helix-ink"
                       />
                       <button
                         type="button"
@@ -913,7 +913,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                   required
                   value={newPlan.id}
                   onChange={(e) => setNewPlan({ ...newPlan, id: e.target.value.toLowerCase().replace(/\s+/g, '-') })}
-                  className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900 px-3.5 py-2 text-xs text-helix-ink font-mono"
+                  className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs text-helix-ink font-mono"
                 />
               </div>
 
@@ -924,7 +924,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                     required
                     value={newPlan.name}
                     onChange={(e) => setNewPlan({ ...newPlan, name: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900 px-3.5 py-2 text-xs text-helix-ink"
+                    className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs text-helix-ink"
                   />
                 </div>
                 <div>
@@ -933,7 +933,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                     dir="rtl"
                     value={newPlan.nameAr}
                     onChange={(e) => setNewPlan({ ...newPlan, nameAr: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900 px-3.5 py-2 text-xs text-helix-ink"
+                    className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs text-helix-ink"
                   />
                 </div>
               </div>
@@ -943,7 +943,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                 <input
                   value={newPlan.tagline}
                   onChange={(e) => setNewPlan({ ...newPlan, tagline: e.target.value })}
-                  className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900 px-3.5 py-2 text-xs text-helix-ink"
+                  className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs text-helix-ink"
                 />
               </div>
 
