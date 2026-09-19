@@ -173,7 +173,7 @@ export const SYSTEM_TEMPLATES: SystemTemplate[] = [
     monthlyRetainerCents: 25000,
     pricePrefix: 'from',
     en: {
-      name: 'Handbook answers',
+      name: 'Handbook',
       category: 'Add-on',
       vertical: 'Ops teams, clinics, field services',
       tagline: 'Private SOP bot for staff. Add-on — does not replace voice/WA core.',
@@ -186,7 +186,7 @@ export const SYSTEM_TEMPLATES: SystemTemplate[] = [
       simulatedViews: ['SOP search', 'Staff answer card', 'Handoff note'],
     },
     ar: {
-      name: 'إجابات دليل التشغيل',
+      name: 'دليل التشغيل',
       category: 'إضافة',
       vertical: 'فرق التشغيل، العيادات، الخدمات الميدانية',
       tagline: 'بوت داخلي لإجراءات العمل. إضافة — لا يستبدل أنظمة الصوت/الواتساب.',
@@ -206,7 +206,7 @@ export const SYSTEM_TEMPLATES: SystemTemplate[] = [
     monthlyRetainerCents: 20000,
     pricePrefix: 'from',
     en: {
-      name: 'Proposal deck factory',
+      name: 'Proposal deck',
       category: 'Add-on',
       vertical: 'Agency sales, GCC enterprise, B2B services',
       tagline: '8 fields → branded PPTX on the call. Feeds deal stage Proposal sent.',
@@ -219,7 +219,7 @@ export const SYSTEM_TEMPLATES: SystemTemplate[] = [
       simulatedViews: ['Field capture', 'Deck preview', 'Send to deal'],
     },
     ar: {
-      name: 'مصنع عروض الأسعار',
+      name: 'عرض الأسعار',
       category: 'إضافة',
       vertical: 'مبيعات الوكالة، مؤسسات الخليج، خدمات الأعمال',
       tagline: '٨ حقول → عرض PPTX بهويتكم أثناء المكالمة. يغذي مرحلة إرسال العرض.',

@@ -2,7 +2,6 @@ import { redirect } from 'next/navigation'
 import { createSupabaseServerClient } from '@/lib/supabase'
 import { getVerifiedSession } from '@/lib/auth/session'
 import { ConsoleShell } from '@/components/shell/console-shell'
-import { AdminTabs } from '@/components/admin/admin-tabs'
 import { SupportDashboard } from '@/components/support/support-dashboard'
 
 export const metadata = {
@@ -38,7 +37,7 @@ export default async function AdminSupportPage() {
 
   return (
     <ConsoleShell variant="admin" email={session.user.email ?? ''} businessName={null}>
-      <div className="mx-auto w-full max-w-6xl">
+      <div className="w-full">
         <header className="mb-8">
           <h1 className="font-display text-h2">Support Inbox</h1>
           <p className="mt-1 text-small text-muted-foreground">

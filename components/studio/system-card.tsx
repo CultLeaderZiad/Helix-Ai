@@ -9,6 +9,8 @@ import {
   type SystemTemplate,
 } from '@/lib/studio/templates'
 import { cn } from '@/lib/utils'
+import { RequestBuildButton } from '@/components/studio/request-build-button'
+import { useConsoleLanguage } from '@/components/shell/console-language'
 
 function highlightLabel(template: SystemTemplate, isAr: boolean) {
   if (template.highlight === 'most_booked') return isAr ? 'الأكثر حجزاً' : 'Most booked'
@@ -19,19 +21,25 @@ function highlightLabel(template: SystemTemplate, isAr: boolean) {
 
 export function SystemCard({
   template,
-  language = 'en',
+  language,
   demoHref,
   guideHref,
+  brandName,
   className,
+  onDemo,
 }: {
   template: SystemTemplate
   language?: 'en' | 'ar'
   demoHref?: string
   guideHref?: string
+  brandName?: string
   className?: string
+  onDemo?: () => void
 }) {
-  const isAr = language === 'ar'
-  const content = template[language]
+  const consoleLanguage = useConsoleLanguage()
+  const resolvedLanguage = language ?? consoleLanguage.language
+  const isAr = resolvedLanguage === 'ar'
+  const content = template[resolvedLanguage]
   const highlight = highlightLabel(template, isAr)
   const demo = demoHref ?? `/dashboard/studio?system=${template.id}`
   const guide = guideHref ?? `/dashboard/studio/guides/${template.id}`
@@ -58,31 +66,44 @@ export function SystemCard({
       <p className="mt-4 text-13 font-medium text-helix-ink">{formatCatalogPrice(template)}</p>
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
-        <Link href={demo} className={buttonVariants({ size: 'sm' })}>
-          {isAr ? 'جرّب العرض' : 'Try demo'}
-        </Link>
+        {onDemo ? (
+          <button type="button" onClick={onDemo} className={buttonVariants({ size: 'sm' })}>
+            {isAr ? 'جرّب العرض' : 'Try demo'}
+          </button>
+        ) : (
+          <Link href={demo} className={buttonVariants({ size: 'sm' })}>
+            {isAr ? 'جرّب العرض' : 'Try demo'}
+          </Link>
+        )}
         <Link
           href={guide}
           className={buttonVariants({ variant: 'secondary', size: 'sm' })}
         >
           {isAr ? 'الدليل' : 'Guide'}
         </Link>
+        <RequestBuildButton
+          templateId={template.id}
+          brandName={brandName}
+          language={resolvedLanguage}
+        />
       </div>
     </article>
   )
 }
 
 export function SystemCatalogGrid({
-  language = 'en',
+  language,
   templates = SYSTEM_TEMPLATES,
+  brandName,
 }: {
   language?: 'en' | 'ar'
   templates?: SystemTemplate[]
+  brandName?: string
 }) {
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
       {templates.map(template => (
-        <SystemCard key={template.id} template={template} language={language} />
+        <SystemCard key={template.id} template={template} language={language} brandName={brandName} />
       ))}
     </div>
   )

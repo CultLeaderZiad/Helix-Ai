@@ -31,7 +31,7 @@ export default async function SettingsPage() {
       email={session.user.email ?? ''}
       businessName={clientData?.business_name ?? null}
     >
-      <div className="mx-auto w-full max-w-4xl">
+      <div className="w-full">
         <PageHeader
           title={isAdmin ? 'Agency settings' : 'Workspace settings'}
           subtitle="Organization, team, and security. Tenant isolation stays in Postgres RLS."

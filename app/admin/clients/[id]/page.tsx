@@ -101,7 +101,7 @@ export default async function AdminClientDetailPage({
 
   return (
     <ConsoleShell variant="admin" email={session.user.email ?? ''} businessName={null}>
-      <div className="mx-auto w-full max-w-5xl">
+      <div className="w-full">
         <header className="flex flex-col gap-1">
           <Link
             href="/admin"

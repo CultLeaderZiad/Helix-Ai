@@ -6,11 +6,10 @@ import { getSupabaseAnonKey, getSupabaseUrl, SupabaseConfigError } from '@/lib/s
 
 /** User-scoped Supabase client. All database requests remain subject to RLS. */
 export async function createSupabaseServerClient() {
+  const cookieStore = await cookies()
   const url = getSupabaseUrl()
   const key = getSupabaseAnonKey()
   if (!url || !key) throw new SupabaseConfigError()
-
-  const cookieStore = await cookies()
   return createServerClient(url, key, {
     cookies: {
       getAll: () => cookieStore.getAll(),

@@ -39,7 +39,7 @@ export default async function ClientSupportPage() {
 
   return (
     <ConsoleShell variant="client" email={session.user.email ?? ''} businessName="Your Workspace">
-      <div className="mx-auto w-full max-w-6xl">
+      <div className="w-full">
         <header className="mb-8">
           <h1 className="font-display text-h2">Support</h1>
           <p className="mt-1 text-small text-muted-foreground">

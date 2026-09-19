@@ -10,9 +10,11 @@ import {
 import { SYSTEM_TEMPLATES, getSystemTemplate, type SystemTemplate } from '@/lib/studio/templates'
 import { requestSystemBuild, type RequestBuildResult } from '@/lib/studio/request-build'
 import dynamic from 'next/dynamic'
-import { PageHeader } from '@/components/ui/helix'
+import { PageHeader, Pill } from '@/components/ui/helix'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { SystemCard } from '@/components/studio/system-card'
+import { useConsoleLanguage } from '@/components/shell/console-language'
 
 const panelLoading = () => <p role="status" className="min-h-64 p-8 text-helix-muted">Loading studio panel…</p>
 const StudioMotionDemo = dynamic(() => import('./studio-motion-demo').then(mod => mod.StudioMotionDemo), { loading: panelLoading })
@@ -25,16 +27,19 @@ type StudioMachineTab = 'simulator' | 'topology' | 'directives'
 export function StudioWorkspace({
   initialClientName,
   initialSystemId,
+  isSample = false,
 }: {
   initialClientName?: string
   initialSystemId?: string
+  isSample?: boolean
 }) {
   const initialTemplate = getSystemTemplate(initialSystemId ?? '') ?? SYSTEM_TEMPLATES[0]
   const [selectedTemplate, setSelectedTemplate] = useState<SystemTemplate>(initialTemplate)
-  const [language, setLanguage] = useState<'en' | 'ar'>('en')
+  const consoleLanguage = useConsoleLanguage()
+  const [language, setLanguage] = useState<'en' | 'ar'>(consoleLanguage.language)
   const isAr = language === 'ar'
   const [view, setView] = useState<'catalog' | 'demo'>(initialSystemId ? 'demo' : 'catalog')
-  const [brandName, setBrandName] = useState(initialClientName || 'Al Noor Specialty Clinic')
+  const [brandName, setBrandName] = useState(initialClientName || '')
   const [machineTab, setMachineTab] = useState<StudioMachineTab>('simulator')
   const [isPending, startTransition] = useTransition()
   const [modalResult, setModalResult] = useState<RequestBuildResult | null>(null)
@@ -48,7 +53,7 @@ export function StudioWorkspace({
       const res = await requestSystemBuild(selectedTemplate.id, {
         brandName,
         accentColor,
-        themeVariant: 'blueprint-light',
+        themeVariant: 'warm-command',
       })
       setModalResult(res)
     })
@@ -62,7 +67,7 @@ export function StudioWorkspace({
   const catalog = useMemo(() => SYSTEM_TEMPLATES, [])
 
   return (
-    <div className="mx-auto w-full max-w-6xl space-y-6" dir={isAr ? 'rtl' : 'ltr'}>
+    <div className="w-full space-y-6" dir={isAr ? 'rtl' : 'ltr'}>
       <PageHeader
         title={isAr ? 'كتالوج الأنظمة' : view === 'catalog' ? 'System catalog' : content.name}
         subtitle={
@@ -74,6 +79,7 @@ export function StudioWorkspace({
         }
         actions={
           <div className="flex flex-wrap items-center gap-2">
+            {isSample ? <Pill tone="sample">Sample</Pill> : null}
             <div className="flex items-center rounded-[12px] border border-helix-border p-1">
               <button
                 type="button"
@@ -111,17 +117,13 @@ export function StudioWorkspace({
       {view === 'catalog' ? (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {catalog.map(template => (
-            <div key={template.id} className="relative">
-              <div className="pointer-events-none">
-                <div className="pointer-events-auto">
-                  <CatalogCard
-                    template={template}
-                    language={language}
-                    onDemo={() => openDemo(template)}
-                  />
-                </div>
-              </div>
-            </div>
+            <SystemCard
+              key={template.id}
+              template={template}
+              language={language}
+              brandName={brandName}
+              onDemo={() => openDemo(template)}
+            />
           ))}
         </div>
       ) : (
@@ -148,6 +150,7 @@ export function StudioWorkspace({
             <input
               className="helix-field"
               value={brandName}
+              placeholder={isAr ? 'اسم المنشأة في العرض' : 'Business name in demo'}
               onChange={e => setBrandName(e.target.value)}
             />
           </label>
@@ -250,65 +253,5 @@ export function StudioWorkspace({
         </div>
       )}
     </div>
-  )
-}
-
-function CatalogCard({
-  template,
-  language,
-  onDemo,
-}: {
-  template: SystemTemplate
-  language: 'en' | 'ar'
-  onDemo: () => void
-}) {
-  const isAr = language === 'ar'
-  const content = template[language]
-  return (
-    <article className="flex h-full flex-col rounded-[16px] border border-helix-border bg-helix-surface p-5">
-      <div className="flex flex-wrap gap-1.5">
-        <span
-          className={cn(
-            'rounded-full px-2 py-0.5 text-11 font-medium',
-            template.lane === 'core' ? 'bg-helix-ink text-helix-surface' : 'border border-helix-border text-helix-muted'
-          )}
-        >
-          {template.lane === 'core' ? (isAr ? 'أساسي' : 'Core') : isAr ? 'معاينة' : 'Preview'}
-        </span>
-        {template.highlight === 'most_booked' && (
-          <span className="rounded-full bg-helix-accent-soft px-2 py-0.5 text-11 text-helix-ok">
-            {isAr ? 'الأكثر حجزاً' : 'Most booked'}
-          </span>
-        )}
-        {template.highlight === 'highest_roi' && (
-          <span className="rounded-full bg-helix-accent-soft px-2 py-0.5 text-11 text-helix-ok">
-            {isAr ? 'أعلى عائد' : 'Highest ROI'}
-          </span>
-        )}
-        {template.highlight === 'b2b_only' && (
-          <span className="rounded-full bg-[#f8eedd] px-2 py-0.5 text-11 text-helix-warn">
-            {isAr ? 'شركات فقط' : 'B2B only'}
-          </span>
-        )}
-      </div>
-      <h3 className="mt-3 helix-title text-15">{content.name}</h3>
-      <p className="mt-1.5 flex-1 text-13 text-helix-muted">{content.description}</p>
-      <p className="mt-4 text-13 font-medium">
-        {template.pricePrefix === 'from' ? (isAr ? 'من ' : 'From ') : ''}
-        ${(template.setupFeeCents / 100).toLocaleString()} setup · $
-        {(template.monthlyRetainerCents / 100).toLocaleString()}/mo
-      </p>
-      <div className="mt-4 flex gap-2">
-        <Button size="sm" onClick={onDemo}>
-          {isAr ? 'جرّب العرض' : 'Try demo'}
-        </Button>
-        <Link
-          href={`/dashboard/studio/guides/${template.id}`}
-          className={buttonVariants({ variant: 'secondary', size: 'sm' })}
-        >
-          {isAr ? 'الدليل' : 'Guide'}
-        </Link>
-      </div>
-    </article>
   )
 }

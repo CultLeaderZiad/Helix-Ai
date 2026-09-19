@@ -7,6 +7,7 @@ import { getSystemTemplate } from '@/lib/studio/templates'
 import { getSystemGuide } from '@/lib/studio/guides'
 import { PageHeader } from '@/components/ui/helix'
 import { buttonVariants } from '@/components/ui/button'
+import { RequestBuildButton } from '@/components/studio/request-build-button'
 import { Pill } from '@/components/ui/helix'
 
 export const metadata = {
@@ -36,7 +37,7 @@ export default async function SystemGuidePage({
       email={session.user.email ?? ''}
       businessName={null}
     >
-      <div className="mx-auto w-full max-w-3xl">
+      <div className="w-full max-w-3xl">
         <PageHeader
           title={template.en.name}
           subtitle={template.en.tagline}
@@ -78,6 +79,7 @@ export default async function SystemGuidePage({
           <Link href={`/dashboard/studio?system=${id}`} className={buttonVariants()}>
             Try demo
           </Link>
+          <RequestBuildButton templateId={id} />
           <Link href="/admin/studio" className={buttonVariants({ variant: 'secondary' })}>
             Back to catalog
           </Link>

@@ -155,7 +155,7 @@ export default async function ClientDashboardPage() {
 
   return (
     <ConsoleShell variant="client" email={session.user.email ?? ''} businessName={client?.business_name ?? null}>
-      <div className="mx-auto w-full max-w-5xl">
+      <div className="w-full">
         <header className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <h1 className="font-display text-h2">{client?.business_name ?? 'Your workspace'}</h1>

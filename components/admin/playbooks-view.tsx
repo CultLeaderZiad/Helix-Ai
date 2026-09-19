@@ -30,7 +30,7 @@ export function PlaybooksView() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-6xl" dir={isAr ? 'rtl' : 'ltr'}>
+    <div className="w-full" dir={isAr ? 'rtl' : 'ltr'}>
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-helix-border pb-6">
         <div>

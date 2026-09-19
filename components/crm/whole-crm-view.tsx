@@ -102,7 +102,7 @@ export function WholeCrmView({
   const [selectedContact, setSelectedContact] = useState<CrmContactRow | null>(contacts[0] ?? null)
   const [drawerOpen, setDrawerOpen] = useState(false)
 
-  const verificationRate = totalFactCount > 0 ? Math.round((verifiedFactCount / totalFactCount) * 100) : 94
+  const verificationRate = totalFactCount > 0 ? Math.round((verifiedFactCount / totalFactCount) * 100) : 0
 
   const filteredContacts = contacts.filter(contact => {
     const matchesSearch =
@@ -117,7 +117,7 @@ export function WholeCrmView({
   })
 
   return (
-    <div className="relative mx-auto w-full max-w-7xl space-y-6">
+    <div className="w-full space-y-6">
       {/* Header & Title */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
@@ -146,29 +146,23 @@ export function WholeCrmView({
       </div>
 
       {/* KPI Metric Strip */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
         <KpiCard
           title="Total Contacts"
-          value={totalContacts > 0 ? totalContacts : 142}
-          change="+12% MoM"
-          changeType="positive"
-          hint="Autonomous voice, web, & WhatsApp acquisitions"
+          value={totalContacts}
+          hint="Live tenant rows only"
           icon={<Users className="size-4" />}
         />
         <KpiCard
           title="Pipeline Value"
-          value={pipelineValueCents > 0 ? formatCurrency(pipelineValueCents) : '$84,500'}
-          change="+15%"
-          changeType="positive"
-          hint="Across active deals & captured bookings"
+          value={formatCurrency(pipelineValueCents)}
+          hint="Sum of real deals"
           icon={<DollarSign className="size-4" />}
         />
         <KpiCard
           title="AI Fact Verification"
-          value={`${verificationRate}%`}
-          change="98% Ground Truth"
-          changeType="positive"
-          hint="Cryptographically signed observation ledger"
+          value={totalFactCount > 0 ? `${verificationRate}%` : '—'}
+          hint="Verified facts / all facts"
           icon={<ShieldCheck className="size-4" />}
         />
       </div>
@@ -198,8 +192,8 @@ export function WholeCrmView({
                   className={cn(
                     'rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all whitespace-nowrap',
                     isSelected
-                      ? 'bg-white/[0.1] text-helix-ink border border-white/[0.12] font-semibold shadow-xs'
-                      : 'text-helix-muted hover:text-helix-ink hover:bg-white/[0.04] border border-transparent'
+                      ? 'bg-helix-ink text-helix-surface'
+                      : 'text-helix-muted hover:text-helix-ink hover:bg-helix-canvas border border-transparent'
                   )}
                 >
                   {stage === 'ALL' ? 'All Stages' : STAGE_CONFIG[stage]?.label ?? stage}
@@ -229,7 +223,7 @@ export function WholeCrmView({
               <TableRow>
                 <TableCell colSpan={7} className="py-12 text-center text-helix-muted">
                   <Users className="mx-auto size-8 text-slate-600 mb-2" />
-                  No contacts found matching your criteria.
+                  No contacts yet. Engine assessments write here when a workspace exists.
                 </TableCell>
               </TableRow>
             ) : (

@@ -92,7 +92,7 @@ export function Pill({
   className,
 }: {
   children: React.ReactNode
-  tone?: 'core' | 'demo' | 'preview' | 'live' | 'accent' | 'warn'
+  tone?: 'core' | 'demo' | 'preview' | 'live' | 'accent' | 'warn' | 'sample'
   className?: string
 }) {
   return (
@@ -105,6 +105,7 @@ export function Pill({
         tone === 'live' && 'bg-helix-accent-soft text-helix-ok',
         tone === 'accent' && 'bg-helix-accent-soft text-helix-accent',
         tone === 'warn' && 'bg-[#f8eedd] text-helix-warn',
+        tone === 'sample' && 'border border-helix-border bg-helix-canvas text-helix-muted',
         className
       )}
     >
@@ -116,23 +117,29 @@ export function Pill({
 export function JobSubnav({
   items,
   activeHref,
+  className,
 }: {
   items: { href: string; label: string }[]
   activeHref: string
+  className?: string
 }) {
+  const activeItem = items
+    .filter(item => activeHref === item.href || (item.href !== '/' && activeHref.startsWith(`${item.href}/`)))
+    .sort((a, b) => b.href.length - a.href.length)[0]
+
   return (
-    <nav aria-label="Section" className="mb-6 flex flex-wrap gap-1">
+    <nav aria-label="Section" className={cn('mb-6 flex min-w-0 flex-wrap gap-1 overflow-x-auto', className)}>
       {items.map(item => {
-        const active = activeHref === item.href || activeHref.startsWith(`${item.href}/`)
+        const active = activeItem?.href === item.href
         return (
           <Link
             key={item.href}
             href={item.href}
             className={cn(
-              'rounded-full px-3 py-1.5 text-13 transition-colors',
+              'rounded-full px-3 py-1.5 text-13 whitespace-nowrap transition-colors',
               active
                 ? 'bg-helix-ink text-helix-surface'
-                : 'text-helix-muted hover:bg-helix-canvas hover:text-helix-ink'
+                : 'text-helix-muted hover:bg-helix-surface hover:text-helix-ink'
             )}
           >
             {item.label}
