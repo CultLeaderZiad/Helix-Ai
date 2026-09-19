@@ -2,7 +2,6 @@ import { redirect } from 'next/navigation'
 import { createSupabaseServerClient } from '@/lib/supabase'
 import { getVerifiedSession } from '@/lib/auth/session'
 import { ConsoleShell } from '@/components/shell/console-shell'
-import { AdminTabs } from '@/components/admin/admin-tabs'
 import { PricingManagerView } from '@/components/admin/pricing-manager-view'
 import { getPricingConfigs } from '@/lib/pricing/pricing-store'
 
@@ -21,8 +20,7 @@ export default async function AdminPricingPage() {
 
   return (
     <ConsoleShell variant="admin" email={session.user.email ?? ''} businessName={null}>
-      <div className="mx-auto w-full max-w-6xl">
-        <AdminTabs />
+      <div className="w-full">
         <PricingManagerView initialConfigs={configs} />
       </div>
     </ConsoleShell>

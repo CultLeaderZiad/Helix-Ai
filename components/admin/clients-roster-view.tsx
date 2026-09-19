@@ -1,27 +1,17 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useMemo, useState, useTransition } from 'react'
 import Link from 'next/link'
-import type { ClientStatus, IntegrationStatus, RegionTier } from '@/lib/schema'
+import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import type { ClientRosterItem } from '@/lib/admin/roster'
 import { PageHeader, HelixKpi, EmptyState, Pill } from '@/components/ui/helix'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from '@/components/ui/table'
+import { seedDemoWorkspace } from '@/lib/admin/seed-demo-workspace'
 
-export interface ClientRosterItem {
-  id: string
-  business_name: string
-  vertical: string | null
-  status: ClientStatus
-  country?: string | null
-  region_tier?: RegionTier
-  updated_at: string
-  systemCount: number
-  integration: IntegrationStatus | null
-  pendingFacts: number
-  funnelStage: string
-}
+export type { ClientRosterItem }
 
 const STAGE_LABEL: Record<string, string> = {
   new_lead: 'New lead',
@@ -51,9 +41,76 @@ function integrationLabel(row: ClientRosterItem) {
   return { label: 'Disconnected', tone: 'muted' as const }
 }
 
-export function ClientsRosterView({ clients }: { clients: ClientRosterItem[] }) {
+function RosterSkeleton() {
+  return (
+    <div className="space-y-6" aria-busy="true" aria-live="polite">
+      <div className="h-10 w-64 animate-pulse rounded-[12px] bg-helix-surface" />
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        {[1, 2, 3, 4].map(i => (
+          <div key={i} className="h-[88px] animate-pulse rounded-[16px] border border-helix-border bg-helix-surface" />
+        ))}
+      </div>
+      <div className="hidden overflow-hidden rounded-[16px] border border-helix-border bg-helix-surface sm:block">
+        {[1, 2, 3, 4, 5].map(i => (
+          <div key={i} className="h-14 animate-pulse border-b border-helix-border last:border-0 bg-helix-canvas/40" />
+        ))}
+      </div>
+      <div className="space-y-3 sm:hidden">
+        {[1, 2, 3].map(i => (
+          <div key={i} className="h-28 animate-pulse rounded-[16px] border border-helix-border bg-helix-surface" />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function WorkspaceCard({ row }: { row: ClientRosterItem }) {
+  const integration = integrationLabel(row)
+  return (
+    <article className="rounded-[16px] border border-helix-border bg-helix-surface p-4">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <Link href={`/admin/clients/${row.id}`} className="helix-title text-15 hover:underline">
+            {row.business_name}
+          </Link>
+          <p className="mt-1 text-12 text-helix-muted">{regionLabel(row)}</p>
+        </div>
+        {row.isSample ? <Pill tone="sample">Sample</Pill> : null}
+      </div>
+      <div className="mt-3 flex flex-wrap items-center gap-2 text-13">
+        <Pill tone={row.funnelStage === 'engaged' || row.funnelStage === 'closed_won' ? 'live' : 'demo'}>
+          {STAGE_LABEL[row.funnelStage] ?? row.funnelStage.replaceAll('_', ' ')}
+        </Pill>
+        <span className="text-helix-muted">{row.systemCount} systems</span>
+        <span
+          className={cn(
+            'font-medium',
+            integration.tone === 'ok' && 'text-helix-ok',
+            integration.tone === 'warn' && 'text-helix-warn',
+            integration.tone === 'muted' && 'text-helix-muted'
+          )}
+        >
+          {integration.label}
+        </span>
+      </div>
+    </article>
+  )
+}
+
+export function ClientsRosterView({
+  clients,
+  error,
+  degraded,
+}: {
+  clients: ClientRosterItem[]
+  error?: string | null
+  degraded?: boolean
+}) {
+  const router = useRouter()
   const [search, setSearch] = useState('')
   const [selectedStage, setSelectedStage] = useState<string>('ALL')
+  const [seedMessage, setSeedMessage] = useState<string | null>(null)
+  const [isPending, startTransition] = useTransition()
 
   const filteredClients = useMemo(() => {
     return clients.filter(c => {
@@ -73,15 +130,38 @@ export function ClientsRosterView({ clients }: { clients: ClientRosterItem[] }) 
   const pendingCount = clients.reduce((acc, c) => acc + c.pendingFacts, 0)
   const healthyDenom = Math.max(clients.length, 0)
 
+  const retry = () => {
+    startTransition(() => {
+      router.refresh()
+    })
+  }
+
+  const seed = () => {
+    setSeedMessage(null)
+    startTransition(async () => {
+      const result = await seedDemoWorkspace()
+      setSeedMessage(result.message)
+      if (result.success) router.refresh()
+    })
+  }
+
+  if (isPending && clients.length === 0) {
+    return <RosterSkeleton />
+  }
+
   return (
     <div className="space-y-6">
       <PageHeader
         title="Client workspaces"
-        subtitle={`${clients.length} workspace${clients.length === 1 ? '' : 's'} · regional isolation on`}
+        subtitle={
+          error
+            ? 'Roster fetch failed — retry or seed a sample workspace.'
+            : `${clients.length} workspace${clients.length === 1 ? '' : 's'} · regional isolation on`
+        }
         actions={
           <>
-            <Button variant="secondary" size="sm" onClick={() => window.location.reload()}>
-              Sync
+            <Button variant="secondary" size="sm" onClick={retry} disabled={isPending}>
+              {isPending ? 'Refreshing' : 'Retry'}
             </Button>
             <Link href="/admin/crm" className={buttonVariants({ size: 'sm' })}>
               Open pipeline
@@ -89,6 +169,28 @@ export function ClientsRosterView({ clients }: { clients: ClientRosterItem[] }) 
           </>
         }
       />
+
+      {error ? (
+        <div role="alert" className="rounded-[16px] border border-helix-border bg-helix-surface p-5">
+          <h2 className="helix-title text-15">The client roster could not be loaded</h2>
+          <p className="mt-1 text-13 text-helix-muted">{error}</p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Button size="sm" onClick={retry} disabled={isPending}>
+              Retry
+            </Button>
+            <Button size="sm" variant="secondary" onClick={seed} disabled={isPending}>
+              Seed sample workspace
+            </Button>
+          </div>
+          {seedMessage ? <p className="mt-3 text-13 text-helix-muted">{seedMessage}</p> : null}
+        </div>
+      ) : null}
+
+      {degraded && !error ? (
+        <p className="text-13 text-helix-muted">
+          Region columns are unavailable in this database. Core workspace rows still loaded.
+        </p>
+      ) : null}
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <HelixKpi value={clients.length} label="Workspaces" />
@@ -100,8 +202,8 @@ export function ClientsRosterView({ clients }: { clients: ClientRosterItem[] }) 
         <HelixKpi value={pendingCount} label="Facts to review" />
       </div>
 
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="min-w-[220px] flex-1">
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+        <div className="min-w-0 flex-1 sm:min-w-[220px]">
           <Input
             type="search"
             placeholder="Search workspace or region"
@@ -122,7 +224,7 @@ export function ClientsRosterView({ clients }: { clients: ClientRosterItem[] }) 
                   'rounded-full px-3 py-1.5 text-13 transition-colors whitespace-nowrap',
                   isSelected
                     ? 'bg-helix-ink text-helix-surface'
-                    : 'text-helix-muted hover:bg-helix-canvas hover:text-helix-ink'
+                    : 'text-helix-muted hover:bg-helix-surface hover:text-helix-ink'
                 )}
               >
                 {stage === 'ALL' ? 'All stages' : STAGE_LABEL[stage] ?? stage}
@@ -132,7 +234,28 @@ export function ClientsRosterView({ clients }: { clients: ClientRosterItem[] }) 
         </div>
       </div>
 
-      {filteredClients.length === 0 ? (
+      {!error && clients.length === 0 ? (
+        <EmptyState
+          title="No client workspaces yet"
+          body="This is an empty tenant, not a failed load. Retry the live fetch or seed a labeled Sample workspace."
+          action={
+            <div className="flex flex-wrap justify-center gap-2">
+              <Button size="sm" onClick={retry} disabled={isPending}>
+                Retry
+              </Button>
+              <Button size="sm" variant="secondary" onClick={seed} disabled={isPending}>
+                Seed sample workspace
+              </Button>
+            </div>
+          }
+        />
+      ) : null}
+
+      {seedMessage && clients.length === 0 && !error ? (
+        <p className="text-center text-13 text-helix-muted">{seedMessage}</p>
+      ) : null}
+
+      {filteredClients.length === 0 && clients.length > 0 ? (
         <EmptyState
           title="No matching workspaces"
           body="Clear search or stage filters to see the roster again."
@@ -142,75 +265,89 @@ export function ClientsRosterView({ clients }: { clients: ClientRosterItem[] }) 
             </Button>
           }
         />
-      ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Workspace</TableHead>
-              <TableHead>Region</TableHead>
-              <TableHead>Stage</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Systems</TableHead>
-              <TableHead>Integrations</TableHead>
-              <TableHead className="text-right"> </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredClients.map(row => {
-              const integration = integrationLabel(row)
-              return (
-                <TableRow key={row.id}>
-                  <TableCell className="font-medium">
-                    <Link href={`/admin/clients/${row.id}`} className="text-helix-ink hover:underline">
-                      {row.business_name}
-                    </Link>
-                  </TableCell>
-                  <TableCell className="text-helix-muted">{regionLabel(row)}</TableCell>
-                  <TableCell>
-                    <Pill tone={row.funnelStage === 'engaged' || row.funnelStage === 'closed_won' ? 'live' : 'demo'}>
-                      {STAGE_LABEL[row.funnelStage] ?? row.funnelStage.replaceAll('_', ' ')}
-                    </Pill>
-                  </TableCell>
-                  <TableCell>
-                    <span
-                      className={cn(
-                        'text-13 font-medium',
-                        row.status === 'active' && 'text-helix-ok',
-                        row.status === 'onboarding' && 'text-helix-warn',
-                        row.status === 'paused' && 'text-helix-muted',
-                        row.status === 'churned' && 'text-helix-danger'
-                      )}
-                    >
-                      {row.status === 'onboarding' ? 'Onboarding' : row.status.charAt(0).toUpperCase() + row.status.slice(1)}
-                    </span>
-                  </TableCell>
-                  <TableCell className="tabular-nums">{row.systemCount}</TableCell>
-                  <TableCell>
-                    <span
-                      className={cn(
-                        'text-13 font-medium',
-                        integration.tone === 'ok' && 'text-helix-ok',
-                        integration.tone === 'warn' && 'text-helix-warn',
-                        integration.tone === 'muted' && 'text-helix-muted'
-                      )}
-                    >
-                      {integration.label}
-                    </span>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <Link
-                      href={`/admin/clients/${row.id}`}
-                      className="text-13 text-helix-muted hover:text-helix-ink"
-                    >
-                      Inspect →
-                    </Link>
-                  </TableCell>
+      ) : null}
+
+      {filteredClients.length > 0 ? (
+        <>
+          <div className="hidden sm:block">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Workspace</TableHead>
+                  <TableHead>Region</TableHead>
+                  <TableHead>Stage</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Systems</TableHead>
+                  <TableHead>Integrations</TableHead>
+                  <TableHead className="text-right"> </TableHead>
                 </TableRow>
-              )
-            })}
-          </TableBody>
-        </Table>
-      )}
+              </TableHeader>
+              <TableBody>
+                {filteredClients.map(row => {
+                  const integration = integrationLabel(row)
+                  return (
+                    <TableRow key={row.id}>
+                      <TableCell className="font-medium">
+                        <div className="flex items-center gap-2">
+                          <Link href={`/admin/clients/${row.id}`} className="text-helix-ink hover:underline">
+                            {row.business_name}
+                          </Link>
+                          {row.isSample ? <Pill tone="sample">Sample</Pill> : null}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-helix-muted">{regionLabel(row)}</TableCell>
+                      <TableCell>
+                        <Pill tone={row.funnelStage === 'engaged' || row.funnelStage === 'closed_won' ? 'live' : 'demo'}>
+                          {STAGE_LABEL[row.funnelStage] ?? row.funnelStage.replaceAll('_', ' ')}
+                        </Pill>
+                      </TableCell>
+                      <TableCell>
+                        <span
+                          className={cn(
+                            'text-13 font-medium',
+                            row.status === 'active' && 'text-helix-ok',
+                            row.status === 'onboarding' && 'text-helix-warn',
+                            row.status === 'paused' && 'text-helix-muted',
+                            row.status === 'churned' && 'text-helix-danger'
+                          )}
+                        >
+                          {row.status === 'onboarding' ? 'Onboarding' : row.status.charAt(0).toUpperCase() + row.status.slice(1)}
+                        </span>
+                      </TableCell>
+                      <TableCell className="tabular-nums">{row.systemCount}</TableCell>
+                      <TableCell>
+                        <span
+                          className={cn(
+                            'text-13 font-medium',
+                            integration.tone === 'ok' && 'text-helix-ok',
+                            integration.tone === 'warn' && 'text-helix-warn',
+                            integration.tone === 'muted' && 'text-helix-muted'
+                          )}
+                        >
+                          {integration.label}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Link
+                          href={`/admin/clients/${row.id}`}
+                          className="text-13 text-helix-muted hover:text-helix-ink"
+                        >
+                          Inspect →
+                        </Link>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+            </Table>
+          </div>
+          <div className="grid grid-cols-1 gap-3 sm:hidden">
+            {filteredClients.map(row => (
+              <WorkspaceCard key={row.id} row={row} />
+            ))}
+          </div>
+        </>
+      ) : null}
     </div>
   )
 }

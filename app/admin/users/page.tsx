@@ -3,7 +3,6 @@ import { createSupabaseServerClient } from '@/lib/supabase'
 import { createSupabaseAdminClient } from '@/lib/supabase-admin'
 import { getVerifiedSession } from '@/lib/auth/session'
 import { ConsoleShell } from '@/components/shell/console-shell'
-import { AdminTabs } from '@/components/admin/admin-tabs'
 import { UsersManager } from '@/components/admin/users-manager'
 import type { Profile } from '@/lib/schema'
 
@@ -49,8 +48,7 @@ export default async function AdminUsersPage() {
 
   return (
     <ConsoleShell variant="admin" email={session.user.email ?? ''} businessName={null}>
-      <div className="mx-auto w-full max-w-6xl">
-        <AdminTabs />
+      <div className="w-full">
         <UsersManager
           initialUsers={usersWithClients}
           clients={clients}

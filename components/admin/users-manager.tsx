@@ -177,7 +177,7 @@ export function UsersManager({ initialUsers, clients, currentUserId }: UsersMana
   }
 
   return (
-    <div className="mx-auto w-full max-w-6xl space-y-6">
+    <div className="w-full space-y-6">
       {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>

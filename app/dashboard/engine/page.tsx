@@ -3,6 +3,7 @@ import { createSupabaseServerClient } from '@/lib/supabase'
 import { getVerifiedSession } from '@/lib/auth/session'
 import { ConsoleShell } from '@/components/shell/console-shell'
 import { AiEngineView } from '@/components/engine/ai-engine-view'
+import { isSampleWorkspace } from '@/lib/admin/sample'
 import type { RegionTier } from '@/lib/schema'
 
 export const metadata = {
@@ -18,15 +19,17 @@ export default async function EnginePage() {
   const clientId = session.claims.client_id
   let clientName: string | null = null
   let regionTier: RegionTier = 'gcc_enterprise'
+  let initialIsSample = false
 
   if (clientId) {
     const { data: client } = await supabase
       .from('clients')
-      .select('business_name, region_tier')
+      .select('business_name, region_tier, vertical')
       .eq('id', clientId)
       .maybeSingle()
 
     clientName = client?.business_name ?? null
+    initialIsSample = isSampleWorkspace(client?.vertical, client?.business_name)
     if (client?.region_tier) {
       regionTier = client.region_tier as RegionTier
     }
@@ -39,9 +42,10 @@ export default async function EnginePage() {
       businessName={clientName}
     >
       <AiEngineView
-        initialClientName={clientName ?? undefined}
+        initialClientName={initialIsSample ? undefined : clientName ?? undefined}
         initialRegionTier={regionTier}
         userEmail={session.user.email ?? ''}
+        initialIsSample={initialIsSample}
       />
     </ConsoleShell>
   )

@@ -8,15 +8,17 @@ import { requestSystemBuild } from '@/lib/studio/request-build'
 import type { AssessmentInput, RecommendationResult } from '@/lib/ai/engine'
 import type { RegionTier } from '@/lib/schema'
 import { cn } from '@/lib/utils'
-import { PageHeader } from '@/components/ui/helix'
+import { PageHeader, Pill } from '@/components/ui/helix'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { formatUsdFromCents, getSystemTemplate } from '@/lib/studio/templates'
+import { useConsoleLanguage } from '@/components/shell/console-language'
 
 interface AiEngineViewProps {
   initialClientName?: string
   initialRegionTier?: RegionTier
   userEmail?: string
+  initialIsSample?: boolean
 }
 
 const VERTICALS = [
@@ -28,7 +30,7 @@ const VERTICALS = [
 ]
 
 const PAIN = [
-  { id: 'booking_overhead', en: 'Appointment booking overhead', ar: 'ضغط حجوزات المواعيد' },
+  { id: 'booking_overhead', en: 'Appointment booking & calendar overhead', ar: 'ضغط حجوزات المواعيد' },
   { id: 'missed_calls', en: 'Missed calls & dropped leads', ar: 'مكالمات فائتة وضياع العملاء' },
   { id: 'dormant_leads', en: 'Dormant CRM contacts', ar: 'عملاء خاملون في CRM' },
   { id: 'unpaid_invoices', en: 'Slow B2B collections', ar: 'تأخر تحصيل فواتير الشركات' },
@@ -46,12 +48,13 @@ export function AiEngineView({
   initialClientName,
   initialRegionTier = 'gcc_enterprise',
   userEmail,
+  initialIsSample = false,
 }: AiEngineViewProps) {
-  const [language, setLanguage] = useState<'en' | 'ar'>('en')
+  const { language } = useConsoleLanguage()
   const isAr = language === 'ar'
   const [step, setStep] = useState<1 | 2 | 3>(1)
 
-  const [businessName, setBusinessName] = useState(initialClientName || 'Al Noor Specialty Clinic')
+  const [businessName, setBusinessName] = useState(initialClientName ?? '')
   const [vertical, setVertical] = useState('Healthcare & clinics')
   const [regionTier] = useState<RegionTier>(initialRegionTier)
   const [monthlyCallVolume, setMonthlyCallVolume] =
@@ -64,14 +67,15 @@ export function AiEngineView({
   const [recommendation, setRecommendation] = useState<RecommendationResult | null>(null)
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [requestMsg, setRequestMsg] = useState<string | null>(null)
+  const [sampleRun, setSampleRun] = useState(false)
 
   const runAssessment = (e: React.FormEvent) => {
     e.preventDefault()
     setErrorMsg(null)
     startTransition(async () => {
       const res = await evaluateProspectAndSaveDeal({
-        businessName,
-        contactName: businessName,
+        businessName: businessName.trim(),
+        contactName: businessName.trim(),
         email: userEmail || 'hello@helix.ai',
         phone: '',
         vertical,
@@ -82,6 +86,7 @@ export function AiEngineView({
       })
       if (res.success && res.recommendation) {
         setRecommendation(res.recommendation)
+        setSampleRun(initialIsSample)
         setStep(3)
       } else {
         setErrorMsg(res.message)
@@ -93,45 +98,22 @@ export function AiEngineView({
     if (!recommendation) return
     startRequest(async () => {
       const res = await requestSystemBuild(recommendation.systemId, {
-        brandName: businessName,
+        brandName: businessName.trim() || 'Workspace',
         accentColor: '#0B6E4F',
-        themeVariant: 'blueprint-light',
+        themeVariant: 'warm-command',
       })
       setRequestMsg(res.message)
     })
   }
 
   const template = recommendation ? getSystemTemplate(recommendation.systemId) : undefined
+  const painLabel = PAIN.find(opt => opt.id === primaryPainPoint)
 
   return (
-    <div className="mx-auto w-full max-w-6xl">
+    <div className="w-full">
       <PageHeader
         title={isAr ? 'اعثر على النظام المناسب' : 'Find the right system'}
         subtitle={isAr ? 'تقييم ٦٠ ثانية · English / العربية' : '60-second assessment · English / العربية'}
-        actions={
-          <div className="flex items-center rounded-[12px] border border-helix-border p-1">
-            <button
-              type="button"
-              onClick={() => setLanguage('en')}
-              className={cn(
-                'rounded-[10px] px-3 py-1.5 text-13',
-                language === 'en' ? 'bg-helix-ink text-helix-surface' : 'text-helix-muted hover:text-helix-ink'
-              )}
-            >
-              English
-            </button>
-            <button
-              type="button"
-              onClick={() => setLanguage('ar')}
-              className={cn(
-                'rounded-[10px] px-3 py-1.5 text-13',
-                language === 'ar' ? 'bg-helix-ink text-helix-surface' : 'text-helix-muted hover:text-helix-ink'
-              )}
-            >
-              العربية
-            </button>
-          </div>
-        }
       />
 
       <ol className="mt-6 flex flex-wrap items-center gap-3 text-13 text-helix-muted">
@@ -148,7 +130,7 @@ export function AiEngineView({
                   ? 'bg-helix-ink text-helix-surface'
                   : step > item.n
                     ? 'bg-helix-accent-soft text-helix-accent'
-                    : 'bg-helix-canvas text-helix-muted'
+                    : 'bg-helix-surface text-helix-muted'
               )}
             >
               {item.n}
@@ -158,11 +140,19 @@ export function AiEngineView({
         ))}
       </ol>
 
-      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-12" dir={isAr ? 'rtl' : 'ltr'}>
+      <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-12" dir={isAr ? 'rtl' : 'ltr'}>
         <form
           onSubmit={step === 2 ? runAssessment : (e) => { e.preventDefault(); setStep(2) }}
           className="space-y-4 rounded-[16px] border border-helix-border bg-helix-surface p-5 lg:col-span-6"
         >
+          <p className="text-11 font-medium uppercase tracking-[0.08em] text-helix-muted">
+            {step === 1
+              ? isAr ? 'الخطوة 1 · الأعمال' : 'Step 1 · Business'
+              : step === 2
+                ? isAr ? 'الخطوة 2 · عنق الزجاجة' : 'Step 2 · Bottleneck'
+                : isAr ? 'الخطوة 3 · محفوظ' : 'Step 3 · Saved'}
+          </p>
+
           {step === 1 && (
             <>
               <div>
@@ -170,8 +160,17 @@ export function AiEngineView({
                 <Input
                   required
                   value={businessName}
+                  placeholder={isAr ? 'اسم المنشأة' : 'Business name'}
                   onChange={e => setBusinessName(e.target.value)}
                 />
+                {initialIsSample ? (
+                  <p className="mt-2">
+                    <Pill tone="sample">Sample</Pill>
+                    <span className="ml-2 text-12 text-helix-muted">
+                      Prefill is a sample workspace, not a live tenant default.
+                    </span>
+                  </p>
+                ) : null}
               </div>
               <div>
                 <label className="helix-field-label">{isAr ? 'القطاع' : 'Vertical'}</label>
@@ -187,7 +186,7 @@ export function AiEngineView({
                   ))}
                 </select>
               </div>
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full sm:w-auto">
                 {isAr ? 'التالي' : 'Continue'}
               </Button>
             </>
@@ -195,6 +194,14 @@ export function AiEngineView({
 
           {step === 2 && (
             <>
+              <div>
+                <h2 className="helix-title text-15">
+                  {businessName.trim() || (isAr ? 'منشأة بدون اسم' : 'Unnamed business')}
+                  <span className="mt-1 block text-13 font-normal text-helix-muted">
+                    {isAr ? vertical : `${vertical} · ${regionTier === 'gcc_enterprise' ? 'GCC Enterprise' : 'MENA SME'}`}
+                  </span>
+                </h2>
+              </div>
               <div>
                 <label className="helix-field-label">{isAr ? 'عنق الزجاجة الرئيسي' : 'Main bottleneck'}</label>
                 <select
@@ -228,7 +235,7 @@ export function AiEngineView({
                   {errorMsg}
                 </p>
               ) : null}
-              <div className="flex gap-2">
+              <div className="sticky bottom-3 flex gap-2 sm:static">
                 <Button type="button" variant="secondary" className="flex-1" onClick={() => setStep(1)}>
                   {isAr ? 'رجوع' : 'Back'}
                 </Button>
@@ -239,7 +246,7 @@ export function AiEngineView({
                       {isAr ? 'جاري التقييم...' : 'Running assessment'}
                     </>
                   ) : (
-                    isAr ? 'تشغيل التقييم' : 'Run assessment'
+                    isAr ? 'متابعة إلى التوصية' : 'Continue to recommendation'
                   )}
                 </Button>
               </div>
@@ -251,7 +258,7 @@ export function AiEngineView({
               <p className="text-13 text-helix-muted">
                 {isAr ? 'تم حفظ التقييم في خط الأنابيب عند توفر مساحة عمل.' : 'Assessment saved to the pipeline when a workspace is available.'}
               </p>
-              <Button type="button" variant="secondary" onClick={() => setStep(1)}>
+              <Button type="button" variant="secondary" onClick={() => { setStep(1); setRecommendation(null) }}>
                 {isAr ? 'تقييم جديد' : 'New assessment'}
               </Button>
             </div>
@@ -260,13 +267,18 @@ export function AiEngineView({
 
         <div className="lg:col-span-6">
           {recommendation ? (
-            <div className="rounded-[16px] border border-helix-border bg-helix-accent-soft/40 p-5">
-              <p className="text-12 font-medium text-helix-accent">
-                {isAr ? `تطابق ${recommendation.matchScore}%` : `Match ${recommendation.matchScore}%`}
-              </p>
-              <h3 className="mt-2 helix-title text-22">
-                {isAr ? recommendation.systemNameAr : recommendation.systemName}
-              </h3>
+            <div className="rounded-[16px] border border-helix-border bg-helix-surface p-5">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <h3 className="helix-title text-22">
+                    {isAr ? recommendation.systemNameAr : recommendation.systemName}
+                  </h3>
+                  {sampleRun ? <div className="mt-2"><Pill tone="sample">Sample</Pill></div> : null}
+                </div>
+                <p className="text-13 font-medium text-helix-ok">
+                  {isAr ? `تطابق ${recommendation.matchScore}%` : `Match ${recommendation.matchScore}%`}
+                </p>
+              </div>
               <p className="mt-2 text-13 leading-relaxed text-helix-ink">
                 {isAr ? recommendation.headlineAr : recommendation.headline}
               </p>
@@ -289,19 +301,22 @@ export function AiEngineView({
                   href={`/dashboard/studio/guides/${recommendation.systemId}`}
                   className={buttonVariants({ variant: 'secondary', size: 'sm' })}
                 >
-                  {isAr ? 'اقرأ الدليل' : 'Read guide'}
+                  {isAr ? 'الدليل' : 'Guide'}
                 </Link>
               </div>
               {requestMsg ? <p className="mt-3 text-13 text-helix-muted">{requestMsg}</p> : null}
             </div>
           ) : (
-            <div className="flex min-h-[280px] flex-col justify-center rounded-[16px] border border-dashed border-helix-border bg-helix-canvas/50 p-6">
+            <div className="flex min-h-[280px] flex-col justify-center rounded-[16px] border border-dashed border-helix-border bg-helix-surface/60 p-6">
               <h3 className="helix-title text-15">{isAr ? 'التوصية تظهر هنا' : 'Recommendation appears here'}</h3>
               <p className="mt-1 text-13 text-helix-muted">
                 {isAr
-                  ? 'أدخل العمل ثم عنق الزجاجة. لا نعرض أرقام عائد مختلقة.'
-                  : 'Enter the business, then the bottleneck. We do not show invented ROI as live metrics.'}
+                  ? 'أدخل العمل ثم عنق الزجاجة. لا نعرض توصية قبل التشغيل.'
+                  : 'Enter the business, then the bottleneck. No fixture is shown as live until you run the assessment.'}
               </p>
+              {step === 2 && painLabel ? (
+                <p className="mt-4 text-13 text-helix-ink">{isAr ? painLabel.ar : painLabel.en}</p>
+              ) : null}
             </div>
           )}
         </div>

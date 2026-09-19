@@ -178,7 +178,7 @@ export default async function AnalyticsPage({
 
   return (
     <ConsoleShell variant="admin" email={session.user.email ?? ''} businessName={null}>
-      <div className="mx-auto w-full max-w-6xl">
+      <div className="w-full">
         <header className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <h1 className="font-display text-h2">Analytics</h1>
@@ -208,10 +208,9 @@ export default async function AnalyticsPage({
         </header>
 
         {queryError ? (
-          <div role="alert" className="mt-8 border border-status-danger/40 bg-status-danger/10 p-4">
-            <p className="text-small text-foreground">
-              Analytics data could not be loaded. Retry shortly.
-            </p>
+          <div role="alert" className="mt-8 rounded-[16px] border border-helix-border bg-helix-surface p-5">
+            <h2 className="helix-title text-15">Analytics data could not be loaded</h2>
+            <p className="mt-1 text-13 text-helix-muted">{queryError.message}</p>
           </div>
         ) : zeroActivity ? (
           <div className="mt-16 flex flex-col items-center gap-2 text-center">

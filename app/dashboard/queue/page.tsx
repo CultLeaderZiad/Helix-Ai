@@ -3,54 +3,12 @@ import { createSupabaseServerClient } from '@/lib/supabase'
 import { getVerifiedSession } from '@/lib/auth/session'
 import { ConsoleShell } from '@/components/shell/console-shell'
 import { FactReviewList, type ReviewableFact } from '@/components/crm/fact-review-list'
-import { AlertCircle, CheckCircle2, ShieldAlert, Sparkles } from 'lucide-react'
+import { AlertCircle, ShieldAlert, Sparkles } from 'lucide-react'
 
 export const metadata = {
   title: 'Helix AI — Attention Queue',
   robots: { index: false, follow: false },
 }
-
-const SAMPLE_PENDING_FACTS: ReviewableFact[] = [
-  {
-    id: 'f-1',
-    field_name: 'budget_confirmed',
-    field_value: '$50,000 annual deployment budget approved by CFO',
-    evidence_band: 'verified',
-    source_tool: 'Retell Voice Agent (call_id: 8f4b..32a1)',
-    status: 'pending',
-    score: 0.98,
-    method: 'audio_intent_classifier',
-    observed_at: new Date(Date.now() - 40 * 60000).toISOString(),
-    contact_id: 'c-1',
-    contact: { full_name: 'Anna Hamer', company_name: 'Cianua Systems' },
-  },
-  {
-    id: 'f-2',
-    field_name: 'decision_maker_bought_in',
-    field_value: 'CTO confirmed technical readiness for automated WhatsApp responder',
-    evidence_band: 'probable',
-    source_tool: 'Inbound WhatsApp Webhook (wamid: 91fa..81bc)',
-    status: 'pending',
-    score: 0.86,
-    method: 'nlp_sentiment_extractor',
-    observed_at: new Date(Date.now() - 95 * 60000).toISOString(),
-    contact_id: 'c-2',
-    contact: { full_name: 'Johan Shart', company_name: 'Acme Health Labs' },
-  },
-  {
-    id: 'f-3',
-    field_name: 'competitor_displacement',
-    field_value: 'Replacing legacy Zendesk system by end of Q4',
-    evidence_band: 'possible',
-    source_tool: 'Bland AI Voice Call (call_id: 72ee..44a2)',
-    status: 'pending',
-    score: 0.72,
-    method: 'audio_transcript_ner',
-    observed_at: new Date(Date.now() - 180 * 60000).toISOString(),
-    contact_id: 'c-3',
-    contact: { full_name: 'Diane Smith', company_name: 'Vortex Holdings' },
-  },
-]
 
 export default async function AttentionQueuePage() {
   const supabase = await createSupabaseServerClient()
@@ -76,8 +34,7 @@ export default async function AttentionQueuePage() {
     i => i.status === 'degraded' || i.status === 'disconnected'
   )
 
-  const facts: ReviewableFact[] = rawFacts.length > 0
-    ? rawFacts.map(f => ({
+  const facts: ReviewableFact[] = rawFacts.map(f => ({
         id: f.id,
         field_name: f.fact_key,
         field_value: f.fact_value,
@@ -90,19 +47,18 @@ export default async function AttentionQueuePage() {
         contact_id: f.contact_id,
         contact: { full_name: 'Workspace Lead', company_name: client?.business_name ?? null },
       }))
-    : SAMPLE_PENDING_FACTS
 
   return (
     <ConsoleShell variant="client" email={session.user.email ?? ''} businessName={client?.business_name ?? null}>
-      <div className="mx-auto w-full max-w-5xl">
+      <div className="w-full">
         {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-purple-500/30 bg-purple-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-purple-300">
-              <ShieldAlert className="size-3.5" /> Human-in-the-Loop Triage
+            <div className="inline-flex items-center gap-2 rounded-full border border-helix-border bg-helix-surface px-3 py-1 text-11 font-medium uppercase tracking-[0.08em] text-helix-muted">
+              <ShieldAlert className="size-3.5" /> Human-in-the-loop triage
             </div>
-            <h1 className="mt-2 font-display text-3xl font-bold tracking-tight text-helix-ink sm:text-4xl">
-              Attention Queue
+            <h1 className="mt-2 helix-title text-28">
+              Attention queue
             </h1>
             <p className="mt-1 text-sm text-helix-muted">
               AI observations, degraded integrations, and items requiring a human supervisory decision.

@@ -54,7 +54,7 @@ export function MonthlyReportView({ report }: MonthlyReportViewProps) {
   }
 
   return (
-    <div className="mx-auto w-full max-w-6xl space-y-7" dir={isAr ? 'rtl' : 'ltr'}>
+    <div className="w-full space-y-7" dir={isAr ? 'rtl' : 'ltr'}>
       {/* Executive Report Document Header */}
       <div className="flex flex-wrap items-start justify-between gap-4 border-b border-white/[0.08] pb-6">
         <div>
