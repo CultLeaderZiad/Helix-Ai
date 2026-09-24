@@ -22,6 +22,7 @@ export interface Profile {
 }
 
 export type RegionTier = 'gcc_enterprise' | 'mena_sme'
+export type RiskLevel = 'healthy' | 'watch' | 'at_risk' | 'critical'
 
 export interface Client {
   id: string
@@ -33,6 +34,12 @@ export interface Client {
   status: ClientStatus
   country?: string | null
   region_tier?: RegionTier
+  current_health_score?: number | null
+  current_risk_level?: RiskLevel
+  last_health_calculated_at?: string | null
+  primary_champion_user_id?: string | null
+  last_portal_activity_at?: string | null
+  churn_risk_notes?: string | null
   created_at: string
   updated_at: string
 }
@@ -169,8 +176,20 @@ export type EvidenceBand = 'verified' | 'probable' | 'possible'
 
 export type FactStatus = 'pending' | 'applied' | 'dismissed' | 'superseded'
 
-/** The only task kinds the queue runner currently understands. */
-export type AgentTaskKind = 'apply_contact_fact'
+/** The task kinds the queue runner understands. */
+export type AgentTaskKind =
+  | 'apply_contact_fact'
+  | 'calculate_client_health'
+  | 'create_churn_signal'
+  | 'notify_churn_risk'
+  | 'schedule_qbr'
+  | 'generate_monthly_report'
+  | 'check_portal_activity'
+  | 'route_inbound_lead'
+  | 'classify_omnichannel_message'
+  | 'triage_customer_review'
+  | 'audit_competitor_prices'
+  | 'generate_contract_agreement'
 
 export interface Company {
   id: string
@@ -418,4 +437,84 @@ export interface SupportMessage {
   sender_profile_id: string
   body: string
   created_at: string
-}
+}
+
+export interface ClientHealthScore {
+  id: string
+  client_id: string
+  score: number
+  risk_level: RiskLevel
+  portal_activity_score: number
+  system_usage_score: number
+  support_sentiment_score: number
+  report_engagement_score: number
+  payment_health_score: number
+  champion_engagement_score: number
+  calculated_at: string
+  previous_score?: number | null
+  notes?: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type ChurnSignalType =
+  | 'low_portal_activity'
+  | 'no_report_opens'
+  | 'high_support_volume'
+  | 'negative_sentiment'
+  | 'payment_late'
+  | 'champion_inactive'
+  | 'system_offline'
+  | 'integration_failure'
+  | 'missed_qbr'
+  | 'scope_complaint'
+  | 'other'
+
+export type ChurnSignalSeverity = 'low' | 'medium' | 'high' | 'critical'
+
+export interface ClientChurnSignal {
+  id: string
+  client_id: string
+  signal_type: ChurnSignalType
+  severity: ChurnSignalSeverity
+  title: string
+  description?: string | null
+  detected_at: string
+  resolved_at?: string | null
+  resolved_by?: string | null
+  related_entity_type?: string | null
+  related_entity_id?: string | null
+  created_at: string
+}
+
+export type SuccessEventType =
+  | 'first_value_delivered'
+  | 'monthly_report_opened'
+  | 'positive_feedback'
+  | 'system_usage_spike'
+  | 'qbr_completed'
+  | 'upsell_accepted'
+  | 'referral_given'
+  | 'other'
+
+export interface ClientSuccessEvent {
+  id: string
+  client_id: string
+  event_type: SuccessEventType
+  title: string
+  description?: string | null
+  value_impact?: number | null
+  occurred_at: string
+  created_by?: string | null
+  created_at: string
+}
+
+export interface ClientHealthSnapshot {
+  id: string
+  client_id: string
+  score: number
+  risk_level: RiskLevel
+  snapshot_date: string
+  created_at: string
+}
+
