@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils'
 
 const TABS = [
   { name: 'Clients Roster', href: '/admin' },
+  { name: 'Lead Gen Usage', href: '/admin/leadgen' },
   { name: 'Webhooks & n8n', href: '/admin/webhooks' },
   { name: 'Team & Roles', href: '/admin/users' },
   { name: 'Pricing Manager', href: '/admin/pricing' },

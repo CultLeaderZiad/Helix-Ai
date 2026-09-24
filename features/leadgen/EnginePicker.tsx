@@ -10,6 +10,7 @@ interface EnginePickerProps {
   robotsObey: boolean
   enrichEmails: boolean
   generateOutreach: boolean
+  enginesAvailable?: { http: boolean; dynamic: boolean; stealth: boolean }
   onChange: (updated: {
     engine?: LeadGenEngine
     mode?: LeadGenMode
@@ -29,46 +30,114 @@ export function EnginePicker({
   robotsObey,
   enrichEmails,
   generateOutreach,
+  enginesAvailable = { http: true, dynamic: true, stealth: true },
   onChange,
   isArabic = false,
   disabled = false,
 }: EnginePickerProps) {
+  const engineOptions: Array<{
+    id: LeadGenEngine
+    label: string
+    labelAr: string
+    desc: string
+    descAr: string
+    isAvailable: boolean
+    disabledReason?: string
+    disabledReasonAr?: string
+  }> = [
+    {
+      id: 'auto',
+      label: 'Auto Escalation',
+      labelAr: 'تصعيد تلقائي (موصى به)',
+      desc: 'HTTP → Dynamic → Stealth',
+      descAr: 'HTTP ثم ديناميكي ثم تخفي حسب الحاجة',
+      isAvailable: true,
+    },
+    {
+      id: 'http',
+      label: 'HTTP Fast',
+      labelAr: 'HTTP قياسي سريع',
+      desc: 'Native fetch · TLS',
+      descAr: 'جلب أصلي سريع للصفحات الثابتة',
+      isAvailable: enginesAvailable.http,
+    },
+    {
+      id: 'dynamic',
+      label: 'Dynamic JS',
+      labelAr: 'متصفح ديناميكي JS',
+      desc: 'Cloudflare /content (bot-identified)',
+      descAr: 'Cloudflare Browser Run (غير خفي)',
+      isAvailable: enginesAvailable.dynamic,
+      disabledReason: 'Dynamic unavailable — set CF_ACCOUNT_ID + CF_BROWSER_TOKEN on the server.',
+      disabledReasonAr: 'المحرك الديناميكي غير متاح — يرجى ضبط CF_ACCOUNT_ID و CF_BROWSER_TOKEN على الخادم.',
+    },
+    {
+      id: 'stealth',
+      label: 'Stealthy',
+      labelAr: 'تخفي تام',
+      desc: 'Bright Data Web Unlocker',
+      descAr: 'Bright Data Web Unlocker لتجاوز الحظر',
+      isAvailable: enginesAvailable.stealth,
+      disabledReason: 'Stealth unavailable — set BRIGHTDATA_API_TOKEN on the server.',
+      disabledReasonAr: 'محرك التخفي غير متاح — يرجى ضبط BRIGHTDATA_API_TOKEN على الخادم.',
+    },
+  ]
+
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Engine Default */}
-        <div>
+        <div className="sm:col-span-2">
           <label className="block text-xs font-semibold text-[#0f141b] dark:text-[#e8ecf2]">
-            {isArabic ? 'محرك الجلب (Scrapling Fetcher Engine)' : 'Extraction Engine'}
+            {isArabic ? 'محرك الاستخراج (Extraction Engine)' : 'Extraction Engine & Tier'}
           </label>
-          <div className="mt-1.5 flex rounded-md border border-[#cfd6df] dark:border-white/15 bg-white dark:bg-[#11151c] p-1 gap-1">
-            {[
-              { id: 'stealth' as LeadGenEngine, label: 'Stealthy', desc: 'Cloudflare / WAF' },
-              { id: 'http' as LeadGenEngine, label: 'HTTP Fast', desc: 'Standard TLS' },
-              { id: 'dynamic' as LeadGenEngine, label: 'Dynamic JS', desc: 'Playwright headless' },
-            ].map(item => (
-              <button
-                key={item.id}
-                type="button"
-                disabled={disabled}
-                onClick={() => onChange({ engine: item.id })}
-                className={`flex-1 rounded py-1 px-2 text-center text-xs font-medium transition-colors ${
-                  engine === item.id
-                    ? 'bg-[#0f141b] dark:bg-[#e8ecf2] text-white dark:text-[#0b0e13]'
-                    : 'text-[#5b6577] dark:text-[#8b95a7] hover:text-[#0f141b] dark:hover:text-[#e8ecf2]'
-                }`}
-              >
-                <div>{item.label}</div>
-                <div className="text-[10px] opacity-75 font-mono">{item.desc}</div>
-              </button>
-            ))}
+          <div className="mt-1.5 grid grid-cols-2 sm:grid-cols-4 gap-2">
+            {engineOptions.map(item => {
+              const isOptionDisabled = disabled || !item.isAvailable
+              const isSelected = engine === item.id
+
+              return (
+                <div key={item.id} className="relative">
+                  <button
+                    type="button"
+                    disabled={isOptionDisabled}
+                    onClick={() => onChange({ engine: item.id })}
+                    title={!item.isAvailable ? (isArabic ? item.disabledReasonAr : item.disabledReason) : undefined}
+                    className={`w-full rounded-md border p-2 text-left transition-colors ${
+                      isSelected
+                        ? 'border-[#0f141b] dark:border-[#e8ecf2] bg-[#0f141b] dark:bg-[#e8ecf2] text-white dark:text-[#0b0e13]'
+                        : item.isAvailable
+                        ? 'border-[#cfd6df] dark:border-white/15 bg-white dark:bg-[#11151c] text-[#0f141b] dark:text-[#e8ecf2] hover:border-[#0e8da6] dark:hover:border-[#38c6e0]'
+                        : 'border-[#d9dee6]/60 dark:border-white/5 bg-[#eaeef3]/40 dark:bg-[#171c25]/40 text-[#8b95a7] cursor-not-allowed opacity-60'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold">{isArabic ? item.labelAr : item.label}</span>
+                      {!item.isAvailable && (
+                        <span className="text-[10px] font-mono text-[#c62f2a] dark:text-[#f85149]">
+                          {isArabic ? 'معطل' : 'Off'}
+                        </span>
+                      )}
+                    </div>
+                    <div className={`mt-0.5 text-[10px] font-mono ${isSelected ? 'opacity-85' : 'text-[#5b6577] dark:text-[#8b95a7]'}`}>
+                      {isArabic ? item.descAr : item.desc}
+                    </div>
+                  </button>
+                  {!item.isAvailable && (
+                    <p className="mt-1 text-[10px] text-[#c62f2a] dark:text-[#f85149] leading-tight">
+                      {isArabic ? item.disabledReasonAr : item.disabledReason}
+                    </p>
+                  )}
+                </div>
+              )
+            })}
           </div>
         </div>
 
         {/* Crawl Mode */}
-        <div>
+        <div className="sm:col-span-2">
           <label className="block text-xs font-semibold text-[#0f141b] dark:text-[#e8ecf2]">
-            {isArabic ? 'نمط الاستكشاف (Discovery Mode)' : 'Discovery Spider Mode'}
+            {isArabic ? 'نمط الاستكشاف (Discovery Spider Mode)' : 'Discovery Spider Mode'}
           </label>
           <select
             disabled={disabled}
@@ -76,11 +145,11 @@ export function EnginePicker({
             onChange={e => onChange({ mode: e.target.value as LeadGenMode })}
             className="mt-1.5 w-full rounded-md border border-[#cfd6df] dark:border-white/15 bg-white dark:bg-[#11151c] px-3 py-2 text-xs font-medium text-[#0f141b] dark:text-[#e8ecf2] focus:border-[#0e8da6] focus:outline-none dark:focus:border-[#38c6e0]"
           >
-            <option value="crawl">crawl (CrawlSpider · follow links)</option>
-            <option value="sitemap">sitemap (SitemapSpider · XML feed)</option>
-            <option value="shopify">shopify (ShopifySpider · products+about)</option>
+            <option value="crawl">crawl (CrawlSpider · follow internal links)</option>
+            <option value="sitemap">sitemap (SitemapSpider · XML feed parsing)</option>
+            <option value="shopify">shopify (ShopifySpider · store heuristic)</option>
             <option value="digest">digest (SiteToMarkdownSpider · digest)</option>
-            <option value="csv_feed">csv_feed (CSVFeedSpider · batch rows)</option>
+            <option value="csv_feed">csv_feed (CSVFeedSpider · batch domain rows)</option>
           </select>
         </div>
       </div>
@@ -98,12 +167,12 @@ export function EnginePicker({
           />
           <div>
             <div className="text-xs font-semibold text-[#0f141b] dark:text-[#e8ecf2]">
-              {isArabic ? 'محددات متكيفة (Adaptive CSS/XPath)' : 'Adaptive Selectors'}
+              {isArabic ? 'محددات متكيفة (Adaptive Selectors)' : 'Adaptive Selectors'}
             </div>
             <div className="text-[11px] text-[#5b6577] dark:text-[#8b95a7]">
               {isArabic
                 ? 'إعادة التموضع الذاتي للمحددات عند تغير هيكل صفحات الهدف.'
-                : 'Scrapling adaptive=True automatically recovers selectors if page markup shifts.'}
+                : 'Automatically recovers selectors if page markup shifts.'}
             </div>
           </div>
         </label>

@@ -50,7 +50,7 @@ export function LeadGenPage({ businessName, initialJobId }: LeadGenPageProps) {
     domains_csv: null,
   })
 
-  const [engineDefault, setEngineDefault] = useState<LeadGenEngine>('stealth')
+  const [engineDefault, setEngineDefault] = useState<LeadGenEngine>('auto')
   const [mode, setMode] = useState<LeadGenMode>('crawl')
   const [recipeId, setRecipeId] = useState<string>('mena-construction-contact')
   const [robotsObey, setRobotsObey] = useState<boolean>(true)
@@ -68,6 +68,7 @@ export function LeadGenPage({ businessName, initialJobId }: LeadGenPageProps) {
     selectedLead,
     error,
     crmStatus,
+    isTabPaused,
     createJob,
     pause,
     resume,
@@ -266,6 +267,7 @@ export function LeadGenPage({ businessName, initialJobId }: LeadGenPageProps) {
             robotsObey={robotsObey}
             enrichEmails={enrichEmails}
             generateOutreach={generateOutreach}
+            enginesAvailable={health?.engines_available}
             onChange={up => {
               if (up.engine !== undefined) setEngineDefault(up.engine)
               if (up.mode !== undefined) setMode(up.mode)
@@ -319,6 +321,7 @@ export function LeadGenPage({ businessName, initialJobId }: LeadGenPageProps) {
             onResume={resume}
             onRefresh={refresh}
             isArabic={isArabic}
+            isTabPaused={isTabPaused}
           />
 
           {/* Action Strip: Export + CRM Upsert */}

@@ -93,13 +93,16 @@ async def fetch_page_content(url: str, engine: str = "stealth") -> tuple[str, st
         try:
             if engine == "dynamic":
                 fetcher = DynamicFetcher()
-                response = fetcher.get(url, timeout=30)
+                fetch_func = getattr(fetcher, "fetch", getattr(fetcher, "get", None))
+                response = fetch_func(url, timeout=30)
             elif engine == "stealth":
                 fetcher = StealthyFetcher()
-                response = fetcher.get(url, timeout=20)
+                fetch_func = getattr(fetcher, "fetch", getattr(fetcher, "get", None))
+                response = fetch_func(url, timeout=20)
             else:
                 fetcher = Fetcher()
-                response = fetcher.get(url, timeout=15)
+                fetch_func = getattr(fetcher, "fetch", getattr(fetcher, "get", None))
+                response = fetch_func(url, timeout=15)
             
             html = response.text if hasattr(response, "text") else str(response)
             status_code = getattr(response, "status", 200)
@@ -172,6 +175,14 @@ def extract_contacts_from_html(html: str, target_url: str) -> Dict[str, Any]:
     clean_text = re.sub(r"<[^>]+>", " ", html)
     clean_text = " ".join(clean_text.split())[:1200]
     markdown_excerpt = f"### {company_name}\n\n**Source URL:** {target_url}\n\n{clean_text[:600]}..."
+
+    # Visible text phone search using PHONE_REGEX
+    text_phones = PHONE_REGEX.findall(clean_text)
+    for p in text_phones:
+        clean_p = p.strip()
+        digits = "".join(filter(str.isdigit, clean_p))
+        if 7 <= len(digits) <= 15 and not re.match(r"^\d{4}-\d{2}-\d{2}$", clean_p):
+            phones.append(clean_p)
 
     extract_status = "ok" if (emails or phones) else "partial" if company_name else "empty"
 
@@ -438,6 +449,8 @@ async def process_job_pipeline(job_id: str):
             }).eq("id", job_id).execute()
         except Exception:
             pass
+    finally:
+        active_jobs.pop(job_id, None)
 
 
 @app.post("/jobs/{job_id}/start")

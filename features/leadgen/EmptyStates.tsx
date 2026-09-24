@@ -17,15 +17,15 @@ export function EmptyState({ type, isArabic = false, onAction, actionLabel }: Em
           !
         </div>
         <h3 className="font-display text-base font-semibold text-[#0f141b] dark:text-[#e8ecf2]">
-          {isArabic ? 'مشغل Scrapling في وضع عدم الاتصال' : 'Scrapling Worker Offline'}
+          {isArabic ? 'محرك استخراج العملاء غير متصل' : 'Lead Engine Offline'}
         </h3>
         <p className="mx-auto mt-1.5 max-w-md text-xs text-[#5b6577] dark:text-[#8b95a7] leading-relaxed">
           {isArabic
-            ? 'لم يتم العثور على مشغل Scrapling المستقل. لتمكين الزحف الحي واستخراج البيانات، يرجى تشغيل حاوية Docker المخصصة للمشغل. ستبقى الوظائف في قائمة الانتظار حتى يتم استئناف اتصال المشغل.'
-            : 'The dedicated Scrapling Docker worker container is not connected. New acquisition jobs will remain queued in Supabase until the worker boots and claims them. Helix-Ai control plane will not fabricate demo contacts.'}
+            ? 'لم يتم تفعيل محرك الاستخراج الداخلي أو ربط مشغل مستقل. لتشغيل المحرك الداخلي مباشرة على Vercel، أضف المتغير LEADGEN_BUILTIN_ENGINE=true في إعدادات البيئة.'
+            : 'Neither the built-in TypeScript engine nor an external Scrapling worker is online. To enable the built-in engine on Vercel Hobby, set LEADGEN_BUILTIN_ENGINE=true in environment variables.'}
         </p>
         <div className="mt-4 inline-flex items-center gap-2 rounded bg-[#eaeef3] dark:bg-[#171c25] px-3 py-1 font-mono text-[11px] text-[#5b6577] dark:text-[#8b95a7]">
-          <code>docker run -p 8080:8080 ghcr.io/d4vinci/scrapling:latest</code>
+          <code>LEADGEN_BUILTIN_ENGINE=true</code>
         </div>
       </div>
     )
@@ -78,12 +78,12 @@ export function EmptyState({ type, isArabic = false, onAction, actionLabel }: Em
     <div className="rounded-xl border border-[#d9dee6] dark:border-white/10 bg-white dark:bg-[#11151c] p-6 text-center">
       <div className="mx-auto mb-2 flex h-8 w-8 animate-spin items-center justify-center rounded-full border-2 border-[#0e8da6] border-t-transparent dark:border-[#38c6e0] dark:border-t-transparent" />
       <h4 className="font-display text-xs font-medium text-[#0f141b] dark:text-[#e8ecf2]">
-        {isArabic ? 'المشغل الآلي قيد التنفيذ...' : 'Worker Actively Processing Pages...'}
+        {isArabic ? 'المشغل الآلي قيد التنفيذ...' : 'Engine Actively Processing Pages...'}
       </h4>
       <p className="mt-1 text-[11px] text-[#5b6577] dark:text-[#8b95a7]">
         {isArabic
-          ? 'يتم زحف الصفحات واستخراج الحقول مع الالتزام بمعدلات الطلبات المسموحة.'
-          : 'Pages are being fetched, throttled, and parsed. Extracted leads will populate live below.'}
+          ? 'يتم زحف الصفحات واستخراج الحقول مع الالتزام بمعدلات الطلبات المسموحة. أبقِ هذه الصفحة مفتوحة لمواصلة المعالجة.'
+          : 'Pages are being fetched, throttled, and parsed. Keep this tab open to drive execution ticks.'}
       </p>
     </div>
   )

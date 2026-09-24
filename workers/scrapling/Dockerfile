@@ -1,4 +1,4 @@
-FROM ghcr.io/d4vinci/scrapling:latest
+FROM python:3.12-slim
 
 LABEL org.opencontainers.image.title="Helix-Ai Scrapling Worker" \
       org.opencontainers.image.description="Dedicated Scrapling extraction worker claiming jobs from Helix-Ai Supabase" \
@@ -6,21 +6,20 @@ LABEL org.opencontainers.image.title="Helix-Ai Scrapling Worker" \
 
 WORKDIR /app
 
-# Install Python requirements
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt && \
-    scrapling install
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential curl && rm -rf /var/lib/apt/lists/*
 
-# Checkpoints directory
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt && scrapling install
+
 RUN mkdir -p /tmp/helix-leadgen-checkpoints
 
-# Copy worker application and recipe definitions
 COPY . /app
-
-EXPOSE 8080
 
 ENV PYTHONUNBUFFERED=1 \
     PORT=8080 \
     SCRAPLING_CHECKPOINT_DIR=/tmp/helix-leadgen-checkpoints
+
+EXPOSE 8080
 
 CMD ["python", "main.py"]

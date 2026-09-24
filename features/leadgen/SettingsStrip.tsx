@@ -9,8 +9,13 @@ interface SettingsStripProps {
 
 export function SettingsStrip({ health, isArabic = false }: SettingsStripProps) {
   const isOnline = health?.worker === 'online'
-  const proxyConfigured = health?.proxy === 'configured'
+  const isBuiltin = health?.mode === 'builtin'
   const robotsObey = health?.robots_default ?? true
+  const quotas = health?.quotas
+  const available = health?.engines_available
+
+  const stealthRemaining = quotas ? Math.max(0, quotas.stealth_month_cap - quotas.stealth_month_used) : null
+  const browserSecondsRemaining = quotas ? Math.max(0, quotas.browser_seconds_cap - quotas.browser_seconds_used) : null
 
   return (
     <div
@@ -19,10 +24,10 @@ export function SettingsStrip({ health, isArabic = false }: SettingsStripProps) 
       className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-[#d9dee6] dark:border-white/10 bg-white dark:bg-[#11151c] px-4 py-2.5 text-xs text-[#5b6577] dark:text-[#8b95a7]"
     >
       <div className="flex flex-wrap items-center gap-4">
-        {/* Worker health */}
+        {/* Engine status chip */}
         <div className="flex items-center gap-2">
           <span className="font-medium text-[#0f141b] dark:text-[#e8ecf2]">
-            {isArabic ? 'المشغل الآلي:' : 'Scrapling Worker:'}
+            {isArabic ? 'محرك الاستخراج:' : 'Lead Engine:'}
           </span>
           <span
             className={`inline-flex items-center gap-1.5 rounded px-2 py-0.5 font-mono text-[11px] font-medium ${
@@ -37,40 +42,51 @@ export function SettingsStrip({ health, isArabic = false }: SettingsStripProps) 
               }`}
             />
             {isOnline
-              ? isArabic
-                ? `متصل (إصدار ${health?.scrapling_version ?? '0.3.1'})`
-                : `Online (v${health?.scrapling_version ?? '0.3.1'})`
+              ? isBuiltin
+                ? isArabic
+                  ? 'محرك مدمج (متصل)'
+                  : 'Built-in Engine (Online)'
+                : isArabic
+                ? `مشغل خارجي (v${health?.scrapling_version ?? '0.3.1'})`
+                : `External Worker (v${health?.scrapling_version ?? '0.3.1'})`
               : isArabic
-              ? 'غير متصل (المشغل المستقل)'
-              : 'Offline (Docker worker)'}
+              ? 'غير متصل'
+              : 'Offline'}
           </span>
         </div>
 
-        {/* Engine mode */}
+        {/* Engine availability */}
         <div className="flex items-center gap-2">
           <span className="font-medium text-[#0f141b] dark:text-[#e8ecf2]">
             {isArabic ? 'المحركات:' : 'Engines:'}
           </span>
           <span className="font-mono text-[11px] text-[#0f141b] dark:text-[#e8ecf2]">
-            http · stealth (default) · dynamic
+            auto · http
+            <span className={available?.dynamic ? 'text-[#1f8a3b] dark:text-[#3fb950]' : 'text-[#8b95a7] opacity-60'}>
+              {' '}· dynamic{available && !available.dynamic ? ' (off)' : ''}
+            </span>
+            <span className={available?.stealth ? 'text-[#1f8a3b] dark:text-[#3fb950]' : 'text-[#8b95a7] opacity-60'}>
+              {' '}· stealth{available && !available.stealth ? ' (off)' : ''}
+            </span>
           </span>
         </div>
 
-        {/* Proxy */}
-        <div className="flex items-center gap-2">
-          <span className="font-medium text-[#0f141b] dark:text-[#e8ecf2]">
-            {isArabic ? 'البروكسي:' : 'Proxy Rotator:'}
-          </span>
-          <span
-            className={`font-mono text-[11px] ${
-              proxyConfigured
-                ? 'text-[#1f8a3b] dark:text-[#3fb950]'
-                : 'text-[#5b6577] dark:text-[#8b95a7]'
-            }`}
-          >
-            {proxyConfigured ? (isArabic ? 'مفعّل' : 'Configured') : isArabic ? 'معطّل' : 'Off'}
-          </span>
-        </div>
+        {/* Quota Chips */}
+        {quotas && (
+          <div className="flex items-center gap-2">
+            <span className="font-medium text-[#0f141b] dark:text-[#e8ecf2]">
+              {isArabic ? 'الحصص المتبقية:' : 'Quotas:'}
+            </span>
+            <span className="inline-flex items-center gap-2 font-mono text-[11px]">
+              <span className="rounded bg-[#eaeef3] dark:bg-[#171c25] px-1.5 py-0.5 text-[#0f141b] dark:text-[#e8ecf2]">
+                {isArabic ? `التخفي: ${stealthRemaining}/${quotas.stealth_month_cap}` : `Stealth: ${stealthRemaining}/${quotas.stealth_month_cap}`}
+              </span>
+              <span className="rounded bg-[#eaeef3] dark:bg-[#171c25] px-1.5 py-0.5 text-[#0f141b] dark:text-[#e8ecf2]">
+                {isArabic ? `المتصفح: ${browserSecondsRemaining}ث/${quotas.browser_seconds_cap}ث` : `Browser: ${browserSecondsRemaining}s/${quotas.browser_seconds_cap}s`}
+              </span>
+            </span>
+          </div>
+        )}
 
         {/* Robots */}
         <div className="flex items-center gap-2">
@@ -84,7 +100,7 @@ export function SettingsStrip({ health, isArabic = false }: SettingsStripProps) 
                 : 'text-[#a86a00] dark:text-[#d29922]'
             }`}
           >
-            {robotsObey ? (isArabic ? 'التزام تلقائي (مفعّل)' : 'Obey (default ON)') : isArabic ? 'تجاوز' : 'Bypass'}
+            {robotsObey ? (isArabic ? 'التزام تلقائي' : 'Obey (ON)') : isArabic ? 'تجاوز' : 'Bypass'}
           </span>
         </div>
       </div>

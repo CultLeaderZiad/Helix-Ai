@@ -458,7 +458,7 @@ export type LeadGenStage =
   | 'outreach'
   | 'export'
 
-export type LeadGenEngine = 'http' | 'stealth' | 'dynamic'
+export type LeadGenEngine = 'http' | 'stealth' | 'dynamic' | 'auto'
 export type LeadGenMode = 'crawl' | 'sitemap' | 'shopify' | 'csv_feed' | 'digest'
 
 export interface LeadGenJob {
@@ -506,6 +506,8 @@ export interface LeadGenJob {
   error_msg?: string | null
   owner_boot_id?: string | null
   heartbeat_at?: string | null
+  lease_until?: string | null
+  cursor?: Record<string, unknown> | null
   created_at: string
   started_at?: string | null
   completed_at?: string | null

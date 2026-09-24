@@ -60,13 +60,22 @@ export interface CreateJobPayload {
 
 export interface WorkerHealthResponse {
   worker: 'online' | 'offline'
+  mode?: 'builtin' | 'scrapling'
   scrapling_version?: string
   engines: LeadGenEngine[]
+  engines_available?: { http: boolean; dynamic: boolean; stealth: boolean }
   browsers_ready: boolean
   proxy: 'configured' | 'off'
   robots_default: boolean
   queue_depth: number
   control_plane: 'helix-ai'
+  quotas?: {
+    stealth_month_used: number
+    stealth_month_cap: number
+    browser_seconds_used: number
+    browser_seconds_cap: number
+  }
+  pause_semantics?: 'tab_driven_ticks'
   error?: string
 }
 

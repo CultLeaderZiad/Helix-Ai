@@ -1,41 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { after } from 'next/server'
 import { createSupabaseServerClient } from '@/lib/supabase'
 import { createSupabaseAdminClient } from '@/lib/supabase-admin'
 import { getVerifiedSession } from '@/lib/auth/session'
 import { estimateJobCredits, trackJobUsage } from '@/lib/leadgen/credits'
+import { isPrivateOrLocalhost } from '@/lib/leadgen/ssrf'
+import { executeJobTick } from '@/lib/leadgen/pipeline/tick'
 import type { CreateJobPayload, CreateJobResponse } from '@/lib/leadgen/types'
-
-function isPrivateOrLocalhost(urlString: string): boolean {
-  try {
-    const url = new URL(urlString)
-    if (url.protocol !== 'http:' && url.protocol !== 'https:') return true
-    const host = url.hostname.toLowerCase()
-    if (
-      host === 'localhost' ||
-      host === '127.0.0.1' ||
-      host === '0.0.0.0' ||
-      host === '::1' ||
-      host.endsWith('.local') ||
-      host.endsWith('.internal')
-    ) {
-      return true
-    }
-    // Check IPv4 private octets (10.x, 192.168.x, 172.16-31.x)
-    const ipv4Regex = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/
-    const match = host.match(ipv4Regex)
-    if (match) {
-      const b1 = parseInt(match[1], 10)
-      const b2 = parseInt(match[2], 10)
-      if (b1 === 10) return true
-      if (b1 === 192 && b2 === 168) return true
-      if (b1 === 172 && b2 >= 16 && b2 <= 31) return true
-      if (b1 === 127) return true
-    }
-    return false
-  } catch {
-    return true
-  }
-}
 
 export async function GET(request: NextRequest) {
   const headers = {
@@ -161,11 +132,13 @@ export async function POST(request: NextRequest) {
   }
 
   // 5. Initial Canonical Logs
+  const isBuiltin = process.env.LEADGEN_BUILTIN_ENGINE === 'true' || process.env.LEADGEN_PREFER_EXTERNAL_WORKER !== 'true'
   const proxyMode = process.env.SCRAPLING_PROXY_LIST ? 'configured' : 'off'
-  const workerStatus = process.env.SCRAPLING_WORKER_ENABLED === 'true' ? 'connected' : 'offline'
+  const workerStatus = isBuiltin ? 'online' : (process.env.SCRAPLING_WORKER_ENABLED === 'true' ? 'connected' : 'offline')
+  const enginePrefix = isBuiltin ? 'builtin' : 'scrapling'
   
   const initialLogs: string[] = [
-    `> engine: scrapling/${engine_default}/v1 · ok`,
+    `> engine: ${enginePrefix}/${engine_default}/v1 · ok`,
     `> robots: obey · ${robots_obey ? 'on' : 'off'}`,
     `> worker: ${workerStatus} · proxy: ${proxyMode}`,
     `> control_plane: helix-ai · ok`,
@@ -233,19 +206,34 @@ export async function POST(request: NextRequest) {
   // Track usage honestly
   await trackJobUsage(estimatedCost, clientId, job.id)
 
-  // 7. If worker is configured, notify worker to trigger instant job processing
-  const workerUrl = process.env.SCRAPLING_WORKER_URL
-  if (process.env.SCRAPLING_WORKER_ENABLED === 'true' && workerUrl) {
+  // 7. Execution kickoff
+  if (isBuiltin) {
     try {
-      fetch(`${workerUrl.replace(/\/$/, '')}/jobs/${job.id}/start`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ job_id: job.id }),
-      }).catch(() => {
-        // Worker will claim via polling loop
+      after(async () => {
+        try {
+          await executeJobTick(job.id)
+        } catch (err) {
+          console.error('[leadgen/jobs] Builtin engine initial tick error:', err)
+        }
       })
-    } catch {
-      // Worker claim loop will pick it up
+    } catch (err) {
+      console.warn('[leadgen/jobs] after() not available in this context; client polling will tick:', err)
+    }
+  } else {
+    // Notify external worker if configured
+    const workerUrl = process.env.SCRAPLING_WORKER_URL
+    if (process.env.SCRAPLING_WORKER_ENABLED === 'true' && workerUrl) {
+      try {
+        fetch(`${workerUrl.replace(/\/$/, '')}/jobs/${job.id}/start`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ job_id: job.id }),
+        }).catch(() => {
+          // Worker will claim via polling loop
+        })
+      } catch {
+        // Worker claim loop will pick it up
+      }
     }
   }
 

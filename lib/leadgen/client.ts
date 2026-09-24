@@ -113,6 +113,26 @@ export async function crmUpsert(id: string): Promise<{
   return handleResponse(res)
 }
 
+export async function tickJob(id: string): Promise<{
+  ok: boolean
+  job_id?: string
+  status?: string
+  processed?: number
+  remaining?: number
+  leads_count?: number
+  reason?: string
+}> {
+  const res = await fetch(`/api/leadgen/jobs/${id}/tick`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+  })
+  if (res.status === 409) {
+    return { ok: false, reason: 'lease_held' }
+  }
+  return handleResponse(res)
+}
+
 export function getExportUrl(id: string, format: 'csv' | 'jsonl'): string {
   return `/api/leadgen/jobs/${id}/export?format=${format}`
 }
+

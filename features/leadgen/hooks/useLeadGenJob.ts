@@ -18,6 +18,7 @@ import {
   pauseJob as apiPauseJob,
   resumeJob as apiResumeJob,
   crmUpsert as apiCrmUpsert,
+  tickJob as apiTickJob,
   getExportUrl,
 } from '@/lib/leadgen/client'
 
@@ -40,6 +41,7 @@ export function useLeadGenJob(initialJobId?: string) {
   const [selectedLead, setSelectedLead] = useState<LeadGenLead | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [crmStatus, setCrmStatus] = useState<string | null>(null)
+  const [isTabPaused, setIsTabPaused] = useState<boolean>(false)
 
   const pollingRef = useRef<NodeJS.Timeout | null>(null)
 
@@ -54,10 +56,6 @@ export function useLeadGenJob(initialJobId?: string) {
       setHealth(h)
       setRecipes(r)
       setJobs(j)
-
-      if (h.worker === 'offline') {
-        // If worker is offline and no active job, note worker offline
-      }
 
       if (initialJobId) {
         const matching = j.find(item => item.id === initialJobId)
@@ -95,7 +93,7 @@ export function useLeadGenJob(initialJobId?: string) {
     loadInitialData()
   }, [loadInitialData])
 
-  // 2. Polling loop for active job
+  // 2. Tab-driven chunked polling & tick loop for active job
   useEffect(() => {
     if (!activeJob) return
 
@@ -103,12 +101,27 @@ export function useLeadGenJob(initialJobId?: string) {
     if (isTerminal) {
       if (activeJob.status === 'succeeded') setState('succeeded')
       if (activeJob.status === 'failed') setState('failed')
+      setIsTabPaused(false)
+      return
+    }
+
+    if (activeJob.status === 'paused') {
+      setIsTabPaused(false)
       return
     }
 
     setState('polling')
+
     const pollInterval = setInterval(async () => {
+      // Check tab visibility so background tabs do not burn serverless quotas unnecessarily
+      const isVisible = typeof document === 'undefined' || document.visibilityState === 'visible'
+
       try {
+        if (isVisible && (activeJob.status === 'running' || activeJob.status === 'queued')) {
+          // Fire-and-forget tick to advance pipeline
+          apiTickJob(activeJob.id).catch(() => {})
+        }
+
         const [updated, updatedLeads] = await Promise.all([
           getJob(activeJob.id),
           getJobLeads(activeJob.id),
@@ -116,15 +129,26 @@ export function useLeadGenJob(initialJobId?: string) {
         setActiveJob(updated)
         setLeads(updatedLeads)
 
+        // Check if heartbeat is stale (>2 minutes) while job is running
+        if (updated.status === 'running' && updated.heartbeat_at) {
+          const heartbeatTime = new Date(updated.heartbeat_at).getTime()
+          const stale = Date.now() - heartbeatTime > 120000
+          setIsTabPaused(stale)
+        } else {
+          setIsTabPaused(false)
+        }
+
         if (updated.status === 'succeeded') {
           setState('succeeded')
+          setIsTabPaused(false)
           clearInterval(pollInterval)
         } else if (updated.status === 'failed') {
           setState('failed')
+          setIsTabPaused(false)
           clearInterval(pollInterval)
         }
       } catch (err: unknown) {
-        console.warn('Poll error:', err)
+        console.warn('[leadgen/useLeadGenJob] Poll/tick error:', err)
       }
     }, 1800)
 
@@ -144,6 +168,11 @@ export function useLeadGenJob(initialJobId?: string) {
       setLeads([])
       setSelectedLead(null)
       setState('polling')
+      setIsTabPaused(false)
+
+      // Instantly trigger initial tick
+      apiTickJob(freshJob.id).catch(() => {})
+
       // Refresh jobs list
       listJobs().then(setJobs).catch(() => {})
       return freshJob
@@ -161,6 +190,7 @@ export function useLeadGenJob(initialJobId?: string) {
       await apiPauseJob(activeJob.id)
       const updated = await getJob(activeJob.id)
       setActiveJob(updated)
+      setIsTabPaused(false)
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to pause job'
       setError(msg)
@@ -174,6 +204,9 @@ export function useLeadGenJob(initialJobId?: string) {
       const updated = await getJob(activeJob.id)
       setActiveJob(updated)
       setState('polling')
+      setIsTabPaused(false)
+      // Instantly trigger resumption tick
+      apiTickJob(activeJob.id).catch(() => {})
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to resume job'
       setError(msg)
@@ -183,27 +216,31 @@ export function useLeadGenJob(initialJobId?: string) {
   const refresh = async () => {
     if (!activeJob) return
     try {
-      const [updated, updatedLeads, jList] = await Promise.all([
+      const [updated, updatedLeads, jList, freshHealth] = await Promise.all([
         getJob(activeJob.id),
         getJobLeads(activeJob.id),
         listJobs(),
+        fetchWorkerHealth().catch(() => null),
       ])
       setActiveJob(updated)
       setLeads(updatedLeads)
       setJobs(jList)
+      if (freshHealth) setHealth(freshHealth)
     } catch (err: unknown) {
-      console.warn('Refresh error:', err)
+      console.warn('[leadgen/useLeadGenJob] Refresh error:', err)
     }
   }
 
   const selectJob = async (job: LeadGenJob) => {
     setActiveJob(job)
     setSelectedLead(null)
+    setIsTabPaused(false)
     try {
       const jobLeads = await getJobLeads(job.id)
       setLeads(jobLeads)
       if (job.status === 'running' || job.status === 'queued') {
         setState('polling')
+        apiTickJob(job.id).catch(() => {})
       } else if (job.status === 'succeeded') {
         setState('succeeded')
       } else if (job.status === 'failed') {
@@ -222,7 +259,6 @@ export function useLeadGenJob(initialJobId?: string) {
     try {
       const res = await apiCrmUpsert(activeJob.id)
       setCrmStatus(`Pushed ${res.contactsUpserted} contacts, ${res.companiesUpserted} companies.`)
-      // Refresh leads to see crm_contact_id links
       const freshLeads = await getJobLeads(activeJob.id)
       setLeads(freshLeads)
       const freshJob = await getJob(activeJob.id)
@@ -248,6 +284,7 @@ export function useLeadGenJob(initialJobId?: string) {
     setLeads([])
     setSelectedLead(null)
     setError(null)
+    setIsTabPaused(false)
     setState('idle')
   }
 
@@ -261,6 +298,7 @@ export function useLeadGenJob(initialJobId?: string) {
     selectedLead,
     error,
     crmStatus,
+    isTabPaused,
     createJob,
     pause,
     resume,

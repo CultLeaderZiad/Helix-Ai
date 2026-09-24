@@ -9,6 +9,7 @@ interface JobProgressProps {
   onResume: () => void
   onRefresh: () => void
   isArabic?: boolean
+  isTabPaused?: boolean
 }
 
 const STAGES = [
@@ -23,7 +24,14 @@ const STAGES = [
   { key: 'export', label: 'Export', labelAr: 'التصدير' },
 ]
 
-export function JobProgress({ job, onPause, onResume, onRefresh, isArabic = false }: JobProgressProps) {
+export function JobProgress({
+  job,
+  onPause,
+  onResume,
+  onRefresh,
+  isArabic = false,
+  isTabPaused = false,
+}: JobProgressProps) {
   const terminalRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -42,6 +50,27 @@ export function JobProgress({ job, onPause, onResume, onRefresh, isArabic = fals
 
   return (
     <div className="rounded-xl border border-[#d9dee6] dark:border-white/10 bg-white dark:bg-[#11151c] p-4 space-y-4">
+      {/* Tab Pause Notice (Honest pause semantics) */}
+      {isTabPaused && isRunning && (
+        <div className="rounded-md border border-[#a86a00]/30 bg-[#a86a00]/10 px-3 py-2 text-xs text-[#a86a00] dark:text-[#d29922] flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="font-mono font-bold">!</span>
+            <span>
+              {isArabic
+                ? 'متوقف مؤقتاً — أبقِ هذه الصفحة مفتوحة لمواصلة معالجة مهام استخراج العملاء.'
+                : 'Paused — open this page to continue processing.'}
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={onRefresh}
+            className="underline font-semibold hover:opacity-80"
+          >
+            {isArabic ? 'استئناف الآن' : 'Tick now'}
+          </button>
+        </div>
+      )}
+
       {/* Header & Controls */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#d9dee6] dark:border-white/10 pb-3">
         <div className="flex items-center gap-3">
@@ -63,7 +92,7 @@ export function JobProgress({ job, onPause, onResume, onRefresh, isArabic = fals
           </div>
 
           <span className="font-mono text-xs text-[#5b6577] dark:text-[#8b95a7]">
-            job:{job.id.slice(0, 8)} · recipe:{job.recipe_id}
+            job:{job.id.slice(0, 8)} · engine:{job.engine_default}
           </span>
         </div>
 
@@ -194,7 +223,7 @@ export function JobProgress({ job, onPause, onResume, onRefresh, isArabic = fals
             job.logs.map((log, index) => {
               const isError = log.includes('error') || log.includes('blocked')
               const isAudit = log.includes('audit')
-              const isHeader = log.includes('engine: scrapling')
+              const isHeader = log.includes('engine:')
               return (
                 <div
                   key={index}
