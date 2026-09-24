@@ -7,27 +7,14 @@ import {
   PhoneCall,
   MessageSquare,
   ShieldCheck,
-  DollarSign,
   Printer,
-  Download,
   Languages,
-  CheckCircle2,
-  Calendar,
-  Sparkles,
-  ArrowUpRight,
-  Activity,
-  Layers,
-  Cpu,
-  Receipt,
-  FileCheck,
-  Clock,
 } from 'lucide-react'
 import type { MonthlyReportData } from '@/lib/reports/generator'
-import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { KpiCard } from '@/components/ui/kpi-card'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import {
   Table,
   TableBody,
@@ -56,22 +43,22 @@ export function MonthlyReportView({ report }: MonthlyReportViewProps) {
   return (
     <div className="mx-auto w-full max-w-6xl space-y-7" dir={isAr ? 'rtl' : 'ltr'}>
       {/* Executive Report Document Header */}
-      <div className="flex flex-wrap items-start justify-between gap-4 border-b border-white/[0.08] pb-6">
+      <div className="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-6">
         <div>
           <div className="flex items-center gap-2">
-            <Badge variant="default" className="font-mono tracking-wider">
+            <Badge variant="default" className="font-mono tracking-wider text-[11px]">
               {report.reportId}
             </Badge>
             <Badge variant="verified" dot>
-              {report.systemUptimePercentage} UPTIME SLA
+              {isAr ? 'تقرير مدقق' : 'Verified Retainer Audit'}
             </Badge>
           </div>
 
-          <h1 className="mt-3 font-display text-2xl font-bold tracking-tight text-helix-ink sm:text-3xl">
-            {isAr ? 'تقرير الأداء والتحصيل الشهري' : 'Monthly Performance & ROI Report'}
+          <h1 className="mt-3 font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            {isAr ? 'تقرير الأداء والتحصيل الشهري' : 'Monthly Performance & Operations Report'}
           </h1>
-          <p className="mt-1 text-xs text-helix-muted font-mono">
-            {report.clientBusinessName} • {report.cyclePeriod} • GCC ENTERPRISE TENANT
+          <p className="mt-1 text-xs text-muted-foreground font-mono">
+            {report.clientBusinessName} • {report.cyclePeriod}
           </p>
         </div>
 
@@ -93,7 +80,7 @@ export function MonthlyReportView({ report }: MonthlyReportViewProps) {
             className="gap-1.5"
           >
             <Printer className="size-3.5" />
-            <span>{isAr ? 'طباعة التقرير التنفيذي' : 'Export Executive PDF'}</span>
+            <span>{isAr ? 'طباعة التقرير التنفيذي' : 'Print Executive Report'}</span>
           </Button>
         </div>
       </div>
@@ -101,99 +88,92 @@ export function MonthlyReportView({ report }: MonthlyReportViewProps) {
       {/* Boardroom KPI Metric Grid */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <KpiCard
-          title={isAr ? 'مكالمات صوتية' : 'Voice Calls Handled'}
+          title={isAr ? 'مكالمات صوتية' : 'Voice Calls Logged'}
           value={report.totalCallsHandled}
-          change={isAr ? '< 400 ميلي ثانية' : '< 400ms'}
-          changeType="positive"
-          hint={isAr ? 'الرد الفوري على المكالمات' : '100% Inbound capture rate'}
+          hint={isAr ? 'جلسات المكالمات المسجلة' : 'Recorded voice interaction sessions'}
           icon={<PhoneCall className="size-4" />}
         />
 
         <KpiCard
-          title={isAr ? 'تفاعلات الواتساب' : 'WhatsApp Messages'}
+          title={isAr ? 'تفاعلات الواتساب' : 'WhatsApp Conversations'}
           value={report.totalWhatsAppMessages}
-          change={isAr ? 'تأهيل آلي' : 'Automated'}
-          changeType="positive"
-          hint={isAr ? 'تأكيدات وتأهيل فوري' : 'Automated confirmations & triage'}
+          hint={isAr ? 'محادثات تفاعلية عبر الواتساب' : 'Recorded WhatsApp threads'}
           icon={<MessageSquare className="size-4" />}
         />
 
         <KpiCard
-          title={isAr ? 'دقة الحقائق' : 'Fact Verification Rate'}
-          value={`${report.factAccuracyRate}%`}
-          change="Ground Truth"
-          changeType="positive"
-          hint={isAr ? 'تدقيق مشفر بدون هلوسة' : 'Zero unauthorized commitments'}
+          title={isAr ? 'دقة الحقائق المستخرجة' : 'Fact Verification Rate'}
+          value={report.factAccuracyRate !== null ? `${report.factAccuracyRate}%` : '—'}
+          hint={
+            report.totalFactsCount > 0
+              ? `${report.verifiedFactsCount} of ${report.totalFactsCount} facts verified`
+              : (isAr ? 'لا توجد ملاحظات مسجلة' : 'No observations logged')
+          }
           icon={<ShieldCheck className="size-4" />}
         />
 
         <KpiCard
           title={isAr ? 'مضاعف العائد الاستثماري' : 'Net ROI Multiplier'}
           value={report.roiMultiplier}
-          change={
-            isAr
-              ? `مسترد: ${formatMoney(report.estimatedRecoveredValueCents)}`
-              : `Recovered: ${formatMoney(report.estimatedRecoveredValueCents)}`
+          hint={
+            report.recoveredRevenueCents > 0
+              ? `${isAr ? 'مبيعات منجزة:' : 'Closed revenue:'} ${formatMoney(report.recoveredRevenueCents)}`
+              : (isAr ? 'لا توجد صفقات مغلقة بعد' : 'No closed deals recorded yet')
           }
-          changeType="positive"
-          hint={isAr ? 'قيمة مبيعات مستردة' : 'Direct recovered deal pipeline'}
           icon={<TrendingUp className="size-4" />}
         />
       </div>
 
       {/* Executive Narrative Briefing */}
-      <Card className="p-6 border-l-2 border-l-sky-400">
-        <div className="flex items-center justify-between gap-4 border-b border-white/[0.06] pb-3.5 mb-4">
+      <Card className="p-6">
+        <div className="flex items-center justify-between gap-4 border-b border-border pb-3.5 mb-4">
           <div className="flex items-center gap-2">
-            <Sparkles className="size-4 text-sky-400" />
-            <h2 className="font-display text-sm font-semibold tracking-tight text-helix-ink uppercase">
+            <FileText className="size-4 text-accent" />
+            <h2 className="font-display text-sm font-semibold tracking-tight text-foreground uppercase">
               {isAr ? 'الملخص التنفيذي للأداء الشهري' : 'Executive Retainer Narrative & Briefing'}
             </h2>
           </div>
           <Badge variant="default" className="font-mono text-[10px]">
-            CRYPTOGRAPHIC LEDGER AUDIT
+            POSTGRESQL AUDIT TRAIL
           </Badge>
         </div>
-        <p className="text-sm text-helix-ink/80 leading-relaxed font-sans">
+        <p className="text-sm text-foreground/90 leading-relaxed font-sans">
           {isAr ? report.executiveSummaryAr : report.executiveSummary}
         </p>
       </Card>
 
       {/* System Architecture Operational Breakdown */}
       <Card className="p-6 space-y-4">
-        <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
+        <div className="flex items-center justify-between border-b border-border pb-3">
           <div>
-            <h2 className="font-display text-sm font-semibold tracking-tight text-helix-ink uppercase">
+            <h2 className="font-display text-sm font-semibold tracking-tight text-foreground uppercase">
               {isAr ? 'تفاصيل أداء الأنظمة التشغيلية' : 'System Architecture Telemetry & Throughput'}
             </h2>
-            <p className="text-xs text-helix-muted mt-0.5">
-              What ran this period — bookings, conversations, and facts reviewed.
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Verified operational events recorded during this retainer period.
             </p>
           </div>
-          <Badge variant="verified" dot>
-            100% HEALTHY
-          </Badge>
         </div>
 
         <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
           {report.operationalBreakdown.map((item, idx) => (
             <div
               key={idx}
-              className="flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 text-xs hover:border-white/[0.12] transition-colors"
+              className="flex items-center justify-between rounded-lg border border-border bg-raised/40 p-4 text-xs hover:bg-raised/70 transition-colors"
             >
               <div>
-                <p className="font-semibold text-helix-ink text-sm">
+                <p className="font-semibold text-foreground text-sm">
                   {isAr ? item.systemAr : item.system}
                 </p>
-                <p className="mt-0.5 text-helix-muted font-mono text-[11px]">
+                <p className="mt-0.5 text-muted-foreground font-mono text-[11px]">
                   {isAr ? item.metricAr : item.metric}
                 </p>
               </div>
               <div className="text-right">
-                <span className="font-display text-2xl font-bold text-helix-ink tabular-nums">
+                <span className="font-display text-2xl font-bold text-foreground tabular-nums">
                   {item.count}
                 </span>
-                <span className="block text-[10px] text-sky-400 font-mono uppercase">
+                <span className="block text-[10px] text-muted-foreground font-mono uppercase">
                   {isAr ? item.unitAr : item.unit}
                 </span>
               </div>
@@ -204,21 +184,23 @@ export function MonthlyReportView({ report }: MonthlyReportViewProps) {
 
       {/* Retainer Billing & Invoicing Ledger */}
       <Card className="p-6 space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/[0.06] pb-4">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4">
           <div>
-            <h2 className="font-display text-sm font-semibold tracking-tight text-helix-ink uppercase">
-              {isAr ? 'سجل الفواتير والدفعات الشهرية' : 'Retainer Invoicing & Financial Ledger'}
+            <h2 className="font-display text-sm font-semibold tracking-tight text-foreground uppercase">
+              {isAr ? 'سجل الفواتير والدفعات' : 'Retainer Invoicing & Financial Ledger'}
             </h2>
-            <p className="text-xs text-helix-muted mt-0.5">
+            <p className="text-xs text-muted-foreground mt-0.5">
               {isAr
-                ? 'تدقيق مالي مباشر مرتبط بحساب العميل وسجلات الدفع الإلكتروني.'
-                : 'Direct financial settlement ledger tied to your tenant retainer contract.'}
+                ? 'تدقيق مالي مباشر مرتبط بحساب العميل وسجلات الفواتير.'
+                : 'Direct financial ledger linked to workspace retainer contract records.'}
             </p>
           </div>
-          <div className="inline-flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-xs font-mono">
-            <span className="text-helix-muted">{isAr ? 'الاشتراك الشهري:' : 'Active Monthly Retainer:'}</span>
-            <strong className="text-helix-ink font-semibold">{formatMoney(report.monthlyRetainerCents)}</strong>
-          </div>
+          {report.monthlyRetainerCents > 0 && (
+            <div className="inline-flex items-center gap-2 rounded-md border border-border bg-raised px-3 py-1.5 text-xs font-mono">
+              <span className="text-muted-foreground">{isAr ? 'الاشتراك الشهري:' : 'Active Monthly Retainer:'}</span>
+              <strong className="text-foreground font-semibold">{formatMoney(report.monthlyRetainerCents)}</strong>
+            </div>
+          )}
         </div>
 
         <div className="overflow-x-auto">
@@ -235,13 +217,13 @@ export function MonthlyReportView({ report }: MonthlyReportViewProps) {
               {report.recentInvoices.length > 0 ? (
                 report.recentInvoices.map((inv) => (
                   <TableRow key={inv.id}>
-                    <TableCell className="font-mono font-medium text-helix-ink">{inv.id}</TableCell>
-                    <TableCell className="text-helix-muted font-mono">{inv.date}</TableCell>
-                    <TableCell className="font-semibold text-helix-ink">
+                    <TableCell className="font-mono font-medium text-foreground">{inv.id}</TableCell>
+                    <TableCell className="text-muted-foreground font-mono">{inv.date}</TableCell>
+                    <TableCell className="font-semibold text-foreground tabular-nums">
                       {formatMoney(inv.amountCents)}
                     </TableCell>
                     <TableCell className="text-right">
-                      <Badge variant="verified" dot>
+                      <Badge variant={inv.status === 'paid' ? 'verified' : 'default'} dot>
                         {inv.status.toUpperCase()}
                       </Badge>
                     </TableCell>
@@ -249,8 +231,8 @@ export function MonthlyReportView({ report }: MonthlyReportViewProps) {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={4} className="py-8 text-center text-helix-muted font-mono text-xs">
-                    {isAr ? 'لا توجد فواتير سابقة مسجلة' : 'No previous invoices logged for this billing cycle.'}
+                  <TableCell colSpan={4} className="py-8 text-center text-muted-foreground font-mono text-xs">
+                    {isAr ? 'لا توجد فواتير سابقة مسجلة' : 'No previous invoices logged for this workspace.'}
                   </TableCell>
                 </TableRow>
               )}

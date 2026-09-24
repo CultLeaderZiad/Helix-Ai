@@ -20,13 +20,13 @@ export interface MonthlyReportData {
   currency: string
   monthlyRetainerCents: number
   totalInvoicedCents: number
-  estimatedRecoveredValueCents: number
+  recoveredRevenueCents: number
   roiMultiplier: string
   totalCallsHandled: number
   totalWhatsAppMessages: number
   verifiedFactsCount: number
-  factAccuracyRate: number
-  systemUptimePercentage: string
+  totalFactsCount: number
+  factAccuracyRate: number | null
   executiveSummary: string
   executiveSummaryAr: string
   operationalBreakdown: OperationalMetric[]
@@ -42,7 +42,7 @@ export async function generateClientMonthlyReport(
   supabase: SupabaseClient,
   clientId: string
 ): Promise<MonthlyReportData> {
-  const [clientRes, billingRes, invoicesRes, activityRes, factsRes, dealsRes] =
+  const [clientRes, invoicesRes, activityRes, factsRes, dealsRes, conversationsRes] =
     await Promise.all([
       supabase
         .from('clients')
@@ -50,16 +50,11 @@ export async function generateClientMonthlyReport(
         .eq('id', clientId)
         .maybeSingle(),
       supabase
-        .from('billing_accounts')
-        .select('*')
-        .eq('client_id', clientId)
-        .maybeSingle(),
-      supabase
         .from('invoices')
         .select('id, amount_cents, due_date, status, created_at')
         .eq('client_id', clientId)
         .order('created_at', { ascending: false })
-        .limit(5),
+        .limit(10),
       supabase
         .from('activity_log')
         .select('id, event_type, created_at')
@@ -72,98 +67,104 @@ export async function generateClientMonthlyReport(
         .from('deals')
         .select('id, value_cents, stage')
         .eq('client_id', clientId),
+      supabase
+        .from('conversations')
+        .select('id, channel')
+        .eq('client_id', clientId),
     ])
 
   const client = clientRes.data
   const businessName = client?.business_name || 'Client Workspace'
   const regionTier: RegionTier = (client?.region_tier as RegionTier) || 'gcc_enterprise'
   const currency = regionTier === 'gcc_enterprise' ? 'AED' : 'USD'
-  const monthlyRetainerCents = (client?.monthly_fee ?? 1250) * 100
+  const monthlyRetainerCents = (client?.monthly_fee ?? 0) * 100
 
-  // Aggregate activity metrics
+  // Real recorded telemetry
   const realActivities = activityRes.data ?? []
-  const callsHandled = Math.max(realActivities.length, 148)
-  const whatsAppMessages = Math.round(callsHandled * 2.8)
+  const realConversations = conversationsRes.data ?? []
+  const callsHandled = realConversations.filter(c => c.channel === 'voice' || c.channel === 'call').length
+  const whatsAppMessages = realConversations.filter(c => c.channel === 'whatsapp').length
 
-  // Facts accuracy
+  // Real facts accuracy
   const realFacts = factsRes.data ?? []
   const verifiedCount = realFacts.filter(f => f.status === 'applied' || f.evidence_band === 'verified').length
-  const totalFacts = Math.max(realFacts.length, 46)
-  const factAccuracyRate = Math.round(((Math.max(verifiedCount, 44)) / totalFacts) * 100)
+  const totalFacts = realFacts.length
+  const factAccuracyRate = totalFacts > 0 ? Math.round((verifiedCount / totalFacts) * 100) : null
 
-  // Recovered revenue from deals
+  // Real recovered revenue from closed won deals
   const realDeals = dealsRes.data ?? []
   const wonValueCents = realDeals
     .filter(d => d.stage === 'closed_won')
     .reduce((sum, d) => sum + (d.value_cents ?? 0), 0)
-  const estimatedRecoveredValueCents = Math.max(wonValueCents, 1840000) // minimum $18,400 benchmark
 
   const totalInvoicedCents = (invoicesRes.data ?? []).reduce(
     (sum, inv) => sum + (inv.amount_cents ?? 0),
-    monthlyRetainerCents
+    0
   )
 
-  const roi = (estimatedRecoveredValueCents / (totalInvoicedCents || 1)).toFixed(1) + 'x'
+  const roi = monthlyRetainerCents > 0 && wonValueCents > 0
+    ? (wonValueCents / monthlyRetainerCents).toFixed(1) + 'x'
+    : '—'
 
   const operationalBreakdown: OperationalMetric[] = [
     {
       system: 'Autonomous Booking Receptionist',
       systemAr: 'موظف الاستقبال وحجز المواعيد الصوتي',
-      metric: 'Confirmed Calendar Bookings',
-      metricAr: 'حجوزات مؤكدة على التقويم',
-      count: Math.round(callsHandled * 0.42),
-      unit: 'appointments',
-      unitAr: 'موعد',
+      metric: 'Logged Voice Interactions',
+      metricAr: 'مكالمات صوتية مسجلة',
+      count: callsHandled,
+      unit: 'calls',
+      unitAr: 'مكالمة',
     },
     {
-      system: 'Missed-Call WhatsApp Triage',
-      systemAr: 'الرد التلقائي وتأهيل العملاء للمكالمات الفائتة',
-      metric: 'Saved Missed Calls & Triage',
-      metricAr: 'مكالمات فائتة تم إنقاذها والرد عليها',
-      count: Math.round(callsHandled * 0.28),
-      unit: 'leads rescued',
-      unitAr: 'عميل مسترد',
+      system: 'WhatsApp Channel Ingest',
+      systemAr: 'قناة الواتساب التفاعلية',
+      metric: 'Logged WhatsApp Conversations',
+      metricAr: 'محادثات واتساب مسجلة',
+      count: whatsAppMessages,
+      unit: 'conversations',
+      unitAr: 'محادثة',
     },
     {
-      system: 'WhatsApp CRM Reactivation',
-      systemAr: 'إعادة تنشيط العملاء السابقين عبر الواتساب',
-      metric: 'Re-engaged Customer Deals',
-      metricAr: 'صفقات تم تجديدها واستردادها',
-      count: Math.round(callsHandled * 0.16),
-      unit: 're-activated deals',
-      unitAr: 'صفقة نشطة',
+      system: 'Operational Activity Log',
+      systemAr: 'سجل النشاط التشغيلي',
+      metric: 'Recorded Pipeline Events',
+      metricAr: 'أحداث تشغيلية مسجلة',
+      count: realActivities.length,
+      unit: 'events',
+      unitAr: 'حدث',
     },
     {
-      system: 'Cryptographic Ground-Truth Ledger',
-      systemAr: 'سجل تدقيق الحقائق والرقابة الإدارية',
-      metric: 'Audited Claims with Zero Hallucinations',
-      metricAr: 'معلومات تم تدقيقها بدون أي أخطاء',
-      count: totalFacts,
+      system: 'Ground-Truth Evidence Ledger',
+      systemAr: 'سجل تدقيق الحقائق',
+      metric: 'Verified AI Observations',
+      metricAr: 'حقائق تم تأكيدها',
+      count: verifiedCount,
       unit: 'facts verified',
       unitAr: 'حقيقة مؤكدة',
     },
   ]
 
-  const reportId = `REP-2026-09-${clientId.slice(0, 6).toUpperCase()}`
+  const reportId = `REP-${clientId.slice(0, 8).toUpperCase()}`
 
   return {
     reportId,
-    cyclePeriod: 'September 2026 (Monthly Retainer)',
+    cyclePeriod: 'Current Monthly Cycle',
     generatedAt: new Date().toISOString(),
     clientBusinessName: businessName,
     regionTier,
     currency,
     monthlyRetainerCents,
     totalInvoicedCents,
-    estimatedRecoveredValueCents,
+    recoveredRevenueCents: wonValueCents,
     roiMultiplier: roi,
     totalCallsHandled: callsHandled,
     totalWhatsAppMessages: whatsAppMessages,
-    verifiedFactsCount: Math.max(verifiedCount, 44),
+    verifiedFactsCount: verifiedCount,
+    totalFactsCount: totalFacts,
     factAccuracyRate,
-    systemUptimePercentage: '99.98%',
-    executiveSummary: `During this monthly retainer cycle, Helix AI systems autonomously handled ${callsHandled} voice calls and dispatched ${whatsAppMessages} WhatsApp interactions for ${businessName}. Autonomous triage recovered an estimated $${(estimatedRecoveredValueCents / 100).toLocaleString()} in customer revenue, generating a net ${roi} return on retainer investment with 99.98% uptime.`,
-    executiveSummaryAr: `خلال دورة الاشتراك الشهري الحالية، قام نظام Helix AI بمعالجة ${callsHandled} مكالمة هاتفية صوتية وإرسال ${whatsAppMessages} رسالة واتساب تفاعلية لصالح ${businessName}. نجحت الأنظمة في استرداد مبيعات وحجوزات متوقعة بقيمة $${(estimatedRecoveredValueCents / 100).toLocaleString()}، محققة عائداً استثمارياً قدره ${roi} أضعاف تكلفة الاشتراك مع نسبة جاهزية وتشغيل 99.98%.`,
+    executiveSummary: `During this monthly retainer cycle, Helix AI systems recorded ${callsHandled} voice sessions and ${whatsAppMessages} WhatsApp interactions for ${businessName}. Real-time telemetry captured ${realActivities.length} operational events, with ${verifiedCount} human-verified facts committed to tenant profiles.`,
+    executiveSummaryAr: `خلال دورة الاشتراك الحالية، سجلت أنظمة Helix AI عدد ${callsHandled} جلسة صوتية و ${whatsAppMessages} تفاعل عبر الواتساب لصالح ${businessName}. وثقت القياسات ${realActivities.length} حدثاً تشغيلياً، مع تأكيد ${verifiedCount} حقيقة موثقة في ملفات العملاء.`,
     operationalBreakdown,
     recentInvoices: (invoicesRes.data ?? []).map(inv => ({
       id: inv.id.slice(0, 8).toUpperCase(),
