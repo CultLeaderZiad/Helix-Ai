@@ -28,68 +28,25 @@ export default async function AdminCrossClientCrmPage() {
   const realDeals = dealsRes.data ?? []
   const realFacts = factsRes.data ?? []
 
-  const contacts: CrmContactRow[] = realContacts.length > 0
-    ? realContacts.map(c => ({
-        id: c.id,
-        full_name: c.full_name,
-        email: c.email,
-        phone: c.phone,
-        company_name: clientMap.get(c.client_id) ?? c.company_name ?? 'Client Workspace',
-        lead_status: c.lead_status,
-        created_at: c.created_at,
-        deal_stage: 'QUALIFIED_TO_BUY',
-        deal_value_cents: 250000,
-        last_activity: c.updated_at,
-        fact_status: 'verified',
-      }))
-    : [
-        {
-          id: 'admin-c1',
-          full_name: 'Marcus Vance',
-          email: 'm.vance@apexlogistics.com',
-          phone: '(415) 890-2194',
-          company_name: 'Apex Logistics (Tenant A)',
-          lead_status: 'customer',
-          deal_stage: 'CLOSED_WON',
-          deal_value_cents: 4800000,
-          created_at: new Date().toISOString(),
-          last_activity: new Date().toISOString(),
-          fact_status: 'verified',
-        },
-        {
-          id: 'admin-c2',
-          full_name: 'Elena Rostova',
-          email: 'elena@novacare.health',
-          phone: '(312) 440-1928',
-          company_name: 'NovaCare Health (Tenant B)',
-          lead_status: 'hot',
-          deal_stage: 'CONTRACT_SENT',
-          deal_value_cents: 3200000,
-          created_at: new Date(Date.now() - 3600000).toISOString(),
-          last_activity: new Date(Date.now() - 1800000).toISOString(),
-          fact_status: 'verified',
-        },
-        {
-          id: 'admin-c3',
-          full_name: 'Tariq Al-Mansoor',
-          email: 'tariq@gulfretail.ae',
-          phone: '+971 50 234 8812',
-          company_name: 'Gulf Retail Group (Tenant C)',
-          lead_status: 'warm',
-          deal_stage: 'QUALIFIED_TO_BUY',
-          deal_value_cents: 1950000,
-          created_at: new Date(Date.now() - 7200000).toISOString(),
-          last_activity: new Date(Date.now() - 3600000).toISOString(),
-          fact_status: 'verified',
-        },
-      ]
+  // Map real contacts — zero mock data
+  const contacts: CrmContactRow[] = realContacts.map(c => ({
+    id: c.id,
+    full_name: c.full_name,
+    email: c.email,
+    phone: c.phone,
+    company_name: clientMap.get(c.client_id) ?? c.company_name ?? 'Client Workspace',
+    lead_status: c.lead_status,
+    created_at: c.created_at,
+    deal_stage: 'new_lead',
+    deal_value_cents: 0,
+    last_activity: c.updated_at,
+    fact_status: 'verified',
+  }))
 
-  const totalContacts = contacts.length
-  const pipelineValueCents = realDeals.length > 0
-    ? realDeals.reduce((sum, d) => sum + (d.value_cents ?? 0), 0)
-    : 12840000
-  const verifiedFactCount = realFacts.filter(f => f.evidence_band === 'verified').length || 68
-  const totalFactCount = realFacts.length || 70
+  const totalContacts = realContacts.length
+  const pipelineValueCents = realDeals.reduce((sum, d) => sum + (d.value_cents ?? 0), 0)
+  const verifiedFactCount = realFacts.filter(f => f.evidence_band === 'verified' || f.status === 'applied').length
+  const totalFactCount = realFacts.length
 
   return (
     <ConsoleShell variant="admin" email={session.user.email ?? ''} businessName={null}>
@@ -99,6 +56,7 @@ export default async function AdminCrossClientCrmPage() {
         pipelineValueCents={pipelineValueCents}
         verifiedFactCount={verifiedFactCount}
         totalFactCount={totalFactCount}
+        isAdmin={true}
       />
     </ConsoleShell>
   )

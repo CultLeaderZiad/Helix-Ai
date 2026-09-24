@@ -7,7 +7,7 @@
   --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
 
-  /* Board A type scale: 11 / 12 / 13 / 14 / 15 / 22 / 28 */
+  /* Type scale */
   --text-11: 0.6875rem;
   --text-11--line-height: 1.4;
   --text-12: 0.75rem;
@@ -25,169 +25,209 @@
   --text-28--line-height: 1.15;
   --text-28--letter-spacing: -0.03em;
 
-  --text-h1: 1.75rem;
-  --text-h1--line-height: 1.15;
-  --text-h1--letter-spacing: -0.03em;
-  --text-h2: 1.375rem;
-  --text-h2--line-height: 1.25;
-  --text-h2--letter-spacing: -0.03em;
-  --text-h3: 0.9375rem;
-  --text-h3--line-height: 1.35;
-  --text-body: 0.9375rem;
+  --text-h1: 3.5rem;
+  --text-h1--line-height: 1.05;
+  --text-h1--letter-spacing: -0.02em;
+  --text-h2: 2rem;
+  --text-h2--line-height: 1.15;
+  --text-h2--letter-spacing: -0.015em;
+  --text-h3: 1.375rem;
+  --text-h3--line-height: 1.25;
+  --text-body: 1rem;
   --text-body--line-height: 1.5;
   --text-small: 0.8125rem;
-  --text-small--line-height: 1.45;
+  --text-small--line-height: 1.4;
 
-  --color-helix-canvas: var(--helix-canvas);
-  --color-helix-surface: var(--helix-surface);
-  --color-helix-ink: var(--helix-ink);
-  --color-helix-muted: var(--helix-muted);
-  --color-helix-border: var(--helix-border);
-  --color-helix-accent: var(--helix-accent);
-  --color-helix-accent-soft: var(--helix-accent-soft);
-  --color-helix-warn: var(--helix-warn);
-  --color-helix-ok: var(--helix-ok);
-  --color-helix-danger: var(--helix-danger);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-canvas: var(--background);
+  --color-panel: var(--panel);
+  --color-panel-hover: var(--raised);
+  --color-raised: var(--raised);
+  --color-elevated: var(--panel);
 
-  --color-background: var(--helix-canvas);
-  --color-foreground: var(--helix-ink);
-  --color-canvas: var(--helix-canvas);
-  --color-panel: var(--helix-surface);
-  --color-panel-hover: var(--helix-canvas);
-  --color-raised: var(--helix-canvas);
-  --color-elevated: var(--helix-surface);
-  --color-deep: #080c14;
-  --color-deep-foreground: #f8fafc;
-  --color-deep-muted: #94a3b8;
-  --color-card: var(--helix-surface);
-  --color-card-foreground: var(--helix-ink);
-  --color-popover: var(--helix-surface);
-  --color-popover-foreground: var(--helix-ink);
-  --color-primary: var(--helix-ink);
-  --color-primary-foreground: var(--helix-surface);
-  --color-secondary: var(--helix-canvas);
-  --color-secondary-foreground: var(--helix-ink);
-  --color-muted: var(--helix-canvas);
-  --color-muted-foreground: var(--helix-muted);
-  --color-accent: var(--helix-accent);
-  --color-accent-foreground: #ffffff;
-  --color-destructive: var(--helix-danger);
-  --color-border: var(--helix-border);
-  --color-border-subtle: var(--helix-border);
-  --color-border-default: var(--helix-border);
-  --color-border-active: var(--helix-ink);
-  --color-input: var(--helix-border);
-  --color-ring: var(--helix-ink);
+  --color-deep: #07101a;
+  --color-deep-foreground: #e8ecf2;
+  --color-deep-muted: #93a0b4;
 
-  --color-status-success: var(--helix-ok);
-  --color-status-warning: var(--helix-warn);
-  --color-status-danger: var(--helix-danger);
+  --color-card: var(--panel);
+  --color-card-foreground: var(--foreground);
+  --color-popover: var(--panel);
+  --color-popover-foreground: var(--foreground);
 
-  --color-chart-1: var(--helix-accent);
-  --color-chart-2: var(--helix-ink);
-  --color-chart-3: var(--helix-muted);
-  --color-chart-4: var(--helix-border);
-  --color-chart-5: var(--helix-canvas);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
 
-  --color-sidebar: var(--helix-surface);
-  --color-sidebar-foreground: var(--helix-ink);
-  --color-sidebar-primary: var(--helix-ink);
-  --color-sidebar-primary-foreground: var(--helix-surface);
-  --color-sidebar-accent: var(--helix-canvas);
-  --color-sidebar-accent-foreground: var(--helix-ink);
-  --color-sidebar-border: var(--helix-border);
-  --color-sidebar-ring: var(--helix-ink);
+  --color-muted: var(--raised);
+  --color-muted-foreground: var(--muted-foreground);
 
-  --radius-sm: 8px;
-  --radius-md: 10px;
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--status-danger);
+
+  --color-border: var(--border);
+  --color-border-subtle: var(--border);
+  --color-border-default: var(--border);
+  --color-border-active: var(--foreground);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-status-success: var(--status-success);
+  --color-status-warning: var(--status-warning);
+  --color-status-danger: var(--status-danger);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* DESIGN-SPEC §1.5 Corner radius */
+  --radius-sm: 6px;
+  --radius-md: 8px;
   --radius-lg: 12px;
   --radius-xl: 16px;
   --radius-2xl: 16px;
   --radius-3xl: 20px;
   --radius-4xl: 24px;
-
-  --shadow-helix: var(--helix-shadow);
 }
 
 /*
-  Helix Blueprint Light — locked 2026-09-18.
-  Accent is deep emerald, never neon cyan.
-  Dark tokens reserved for a later power-user mode.
+  Helix AI Canonical Design Tokens (DESIGN-SPEC v3, §1.2)
+  Light mode
 */
 :root {
   color-scheme: light;
-  --helix-canvas: #f4f4f2;
-  --helix-surface: #ffffff;
-  --helix-ink: #111111;
-  --helix-muted: #6b6b66;
-  --helix-border: #e2e2de;
-  --helix-accent: #0b6e4f;
-  --helix-accent-soft: #e6f3ee;
-  --helix-warn: #b45309;
-  --helix-ok: #047857;
-  --helix-danger: #b42318;
-  --helix-shadow: 0 1px 2px rgba(17, 17, 17, 0.04), 0 8px 24px rgba(17, 17, 17, 0.06);
-  --helix-radius-control: 12px;
-  --helix-radius-shell: 16px;
 
-  --bg-canvas: var(--helix-canvas);
-  --bg-panel: var(--helix-surface);
-  --bg-panel-hover: #f7f7f4;
-  --bg-elevated: var(--helix-surface);
-  --border-subtle: var(--helix-border);
-  --border-default: var(--helix-border);
-  --border-active: var(--helix-ink);
-  --background: var(--helix-canvas);
-  --panel: var(--helix-surface);
-  --raised: var(--helix-canvas);
-  --foreground: var(--helix-ink);
-  --card: var(--helix-surface);
-  --card-foreground: var(--helix-ink);
-  --popover: var(--helix-surface);
-  --popover-foreground: var(--helix-ink);
-  --primary: var(--helix-ink);
-  --primary-foreground: var(--helix-surface);
-  --secondary: var(--helix-canvas);
-  --secondary-foreground: var(--helix-ink);
-  --muted: var(--helix-canvas);
-  --muted-foreground: var(--helix-muted);
-  --accent: var(--helix-accent);
+  --background: #f4f6f9;
+  --panel: #ffffff;
+  --raised: #eaeef3;
+  --foreground: #0f141b;
+  --muted-foreground: #5b6577;
+
+  --primary: #0f141b;
+  --primary-foreground: #f4f6f9;
+
+  --secondary: #eaeef3;
+  --secondary-foreground: #0f141b;
+
+  --accent: #0e8da6;
   --accent-foreground: #ffffff;
-  --destructive: var(--helix-danger);
-  --border: var(--helix-border);
-  --input: var(--helix-border);
-  --ring: var(--helix-ink);
-  --status-success: var(--helix-ok);
-  --status-warning: var(--helix-warn);
-  --status-danger: var(--helix-danger);
-  --chart-1: var(--helix-accent);
-  --chart-2: var(--helix-ink);
-  --chart-3: var(--helix-muted);
-  --chart-4: var(--helix-border);
-  --chart-5: var(--helix-canvas);
-  --radius: 12px;
-  --sidebar: var(--helix-surface);
-  --sidebar-foreground: var(--helix-ink);
-  --sidebar-primary: var(--helix-ink);
-  --sidebar-primary-foreground: var(--helix-surface);
-  --sidebar-accent: var(--helix-canvas);
-  --sidebar-accent-foreground: var(--helix-ink);
-  --sidebar-border: var(--helix-border);
-  --sidebar-ring: var(--helix-ink);
+
+  --border: #d9dee6;
+  --input: #cfd6df;
+  --ring: #0e8da6;
+
+  --status-success: #1f8a3b;
+  --status-warning: #a86a00;
+  --status-danger: #c62f2a;
+
+  --chart-1: #0e8da6;
+  --chart-2: #5b6577;
+  --chart-3: #8b95a7;
+  --chart-4: #b7bfcb;
+  --chart-5: #d9dee6;
+
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0f141b;
+  --sidebar-primary: #0f141b;
+  --sidebar-primary-foreground: #f4f6f9;
+  --sidebar-accent: #eaeef3;
+  --sidebar-accent-foreground: #0f141b;
+  --sidebar-border: #d9dee6;
+  --sidebar-ring: #0e8da6;
+
+  --deep: #07101a;
+  --deep-foreground: #e8ecf2;
+  --deep-muted: #93a0b4;
+
+  /* Aliases for legacy helix-* classes */
+  --helix-canvas: var(--background);
+  --helix-surface: var(--panel);
+  --helix-ink: var(--foreground);
+  --helix-muted: var(--muted-foreground);
+  --helix-border: var(--border);
+  --helix-accent: var(--accent);
+  --helix-accent-soft: rgba(14, 141, 166, 0.1);
+  --helix-warn: var(--status-warning);
+  --helix-ok: var(--status-success);
+  --helix-danger: var(--status-danger);
+  --helix-shadow: 0 1px 2px rgba(15, 20, 27, 0.04), 0 8px 24px rgba(15, 20, 27, 0.06);
+
+  --radius: 8px;
 }
 
+/*
+  Dark mode (DESIGN-SPEC v3, §1.2)
+*/
 .dark {
   color-scheme: dark;
-  --helix-canvas: #0f1115;
-  --helix-surface: #171a21;
-  --helix-ink: #f2f2f0;
-  --helix-muted: #9a9a94;
-  --helix-border: #2a2f3a;
-  --helix-accent: #0b6e4f;
-  --helix-accent-soft: #14352c;
-  --helix-warn: #d97706;
-  --helix-ok: #34d399;
-  --helix-danger: #f87171;
+
+  --background: #0b0e13;
+  --panel: #11151c;
+  --raised: #171c25;
+  --foreground: #e8ecf2;
+  --muted-foreground: #8b95a7;
+
+  --primary: #e8ecf2;
+  --primary-foreground: #0b0e13;
+
+  --secondary: #171c25;
+  --secondary-foreground: #e8ecf2;
+
+  --accent: #38c6e0;
+  --accent-foreground: #06141a;
+
+  --border: rgba(255, 255, 255, 0.08);
+  --input: rgba(255, 255, 255, 0.14);
+  --ring: #38c6e0;
+
+  --status-success: #3fb950;
+  --status-warning: #d29922;
+  --status-danger: #f85149;
+
+  --chart-1: #38c6e0;
+  --chart-2: #8b95a7;
+  --chart-3: #5b6577;
+  --chart-4: #3a4352;
+  --chart-5: #232a35;
+
+  --sidebar: #11151c;
+  --sidebar-foreground: #e8ecf2;
+  --sidebar-primary: #38c6e0;
+  --sidebar-primary-foreground: #06141a;
+  --sidebar-accent: #171c25;
+  --sidebar-accent-foreground: #e8ecf2;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-ring: #38c6e0;
+
+  --deep: #07101a;
+  --deep-foreground: #e8ecf2;
+  --deep-muted: #93a0b4;
+
+  /* Aliases for legacy helix-* classes */
+  --helix-canvas: var(--background);
+  --helix-surface: var(--panel);
+  --helix-ink: var(--foreground);
+  --helix-muted: var(--muted-foreground);
+  --helix-border: var(--border);
+  --helix-accent: var(--accent);
+  --helix-accent-soft: rgba(56, 198, 224, 0.1);
+  --helix-warn: var(--status-warning);
+  --helix-ok: var(--status-success);
+  --helix-danger: var(--status-danger);
   --helix-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
 }
 
@@ -208,7 +248,7 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans text-15;
+    @apply bg-background text-foreground font-sans;
     overflow-x: hidden;
     min-height: 100vh;
     min-height: 100dvh;
@@ -220,40 +260,39 @@
 
   * {
     scrollbar-width: thin;
-    scrollbar-color: rgba(17, 17, 17, 0.18) transparent;
+    scrollbar-color: rgba(15, 20, 27, 0.18) transparent;
   }
 }
 
 @layer components {
   .helix-shell {
-    border-radius: var(--helix-radius-shell);
-    background: var(--helix-surface);
-    box-shadow: var(--helix-shadow);
-    border: 1px solid var(--helix-border);
+    border-radius: var(--radius-lg);
+    background: var(--panel);
+    border: 1px solid var(--border);
   }
 
   .helix-title {
     font-weight: 600;
-    letter-spacing: -0.03em;
-    color: var(--helix-ink);
+    letter-spacing: -0.015em;
+    color: var(--foreground);
   }
 
   .helix-field {
-    height: 42px;
+    height: 40px;
     width: 100%;
-    border-radius: 12px;
-    border: 1px solid var(--helix-border);
-    background: var(--helix-surface);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--input);
+    background: var(--panel);
     padding: 0 12px;
     font-size: 14px;
-    color: var(--helix-ink);
+    color: var(--foreground);
     transition: border-color 150ms ease, box-shadow 150ms ease;
   }
 
   .helix-field:focus {
     outline: none;
-    border-color: var(--helix-ink);
-    box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.06);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent);
   }
 
   .helix-field-label {
@@ -261,6 +300,6 @@
     margin-bottom: 6px;
     font-size: 13px;
     font-weight: 500;
-    color: var(--helix-ink);
+    color: var(--foreground);
   }
 }

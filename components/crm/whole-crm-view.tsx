@@ -1,30 +1,26 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import {
   Users,
   Search,
   Plus,
-  Phone,
-  Mail,
-  Building,
-  CheckCircle2,
-  Clock,
-  Sparkles,
-  X,
-  MessageSquare,
-  Activity,
   ArrowUpRight,
   ShieldCheck,
   DollarSign,
-  Briefcase,
+  Phone,
+  Mail,
+  Building,
+  MessageSquare,
+  X,
+  Loader2,
+  FileText,
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { Badge } from '@/components/ui/badge'
+import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
 import { KpiCard } from '@/components/ui/kpi-card'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import {
   Table,
   TableBody,
@@ -33,6 +29,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { cn } from '@/lib/utils'
+import { createContactAction } from '@/lib/crm/contact-actions'
 
 export interface CrmContactRow {
   id: string
@@ -40,17 +38,17 @@ export interface CrmContactRow {
   email: string | null
   phone: string | null
   company_name: string | null
-  lead_status: string
-  created_at: string
+  lead_status: string | null
   deal_stage?: string | null
   deal_value_cents?: number | null
+  created_at: string
   last_activity?: string | null
-  last_activity_type?: string | null
-  fact_status?: 'verified' | 'probable' | 'possible' | null
-  notes_count?: number
+  fact_status?: 'verified' | 'probable' | 'possible'
 }
 
 interface WholeCrmViewProps {
+  clientId?: string
+  isAdmin?: boolean
   contacts: CrmContactRow[]
   totalContacts: number
   pipelineValueCents: number
@@ -58,51 +56,56 @@ interface WholeCrmViewProps {
   totalFactCount: number
 }
 
-const STAGE_CONFIG: Record<string, { label: string; variant: 'verified' | 'probable' | 'possible' | 'demo' | 'default' }> = {
-  new_lead: { label: 'New Lead', variant: 'demo' },
-  engaged: { label: 'Engaged', variant: 'demo' },
-  studio_completed: { label: 'Studio Done', variant: 'possible' },
-  call_booked: { label: 'Call Booked', variant: 'probable' },
-  proposal_sent: { label: 'Proposal Sent', variant: 'probable' },
+const STAGE_CONFIG: Record<string, { label: string; variant: 'default' | 'verified' | 'probable' | 'possible' }> = {
+  new_lead: { label: 'New Lead', variant: 'default' },
+  engaged: { label: 'Engaged', variant: 'probable' },
+  studio_completed: { label: 'Studio Completed', variant: 'probable' },
+  call_booked: { label: 'Call Booked', variant: 'verified' },
+  proposal_sent: { label: 'Proposal Sent', variant: 'possible' },
   closed_won: { label: 'Closed Won', variant: 'verified' },
-  closed_lost: { label: 'Closed Lost', variant: 'default' },
-  // Legacy
-  QUALIFIED_TO_BUY: { label: 'Qualified', variant: 'demo' },
-  CONTRACT_SENT: { label: 'Contract Sent', variant: 'possible' },
-  DEMO_BOOKED: { label: 'Demo Booked', variant: 'demo' },
-  CLOSED_WON: { label: 'Closed Won', variant: 'verified' },
-  CLOSED_LOST: { label: 'Closed Lost', variant: 'default' },
 }
 
-function formatCurrency(cents: number): string {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(
-    cents / 100
-  )
+function formatCurrency(cents: number) {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(cents / 100)
 }
 
-function formatShortDate(dateStr: string): string {
-  const d = new Date(dateStr)
-  const now = new Date()
-  const isToday = d.toDateString() === now.toDateString()
-  if (isToday) {
-    return `Today at ${d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`
-  }
+function formatShortDate(iso: string) {
+  const d = new Date(iso)
+  if (isNaN(d.getTime())) return '—'
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
 export function WholeCrmView({
-  contacts,
+  clientId,
+  isAdmin = false,
+  contacts: initialContacts,
   totalContacts,
   pipelineValueCents,
   verifiedFactCount,
   totalFactCount,
 }: WholeCrmViewProps) {
+  const [contacts, setContacts] = useState<CrmContactRow[]>(initialContacts)
   const [searchQuery, setSearchQuery] = useState('')
   const [stageFilter, setStageFilter] = useState<string>('ALL')
-  const [selectedContact, setSelectedContact] = useState<CrmContactRow | null>(contacts[0] ?? null)
+  const [selectedContact, setSelectedContact] = useState<CrmContactRow | null>(null)
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
 
-  const verificationRate = totalFactCount > 0 ? Math.round((verifiedFactCount / totalFactCount) * 100) : 94
+  // Add Contact Form State
+  const [newFullName, setNewFullName] = useState('')
+  const [newEmail, setNewEmail] = useState('')
+  const [newPhone, setNewPhone] = useState('')
+  const [newCompany, setNewCompany] = useState('')
+  const [newStatus, setNewStatus] = useState('new_lead')
+  const [formError, setFormError] = useState<string | null>(null)
+  const [isPending, startTransition] = useTransition()
+
+  const verificationRate = totalFactCount > 0 ? Math.round((verifiedFactCount / totalFactCount) * 100) : null
 
   const filteredContacts = contacts.filter(contact => {
     const matchesSearch =
@@ -112,32 +115,76 @@ export function WholeCrmView({
       (contact.company_name?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
       (contact.phone?.includes(searchQuery) ?? false)
 
-    const matchesStage = stageFilter === 'ALL' || contact.deal_stage === stageFilter
+    const matchesStage = stageFilter === 'ALL' || (contact.deal_stage ?? 'new_lead') === stageFilter
     return matchesSearch && matchesStage
   })
+
+  const handleCreateContact = (e: React.FormEvent) => {
+    e.preventDefault()
+    setFormError(null)
+
+    if (!newFullName.trim()) {
+      setFormError('Full name is required.')
+      return
+    }
+
+    startTransition(async () => {
+      const res = await createContactAction({
+        clientId: clientId || null,
+        fullName: newFullName,
+        email: newEmail,
+        phone: newPhone,
+        companyName: newCompany,
+        leadStatus: newStatus,
+      })
+
+      if (res.success && res.contact) {
+        const created: CrmContactRow = {
+          id: res.contact.id,
+          full_name: res.contact.full_name,
+          email: res.contact.email,
+          phone: res.contact.phone,
+          company_name: res.contact.company_name,
+          lead_status: res.contact.lead_status,
+          deal_stage: 'new_lead',
+          deal_value_cents: 0,
+          created_at: res.contact.created_at,
+          last_activity: res.contact.created_at,
+          fact_status: 'verified',
+        }
+        setContacts(prev => [created, ...prev])
+        setIsAddModalOpen(false)
+        setNewFullName('')
+        setNewEmail('')
+        setNewPhone('')
+        setNewCompany('')
+        setNewStatus('new_lead')
+      } else {
+        setFormError(res.error || 'Failed to create contact.')
+      }
+    })
+  }
 
   return (
     <div className="relative mx-auto w-full max-w-7xl space-y-6">
       {/* Header & Title */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <Badge variant="demo" dot className="mb-2">
-            CRM INTELLIGENCE & TELEMETRY
+          <Badge variant="default" className="mb-2 uppercase tracking-wider font-mono text-[11px]">
+            CRM Telemetry & Records
           </Badge>
-          <h1 className="font-display text-2xl font-bold tracking-tight text-helix-ink sm:text-3xl">
+          <h1 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
             Customer Directory
           </h1>
-          <p className="mt-1 text-xs text-helix-muted max-w-2xl">
-            Realtime customer profiles, deal pipeline stages, and human-verified agent observations.
+          <p className="mt-1 text-xs text-muted-foreground max-w-2xl">
+            Verified customer profiles, deal pipeline stages, and human-verified agent observations.
           </p>
         </div>
 
         <Button
           type="button"
           size="sm"
-          onClick={() => {
-            alert('Add contact modal: Creates a new verified contact profile.')
-          }}
+          onClick={() => setIsAddModalOpen(true)}
           className="gap-1.5"
         >
           <Plus className="size-3.5" />
@@ -145,30 +192,24 @@ export function WholeCrmView({
         </Button>
       </div>
 
-      {/* KPI Metric Strip */}
+      {/* KPI Metric Strip — Honest Realtime Metrics */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <KpiCard
           title="Total Contacts"
-          value={totalContacts > 0 ? totalContacts : 142}
-          change="+12% MoM"
-          changeType="positive"
-          hint="Autonomous voice, web, & WhatsApp acquisitions"
+          value={contacts.length}
+          hint="Verified contact records"
           icon={<Users className="size-4" />}
         />
         <KpiCard
           title="Pipeline Value"
-          value={pipelineValueCents > 0 ? formatCurrency(pipelineValueCents) : '$84,500'}
-          change="+15%"
-          changeType="positive"
-          hint="Across active deals & captured bookings"
+          value={formatCurrency(pipelineValueCents)}
+          hint="Active deal pipeline"
           icon={<DollarSign className="size-4" />}
         />
         <KpiCard
-          title="AI Fact Verification"
-          value={`${verificationRate}%`}
-          change="98% Ground Truth"
-          changeType="positive"
-          hint="Cryptographically signed observation ledger"
+          title="Fact Verification Rate"
+          value={verificationRate !== null ? `${verificationRate}%` : '—'}
+          hint={totalFactCount > 0 ? `${verifiedFactCount} of ${totalFactCount} facts confirmed` : 'No observations logged'}
           icon={<ShieldCheck className="size-4" />}
         />
       </div>
@@ -177,7 +218,7 @@ export function WholeCrmView({
       <Card className="p-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="relative flex-1 min-w-[260px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-helix-muted" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
             <Input
               type="text"
               placeholder="Search by name, company, email, or phone..."
@@ -196,10 +237,10 @@ export function WholeCrmView({
                   type="button"
                   onClick={() => setStageFilter(stage)}
                   className={cn(
-                    'rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all whitespace-nowrap',
+                    'rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors whitespace-nowrap',
                     isSelected
-                      ? 'bg-white/[0.1] text-helix-ink border border-white/[0.12] font-semibold shadow-xs'
-                      : 'text-helix-muted hover:text-helix-ink hover:bg-white/[0.04] border border-transparent'
+                      ? 'bg-raised text-foreground border border-border font-semibold shadow-xs'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-raised/60'
                   )}
                 >
                   {stage === 'ALL' ? 'All Stages' : STAGE_CONFIG[stage]?.label ?? stage}
@@ -219,7 +260,7 @@ export function WholeCrmView({
               <TableHead>Company</TableHead>
               <TableHead>Phone</TableHead>
               <TableHead>Deal Stage</TableHead>
-              <TableHead>Last Activity</TableHead>
+              <TableHead>Created</TableHead>
               <TableHead>AI Audit</TableHead>
               <TableHead className="text-right">Action</TableHead>
             </TableRow>
@@ -227,9 +268,29 @@ export function WholeCrmView({
           <TableBody>
             {filteredContacts.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="py-12 text-center text-helix-muted">
-                  <Users className="mx-auto size-8 text-slate-600 mb-2" />
-                  No contacts found matching your criteria.
+                <TableCell colSpan={7} className="py-16 text-center">
+                  <div className="mx-auto flex max-w-sm flex-col items-center justify-center text-center">
+                    <Users className="size-12 text-accent stroke-[1.5]" />
+                    <h3 className="mt-4 font-display text-lg font-semibold text-foreground">
+                      {searchQuery ? 'No matching contacts found' : 'No contacts recorded'}
+                    </h3>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {searchQuery
+                        ? 'Try clearing your search query or adjusting filters.'
+                        : 'Customer profiles will appear here as interactions occur or when manually added.'}
+                    </p>
+                    {!searchQuery && (
+                      <Button
+                        type="button"
+                        size="sm"
+                        onClick={() => setIsAddModalOpen(true)}
+                        className="mt-4 gap-1.5"
+                      >
+                        <Plus className="size-3.5" />
+                        <span>Add First Contact</span>
+                      </Button>
+                    )}
+                  </div>
                 </TableCell>
               </TableRow>
             ) : (
@@ -246,31 +307,33 @@ export function WholeCrmView({
                     }}
                     className={cn(
                       'cursor-pointer transition-colors duration-150',
-                      isSelected ? 'bg-white/[0.06]' : undefined
+                      isSelected ? 'bg-raised' : undefined
                     )}
                   >
                     {/* Name & Avatar */}
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-3">
-                        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-slate-800/90 text-xs font-bold text-sky-400 shadow-xs">
+                        <div className="flex size-8 shrink-0 items-center justify-center rounded-md border border-border bg-raised text-xs font-semibold text-foreground">
                           {initial}
                         </div>
                         <div>
-                          <div className="font-medium text-helix-ink group-hover:text-sky-300 transition-colors">
+                          <div className="font-medium text-foreground transition-colors hover:text-accent">
                             {contact.full_name ?? 'Anonymous Contact'}
                           </div>
-                          <div className="text-[11px] text-helix-muted font-mono">{contact.email ?? 'No email logged'}</div>
+                          <div className="text-xs text-muted-foreground font-normal">
+                            {contact.email ?? 'No email logged'}
+                          </div>
                         </div>
                       </div>
                     </TableCell>
 
                     {/* Company */}
-                    <TableCell className="text-helix-ink/80 font-medium">
-                      {contact.company_name ?? 'Independent'}
+                    <TableCell className="text-xs text-muted-foreground">
+                      {contact.company_name ?? '—'}
                     </TableCell>
 
                     {/* Phone */}
-                    <TableCell className="font-mono text-xs text-helix-muted">
+                    <TableCell className="font-mono text-xs text-muted-foreground">
                       {contact.phone ?? '—'}
                     </TableCell>
 
@@ -281,9 +344,9 @@ export function WholeCrmView({
                       </Badge>
                     </TableCell>
 
-                    {/* Last Activity */}
-                    <TableCell className="text-xs text-helix-muted font-mono">
-                      {contact.last_activity ? formatShortDate(contact.last_activity) : 'Recent inbound'}
+                    {/* Created Date */}
+                    <TableCell className="text-xs text-muted-foreground font-mono">
+                      {formatShortDate(contact.created_at)}
                     </TableCell>
 
                     {/* AI Observation Status */}
@@ -295,9 +358,9 @@ export function WholeCrmView({
 
                     {/* Quick Inspect Action */}
                     <TableCell className="text-right">
-                      <Button variant="ghost" size="sm" className="h-7 px-2.5 text-xs text-helix-ink/80 hover:text-helix-ink">
+                      <Button variant="ghost" size="sm" className="h-7 px-2.5 text-xs text-muted-foreground hover:text-foreground">
                         <span>Inspect</span>
-                        <ArrowUpRight className="size-3 text-sky-400 ml-1" />
+                        <ArrowUpRight className="size-3 text-accent ml-1" />
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -310,111 +373,204 @@ export function WholeCrmView({
 
       {/* Slide-out Contact Telemetry Drawer */}
       {drawerOpen && selectedContact && (
-        <div className="fixed inset-0 z-50 flex justify-end bg-black/75 backdrop-blur-xs transition-opacity">
-          <div className="relative flex h-full w-full max-w-md flex-col border-l border-white/10 bg-helix-surface p-6 shadow-2xl animate-in slide-in-from-right duration-200">
+        <div className="fixed inset-0 z-50 flex justify-end bg-black/40 transition-opacity">
+          <div className="relative flex h-full w-full max-w-md flex-col border-l border-border bg-panel p-6 shadow-2xl animate-in slide-in-from-right duration-200">
             {/* Drawer Header */}
-            <div className="flex items-start justify-between border-b border-white/[0.08] pb-5">
+            <div className="flex items-start justify-between border-b border-border pb-5">
               <div className="flex items-center gap-3">
-                <div className="flex size-10 items-center justify-center rounded-lg border border-white/10 bg-slate-800 text-sky-400 font-bold text-base shadow-xs">
+                <div className="flex size-10 items-center justify-center rounded-md border border-border bg-raised text-foreground font-semibold text-base">
                   {(selectedContact.full_name?.[0] ?? 'C').toUpperCase()}
                 </div>
                 <div>
-                  <h2 className="font-display text-base font-bold text-helix-ink">
+                  <h2 className="font-display text-base font-bold text-foreground">
                     {selectedContact.full_name ?? 'Contact Details'}
                   </h2>
-                  <p className="text-xs text-helix-muted font-mono">{selectedContact.company_name ?? 'Direct Client'}</p>
+                  <p className="text-xs text-muted-foreground font-mono">{selectedContact.company_name ?? 'Direct Contact'}</p>
                 </div>
               </div>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setDrawerOpen(false)}
-                className="h-8 w-8 text-helix-muted hover:text-helix-ink"
+                className="h-8 w-8 text-muted-foreground hover:text-foreground"
               >
                 <X className="size-4" />
               </Button>
             </div>
 
             {/* Contact Attributes */}
-            <div className="mt-5 space-y-3 rounded-xl border border-white/[0.08] bg-white/[0.02] p-4 text-xs">
+            <div className="mt-5 space-y-3 rounded-lg border border-border bg-raised/50 p-4 text-xs">
               <div className="flex items-center justify-between">
-                <span className="text-helix-muted flex items-center gap-2"><Mail className="size-3.5 text-helix-muted" /> Email</span>
-                <span className="text-helix-ink font-medium">{selectedContact.email ?? '—'}</span>
+                <span className="text-muted-foreground flex items-center gap-2"><Mail className="size-3.5 text-muted-foreground" /> Email</span>
+                <span className="text-foreground font-medium">{selectedContact.email ?? '—'}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-helix-muted flex items-center gap-2"><Phone className="size-3.5 text-helix-muted" /> Phone</span>
-                <span className="text-helix-ink font-mono">{selectedContact.phone ?? '—'}</span>
+                <span className="text-muted-foreground flex items-center gap-2"><Phone className="size-3.5 text-muted-foreground" /> Phone</span>
+                <span className="text-foreground font-mono">{selectedContact.phone ?? '—'}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-helix-muted flex items-center gap-2"><Building className="size-3.5 text-helix-muted" /> Company</span>
-                <span className="text-helix-ink font-medium">{selectedContact.company_name ?? '—'}</span>
+                <span className="text-muted-foreground flex items-center gap-2"><Building className="size-3.5 text-muted-foreground" /> Company</span>
+                <span className="text-foreground font-medium">{selectedContact.company_name ?? '—'}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground flex items-center gap-2"><FileText className="size-3.5 text-muted-foreground" /> Stage</span>
+                <span className="text-foreground font-medium capitalize">{selectedContact.lead_status?.replace(/_/g, ' ') ?? 'New Lead'}</span>
               </div>
             </div>
 
-            {/* Conversation Telemetry Log */}
-            <div className="mt-5 flex-1 overflow-y-auto">
-              <div className="flex items-center justify-between">
-                <h3 className="text-[11px] font-mono font-semibold uppercase tracking-wider text-helix-muted">
-                  Recent Telemetry & Audit Trace
-                </h3>
-                <Badge variant="demo" dot>
-                  Live Synced
-                </Badge>
-              </div>
-
-              <div className="mt-3 space-y-3">
-                <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-3.5">
-                  <div className="flex items-center justify-between text-[11px] text-helix-muted">
-                    <span className="font-semibold text-sky-400 flex items-center gap-1.5">
-                      <MessageSquare className="size-3" /> Inbound Voice Call
-                    </span>
-                    <span className="font-mono text-[10px]">1h ago</span>
-                  </div>
-                  <p className="mt-2 text-xs leading-relaxed text-helix-ink/80">
-                    Autonomous voice agent handled query regarding appointment reschedule. Customer requested Tuesday 10:00 AM slot.
-                  </p>
-                  <div className="mt-2 flex items-center gap-2 text-[10px] text-helix-muted font-mono">
-                    <span>HASH: 8f4b..32a1</span>
-                    <span>•</span>
-                    <span className="text-emerald-400">Audio Persisted</span>
-                  </div>
-                </div>
-
-                <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-3.5">
-                  <div className="flex items-center justify-between text-[11px] text-helix-muted">
-                    <span className="font-semibold text-purple-400 flex items-center gap-1.5">
-                      <Sparkles className="size-3" /> Verified Fact Extracted
-                    </span>
-                    <span className="font-mono text-[10px]">3h ago</span>
-                  </div>
-                  <p className="mt-2 text-xs leading-relaxed text-helix-ink/80">
-                    Extracted confirmed intent: Customer authorized payment for preliminary invoice #204.
-                  </p>
-                  <div className="mt-2">
-                    <Badge variant="verified" dot>
-                      100% Ground Truth
-                    </Badge>
-                  </div>
-                </div>
+            {/* Observation Audit Note */}
+            <div className="mt-5 flex-1 overflow-y-auto space-y-3">
+              <h3 className="text-[11px] font-mono font-semibold uppercase tracking-wider text-muted-foreground">
+                Contact Records & Audit Trail
+              </h3>
+              <div className="rounded-lg border border-border bg-panel p-3.5 text-xs text-muted-foreground space-y-1">
+                <p className="text-foreground font-medium">Record Created</p>
+                <p className="font-mono text-[11px]">{new Date(selectedContact.created_at).toLocaleString()}</p>
+                <p className="text-[11px]">Source: PostgreSQL RLS tenant verified record.</p>
               </div>
             </div>
 
-            {/* Quick Actions Drawer Footer */}
-            <div className="mt-5 border-t border-white/[0.08] pt-4 flex gap-2.5">
+            {/* Contact Actions Footer */}
+            <div className="mt-5 border-t border-border pt-4 flex gap-2.5">
+              {selectedContact.phone ? (
+                <a
+                  href={`tel:${selectedContact.phone}`}
+                  className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-md border border-border bg-panel px-3 py-2 text-xs font-medium text-foreground hover:bg-raised"
+                >
+                  <Phone className="size-3.5" /> Call
+                </a>
+              ) : null}
+              {selectedContact.email ? (
+                <a
+                  href={`mailto:${selectedContact.email}`}
+                  className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-md bg-accent px-3 py-2 text-xs font-medium text-accent-foreground hover:opacity-90"
+                >
+                  <Mail className="size-3.5" /> Email
+                </a>
+              ) : null}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Contact Modal (DESIGN-SPEC §1.9 Elevation 2) */}
+      {isAddModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="w-full max-w-lg rounded-xl border border-border bg-panel p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between border-b border-border pb-4">
+              <div>
+                <h3 className="font-display text-lg font-semibold text-foreground">Add New Contact</h3>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Create a verified customer profile in this workspace.
+                </p>
+              </div>
               <Button
-                variant="outline"
-                onClick={() => alert(`Initiating voice callback to ${selectedContact.phone}...`)}
-                className="flex-1 gap-1.5"
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsAddModalOpen(false)}
+                className="h-8 w-8 text-muted-foreground hover:text-foreground"
               >
-                <Phone className="size-3.5" /> Call
-              </Button>
-              <Button
-                onClick={() => alert(`Opening email composer for ${selectedContact.email}...`)}
-                className="flex-1 gap-1.5"
-              >
-                <Mail className="size-3.5" /> Message
+                <X className="size-4" />
               </Button>
             </div>
+
+            <form onSubmit={handleCreateContact} className="mt-5 space-y-4">
+              {formError && (
+                <div className="rounded-md border border-status-danger/30 bg-status-danger/10 p-3 text-xs text-status-danger">
+                  {formError}
+                </div>
+              )}
+
+              <div>
+                <label className="block text-xs font-medium text-foreground mb-1">
+                  Full Name <span className="text-status-danger">*</span>
+                </label>
+                <Input
+                  required
+                  type="text"
+                  placeholder="e.g. Fatima Al-Hashimi"
+                  value={newFullName}
+                  onChange={e => setNewFullName(e.target.value)}
+                  className="h-9 text-xs"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="block text-xs font-medium text-foreground mb-1">Email</label>
+                  <Input
+                    type="email"
+                    placeholder="name@company.com"
+                    value={newEmail}
+                    onChange={e => setNewEmail(e.target.value)}
+                    className="h-9 text-xs"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-foreground mb-1">Phone</label>
+                  <Input
+                    type="tel"
+                    placeholder="+971 50 123 4567"
+                    value={newPhone}
+                    onChange={e => setNewPhone(e.target.value)}
+                    className="h-9 text-xs"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="block text-xs font-medium text-foreground mb-1">Company</label>
+                  <Input
+                    type="text"
+                    placeholder="e.g. Gulf Logistics"
+                    value={newCompany}
+                    onChange={e => setNewCompany(e.target.value)}
+                    className="h-9 text-xs"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-foreground mb-1">Lead Stage</label>
+                  <select
+                    value={newStatus}
+                    onChange={e => setNewStatus(e.target.value)}
+                    className="h-9 w-full rounded-md border border-input bg-panel px-3 text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
+                  >
+                    <option value="new_lead">New Lead</option>
+                    <option value="engaged">Engaged</option>
+                    <option value="call_booked">Call Booked</option>
+                    <option value="proposal_sent">Proposal Sent</option>
+                    <option value="closed_won">Closed Won</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsAddModalOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  size="sm"
+                  disabled={isPending}
+                  className="gap-1.5"
+                >
+                  {isPending ? (
+                    <>
+                      <Loader2 className="size-3.5 animate-spin" />
+                      <span>Saving...</span>
+                    </>
+                  ) : (
+                    <span>Create Profile</span>
+                  )}
+                </Button>
+              </div>
+            </form>
           </div>
         </div>
       )}
