@@ -98,7 +98,8 @@ const CLIENT_NAV: NavItem[] = [
       p.startsWith('/dashboard/engine') ||
       p.startsWith('/dashboard/reports') ||
       p.startsWith('/dashboard/queue') ||
-      p.startsWith('/dashboard/facts'),
+      p.startsWith('/dashboard/facts') ||
+      p.startsWith('/dashboard/health'),
   },
   {
     href: '/dashboard/support',
@@ -124,6 +125,7 @@ const ADMIN_SYSTEMS_LINKS = [
 ]
 
 const ADMIN_INTEL_LINKS = [
+  { href: '/dashboard/health', label: 'Health' },
   { href: '/dashboard/engine', label: 'Engine' },
   { href: '/dashboard/reports', label: 'Reports' },
   { href: '/admin/analytics', label: 'Analytics' },
@@ -131,6 +133,7 @@ const ADMIN_INTEL_LINKS = [
 ]
 
 const CLIENT_INTEL_LINKS = [
+  { href: '/dashboard/health', label: 'Health' },
   { href: '/dashboard/engine', label: 'Engine' },
   { href: '/dashboard/reports', label: 'Reports' },
   { href: '/dashboard/queue', label: 'Queue' },
@@ -161,6 +164,7 @@ function subnavFor(pathname: string, variant: ConsoleVariant) {
       return ADMIN_SYSTEMS_LINKS
     }
     if (
+      pathname.startsWith('/dashboard/health') ||
       pathname.startsWith('/dashboard/engine') ||
       pathname.startsWith('/dashboard/reports') ||
       pathname.startsWith('/admin/analytics') ||
@@ -183,6 +187,7 @@ function subnavFor(pathname: string, variant: ConsoleVariant) {
   }
 
   if (
+    pathname.startsWith('/dashboard/health') ||
     pathname.startsWith('/dashboard/engine') ||
     pathname.startsWith('/dashboard/reports') ||
     pathname.startsWith('/dashboard/queue') ||
