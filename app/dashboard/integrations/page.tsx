@@ -28,12 +28,12 @@ export default async function IntegrationsHealthPage() {
   const client = clientRes.data
   let integrations = (integrationsRes.data ?? []) as ClientIntegration[]
 
-  // Auto-seed baseline integration rows if empty
+  // Honest baseline: default to 'unknown' or 'disconnected' until real verification ping succeeds
   if (integrations.length === 0) {
     const baseline = [
-      { client_id: clientId, system_type: 'missed_call_response', status: 'connected' as const },
-      { client_id: clientId, system_type: 'booking_receptionist', status: 'connected' as const },
-      { client_id: clientId, system_type: 'lead_attribution', status: 'connected' as const },
+      { client_id: clientId, system_type: 'missed_call_response', status: 'unknown' as const },
+      { client_id: clientId, system_type: 'booking_receptionist', status: 'unknown' as const },
+      { client_id: clientId, system_type: 'lead_attribution', status: 'unknown' as const },
     ]
     const { data: seeded } = await supabase.from('client_integrations').insert(baseline).select('*')
     if (seeded) {
