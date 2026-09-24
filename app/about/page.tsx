@@ -4,7 +4,7 @@ import { PillNav } from '@/components/navigation/pill-nav'
 import { ShieldCheck, Eye, Users, Globe2, ArrowRight } from 'lucide-react'
 import { HelixFooter } from '@/components/footer/helix-footer'
 import { getNavAuth } from '@/lib/auth/nav-auth'
-import { Button } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 
 export const metadata: Metadata = {
   title: 'About — Helix AI',
@@ -48,12 +48,10 @@ export default async function AboutPage() {
               </div>
 
               <div className="shrink-0">
-                <Button asChild size="default" className="gap-2">
-                  <Link href="/contact">
-                    <span>Speak with an Architect</span>
-                    <ArrowRight className="size-4" />
-                  </Link>
-                </Button>
+                <Link href="/contact" className={buttonVariants({ size: 'default', className: 'gap-2' })}>
+                  <span>Speak with an Architect</span>
+                  <ArrowRight className="size-4" />
+                </Link>
               </div>
             </div>
           </section>
@@ -100,12 +98,12 @@ export default async function AboutPage() {
               Start with a 7-day unrestricted trial or consult with our technical architects regarding sovereign deployments.
             </p>
             <div className="pt-2 flex flex-wrap items-center justify-center gap-4">
-              <Button asChild size="default">
-                <Link href="/signup">Start Free Trial</Link>
-              </Button>
-              <Button asChild variant="outline" size="default">
-                <Link href="/contact">Contact Architecture Team</Link>
-              </Button>
+              <Link href="/signup" className={buttonVariants({ size: 'default' })}>
+                Start Free Trial
+              </Link>
+              <Link href="/contact" className={buttonVariants({ variant: 'outline', size: 'default' })}>
+                Contact Architecture Team
+              </Link>
             </div>
           </section>
         </main>

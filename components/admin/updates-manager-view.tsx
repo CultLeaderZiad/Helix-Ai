@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import {
-  Sparkles,
+  GitCommit,
   Plus,
   Trash2,
   Edit2,
@@ -160,8 +160,8 @@ export function UpdatesManagerView({ initialUpdates }: UpdatesManagerViewProps) 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-helix-border pb-6">
         <div>
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 px-2.5 py-0.5 text-xs font-semibold text-sky-400">
-              <Sparkles className="size-3.5" />
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-raised px-2.5 py-0.5 text-xs font-semibold text-accent">
+              <GitCommit className="size-3.5" />
               CHANGELOG & RELEASES
             </span>
             <span className="text-xs text-helix-muted font-mono">// Live sync with /updates</span>
@@ -295,7 +295,7 @@ export function UpdatesManagerView({ initialUpdates }: UpdatesManagerViewProps) 
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
           <div className="w-full max-w-lg rounded-2xl border border-helix-border bg-helix-surface p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
             <h3 className="text-lg font-bold text-helix-ink flex items-center gap-2">
-              <Sparkles className="size-4 text-sky-400" />
+              <GitCommit className="size-4 text-accent" />
               {editingId ? 'Edit Release Details' : 'Create New Release'}
             </h3>
 

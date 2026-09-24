@@ -84,7 +84,7 @@ function FactRow({ fact }: { fact: ReviewableFact }) {
         <div className="flex shrink-0 items-center gap-2 pt-1 lg:pt-0">
           <form action={formAction}>
             <input type="hidden" name="fact_id" value={fact.id} />
-            <input type="hidden" name="decision" value="applied" />
+            <input type="hidden" name="decision" value="approve" />
             <Button
               type="submit"
               size="sm"
@@ -102,7 +102,7 @@ function FactRow({ fact }: { fact: ReviewableFact }) {
 
           <form action={formAction}>
             <input type="hidden" name="fact_id" value={fact.id} />
-            <input type="hidden" name="decision" value="dismissed" />
+            <input type="hidden" name="decision" value="dismiss" />
             <Button
               type="submit"
               size="sm"
@@ -119,15 +119,15 @@ function FactRow({ fact }: { fact: ReviewableFact }) {
 
       {state.status === 'error' && (
         <p role="alert" className="mt-2 text-xs text-status-danger">
-          {state.error}
+          {state.message}
         </p>
       )}
-      {state.status === 'applied' && (
+      {state.status === 'done' && state.decision === 'approve' && (
         <p role="status" className="mt-2 text-xs text-status-success font-medium">
           Fact approved and committed to contact profile.
         </p>
       )}
-      {state.status === 'dismissed' && (
+      {state.status === 'done' && state.decision === 'dismiss' && (
         <p role="status" className="mt-2 text-xs text-muted-foreground font-medium">
           Fact dismissed and archived.
         </p>

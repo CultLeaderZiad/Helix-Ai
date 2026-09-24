@@ -6,7 +6,7 @@ import {
   BookOpen,
   PhoneCall,
   MessageSquare,
-  Sparkles,
+  Play,
   Copy,
   Check,
   ExternalLink,
@@ -60,7 +60,7 @@ export function PlaybooksView() {
         {[
           { id: 'scripts', label: isAr ? 'نصوص المكالمات الهاتفية' : 'Phone Cold Scripts', icon: PhoneCall },
           { id: 'whatsapp', label: isAr ? 'سلاسل رسائل الواتساب' : 'WhatsApp Outreach', icon: MessageSquare },
-          { id: 'links', label: isAr ? 'روابط العرض التجريبي الحي' : 'Live Demo Assets', icon: Sparkles },
+          { id: 'links', label: isAr ? 'روابط العرض التجريبي الحي' : 'Live Demo Assets', icon: Play },
           { id: 'objections', label: isAr ? 'التعامل مع الاعتراضات' : 'Objection Handling', icon: ShieldCheck },
         ].map(tab => {
           const Icon = tab.icon

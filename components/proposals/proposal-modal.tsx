@@ -13,7 +13,6 @@ import {
   Languages,
   ExternalLink,
   Building2,
-  Sparkles,
 } from 'lucide-react'
 import type { ProposalDocument } from '@/lib/proposals/generator'
 import { cn } from '@/lib/utils'
@@ -25,6 +24,7 @@ interface ProposalModalProps {
 
 export function ProposalModal({ proposal, onClose }: ProposalModalProps) {
   const [language, setLanguage] = useState<'en' | 'ar'>('en')
+  const [submitted, setSubmitted] = useState(false)
   const isAr = language === 'ar'
 
   const formatPrice = (cents: number) => {
@@ -36,22 +36,22 @@ export function ProposalModal({ proposal, onClose }: ProposalModalProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/85 p-4 backdrop-blur-md animate-in fade-in overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 p-4 backdrop-blur-xs animate-in fade-in overflow-y-auto">
       <div
         dir={isAr ? 'rtl' : 'ltr'}
-        className="relative my-8 w-full max-w-3xl rounded-2xl border border-helix-border bg-[#0b1220] p-6 lg:p-8 shadow-2xl text-helix-ink"
+        className="relative my-8 w-full max-w-3xl rounded-xl border border-border bg-panel p-6 lg:p-8 shadow-2xl text-foreground"
       >
         {/* Top Control Bar */}
-        <div className="flex items-center justify-between border-b border-helix-border pb-4">
+        <div className="flex items-center justify-between border-b border-border pb-4">
           <div className="flex items-center gap-2">
-            <div className="flex size-9 items-center justify-center rounded-xl bg-helix-accent-soft text-helix-accent">
+            <div className="flex size-9 items-center justify-center rounded-xl bg-accent/10 text-accent">
               <FileCheck2 className="size-5" />
             </div>
             <div>
-              <span className="text-[10px] font-mono uppercase tracking-wider text-helix-accent">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-accent font-semibold">
                 {proposal.id}
               </span>
-              <h2 className="font-display text-lg font-bold text-helix-ink">
+              <h2 className="font-display text-lg font-bold text-foreground">
                 {isAr ? 'عرض التنفيذ الفني والمواصفات المعمارية' : 'Executive Systems Proposal'}
               </h2>
             </div>
@@ -61,7 +61,7 @@ export function ProposalModal({ proposal, onClose }: ProposalModalProps) {
             <button
               type="button"
               onClick={() => setLanguage(l => (l === 'en' ? 'ar' : 'en'))}
-              className="flex items-center gap-1.5 rounded-lg border border-helix-border bg-[#121c2e] px-2.5 py-1 text-xs font-semibold text-helix-ink/80 hover:text-helix-ink"
+              className="flex items-center gap-1.5 rounded-lg border border-border bg-raised px-2.5 py-1 text-xs font-medium text-foreground hover:bg-panel transition-colors"
             >
               <Languages className="size-3.5" />
               {isAr ? 'English' : 'العربية'}
@@ -69,7 +69,7 @@ export function ProposalModal({ proposal, onClose }: ProposalModalProps) {
             <button
               type="button"
               onClick={handlePrint}
-              className="flex items-center gap-1.5 rounded-lg border border-helix-border bg-[#121c2e] px-2.5 py-1 text-xs font-semibold text-helix-ink/80 hover:text-helix-ink"
+              className="flex items-center gap-1.5 rounded-lg border border-border bg-raised px-2.5 py-1 text-xs font-medium text-foreground hover:bg-panel transition-colors"
             >
               <Printer className="size-3.5" />
               {isAr ? 'طباعة' : 'Print'}
@@ -77,7 +77,7 @@ export function ProposalModal({ proposal, onClose }: ProposalModalProps) {
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg p-1.5 text-helix-muted hover:text-helix-ink hover:bg-slate-800/80"
+              className="rounded-lg p-1.5 text-muted-foreground hover:text-foreground hover:bg-raised transition-colors"
             >
               <X className="size-5" />
             </button>
@@ -85,20 +85,20 @@ export function ProposalModal({ proposal, onClose }: ProposalModalProps) {
         </div>
 
         {/* Client & Metadata Strip */}
-        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3 rounded-xl border border-helix-border/80 bg-[#0f172a]/80 p-4 text-xs">
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3 rounded-xl border border-border bg-raised p-4 text-xs">
           <div>
-            <span className="text-helix-muted">{isAr ? 'العميل المستفيد:' : 'Client Workspace:'}</span>
-            <p className="font-bold text-helix-ink text-sm mt-0.5">{proposal.clientBusinessName}</p>
+            <span className="text-muted-foreground">{isAr ? 'العميل المستفيد:' : 'Client Workspace:'}</span>
+            <p className="font-bold text-foreground text-sm mt-0.5">{proposal.clientBusinessName}</p>
           </div>
           <div>
-            <span className="text-helix-muted">{isAr ? 'الشريحة الإقليمية:' : 'Regional Classification:'}</span>
-            <p className="font-bold text-helix-accent text-sm mt-0.5 font-mono">
+            <span className="text-muted-foreground">{isAr ? 'الشريحة الإقليمية:' : 'Regional Classification:'}</span>
+            <p className="font-bold text-accent text-sm mt-0.5 font-mono">
               {proposal.regionTier === 'gcc_enterprise' ? 'GCC Enterprise' : 'MENA SME'}
             </p>
           </div>
           <div>
-            <span className="text-helix-muted">{isAr ? 'تاريخ الانتهاء:' : 'Validity Period:'}</span>
-            <p className="font-bold text-helix-ink text-sm mt-0.5 font-mono">
+            <span className="text-muted-foreground">{isAr ? 'تاريخ الانتهاء:' : 'Validity Period:'}</span>
+            <p className="font-bold text-foreground text-sm mt-0.5 font-mono">
               {new Date(proposal.expiresAt).toLocaleDateString(isAr ? 'ar-EG' : 'en-US')}
             </p>
           </div>
@@ -106,20 +106,20 @@ export function ProposalModal({ proposal, onClose }: ProposalModalProps) {
 
         {/* Line Items Table */}
         <div className="mt-6">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-helix-muted mb-3">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">
             {isAr ? 'بنود النظام والتجهيز المعماري' : 'Architecture & Deliverables Breakdown'}
           </h3>
-          <div className="divide-y divide-slate-800/80 rounded-xl border border-helix-border bg-helix-canvas">
+          <div className="divide-y divide-border rounded-xl border border-border bg-panel">
             {proposal.items.map((item, idx) => (
               <div key={idx} className="flex flex-wrap items-center justify-between gap-4 p-4 text-xs">
                 <div className="max-w-md">
-                  <p className="font-semibold text-helix-ink text-sm">{isAr ? item.nameAr : item.name}</p>
-                  <p className="mt-1 text-helix-muted leading-relaxed">
+                  <p className="font-semibold text-foreground text-sm">{isAr ? item.nameAr : item.name}</p>
+                  <p className="mt-1 text-muted-foreground leading-relaxed">
                     {isAr ? item.descriptionAr : item.description}
                   </p>
                 </div>
                 <div className="text-right">
-                  <span className="rounded-full bg-helix-accent-soft border border-helix-accent/20 px-2 py-0.5 text-[10px] text-helix-accent font-mono">
+                  <span className="rounded-full bg-accent/10 border border-accent/20 px-2 py-0.5 text-[10px] text-accent font-mono">
                     {item.type === 'setup'
                       ? isAr
                         ? 'إعداد وتأسيس'
@@ -128,7 +128,7 @@ export function ProposalModal({ proposal, onClose }: ProposalModalProps) {
                         ? 'اشتراك شهري'
                         : 'Monthly Retainer'}
                   </span>
-                  <p className="mt-1 font-display text-base font-bold text-helix-ink">
+                  <p className="mt-1 font-display text-base font-bold text-foreground">
                     {formatPrice(item.amountCents)}
                   </p>
                 </div>
@@ -138,49 +138,50 @@ export function ProposalModal({ proposal, onClose }: ProposalModalProps) {
         </div>
 
         {/* Investment Summary */}
-        <div className="mt-6 rounded-xl border border-helix-border bg-[#0e1b2f] p-5">
+        <div className="mt-6 rounded-xl border border-border bg-raised p-5">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <span className="text-xs text-helix-muted">
+              <span className="text-xs text-muted-foreground">
                 {isAr ? 'إجمالي الدفعة الأولى (التجهيز + الشهر الأول):' : 'Total First-Month Investment:'}
               </span>
-              <p className="mt-1 font-display text-3xl font-bold text-helix-accent">
+              <p className="mt-1 font-display text-3xl font-bold text-accent">
                 {formatPrice(proposal.totalFirstMonthCents)}
               </p>
-              <p className="mt-1 text-[11px] text-helix-muted">
+              <p className="mt-1 text-[11px] text-muted-foreground">
                 {isAr
                   ? `الاشتراك المستمر اللاحق: ${formatPrice(proposal.monthlyRetainerCents)} شهرياً`
                   : `Subsequent recurring retainer: ${formatPrice(proposal.monthlyRetainerCents)} / month`}
               </p>
             </div>
 
-            <button
-              type="button"
-              onClick={() => {
-                alert(
-                  isAr
-                    ? `جاري التوجيه إلى بوابة الدفع الآمنة (${proposal.currency}) عبر مدى / Apple Pay!`
-                    : `Redirecting to secure localized payment link (${proposal.currency})!`
-                )
-              }}
-              className="flex items-center gap-2 rounded-xl bg-helix-ink px-6 py-3 text-sm font-bold text-white hover:bg-helix-ink/90 transition-all "
-            >
-              <Lock className="size-4" />
-              {isAr ? 'الموافقة وسداد دفعة البدء' : 'Accept & Settle Deposit'}
-            </button>
+            {submitted ? (
+              <div className="flex items-center gap-2 rounded-xl border border-accent/30 bg-accent/10 px-5 py-2.5 text-xs text-foreground font-mono">
+                <CheckCircle2 className="size-4 text-accent" />
+                <span>{isAr ? 'تم تسجيل قبول العرض' : 'Proposal Accepted'}</span>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setSubmitted(true)}
+                className="flex items-center gap-2 rounded-xl bg-accent text-accent-foreground px-6 py-3 text-sm font-semibold hover:bg-accent/90 transition-all"
+              >
+                <Lock className="size-4" />
+                {isAr ? 'الموافقة وسداد دفعة البدء' : 'Accept & Settle Deposit'}
+              </button>
+            )}
           </div>
         </div>
 
         {/* SLA Terms */}
-        <div className="mt-6 rounded-xl border border-helix-border bg-helix-surface p-4 text-xs">
-          <span className="font-bold text-helix-ink flex items-center gap-1.5 mb-2">
-            <ShieldCheck className="size-4 text-emerald-400" />
+        <div className="mt-6 rounded-xl border border-border bg-panel p-4 text-xs">
+          <span className="font-bold text-foreground flex items-center gap-1.5 mb-2">
+            <ShieldCheck className="size-4 text-accent" />
             {isAr ? 'ضمانات مستوى الخدمة والخصوصية (SLA):' : 'Enterprise Service Level Agreement (SLA):'}
           </span>
-          <ul className="space-y-1.5 text-helix-muted">
+          <ul className="space-y-1.5 text-muted-foreground">
             {(isAr ? proposal.slaTermsAr : proposal.slaTerms).map((term, i) => (
               <li key={i} className="flex items-start gap-2">
-                <CheckCircle2 className="size-3.5 text-helix-accent shrink-0 mt-0.5" />
+                <CheckCircle2 className="size-3.5 text-accent shrink-0 mt-0.5" />
                 <span>{term}</span>
               </li>
             ))}

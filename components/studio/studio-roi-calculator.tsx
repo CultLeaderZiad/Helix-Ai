@@ -6,7 +6,6 @@ import {
   TrendingUp,
   Clock,
   Send,
-  Sparkles,
   ShieldCheck,
   CheckCircle2,
   Receipt,
@@ -151,11 +150,11 @@ export function StudioRoiCalculator({
         <div>
           <div className="flex items-center justify-between border-b border-helix-border pb-3 mb-5">
             <span className="text-xs font-bold uppercase tracking-wider text-helix-ink flex items-center gap-2">
-              <Sparkles className="size-4 text-helix-accent" />
-              {isAr ? 'الأثر الاقتصادي المتوقع' : 'Estimated Business Value'}
+              <TrendingUp className="size-4 text-helix-accent" />
+              {isAr ? 'الأثر الاقتصادي التقديري' : 'Estimated Volume Modeling'}
             </span>
-            <span className="rounded-full bg-emerald-500/20 text-emerald-300 px-2.5 py-0.5 text-xs font-mono font-bold">
-              {roiMultiplier}x ROI
+            <span className="rounded-full bg-panel border border-border text-muted-foreground px-2.5 py-0.5 text-xs font-mono font-medium">
+              {isAr ? 'نموذج تقديري' : 'Projection Model'}
             </span>
           </div>
 

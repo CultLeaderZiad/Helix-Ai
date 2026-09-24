@@ -4,7 +4,6 @@ import { useState } from 'react'
 import {
   ShieldAlert,
   Sliders,
-  Sparkles,
   CheckCircle2,
   Lock,
   Globe,
@@ -50,26 +49,26 @@ Mandatory Rules:
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
       {/* Left Column: Directives & Prompt Window (7 cols) */}
       <div className="lg:col-span-7 space-y-4">
-        <div className="rounded-2xl border border-helix-border bg-[#090e1a] p-5 shadow-xl space-y-3">
-          <div className="flex items-center justify-between border-b border-helix-border/80 pb-3">
+        <div className="rounded-xl border border-border bg-panel p-5 space-y-3">
+          <div className="flex items-center justify-between border-b border-border pb-3">
             <div className="flex items-center gap-2">
-              <FileCode className="size-4 text-purple-400" />
-              <span className="text-xs font-bold uppercase tracking-wider text-helix-ink">
+              <FileCode className="size-4 text-accent" />
+              <span className="text-xs font-bold uppercase tracking-wider text-foreground">
                 {isAr ? 'موجهات وتعليمات النظام الذكي (System Directives)' : 'System Prompt Directives'}
               </span>
             </div>
-            <span className="rounded-full bg-purple-500/20 text-purple-300 px-2 py-0.5 text-[10px] font-mono">
+            <span className="rounded-full border border-border bg-raised text-muted-foreground px-2 py-0.5 text-[10px] font-mono">
               Deterministic RLS Guard
             </span>
           </div>
 
-          <div className="rounded-xl border border-helix-border bg-[#060a14] p-4 font-mono text-xs text-helix-ink/80 leading-relaxed whitespace-pre-line shadow-inner max-h-[280px] overflow-y-auto">
+          <div className="rounded-xl border border-border bg-raised p-4 font-mono text-xs text-foreground leading-relaxed whitespace-pre-line max-h-[280px] overflow-y-auto">
             {promptSnippet}
           </div>
 
-          <div className="flex items-center justify-between text-[11px] text-helix-muted font-mono pt-1">
+          <div className="flex items-center justify-between text-[11px] text-muted-foreground font-mono pt-1">
             <span>Estimated Token Size: ~240 Tokens</span>
-            <span className="text-emerald-400 flex items-center gap-1">
+            <span className="text-accent flex items-center gap-1 font-medium">
               <CheckCircle2 className="size-3" />
               Syntax &amp; Guardrails Verified
             </span>
@@ -80,9 +79,9 @@ Mandatory Rules:
       {/* Right Column: Guardrails & Regional Dialect Tuning (5 cols) */}
       <div className="lg:col-span-5 space-y-4">
         {/* Dialect Engine */}
-        <div className="rounded-2xl border border-helix-border bg-helix-surface p-4 space-y-3">
-          <div className="flex items-center gap-2 text-xs font-bold text-helix-ink uppercase tracking-wider">
-            <Globe className="size-4 text-helix-accent" />
+        <div className="rounded-xl border border-border bg-panel p-4 space-y-3">
+          <div className="flex items-center gap-2 text-xs font-bold text-foreground uppercase tracking-wider">
+            <Globe className="size-4 text-accent" />
             <span>{isAr ? 'محرك اللهجات الإقليمية' : 'Regional Dialect Engine'}</span>
           </div>
           <div className="grid grid-cols-2 gap-2 text-xs">
@@ -92,12 +91,12 @@ Mandatory Rules:
               className={cn(
                 'rounded-xl border p-2.5 text-left transition-colors',
                 dialect === 'gulf'
-                  ? 'border-helix-ink bg-helix-accent-soft text-helix-ink font-semibold'
-                  : 'border-helix-border bg-helix-canvas text-helix-muted hover:text-helix-ink'
+                  ? 'border-accent bg-accent/10 text-foreground font-semibold'
+                  : 'border-border bg-raised text-muted-foreground hover:text-foreground'
               )}
             >
               <div className="text-[11px] font-semibold">{isAr ? 'اللهجة الخليجية' : 'Gulf Arabic'}</div>
-              <div className="text-[9px] text-helix-muted">UAE, KSA, Qatar</div>
+              <div className="text-[9px] text-muted-foreground">UAE, KSA, Qatar</div>
             </button>
 
             <button
@@ -106,12 +105,12 @@ Mandatory Rules:
               className={cn(
                 'rounded-xl border p-2.5 text-left transition-colors',
                 dialect === 'egyptian'
-                  ? 'border-helix-ink bg-helix-accent-soft text-helix-ink font-semibold'
-                  : 'border-helix-border bg-helix-canvas text-helix-muted hover:text-helix-ink'
+                  ? 'border-accent bg-accent/10 text-foreground font-semibold'
+                  : 'border-border bg-raised text-muted-foreground hover:text-foreground'
               )}
             >
               <div className="text-[11px] font-semibold">{isAr ? 'اللهجة المصرية' : 'Egyptian Arabic'}</div>
-              <div className="text-[9px] text-helix-muted">High-velocity SME</div>
+              <div className="text-[9px] text-muted-foreground">High-velocity SME</div>
             </button>
 
             <button
@@ -120,12 +119,12 @@ Mandatory Rules:
               className={cn(
                 'rounded-xl border p-2.5 text-left transition-colors',
                 dialect === 'white'
-                  ? 'border-helix-ink bg-helix-accent-soft text-helix-ink font-semibold'
-                  : 'border-helix-border bg-helix-canvas text-helix-muted hover:text-helix-ink'
+                  ? 'border-accent bg-accent/10 text-foreground font-semibold'
+                  : 'border-border bg-raised text-muted-foreground hover:text-foreground'
               )}
             >
               <div className="text-[11px] font-semibold">{isAr ? 'العربية البيضاء' : 'Modern Standard'}</div>
-              <div className="text-[9px] text-helix-muted">Pan-Arab Corporate</div>
+              <div className="text-[9px] text-muted-foreground">Pan-Arab Corporate</div>
             </button>
 
             <button
@@ -134,45 +133,45 @@ Mandatory Rules:
               className={cn(
                 'rounded-xl border p-2.5 text-left transition-colors',
                 dialect === 'english'
-                  ? 'border-helix-ink bg-helix-accent-soft text-helix-ink font-semibold'
-                  : 'border-helix-border bg-helix-canvas text-helix-muted hover:text-helix-ink'
+                  ? 'border-accent bg-accent/10 text-foreground font-semibold'
+                  : 'border-border bg-raised text-muted-foreground hover:text-foreground'
               )}
             >
               <div className="text-[11px] font-semibold">Global English</div>
-              <div className="text-[9px] text-helix-muted">Multinational GCC</div>
+              <div className="text-[9px] text-muted-foreground">Multinational GCC</div>
             </button>
           </div>
         </div>
 
         {/* Safety & Human Escalation */}
-        <div className="rounded-2xl border border-helix-border bg-helix-surface p-4 space-y-3">
-          <div className="flex items-center gap-2 text-xs font-bold text-helix-ink uppercase tracking-wider">
-            <ShieldAlert className="size-4 text-emerald-400" />
+        <div className="rounded-xl border border-border bg-panel p-4 space-y-3">
+          <div className="flex items-center gap-2 text-xs font-bold text-foreground uppercase tracking-wider">
+            <ShieldAlert className="size-4 text-accent" />
             <span>{isAr ? 'صمامات الأمان والتحويل البشري' : 'Safety & Escalation Controls'}</span>
           </div>
 
           <div className="space-y-2.5 text-xs">
-            <label className="flex items-center justify-between rounded-xl border border-helix-border bg-helix-canvas p-2.5 cursor-pointer">
-              <span className="text-helix-ink/80 text-[11px]">
+            <label className="flex items-center justify-between rounded-xl border border-border bg-raised p-2.5 cursor-pointer">
+              <span className="text-foreground text-[11px]">
                 {isAr ? 'تحويل فوري للمشرف عند رصد استياء' : 'Escalate on Negative Sentiment'}
               </span>
               <input
                 type="checkbox"
                 checked={escalateOnDispute}
                 onChange={(e) => setEscalateOnDispute(e.target.checked)}
-                className="size-4 accent-helix-accent"
+                className="size-4 accent-accent"
               />
             </label>
 
-            <label className="flex items-center justify-between rounded-xl border border-helix-border bg-helix-canvas p-2.5 cursor-pointer">
-              <span className="text-helix-ink/80 text-[11px]">
+            <label className="flex items-center justify-between rounded-xl border border-border bg-raised p-2.5 cursor-pointer">
+              <span className="text-foreground text-[11px]">
                 {isAr ? 'إرسال خريطة الموقع الجغرافي تلقائياً' : 'Auto-Dispatch WhatsApp GPS Location'}
               </span>
               <input
                 type="checkbox"
                 checked={autoShareLocation}
                 onChange={(e) => setAutoShareLocation(e.target.checked)}
-                className="size-4 accent-helix-accent"
+                className="size-4 accent-accent"
               />
             </label>
           </div>

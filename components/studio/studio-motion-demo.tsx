@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence, useInView, useReducedMotion } from 'framer-motion'
 import {
-  Sparkles,
   Play,
   Pause,
   RotateCcw,
@@ -200,32 +199,29 @@ export function StudioMotionDemo({
     <div
       ref={containerRef}
       className={cn(
-        'relative w-full rounded-2xl border border-purple-500/25 bg-[#090D16]/95 text-slate-100 shadow-[0_0_60px_-15px_rgba(168,85,247,0.25)] backdrop-blur-xl overflow-hidden',
+        'relative w-full rounded-xl border border-border bg-panel text-foreground overflow-hidden',
         variant === 'standalone' ? 'mx-auto max-w-4xl' : 'max-w-full'
       )}
     >
-      {/* Top Ambient Glow Gradient (Matches User Reference Image) */}
-      <div className="pointer-events-none absolute -top-24 inset-x-0 h-48 bg-gradient-to-b from-purple-600/25 via-indigo-500/10 to-transparent blur-2xl" />
-
       {/* Frame Topbar: macOS dots + honest mode pill + timeline controls */}
-      <div className="relative z-10 flex flex-wrap items-center justify-between border-b border-purple-500/20 bg-[#0c1220]/80 px-4 py-3 backdrop-blur-md">
+      <div className="relative z-10 flex flex-wrap items-center justify-between border-b border-border bg-raised px-4 py-3">
         <div className="flex items-center gap-3">
           {/* macOS window dots */}
           <div className="flex items-center gap-1.5">
-            <span className="size-2.5 rounded-full bg-rose-500/80" />
-            <span className="size-2.5 rounded-full bg-amber-500/80" />
-            <span className="size-2.5 rounded-full bg-emerald-500/80" />
+            <span className="size-2.5 rounded-full bg-border" />
+            <span className="size-2.5 rounded-full bg-border" />
+            <span className="size-2.5 rounded-full bg-border" />
           </div>
 
-          <div className="h-4 w-px bg-slate-800 hidden sm:block" />
+          <div className="h-4 w-px bg-border hidden sm:block" />
 
           {/* Honest Demo Mode Indicator */}
-          <div className="flex items-center gap-1.5 rounded-full border border-purple-500/30 bg-purple-500/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-purple-300">
-            <Sparkles className="size-3 text-purple-400" />
+          <div className="flex items-center gap-1.5 rounded-full border border-border bg-panel px-2.5 py-0.5 text-[10px] font-mono font-semibold uppercase tracking-wider text-accent">
+            <Activity className="size-3 text-accent" />
             <span>Choreographed Studio Demo</span>
           </div>
 
-          <span className="hidden md:inline text-[11px] text-helix-muted font-mono">
+          <span className="hidden md:inline text-[11px] text-muted-foreground font-mono">
             // Scripted Architecture Walkthrough
           </span>
         </div>
@@ -233,17 +229,17 @@ export function StudioMotionDemo({
         {/* Timeline Interaction Toolbar */}
         <div className="flex items-center gap-2 text-xs">
           {/* Step indicator pills */}
-          <div className="hidden sm:flex items-center gap-1 bg-slate-900/80 rounded-lg p-1 border border-helix-border">
+          <div className="hidden sm:flex items-center gap-1 bg-panel rounded-lg p-1 border border-border">
             {STEP_METADATA.map((item) => (
               <button
                 key={item.step}
                 type="button"
                 onClick={() => jumpToStep(item.step as TimelineStep)}
                 className={cn(
-                  'px-2 py-0.5 text-[10px] rounded transition-colors',
+                  'px-2 py-0.5 text-[10px] font-mono rounded transition-colors',
                   currentStep === item.step
-                    ? 'bg-purple-600 text-helix-ink font-medium shadow-xs'
-                    : 'text-helix-muted hover:text-helix-ink'
+                    ? 'bg-accent text-accent-foreground font-medium'
+                    : 'text-muted-foreground hover:text-foreground'
                 )}
               >
                 {item.label}
@@ -255,7 +251,7 @@ export function StudioMotionDemo({
           <button
             type="button"
             onClick={togglePlay}
-            className="flex size-7 items-center justify-center rounded-lg border border-helix-border bg-slate-900/80 text-helix-ink/80 hover:bg-slate-800 hover:text-helix-ink transition-colors"
+            className="flex size-7 items-center justify-center rounded-lg border border-border bg-panel text-muted-foreground hover:bg-raised hover:text-foreground transition-colors"
             title={isPlaying ? 'Pause Demo' : 'Play Demo'}
             aria-label={isPlaying ? 'Pause Demo' : 'Play Demo'}
           >
@@ -269,7 +265,7 @@ export function StudioMotionDemo({
               resetTimeline()
               setIsPlaying(true)
             }}
-            className="flex size-7 items-center justify-center rounded-lg border border-helix-border bg-slate-900/80 text-helix-ink/80 hover:bg-slate-800 hover:text-helix-ink transition-colors"
+            className="flex size-7 items-center justify-center rounded-lg border border-border bg-panel text-muted-foreground hover:bg-raised hover:text-foreground transition-colors"
             title="Replay sequence"
             aria-label="Replay sequence"
           >
@@ -280,7 +276,7 @@ export function StudioMotionDemo({
           <button
             type="button"
             onClick={() => jumpToStep(4)}
-            className="flex size-7 items-center justify-center rounded-lg border border-purple-500/30 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20 transition-colors"
+            className="flex size-7 items-center justify-center rounded-lg border border-border bg-panel text-muted-foreground hover:bg-raised hover:text-foreground transition-colors"
             title="Skip to final preview"
             aria-label="Skip to final preview"
           >
@@ -306,22 +302,22 @@ export function StudioMotionDemo({
             mass: 0.8,
           }}
         >
-          {/* Custom SVG Modern Neon Cursor */}
+          {/* Custom SVG Modern Accent Cursor */}
           <svg
-            className="size-5 drop-shadow-[0_2px_10px_rgba(168,85,247,0.8)] filter"
+            className="size-5"
             viewBox="0 0 24 24"
             fill="none"
           >
             <path
               d="M3 3L10.07 19.97L12.58 12.58L19.97 10.07L3 3Z"
-              fill="#c084fc"
-              stroke="#ffffff"
+              fill="var(--accent)"
+              stroke="var(--foreground)"
               strokeWidth="1.5"
               strokeLinejoin="round"
             />
           </svg>
           {/* Cursor trailing label pill */}
-          <span className="ml-1.5 mt-2 rounded bg-purple-950/90 border border-purple-500/40 px-1.5 py-0.5 text-[9px] font-mono text-purple-200 shadow-md">
+          <span className="ml-1.5 mt-2 rounded border border-border bg-raised px-1.5 py-0.5 text-[9px] font-mono text-muted-foreground shadow-sm">
             Prospect Demo
           </span>
         </motion.div>
@@ -330,33 +326,33 @@ export function StudioMotionDemo({
         <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
           {/* Left Column: Simulated Configuration Inputs (40% width) */}
           <div className="md:col-span-5 space-y-3.5">
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-helix-muted">
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
               1. Prospect Business Details
             </div>
 
             {/* Input 1: Business Name with Character Typing */}
             <div
               className={cn(
-                'rounded-xl border p-3 transition-all duration-300 bg-helix-canvas',
+                'rounded-xl border p-3 transition-all duration-300 bg-raised',
                 currentStep === 1
-                  ? 'border-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.3)] ring-1 ring-purple-500/50'
-                  : 'border-helix-border'
+                  ? 'border-accent ring-1 ring-accent/30'
+                  : 'border-border'
               )}
             >
-              <label className="block text-[10px] uppercase font-medium text-helix-muted mb-1">
+              <label className="block text-[10px] uppercase font-medium text-muted-foreground mb-1">
                 Business / Clinic Name
               </label>
-              <div className="flex items-center h-8 font-mono text-xs text-helix-ink">
+              <div className="flex items-center h-8 font-mono text-xs text-foreground">
                 <span>{typedText || (currentStep === 0 ? 'Clicking input...' : '')}</span>
                 {currentStep === 1 && (
-                  <span className="inline-block w-1.5 h-4 ml-1 bg-purple-400 animate-pulse" />
+                  <span className="inline-block w-1.5 h-4 ml-1 bg-accent animate-pulse" />
                 )}
               </div>
             </div>
 
             {/* Selector: System Architecture Option */}
             <div className="space-y-2">
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-helix-muted">
+              <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                 2. System Architecture
               </div>
 
@@ -365,49 +361,49 @@ export function StudioMotionDemo({
                 className={cn(
                   'rounded-xl border p-3 transition-all duration-300 text-xs flex items-center justify-between cursor-pointer',
                   currentStep >= 2
-                    ? 'border-helix-ink bg-helix-accent-soft'
-                    : 'border-helix-border bg-helix-canvas opacity-80'
+                    ? 'border-accent bg-accent/5'
+                    : 'border-border bg-raised opacity-80'
                 )}
               >
                 <div className="flex items-center gap-2.5">
                   <div
                     className={cn(
                       'flex size-7 items-center justify-center rounded-lg text-xs',
-                      currentStep >= 2 ? 'bg-helix-accent-soft text-helix-accent' : 'bg-slate-800 text-helix-muted'
+                      currentStep >= 2 ? 'bg-accent/15 text-accent' : 'bg-panel text-muted-foreground'
                     )}
                   >
                     <PhoneCall className="size-3.5" />
                   </div>
                   <div>
-                    <p className="font-semibold text-helix-ink text-[11px]">Booking Receptionist</p>
-                    <p className="text-[10px] text-helix-muted">Voice AI + WhatsApp Delivery</p>
+                    <p className="font-semibold text-foreground text-[11px]">Booking Receptionist</p>
+                    <p className="text-[10px] text-muted-foreground">Voice AI + WhatsApp Delivery</p>
                   </div>
                 </div>
                 {currentStep >= 2 ? (
-                  <CheckCircle2 className="size-4 text-helix-accent" />
+                  <CheckCircle2 className="size-4 text-accent" />
                 ) : (
-                  <span className="size-2 rounded-full bg-slate-700" />
+                  <span className="size-2 rounded-full bg-border" />
                 )}
               </div>
 
               {/* Option B: WhatsApp Lead Triage (Secondary) */}
-              <div className="rounded-xl border border-helix-border/80 bg-helix-canvas/60 p-3 text-xs flex items-center justify-between opacity-60">
+              <div className="rounded-xl border border-border bg-raised/60 p-3 text-xs flex items-center justify-between opacity-60">
                 <div className="flex items-center gap-2.5">
-                  <div className="flex size-7 items-center justify-center rounded-lg bg-slate-800 text-helix-muted">
+                  <div className="flex size-7 items-center justify-center rounded-lg bg-panel text-muted-foreground">
                     <MessageSquare className="size-3.5" />
                   </div>
                   <div>
-                    <p className="font-semibold text-helix-ink/80 text-[11px]">Missed-Call Triage</p>
-                    <p className="text-[10px] text-helix-muted">5-Second Auto Dispatch</p>
+                    <p className="font-semibold text-foreground/80 text-[11px]">Missed-Call Triage</p>
+                    <p className="text-[10px] text-muted-foreground">5-Second Auto Dispatch</p>
                   </div>
                 </div>
-                <span className="size-2 rounded-full bg-slate-800" />
+                <span className="size-2 rounded-full bg-border" />
               </div>
             </div>
 
             {/* Regional Currency / WhatsApp API Notice */}
-            <div className="rounded-lg border border-helix-border bg-helix-surface p-2.5 text-[10px] text-helix-muted flex items-center gap-2">
-              <ShieldCheck className="size-3.5 text-emerald-400 shrink-0" />
+            <div className="rounded-lg border border-border bg-raised p-2.5 text-[10px] text-muted-foreground flex items-center gap-2">
+              <ShieldCheck className="size-3.5 text-accent shrink-0" />
               <span>GCC Enterprise Ready • Official WhatsApp Business Cloud API</span>
             </div>
           </div>
@@ -422,13 +418,13 @@ export function StudioMotionDemo({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="rounded-xl border border-dashed border-helix-border bg-helix-canvas/50 p-8 text-center flex flex-col items-center justify-center min-h-[290px]"
+                  className="rounded-xl border border-dashed border-border bg-raised/50 p-8 text-center flex flex-col items-center justify-center min-h-[290px]"
                 >
-                  <div className="size-10 rounded-full bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-300 mb-3">
-                    <Sparkles className="size-5 animate-pulse" />
+                  <div className="size-10 rounded-full bg-panel border border-border flex items-center justify-center text-accent mb-3">
+                    <Activity className="size-5" />
                   </div>
-                  <h4 className="text-sm font-semibold text-helix-ink">Awaiting Profile Selection</h4>
-                  <p className="mt-1 text-xs text-helix-muted max-w-xs">
+                  <h4 className="text-sm font-semibold text-foreground">Awaiting Profile Selection</h4>
+                  <p className="mt-1 text-xs text-muted-foreground max-w-xs">
                     Watch the synthetic cursor select clinic parameters to preview the resulting
                     autonomous booking pipeline.
                   </p>
@@ -443,21 +439,21 @@ export function StudioMotionDemo({
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.96 }}
                   transition={{ duration: 0.25 }}
-                  className="rounded-xl border border-helix-border bg-helix-accent-soft p-8 text-center flex flex-col items-center justify-center min-h-[290px]"
+                  className="rounded-xl border border-border bg-raised p-8 text-center flex flex-col items-center justify-center min-h-[290px]"
                 >
                   <div className="relative size-12 mb-3">
-                    <div className="absolute inset-0 rounded-full border-2 border-helix-accent border-t-transparent animate-spin" />
-                    <div className="absolute inset-0 flex items-center justify-center text-helix-accent">
+                    <div className="absolute inset-0 rounded-full border-2 border-accent border-t-transparent animate-spin" />
+                    <div className="absolute inset-0 flex items-center justify-center text-accent">
                       <Zap className="size-5 animate-pulse" />
                     </div>
                   </div>
-                  <h4 className="text-sm font-semibold text-helix-accent">Calibrating Architecture...</h4>
-                  <p className="mt-1 text-xs text-helix-ink/80 font-mono">
+                  <h4 className="text-sm font-semibold text-accent">Calibrating Architecture...</h4>
+                  <p className="mt-1 text-xs text-muted-foreground font-mono">
                     Routing Retell Voice Engine // Meta WhatsApp Gateway
                   </p>
-                  <div className="mt-4 w-44 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                  <div className="mt-4 w-44 h-1.5 bg-panel rounded-full overflow-hidden border border-border">
                     <motion.div
-                      className="h-full bg-helix-ink"
+                      className="h-full bg-accent"
                       initial={{ width: '0%' }}
                       animate={{ width: '100%' }}
                       transition={{ duration: 0.9, ease: 'easeInOut' }}
@@ -476,44 +472,44 @@ export function StudioMotionDemo({
                   className="space-y-3"
                 >
                   {/* System Header Bar */}
-                  <div className="flex items-center justify-between rounded-xl border border-emerald-500/30 bg-[#0a1815] p-3">
+                  <div className="flex items-center justify-between rounded-xl border border-border bg-raised p-3">
                     <div>
-                      <span className="text-[9px] font-mono uppercase tracking-widest text-emerald-400">
+                      <span className="text-[9px] font-mono uppercase tracking-widest text-accent font-semibold">
                         SYSTEM GENERATED • 24/7 AUTONOMOUS RECEPTIONIST
                       </span>
-                      <h4 className="text-xs font-bold text-helix-ink">
+                      <h4 className="text-xs font-bold text-foreground">
                         {typedText || DEMO_BUSINESS_NAME}
                       </h4>
                     </div>
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-mono text-emerald-300">
-                      <span className="size-1.5 rounded-full bg-emerald-400 animate-ping" />
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-panel px-2 py-0.5 text-[10px] font-mono text-muted-foreground">
+                      <span className="size-1.5 rounded-full bg-accent" />
                       ONLINE
                     </span>
                   </div>
 
                   {/* WhatsApp Delivery Simulation Card */}
-                  <div className="rounded-xl border border-emerald-500/25 bg-[#0b1c18] p-3.5 text-xs">
-                    <div className="flex items-center justify-between border-b border-emerald-500/20 pb-2 mb-2">
-                      <div className="flex items-center gap-2 text-emerald-400 font-medium">
+                  <div className="rounded-xl border border-border bg-panel p-3.5 text-xs">
+                    <div className="flex items-center justify-between border-b border-border pb-2 mb-2">
+                      <div className="flex items-center gap-2 text-accent font-medium">
                         <MessageSquare className="size-3.5" />
                         <span>Instant WhatsApp Itinerary Delivery</span>
                       </div>
-                      <span className="text-[9px] font-mono text-emerald-400/80">✓✓ Delivered 14:32</span>
+                      <span className="text-[9px] font-mono text-muted-foreground">✓✓ Delivered 14:32</span>
                     </div>
 
-                    <div className="space-y-1.5 text-helix-ink text-[11px]">
-                      <p className="font-semibold text-helix-ink">
+                    <div className="space-y-1.5 text-foreground text-[11px]">
+                      <p className="font-semibold text-foreground">
                         Welcome to {typedText || DEMO_BUSINESS_NAME}!
                       </p>
-                      <p className="text-helix-ink/80 leading-snug">
+                      <p className="text-muted-foreground leading-snug">
                         Your dental consultation has been confirmed for Thursday at 3:00 PM with Dr.
                         Tariq.
                       </p>
                       <div className="flex flex-wrap items-center gap-2 pt-1.5">
-                        <span className="inline-flex items-center gap-1 rounded bg-emerald-500/20 px-2 py-0.5 text-[10px] font-medium text-emerald-300">
+                        <span className="inline-flex items-center gap-1 rounded border border-border bg-raised px-2 py-0.5 text-[10px] font-medium text-foreground">
                           <Calendar className="size-2.5" /> Add to Calendar
                         </span>
-                        <span className="inline-flex items-center gap-1 rounded bg-helix-accent-soft px-2 py-0.5 text-[10px] font-medium text-helix-accent">
+                        <span className="inline-flex items-center gap-1 rounded border border-border bg-raised px-2 py-0.5 text-[10px] font-medium text-accent">
                           <MapPin className="size-2.5" /> Abu Dhabi Clinic Map
                         </span>
                       </div>
@@ -521,15 +517,15 @@ export function StudioMotionDemo({
                   </div>
 
                   {/* Voice Telemetry Audio Snippet */}
-                  <div className="rounded-xl border border-helix-border bg-helix-canvas p-3 text-xs">
-                    <div className="flex items-center justify-between text-helix-muted pb-1.5 border-b border-helix-border/60">
-                      <span className="font-semibold text-helix-ink flex items-center gap-1.5 text-[11px]">
-                        <PhoneCall className="size-3 text-helix-accent" />
+                  <div className="rounded-xl border border-border bg-raised p-3 text-xs">
+                    <div className="flex items-center justify-between text-muted-foreground pb-1.5 border-b border-border">
+                      <span className="font-semibold text-foreground flex items-center gap-1.5 text-[11px]">
+                        <PhoneCall className="size-3 text-accent" />
                         Inbound Voice Telemetry
                       </span>
-                      <span className="text-[10px] font-mono text-helix-muted">Duration: 1m 18s • Retell Voice AI</span>
+                      <span className="text-[10px] font-mono text-muted-foreground">Duration: 1m 18s • Retell Voice AI</span>
                     </div>
-                    <p className="mt-2 text-[10.5px] text-helix-ink/80 italic leading-relaxed">
+                    <p className="mt-2 text-[10.5px] text-muted-foreground italic leading-relaxed">
                       &ldquo;Agent: Thank you for calling {typedText || 'Apex'}. I have confirmed Thursday at 3:00 PM. Your direct itinerary and location pin have been dispatched to your WhatsApp.&rdquo;
                     </p>
                   </div>
@@ -541,9 +537,9 @@ export function StudioMotionDemo({
       </div>
 
       {/* Honest Footer Caption & Action Callout */}
-      <div className="border-t border-purple-500/20 bg-[#070b14] px-5 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-        <div className="text-helix-muted text-[11px] max-w-xl leading-relaxed text-center sm:text-left">
-          <span className="text-purple-300 font-semibold">Honest Architecture Notice:</span> This
+      <div className="border-t border-border bg-panel px-5 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+        <div className="text-muted-foreground text-[11px] max-w-xl leading-relaxed text-center sm:text-left">
+          <span className="text-foreground font-semibold">Honest Architecture Notice:</span> This
           scripted timeline demonstrates how Helix AI standardizes pre-tested, deterministic agent
           workflows. Real prospects configure customized parameters inside the interactive Studio
           sandbox.
@@ -553,14 +549,14 @@ export function StudioMotionDemo({
           <button
             type="button"
             onClick={onCloseOrSkip}
-            className="shrink-0 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 px-3.5 py-1.5 text-xs font-medium text-helix-ink shadow-md hover:from-purple-500 hover:to-indigo-500 transition-all"
+            className="shrink-0 rounded-lg bg-accent text-accent-foreground px-3.5 py-1.5 text-xs font-medium hover:bg-accent/90 transition-all"
           >
             Configure Your Real System &rarr;
           </button>
         ) : (
           <a
             href="/dashboard/studio"
-            className="shrink-0 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 px-3.5 py-1.5 text-xs font-medium text-helix-ink shadow-md hover:from-purple-500 hover:to-indigo-500 transition-all"
+            className="shrink-0 rounded-lg bg-accent text-accent-foreground px-3.5 py-1.5 text-xs font-medium hover:bg-accent/90 transition-all"
           >
             Open Interactive Studio &rarr;
           </a>

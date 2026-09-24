@@ -5,7 +5,6 @@ import {
   MessageSquare,
   PhoneCall,
   Send,
-  Sparkles,
   Bot,
   User,
   Calendar,
@@ -135,22 +134,22 @@ export function StudioInteractiveSimulator({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
       {/* Interactive Chat Canvas (7 cols) */}
-      <div className="lg:col-span-7 flex flex-col rounded-2xl border border-helix-border bg-[#090e1a] shadow-xl overflow-hidden min-h-[460px]">
+      <div className="lg:col-span-7 flex flex-col rounded-xl border border-border bg-panel shadow-sm overflow-hidden min-h-[460px]">
         {/* Simulator Bar */}
-        <div className="flex items-center justify-between border-b border-helix-border/80 bg-helix-canvas px-4 py-3">
+        <div className="flex items-center justify-between border-b border-border bg-raised px-4 py-3">
           <div className="flex items-center gap-2.5">
-            <div className="flex size-7 items-center justify-center rounded-lg bg-helix-accent-soft text-helix-accent">
+            <div className="flex size-7 items-center justify-center rounded-lg bg-accent/10 text-accent">
               <Bot className="size-4" />
             </div>
             <div>
-              <h4 className="text-xs font-bold text-helix-ink flex items-center gap-2">
+              <h4 className="text-xs font-bold text-foreground flex items-center gap-2">
                 <span>{brandName} AI Simulator</span>
-                <span className="inline-flex items-center gap-1 text-[9px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.2 rounded">
-                  <span className="size-1 rounded-full bg-emerald-400 animate-ping" />
+                <span className="inline-flex items-center gap-1 text-[9px] font-mono text-muted-foreground border border-border bg-panel px-1.5 py-0.5 rounded">
+                  <span className="size-1 rounded-full bg-accent" />
                   ONLINE
                 </span>
               </h4>
-              <p className="text-[10px] text-helix-muted">
+              <p className="text-[10px] text-muted-foreground">
                 Official WhatsApp Business Cloud API &amp; Voice Telemetry
               </p>
             </div>
@@ -159,7 +158,7 @@ export function StudioInteractiveSimulator({
           <button
             type="button"
             onClick={resetChat}
-            className="flex items-center gap-1 rounded-lg border border-helix-border bg-helix-canvas px-2 py-1 text-[11px] text-helix-muted hover:text-helix-ink transition-colors"
+            className="flex items-center gap-1 rounded-lg border border-border bg-raised px-2 py-1 text-[11px] text-muted-foreground hover:text-foreground transition-colors"
             title="Reset Simulator"
           >
             <RotateCcw className="size-3" />
@@ -168,7 +167,7 @@ export function StudioInteractiveSimulator({
         </div>
 
         {/* Message Thread */}
-        <div className="flex-1 p-4 space-y-3.5 overflow-y-auto max-h-[340px]">
+        <div className="flex-1 p-4 space-y-3.5 overflow-y-auto max-h-[340px] bg-panel">
           {messages.map((m, i) => (
             <div
               key={i}
@@ -179,14 +178,14 @@ export function StudioInteractiveSimulator({
             >
               <div
                 className={cn(
-                  'rounded-2xl p-3.5 text-xs leading-relaxed shadow-md',
+                  'rounded-2xl p-3.5 text-xs leading-relaxed',
                   m.sender === 'user'
-                    ? 'bg-helix-ink text-helix-surface rounded-br-xs'
-                    : 'bg-helix-canvas border border-helix-border text-helix-ink rounded-bl-xs'
+                    ? 'bg-accent text-accent-foreground rounded-br-xs'
+                    : 'bg-raised border border-border text-foreground rounded-bl-xs'
                 )}
               >
-                <div className="flex items-center justify-between gap-3 text-[10px] text-helix-muted mb-1 border-b border-white/10 pb-1">
-                  <span className="font-semibold text-helix-ink/80">
+                <div className="flex items-center justify-between gap-3 text-[10px] text-muted-foreground mb-1 border-b border-border/40 pb-1">
+                  <span className="font-semibold text-foreground/80">
                     {m.sender === 'user' ? (isAr ? 'العميل' : 'Customer') : brandName}
                   </span>
                   <span className="font-mono text-[9px]">{m.time} ✓✓</span>
@@ -195,16 +194,16 @@ export function StudioInteractiveSimulator({
 
                 {/* Ground Truth Facts Extracted */}
                 {m.verifiedFacts && m.verifiedFacts.length > 0 && (
-                  <div className="mt-2.5 pt-2 border-t border-helix-border/60 space-y-1">
-                    <span className="text-[9px] font-mono uppercase tracking-wider text-emerald-400 font-semibold flex items-center gap-1">
-                      <ShieldCheck className="size-3 text-emerald-400" />
+                  <div className="mt-2.5 pt-2 border-t border-border/60 space-y-1">
+                    <span className="text-[9px] font-mono uppercase tracking-wider text-accent font-semibold flex items-center gap-1">
+                      <ShieldCheck className="size-3 text-accent" />
                       {isAr ? 'حقائق مستخلصة ومحققة في سجل العمليات' : 'Verified Evidence Extracted:'}
                     </span>
                     <div className="flex flex-wrap gap-1.5">
                       {m.verifiedFacts.map((fact, fIdx) => (
                         <span
                           key={fIdx}
-                          className="rounded bg-emerald-950/60 border border-emerald-500/30 px-1.5 py-0.5 text-[9px] font-mono text-emerald-300"
+                          className="rounded bg-panel border border-border px-1.5 py-0.5 text-[9px] font-mono text-foreground"
                         >
                           {fact}
                         </span>
@@ -217,11 +216,11 @@ export function StudioInteractiveSimulator({
           ))}
 
           {isProcessing && (
-            <div className="mr-auto flex items-center gap-2 rounded-xl bg-helix-canvas border border-helix-border px-3 py-2 text-xs text-helix-muted">
-              <span className="size-1.5 rounded-full bg-helix-accent animate-pulse" />
-              <span className="size-1.5 rounded-full bg-helix-accent animate-pulse delay-100" />
-              <span className="size-1.5 rounded-full bg-helix-accent animate-pulse delay-200" />
-              <span className="font-mono text-[10px] text-helix-accent ml-1">
+            <div className="mr-auto flex items-center gap-2 rounded-xl bg-raised border border-border px-3 py-2 text-xs text-muted-foreground">
+              <span className="size-1.5 rounded-full bg-accent animate-pulse" />
+              <span className="size-1.5 rounded-full bg-accent animate-pulse delay-100" />
+              <span className="size-1.5 rounded-full bg-accent animate-pulse delay-200" />
+              <span className="font-mono text-[10px] text-accent ml-1">
                 Reasoning &amp; Fact-Checking...
               </span>
             </div>
@@ -229,7 +228,7 @@ export function StudioInteractiveSimulator({
         </div>
 
         {/* Input Bar */}
-        <div className="border-t border-helix-border/80 bg-helix-canvas p-3 flex items-center gap-2">
+        <div className="border-t border-border bg-raised p-3 flex items-center gap-2">
           <input
             type="text"
             value={inputMessage}
@@ -240,13 +239,13 @@ export function StudioInteractiveSimulator({
                 ? 'اكتب رسالة تجريبية لاختبار رد واستجابة الوكيل الذكي...'
                 : 'Type a message to simulate live agent response...'
             }
-            className="flex-1 rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs text-helix-ink placeholder:text-helix-muted focus:border-helix-ink focus:outline-hidden"
+            className="flex-1 rounded-xl border border-border bg-panel px-3.5 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:border-accent focus:outline-hidden"
           />
           <button
             type="button"
             onClick={() => handleSend()}
             disabled={isProcessing || !inputMessage.trim()}
-            className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-helix-ink text-white hover:bg-helix-ink/90 disabled:opacity-50 transition-colors shadow-sm"
+            className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-accent text-accent-foreground hover:bg-accent/90 disabled:opacity-50 transition-colors shadow-sm"
           >
             <Send className="size-3.5" />
           </button>
@@ -256,12 +255,12 @@ export function StudioInteractiveSimulator({
       {/* Simulator Control & Telemetry Panel (5 cols) */}
       <div className="lg:col-span-5 space-y-4">
         {/* Preset Inquiries */}
-        <div className="rounded-2xl border border-helix-border bg-helix-surface p-4 space-y-3">
-          <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-helix-ink/80">
-            <Sparkles className="size-3.5 text-helix-accent" />
+        <div className="rounded-xl border border-border bg-panel p-4 space-y-3">
+          <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-foreground">
+            <Zap className="size-3.5 text-accent" />
             <span>{isAr ? 'سيناريوهات اختبار سريعة' : 'Quick Scenario Presets'}</span>
           </div>
-          <p className="text-[11px] text-helix-muted">
+          <p className="text-[11px] text-muted-foreground">
             {isAr
               ? 'اضغط لاختبار استجابة النظام الفورية مع مختلف حالات العملاء.'
               : 'Click a scenario to run the demo script:'}
@@ -275,32 +274,32 @@ export function StudioInteractiveSimulator({
                   setActivePreset(idx)
                   handleSend(p.text)
                 }}
-                className="w-full text-left rounded-xl border border-helix-border bg-helix-canvas p-2.5 text-xs hover:border-helix-ink/20 hover:bg-helix-surface transition-colors"
+                className="w-full text-left rounded-xl border border-border bg-raised p-2.5 text-xs hover:border-accent/40 hover:bg-panel transition-colors"
               >
-                <div className="font-semibold text-helix-ink text-[11px] flex items-center justify-between">
+                <div className="font-semibold text-foreground text-[11px] flex items-center justify-between">
                   <span>{p.label}</span>
-                  <Zap className="size-3 text-helix-accent" />
+                  <Zap className="size-3 text-accent" />
                 </div>
-                <p className="text-[10px] text-helix-muted mt-1 truncate">{p.text}</p>
+                <p className="text-[10px] text-muted-foreground mt-1 truncate">{p.text}</p>
               </button>
             ))}
           </div>
         </div>
 
         {/* Live Audio Telemetry Card */}
-        <div className="rounded-2xl border border-helix-border bg-helix-surface p-4 space-y-3">
-          <div className="flex items-center justify-between border-b border-helix-border pb-2">
-            <span className="flex items-center gap-1.5 text-xs font-semibold text-helix-ink">
-              <Volume2 className="size-3.5 text-emerald-400" />
+        <div className="rounded-xl border border-border bg-panel p-4 space-y-3">
+          <div className="flex items-center justify-between border-b border-border pb-2">
+            <span className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
+              <Volume2 className="size-3.5 text-accent" />
               <span>{isAr ? 'محاكاة المكالمة الصوتية' : 'Voice Telemetry Simulation'}</span>
             </span>
-            <span className="rounded-full bg-emerald-500/20 text-emerald-300 px-2 py-0.5 text-[9px] font-mono">
+            <span className="rounded-full border border-border bg-raised text-muted-foreground px-2 py-0.5 text-[9px] font-mono">
               Deepgram Nova-2
             </span>
           </div>
 
-          <div className="rounded-xl border border-helix-border/80 bg-helix-canvas p-3 space-y-2 text-xs">
-            <div className="flex items-center justify-between text-[10px] text-helix-muted font-mono">
+          <div className="rounded-xl border border-border bg-raised p-3 space-y-2 text-xs">
+            <div className="flex items-center justify-between text-[10px] text-muted-foreground font-mono">
               <span>{isAr ? 'المتصل: +971 50 892 4102' : 'Caller: +971 50 892 4102'}</span>
               <span>1m 18s • 24kHz HD</span>
             </div>
@@ -310,13 +309,13 @@ export function StudioInteractiveSimulator({
                 (h, idx) => (
                   <span
                     key={idx}
-                    className="flex-1 bg-helix-accent/70 rounded-full"
+                    className="flex-1 bg-accent/60 rounded-full"
                     style={{ height: `${h}%` }}
                   />
                 )
               )}
             </div>
-            <p className="text-[10px] text-helix-ink/80 italic">
+            <p className="text-[10px] text-muted-foreground italic">
               {isAr
                 ? `وكيل ${brandName}: أهلاً بك! تم حجز الموعد وتثبيت بياناتك وسنرسل إشعار الموعد والموقع إلى واتسابك فوراً.`
                 : `Agent: Thank you for contacting ${brandName}. Your reservation is confirmed and direct itinerary has been sent to your WhatsApp.`}

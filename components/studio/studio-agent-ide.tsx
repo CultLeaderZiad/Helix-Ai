@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useTransition } from 'react'
 import {
-  Sparkles,
   Terminal,
   FolderGit2,
   GitBranch,
@@ -319,7 +318,7 @@ export function StudioAgentIde({
                 {brandName.toLowerCase().replace(/\s+/g, '-')}
               </span>
               <span className="flex items-center gap-1 rounded-md border border-helix-border/60 bg-slate-800/40 px-2 py-0.5 text-[11px] text-helix-ink/80">
-                <GitBranch className="size-3 text-purple-400" />
+                <GitBranch className="size-3 text-helix-muted" />
                 <span>production/v4.2</span>
               </span>
             </div>
@@ -373,7 +372,7 @@ export function StudioAgentIde({
               disabled={isPending}
               className="flex items-center gap-1.5 rounded-lg bg-helix-ink px-3 py-1 text-xs font-bold text-helix-surface hover:bg-helix-ink/90 transition-all active:scale-95"
             >
-              <Sparkles className="size-3.5" />
+              <Play className="size-3.5 fill-current" />
               <span>{isPending ? 'Deploying...' : 'Deploy System'}</span>
             </button>
           </div>
@@ -426,7 +425,7 @@ export function StudioAgentIde({
                   type="button"
                   className="flex items-center gap-1.5 rounded-lg border border-helix-border bg-slate-900/40 px-2.5 py-1.5 text-[11px] font-medium text-helix-muted hover:text-helix-ink transition-colors"
                 >
-                  <Cpu className="size-3 text-purple-400" />
+                  <Cpu className="size-3 text-accent" />
                   <span>Skills</span>
                 </button>
               </div>
@@ -581,11 +580,11 @@ export function StudioAgentIde({
                   className={cn(
                     'flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all shrink-0',
                     activeIdeTab === 'drag_drop'
-                      ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow-xs'
+                      ? 'bg-accent/15 text-accent border border-accent/40 shadow-xs'
                       : 'text-helix-muted hover:text-helix-ink'
                   )}
                 >
-                  <Boxes className="size-3.5 text-purple-400" />
+                  <Boxes className="size-3.5 text-accent" />
                   <span>Drag &amp; Drop Machine</span>
                 </button>
 
@@ -767,7 +766,7 @@ export function StudioAgentIde({
                         <ArrowRight className="size-4 text-slate-600 hidden sm:block" />
 
                         <div className="flex items-center gap-2">
-                          <span className="flex size-6 items-center justify-center rounded-lg bg-purple-500/20 text-purple-300 font-bold">
+                          <span className="flex size-6 items-center justify-center rounded-lg bg-accent/15 text-accent font-bold">
                             2
                           </span>
                           <div>
@@ -1095,21 +1094,21 @@ export function StudioAgentIde({
                   <div className="flex flex-wrap items-center justify-between gap-4 border-b border-helix-border/80 pb-4">
                     <div>
                       <h3 className="font-display text-lg font-bold text-helix-ink flex items-center gap-2">
-                        <Boxes className="size-5 text-purple-400" />
+                        <Boxes className="size-5 text-accent" />
                         Preference &amp; Architecture Customization Machine
                       </h3>
                       <p className="text-xs text-helix-muted mt-0.5">
-                        Toggle or re-order customer preferences. The 3D compiler instantly re-tunes models, dialect dictionaries, and CRM bindings.
+                        Toggle or re-order customer preferences. The compiler instantly re-tunes models, dialect dictionaries, and CRM bindings.
                       </p>
                     </div>
 
                     <button
                       type="button"
                       onClick={trigger3DRecompile}
-                      className="flex items-center gap-1.5 rounded-xl border border-purple-500/40 bg-purple-500/20 px-3.5 py-1.5 text-xs font-semibold text-purple-300 hover:bg-purple-500/30 transition-all shadow-sm"
+                      className="flex items-center gap-1.5 rounded-xl border border-accent/40 bg-accent/15 px-3.5 py-1.5 text-xs font-semibold text-accent hover:bg-accent/25 transition-all shadow-sm"
                     >
                       <RotateCcw className="size-3.5" />
-                      <span>Re-Compile System (3D)</span>
+                      <span>Re-Compile System</span>
                     </button>
                   </div>
 
@@ -1179,7 +1178,7 @@ export function StudioAgentIde({
                   <div className="rounded-2xl border border-helix-border bg-[#090e18] p-5 space-y-4">
                     <div className="flex items-center justify-between border-b border-helix-border pb-3">
                       <div className="flex items-center gap-2">
-                        <Sparkles className="size-4 text-helix-accent" />
+                        <Activity className="size-4 text-helix-accent" />
                         <span className="text-xs font-bold text-helix-ink uppercase tracking-wider">
                           Autonomous System Synthesis
                         </span>
@@ -1222,8 +1221,8 @@ export function StudioAgentIde({
                           <span className="text-emerald-400">+471 -0</span>
                         </div>
                         <div className="flex items-center justify-between rounded-lg bg-slate-900/60 px-3 py-2">
-                          <span className="text-purple-300 flex items-center gap-2">
-                            <FileCode className="size-3.5 text-purple-400" />
+                          <span className="text-foreground flex items-center gap-2">
+                            <FileCode className="size-3.5 text-accent" />
                             whatsapp-flow.json
                           </span>
                           <span className="text-emerald-400">+62 -6</span>
@@ -1386,7 +1385,7 @@ export function StudioAgentIde({
               </div>
               <div className="flex justify-between text-helix-muted">
                 <span>Tenancy RLS:</span>
-                <span className="text-purple-400">Enforced</span>
+                <span className="text-accent font-medium">Enforced</span>
               </div>
             </div>
           </aside>

@@ -7,7 +7,6 @@ import {
   Trash2,
   Save,
   RotateCcw,
-  Sparkles,
   ExternalLink,
   CheckCircle2,
   AlertCircle,
@@ -267,7 +266,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
             }}
             className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-all ${
               selectedTier === 'mena_sme'
-                ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-[0_0_15px_rgba(245,158,11,0.35)]'
+                ? 'bg-helix-ink text-helix-surface'
                 : 'text-helix-muted hover:bg-helix-canvas hover:text-helix-ink'
             }`}
           >
@@ -902,7 +901,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
           <div className="w-full max-w-lg rounded-2xl border border-helix-border bg-helix-surface p-6 shadow-2xl space-y-4">
             <h3 className="text-lg font-bold text-helix-ink flex items-center gap-2">
-              <Sparkles className="size-4 text-helix-accent" />
+              <Plus className="size-4 text-helix-accent" />
               Create New Pricing Plan
             </h3>
 

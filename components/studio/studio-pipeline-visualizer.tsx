@@ -47,7 +47,7 @@ export function StudioPipelineVisualizer({
       specs: [
         { label: isAr ? 'بروتوكول البث' : 'Streaming Protocol', value: 'WebSocket Dual-Channel' },
         { label: isAr ? 'العزل' : 'Isolation', value: 'Postgres RLS' },
-        { label: isAr ? 'ضمان التوافر' : 'Uptime SLA', value: '99.99% Dedicated Gateway' },
+        { label: isAr ? 'هندسة التوافر' : 'Availability Architecture', value: isAr ? 'بوابة مخصصة عالية التوافر' : 'High Availability Gateway' },
       ],
     },
     {
@@ -105,24 +105,24 @@ export function StudioPipelineVisualizer({
   return (
     <div className="space-y-6">
       {/* Visual Pipeline Topology Flow */}
-      <div className="rounded-2xl border border-helix-border bg-[#090e1a] p-5 sm:p-6 shadow-inner">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-helix-border/80 pb-4 mb-6">
+      <div className="rounded-xl border border-border bg-panel p-5 sm:p-6">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4 mb-6">
           <div>
-            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-helix-accent">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-accent">
               SYSTEM TOPOLOGY // {template.en.category.toUpperCase()}
             </span>
-            <h3 className="font-display text-base sm:text-lg font-bold text-helix-ink">
+            <h3 className="font-display text-base sm:text-lg font-bold text-foreground">
               {brandName} — {template[isAr ? 'ar' : 'en'].name}
             </h3>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[10px] font-mono font-semibold text-emerald-400">
-              <span className="size-1.5 rounded-full bg-emerald-400 animate-ping" />
-              PIPELINE LIVE
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-raised px-2.5 py-1 text-[10px] font-mono text-muted-foreground">
+              <span className="size-1.5 rounded-full bg-accent" />
+              PIPELINE CONFIGURED
             </span>
-            <span className="hidden sm:inline-block rounded-full border border-helix-border bg-helix-canvas px-2.5 py-1 text-[10px] font-mono text-helix-muted">
-              E2E Latency: ~255ms
+            <span className="hidden sm:inline-block rounded-full border border-border bg-raised px-2.5 py-1 text-[10px] font-mono text-muted-foreground">
+              Telemetry Ingestion
             </span>
           </div>
         </div>
@@ -140,44 +140,44 @@ export function StudioPipelineVisualizer({
                 className={cn(
                   'group relative rounded-xl border p-4 transition-all duration-200 cursor-pointer text-left',
                   isSelected
-                    ? 'border-helix-ink bg-helix-accent-soft ring-1 ring-helix-ink/10'
-                    : 'border-helix-border bg-helix-surface hover:border-helix-ink/20 hover:bg-helix-canvas'
+                    ? 'border-accent bg-accent/5 ring-1 ring-accent/20'
+                    : 'border-border bg-panel hover:border-accent/40 hover:bg-raised'
                 )}
               >
                 <div className="flex items-center justify-between mb-3">
                   <div
                     className={cn(
                       'flex size-8 items-center justify-center rounded-lg transition-colors',
-                      isSelected ? 'bg-helix-accent-soft text-helix-accent' : 'bg-helix-canvas text-helix-muted'
+                      isSelected ? 'bg-accent/15 text-accent' : 'bg-raised text-muted-foreground'
                     )}
                   >
                     <Icon className="size-4" />
                   </div>
-                  <span className="rounded-full bg-helix-canvas border border-helix-border px-2 py-0.5 text-[9px] font-mono text-helix-muted">
+                  <span className="rounded-full bg-raised border border-border px-2 py-0.5 text-[9px] font-mono text-muted-foreground">
                     {node.latency}
                   </span>
                 </div>
 
-                <div className="text-[10px] font-mono text-helix-muted mb-1">
+                <div className="text-[10px] font-mono text-muted-foreground mb-1">
                   NODE 0{node.id + 1}
                 </div>
-                <h4 className="font-semibold text-xs sm:text-sm text-helix-ink line-clamp-1 mb-1">
+                <h4 className="font-semibold text-xs sm:text-sm text-foreground line-clamp-1 mb-1">
                   {node.title}
                 </h4>
-                <p className="text-[11px] text-helix-muted leading-snug line-clamp-2">
+                <p className="text-[11px] text-muted-foreground leading-snug line-clamp-2">
                   {node.summary}
                 </p>
 
                 {/* Status Dot */}
-                <div className="mt-3 pt-2 border-t border-helix-border/60 flex items-center justify-between text-[10px] font-mono">
-                  <span className="text-helix-muted">{node.protocol}</span>
+                <div className="mt-3 pt-2 border-t border-border flex items-center justify-between text-[10px] font-mono">
+                  <span className="text-muted-foreground">{node.protocol}</span>
                   <span
                     className={cn(
                       'font-semibold',
-                      node.status === 'ONLINE' && 'text-emerald-400',
-                      node.status === 'VERIFIED' && 'text-helix-accent',
-                      node.status === 'LOCKED' && 'text-purple-400',
-                      node.status === 'READY' && 'text-amber-400'
+                      node.status === 'ONLINE' && 'text-accent',
+                      node.status === 'VERIFIED' && 'text-accent',
+                      node.status === 'LOCKED' && 'text-foreground',
+                      node.status === 'READY' && 'text-muted-foreground'
                     )}
                   >
                     {node.status}
@@ -190,15 +190,15 @@ export function StudioPipelineVisualizer({
       </div>
 
       {/* Deep Node Inspection Matrix */}
-      <div className="rounded-2xl border border-helix-border bg-helix-surface p-5 sm:p-6">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-helix-border/80 pb-3">
+      <div className="rounded-xl border border-border bg-panel p-5 sm:p-6">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3">
           <div className="flex items-center gap-2">
-            <Server className="size-4 text-helix-accent" />
-            <span className="text-xs font-bold uppercase tracking-wider text-helix-ink">
+            <Server className="size-4 text-accent" />
+            <span className="text-xs font-bold uppercase tracking-wider text-foreground">
               {activeNode.title} — {isAr ? 'المواصفات الفنية المباشرة' : 'Live Technical Specifications'}
             </span>
           </div>
-          <span className="text-[11px] text-helix-muted font-mono">
+          <span className="text-[11px] text-muted-foreground font-mono">
             Protocol: {activeNode.protocol}
           </span>
         </div>
@@ -207,10 +207,10 @@ export function StudioPipelineVisualizer({
           {activeNode.specs.map((spec, idx) => (
             <div
               key={idx}
-              className="rounded-xl border border-helix-border/80 bg-[#080d18] p-3.5 space-y-1"
+              className="rounded-xl border border-border bg-raised p-3.5 space-y-1"
             >
-              <div className="text-[10px] uppercase font-mono text-helix-muted">{spec.label}</div>
-              <div className="font-semibold text-helix-ink text-xs sm:text-sm">{spec.value}</div>
+              <div className="text-[10px] uppercase font-mono text-muted-foreground">{spec.label}</div>
+              <div className="font-semibold text-foreground text-xs sm:text-sm">{spec.value}</div>
             </div>
           ))}
         </div>

@@ -12,7 +12,6 @@ import {
   EyeOff,
   MoveUp,
   MoveDown,
-  Sparkles,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { FAQItem } from '@/lib/faq/faq-store'

@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { HelixFooter } from '@/components/footer/helix-footer'
 import { getUpdates } from '@/lib/updates/updates-store'
 import { getNavAuth } from '@/lib/auth/nav-auth'
-import { Button } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 
 export const metadata: Metadata = {
   title: 'Updates — Helix AI',
@@ -69,12 +69,10 @@ export default async function UpdatesPage() {
               Get started with a 7-day unrestricted trial or review sovereign tenancy with our architects.
             </p>
             <div className="pt-2">
-              <Button asChild size="default">
-                <Link href="/signup">
-                  <span>Start Free Trial</span>
-                  <ArrowRight className="size-4 ml-1.5" />
-                </Link>
-              </Button>
+              <Link href="/signup" className={buttonVariants({ size: 'default' })}>
+                <span>Start Free Trial</span>
+                <ArrowRight className="size-4 ml-1.5" />
+              </Link>
             </div>
           </div>
         </main>

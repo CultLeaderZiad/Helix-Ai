@@ -9,7 +9,7 @@ import { FaqAccordion } from '@/components/faq/faq-accordion'
 import { getPublicFaqs } from '@/lib/faq/actions'
 import { getNavAuth } from '@/lib/auth/nav-auth'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 
 export const metadata: Metadata = {
   title: 'Helix AI — The operations console for autonomous intelligence',
@@ -59,17 +59,19 @@ export default async function LandingPage() {
 
           {/* CTA Buttons — Single cyan accent, flat panels, no gradients */}
           <div className="mt-9 flex w-full flex-col items-center justify-center gap-3.5 sm:w-auto sm:flex-row sm:gap-4">
-            <Button asChild size="lg" className="w-full sm:w-auto gap-2">
-              <Link href="/signup">
-                <span>Start free trial</span>
-                <ArrowRight className="size-4" />
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="lg" className="w-full sm:w-auto">
-              <Link href="/login">
-                Sign in to Console
-              </Link>
-            </Button>
+            <Link
+              href="/signup"
+              className={buttonVariants({ size: 'lg', className: 'w-full sm:w-auto gap-2' })}
+            >
+              <span>Start free trial</span>
+              <ArrowRight className="size-4" />
+            </Link>
+            <Link
+              href="/login"
+              className={buttonVariants({ variant: 'outline', size: 'lg', className: 'w-full sm:w-auto' })}
+            >
+              Sign in to Console
+            </Link>
           </div>
 
           {/* Value Micro-Pill */}

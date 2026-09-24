@@ -3,7 +3,7 @@ import { PillNav } from '@/components/navigation/pill-nav'
 import { HelixFooter } from '@/components/footer/helix-footer'
 import { getNavAuth } from '@/lib/auth/nav-auth'
 import { FileQuestion, ArrowRight } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 
 export default async function NotFound() {
   const navAuth = await getNavAuth()
@@ -29,15 +29,19 @@ export default async function NotFound() {
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Button asChild size="default" className="gap-2">
-              <Link href={navAuth.isAuthenticated ? navAuth.consoleHref : '/'}>
-                <span>{navAuth.isAuthenticated ? 'Return to Console' : 'Return Home'}</span>
-                <ArrowRight className="size-4" />
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="default">
-              <Link href="/contact">Contact Support</Link>
-            </Button>
+            <Link
+              href={navAuth.isAuthenticated ? navAuth.consoleHref : '/'}
+              className={buttonVariants({ size: 'default', className: 'gap-2' })}
+            >
+              <span>{navAuth.isAuthenticated ? 'Return to Console' : 'Return Home'}</span>
+              <ArrowRight className="size-4" />
+            </Link>
+            <Link
+              href="/contact"
+              className={buttonVariants({ variant: 'outline', size: 'default' })}
+            >
+              Contact Support
+            </Link>
           </div>
         </main>
       </div>

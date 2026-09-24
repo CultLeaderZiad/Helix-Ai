@@ -15,7 +15,6 @@ import {
   ArrowUpRight,
   MoreVertical,
   Trash2,
-  Sparkles,
 } from 'lucide-react'
 import type { UserRole, Profile } from '@/lib/schema'
 import { inviteOrRegisterUser, updateUserRole, deleteUser } from '@/lib/admin/user-actions'
@@ -241,7 +240,7 @@ export function UsersManager({ initialUsers, clients, currentUserId }: UsersMana
           change="Full Authority"
           changeType="positive"
           hint="Superuser clearance across all tenants"
-          icon={<ShieldCheck className="size-4 text-purple-400" />}
+          icon={<ShieldCheck className="size-4 text-accent" />}
         />
 
         <KpiCard
@@ -250,7 +249,7 @@ export function UsersManager({ initialUsers, clients, currentUserId }: UsersMana
           change={`Across ${clients.length} Workspaces`}
           changeType="positive"
           hint="Scoped by PostgreSQL Row-Level Security"
-          icon={<Building2 className="size-4 text-sky-400" />}
+          icon={<Building2 className="size-4 text-muted-foreground" />}
         />
       </div>
 
@@ -359,9 +358,9 @@ export function UsersManager({ initialUsers, clients, currentUserId }: UsersMana
                     </TableCell>
 
                     <TableCell>
-                      <span className="font-medium text-helix-ink">
+                      <span className="font-medium text-foreground">
                         {user.role === 'agency_admin' ? (
-                          <span className="text-purple-300 font-mono text-[11px]">Global Agency Console</span>
+                          <span className="text-accent font-mono text-[11px]">Global Agency Console</span>
                         ) : (
                           user.clientName || 'Unassigned Workspace'
                         )}
@@ -415,18 +414,18 @@ export function UsersManager({ initialUsers, clients, currentUserId }: UsersMana
 
       {/* Invite Modal */}
       {isInviteOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-xs animate-in fade-in">
-          <div className="w-full max-w-lg rounded-2xl border border-white/10 bg-helix-surface p-6 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
-              <div className="flex items-center gap-2 text-sm font-bold text-helix-ink">
-                <UserPlus className="size-4 text-sky-400" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 p-4 backdrop-blur-xs animate-in fade-in">
+          <div className="w-full max-w-lg rounded-xl border border-border bg-panel p-6 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-border pb-4">
+              <div className="flex items-center gap-2 text-sm font-bold text-foreground">
+                <UserPlus className="size-4 text-accent" />
                 <span>Invite & Provision New User</span>
               </div>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsInviteOpen(false)}
-                className="h-7 w-7 text-helix-muted hover:text-helix-ink"
+                className="h-7 w-7 text-muted-foreground hover:text-foreground"
               >
                 ✕
               </Button>
@@ -434,7 +433,7 @@ export function UsersManager({ initialUsers, clients, currentUserId }: UsersMana
 
             <form onSubmit={handleInviteSubmit} className="mt-5 space-y-4">
               <div>
-                <label className="text-xs font-semibold uppercase tracking-wider text-helix-muted">
+                <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   User Full Name
                 </label>
                 <Input
@@ -448,7 +447,7 @@ export function UsersManager({ initialUsers, clients, currentUserId }: UsersMana
               </div>
 
               <div>
-                <label className="text-xs font-semibold uppercase tracking-wider text-helix-muted">
+                <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   Work Email Address
                 </label>
                 <Input
@@ -462,19 +461,19 @@ export function UsersManager({ initialUsers, clients, currentUserId }: UsersMana
               </div>
 
               <div>
-                <label className="text-xs font-semibold uppercase tracking-wider text-helix-muted">
+                <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   Role Authority
                 </label>
                 <select
                   value={inviteRole}
                   onChange={e => setInviteRole(e.target.value as UserRole)}
-                  className="mt-1.5 h-10 w-full rounded-xl border border-white/10 bg-[#161E31] px-3.5 text-xs text-helix-ink focus:border-sky-500 focus:outline-none"
+                  className="mt-1.5 h-10 w-full rounded-xl border border-border bg-raised px-3.5 text-xs text-foreground focus:border-accent focus:outline-none"
                 >
                   <option value="agency_admin">Agency Administrator (Full Agency Access)</option>
                   <option value="client_user">Client Owner (Manage Client Workspace)</option>
                   <option value="client_staff">Client Staff (Operator)</option>
                 </select>
-                <p className="mt-1 text-[11px] text-helix-muted">
+                <p className="mt-1 text-[11px] text-muted-foreground">
                   {inviteRole === 'agency_admin'
                     ? 'Grants access to /admin, all clients, CRM cross-tenant records, and billing.'
                     : 'Constrained by RLS to their assigned client workspace only.'}
@@ -483,14 +482,14 @@ export function UsersManager({ initialUsers, clients, currentUserId }: UsersMana
 
               {inviteRole !== 'agency_admin' && (
                 <div>
-                  <label className="text-xs font-semibold uppercase tracking-wider text-helix-muted">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                     Assign to Client Workspace
                   </label>
                   <select
                     value={inviteClientId}
                     onChange={e => setInviteClientId(e.target.value)}
                     required
-                    className="mt-1.5 h-10 w-full rounded-xl border border-white/10 bg-[#161E31] px-3.5 text-xs text-helix-ink focus:border-sky-500 focus:outline-none"
+                    className="mt-1.5 h-10 w-full rounded-xl border border-border bg-raised px-3.5 text-xs text-foreground focus:border-accent focus:outline-none"
                   >
                     {clients.map(c => (
                       <option key={c.id} value={c.id}>
@@ -502,7 +501,7 @@ export function UsersManager({ initialUsers, clients, currentUserId }: UsersMana
               )}
 
               <div>
-                <label className="text-xs font-semibold uppercase tracking-wider text-helix-muted">
+                <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   Initial Password
                 </label>
                 <Input
@@ -512,12 +511,12 @@ export function UsersManager({ initialUsers, clients, currentUserId }: UsersMana
                   onChange={e => setInvitePassword(e.target.value)}
                   className="mt-1.5 h-10 font-mono"
                 />
-                <p className="mt-1 text-[11px] text-helix-muted">
+                <p className="mt-1 text-[11px] text-muted-foreground">
                   User can immediately log in with this password and change it anytime.
                 </p>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/[0.08]">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
                 <Button
                   variant="outline"
                   onClick={() => setIsInviteOpen(false)}
@@ -545,41 +544,41 @@ export function UsersManager({ initialUsers, clients, currentUserId }: UsersMana
 
       {/* Edit / Upgrade Role Modal */}
       {editingUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-xs animate-in fade-in">
-          <div className="w-full max-w-lg rounded-2xl border border-white/10 bg-helix-surface p-6 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
-              <div className="flex items-center gap-2 text-sm font-bold text-helix-ink">
-                <ShieldCheck className="size-4 text-purple-400" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 p-4 backdrop-blur-xs animate-in fade-in">
+          <div className="w-full max-w-lg rounded-xl border border-border bg-panel p-6 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-border pb-4">
+              <div className="flex items-center gap-2 text-sm font-bold text-foreground">
+                <ShieldCheck className="size-4 text-accent" />
                 <span>Upgrade / Change User Role</span>
               </div>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setEditingUser(null)}
-                className="h-7 w-7 text-helix-muted hover:text-helix-ink"
+                className="h-7 w-7 text-muted-foreground hover:text-foreground"
               >
                 ✕
               </Button>
             </div>
 
-            <div className="mt-4 rounded-xl border border-white/10 bg-[#161E31] p-3.5 text-xs text-helix-ink/80">
-              <p className="font-semibold text-helix-ink">{editingUser.full_name || 'User'}</p>
-              <p className="text-helix-muted font-mono text-[11px]">{editingUser.email}</p>
-              <p className="mt-2 text-helix-muted">
+            <div className="mt-4 rounded-xl border border-border bg-raised p-3.5 text-xs text-foreground">
+              <p className="font-semibold text-foreground">{editingUser.full_name || 'User'}</p>
+              <p className="text-muted-foreground font-mono text-[11px]">{editingUser.email}</p>
+              <p className="mt-2 text-muted-foreground">
                 Current Role:{' '}
-                <strong className="text-sky-300 font-semibold">{editingUser.role}</strong>
+                <strong className="text-accent font-semibold">{editingUser.role}</strong>
               </p>
             </div>
 
             <form onSubmit={handleUpdateRole} className="mt-5 space-y-4">
               <div>
-                <label className="text-xs font-semibold uppercase tracking-wider text-helix-muted">
+                <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   Select New Role Authority
                 </label>
                 <select
                   value={newRole}
                   onChange={e => setNewRole(e.target.value as UserRole)}
-                  className="mt-1.5 h-10 w-full rounded-xl border border-white/10 bg-[#161E31] px-3.5 text-xs text-helix-ink focus:border-sky-500 focus:outline-none"
+                  className="mt-1.5 h-10 w-full rounded-xl border border-border bg-raised px-3.5 text-xs text-foreground focus:border-accent focus:outline-none"
                 >
                   <option value="agency_admin">Agency Administrator (Full Agency Access)</option>
                   <option value="client_user">Client Owner (Workspace Operator)</option>
@@ -587,12 +586,12 @@ export function UsersManager({ initialUsers, clients, currentUserId }: UsersMana
                 </select>
                 <div className="mt-2">
                   {newRole === 'agency_admin' ? (
-                    <div className="rounded-lg border border-purple-500/30 bg-purple-500/10 p-2.5 text-[11px] text-purple-200">
+                    <div className="rounded-lg border border-accent/30 bg-accent/10 p-2.5 text-[11px] text-foreground">
                       ★ <strong>Upgrading to Agency Admin:</strong> User will gain immediate access to the
                       Agency Console (`/admin`), cross-client CRM, template builds, and agent queues.
                     </div>
                   ) : (
-                    <div className="rounded-lg border border-white/10 bg-[#161E31] p-2.5 text-[11px] text-helix-muted">
+                    <div className="rounded-lg border border-border bg-raised p-2.5 text-[11px] text-muted-foreground">
                       User will be scoped to their specific assigned workspace under Postgres RLS.
                     </div>
                   )}
@@ -601,14 +600,14 @@ export function UsersManager({ initialUsers, clients, currentUserId }: UsersMana
 
               {newRole !== 'agency_admin' && (
                 <div>
-                  <label className="text-xs font-semibold uppercase tracking-wider text-helix-muted">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                     Assign to Client Workspace
                   </label>
                   <select
                     value={targetClientId}
                     onChange={e => setTargetClientId(e.target.value)}
                     required
-                    className="mt-1.5 h-10 w-full rounded-xl border border-white/10 bg-[#161E31] px-3.5 text-xs text-helix-ink focus:border-sky-500 focus:outline-none"
+                    className="mt-1.5 h-10 w-full rounded-xl border border-border bg-raised px-3.5 text-xs text-foreground focus:border-accent focus:outline-none"
                   >
                     {clients.map(c => (
                       <option key={c.id} value={c.id}>
@@ -619,7 +618,7 @@ export function UsersManager({ initialUsers, clients, currentUserId }: UsersMana
                 </div>
               )}
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/[0.08]">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-border">
                 <Button
                   variant="outline"
                   onClick={() => setEditingUser(null)}
@@ -629,7 +628,7 @@ export function UsersManager({ initialUsers, clients, currentUserId }: UsersMana
                 <Button
                   type="submit"
                   disabled={isPending}
-                  className="gap-2 bg-gradient-to-r from-purple-500 to-indigo-600 text-helix-ink hover:from-purple-400 hover:to-indigo-500"
+                  className="gap-2 bg-accent text-accent-foreground hover:bg-accent/90"
                 >
                   {isPending ? (
                     <>

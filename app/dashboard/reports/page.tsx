@@ -70,7 +70,7 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
                         </div>
                         <div>
                           <p className="text-sm font-medium text-foreground">{c.business_name}</p>
-                          <p className="text-xs text-muted-foreground font-mono">{c.regionTier ?? 'Enterprise'}</p>
+                          <p className="text-xs text-muted-foreground font-mono">{c.region_tier ?? 'Enterprise'}</p>
                         </div>
                       </div>
                       <Link
