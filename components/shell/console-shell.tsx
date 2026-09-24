@@ -41,10 +41,11 @@ const ADMIN_NAV: NavItem[] = [
       p.startsWith('/dashboard/studio'),
   },
   {
-    href: '/dashboard/engine',
+    href: '/admin/risk',
     label: 'Intelligence',
     section: 'primary',
     match: p =>
+      p.startsWith('/admin/risk') ||
       p.startsWith('/dashboard/engine') ||
       p.startsWith('/dashboard/reports') ||
       p.startsWith('/admin/analytics') ||
@@ -125,7 +126,8 @@ const ADMIN_SYSTEMS_LINKS = [
 ]
 
 const ADMIN_INTEL_LINKS = [
-  { href: '/dashboard/health', label: 'Health' },
+  { href: '/admin/risk', label: 'Risk Triage' },
+  { href: '/dashboard/health', label: 'Client View' },
   { href: '/dashboard/engine', label: 'Engine' },
   { href: '/dashboard/reports', label: 'Reports' },
   { href: '/admin/analytics', label: 'Analytics' },
@@ -164,6 +166,7 @@ function subnavFor(pathname: string, variant: ConsoleVariant) {
       return ADMIN_SYSTEMS_LINKS
     }
     if (
+      pathname.startsWith('/admin/risk') ||
       pathname.startsWith('/dashboard/health') ||
       pathname.startsWith('/dashboard/engine') ||
       pathname.startsWith('/dashboard/reports') ||

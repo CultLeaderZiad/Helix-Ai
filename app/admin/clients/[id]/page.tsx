@@ -38,40 +38,58 @@ export default async function AdminClientDetailPage({
 
   // Tenant-scoped reads. RLS still protects every child table; the client_id
   // filters make cross-tenant UUID collisions resolve to nothing.
-  const [clientRes, systemsRes, integrationsRes, invoicesRes, contactsRes, dealsRes, activitiesRes, factsRes] =
-    await Promise.all([
-      supabase.from('clients').select('business_name, vertical, status, timezone').eq('id', id).maybeSingle(),
-      supabase
-        .from('client_systems')
-        .select('id, system_type, provenance, visible_to_client, active, setup_fee_cents, monthly_retainer_cents')
-        .eq('client_id', id),
-      supabase
-        .from('client_integrations')
-        .select('id, system_type, status, last_ping_at')
-        .eq('client_id', id)
-        .order('system_type'),
-      supabase
-        .from('invoices')
-        .select('id, amount_cents, due_date, status, created_at')
-        .eq('client_id', id)
-        .order('due_date', { ascending: false })
-        .limit(25),
-      supabase.from('contacts').select('id, full_name, company_name, lead_status').eq('client_id', id),
-      supabase.from('deals').select('stage, value_cents').eq('client_id', id),
-      supabase
-        .from('activities')
-        .select('id, type, subject, occurred_at, contact_id, deal_id')
-        .eq('client_id', id)
-        .order('occurred_at', { ascending: false })
-        .limit(20),
-      supabase
-        .from('contact_facts')
-        .select('id, field_name, field_value, evidence_band, source_tool, status, score, method, observed_at, contact_id')
-        .eq('client_id', id)
-        .eq('status', 'pending')
-        .order('observed_at', { ascending: false })
-        .limit(100),
-    ])
+  const [
+    clientRes,
+    systemsRes,
+    integrationsRes,
+    invoicesRes,
+    contactsRes,
+    dealsRes,
+    activitiesRes,
+    factsRes,
+    signalsRes,
+  ] = await Promise.all([
+    supabase
+      .from('clients')
+      .select('business_name, vertical, status, timezone, current_health_score, current_risk_level, last_health_calculated_at')
+      .eq('id', id)
+      .maybeSingle(),
+    supabase
+      .from('client_systems')
+      .select('id, system_type, provenance, visible_to_client, active, setup_fee_cents, monthly_retainer_cents')
+      .eq('client_id', id),
+    supabase
+      .from('client_integrations')
+      .select('id, system_type, status, last_ping_at')
+      .eq('client_id', id)
+      .order('system_type'),
+    supabase
+      .from('invoices')
+      .select('id, amount_cents, due_date, status, created_at')
+      .eq('client_id', id)
+      .order('due_date', { ascending: false })
+      .limit(25),
+    supabase.from('contacts').select('id, full_name, company_name, lead_status').eq('client_id', id),
+    supabase.from('deals').select('stage, value_cents').eq('client_id', id),
+    supabase
+      .from('activities')
+      .select('id, type, subject, occurred_at, contact_id, deal_id')
+      .eq('client_id', id)
+      .order('occurred_at', { ascending: false })
+      .limit(20),
+    supabase
+      .from('contact_facts')
+      .select('id, field_name, field_value, evidence_band, source_tool, status, score, method, observed_at, contact_id')
+      .eq('client_id', id)
+      .eq('status', 'pending')
+      .order('observed_at', { ascending: false })
+      .limit(100),
+    supabase
+      .from('client_churn_signals')
+      .select('id, severity, title, detected_at')
+      .eq('client_id', id)
+      .is('resolved_at', null),
+  ])
 
   const client = clientRes.data
   if (!client) notFound()
@@ -278,6 +296,78 @@ export default async function AdminClientDetailPage({
           </section>
         ) : null}
 
+        {tab === 'Health' ? (
+          <section className="mt-8 space-y-6">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4">
+              <div>
+                <h2 className="font-display text-h3">Account Health &amp; Retention</h2>
+                <p className="mt-1 text-small text-muted-foreground">
+                  Continuous churn risk diagnostic based on system uptime, portal usage, and support volume.
+                </p>
+              </div>
+              <Link
+                href={`/admin/risk?clientId=${id}`}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-accent/40 bg-accent/10 px-3.5 py-1.5 text-xs font-mono font-medium text-accent hover:bg-accent/20 transition-colors"
+              >
+                <span>Open Risk Triage Console →</span>
+              </Link>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-3">
+              <div className="border border-border bg-panel p-4">
+                <p className="text-small text-muted-foreground font-mono">Current Health Score</p>
+                <div className="mt-2 flex items-baseline gap-2">
+                  <span className="font-display text-h2 font-bold text-foreground">
+                    {client.current_health_score ?? 70}
+                  </span>
+                  <span className="text-xs font-mono text-muted-foreground">/ 100</span>
+                </div>
+              </div>
+
+              <div className="border border-border bg-panel p-4">
+                <p className="text-small text-muted-foreground font-mono">Risk Level</p>
+                <div className="mt-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent/10 px-2.5 py-0.5 text-xs font-mono font-semibold uppercase text-accent">
+                    {client.current_risk_level ?? 'HEALTHY'}
+                  </span>
+                </div>
+              </div>
+
+              <div className="border border-border bg-panel p-4">
+                <p className="text-small text-muted-foreground font-mono">Unresolved Risk Signals</p>
+                <div className="mt-2 flex items-baseline gap-2">
+                  <span className="font-display text-h2 font-bold text-foreground">
+                    {(signalsRes.data ?? []).length}
+                  </span>
+                  <span className="text-xs font-mono text-muted-foreground">active</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="border border-border bg-panel p-6">
+              <h3 className="font-display text-base font-semibold text-foreground">Immediate Actions</h3>
+              <p className="mt-1 text-xs text-muted-foreground">
+                To triage unresolved risk signals, dispatch high-priority intervention tasks, or log success milestones, use the agency risk console.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Link
+                  href={`/admin/risk?clientId=${id}`}
+                  className="rounded-lg bg-accent px-4 py-2 text-xs font-mono font-medium text-black hover:bg-accent/90"
+                >
+                  Manage Risk &amp; Signals
+                </Link>
+                <Link
+                  href={`/dashboard/health?clientId=${id}`}
+                  target="_blank"
+                  className="rounded-lg border border-border px-4 py-2 text-xs font-mono text-muted-foreground hover:text-foreground"
+                >
+                  Preview Client Portal View ↗
+                </Link>
+              </div>
+            </div>
+          </section>
+        ) : null}
+
         {tab === 'Queue' ? (
           <section className="mt-8">
             <h2 className="font-display text-h3">Agent queue</h2>
@@ -296,7 +386,7 @@ export default async function AdminClientDetailPage({
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
-const TABS = ['Overview', 'Systems', 'Billing', 'Facts', 'Queue'] as const
+const TABS = ['Overview', 'Health', 'Systems', 'Billing', 'Facts', 'Queue'] as const
 type Tab = (typeof TABS)[number]
 
 const OPEN_STAGES: DealStage[] = [
