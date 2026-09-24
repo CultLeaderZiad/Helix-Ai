@@ -64,6 +64,34 @@ export async function createContactAction(input: CreateContactInput) {
       return { success: false, error: error.message }
     }
 
+    // 1. Log activity to timeline
+    await adminClient.from('activities').insert({
+      client_id: targetClientId,
+      contact_id: data.id,
+      type: 'stage_change',
+      subject: `Contact Created: ${trimmedName}`,
+      body: `New contact record registered (${data.company_name || 'Individual'}) with status ${data.lead_status}.`,
+    })
+
+    // 2. High-intent automatic routing
+    if (input.leadStatus === 'hot' || input.leadStatus === 'warm') {
+      await adminClient.from('agent_tasks').insert({
+        client_id: targetClientId,
+        contact_id: data.id,
+        kind: 'apply_contact_fact',
+        subject: `Priority Lead Routing: ${trimmedName} (${input.leadStatus.toUpperCase()})`,
+        reason: `High-intent contact created in CRM. Immediate speed-to-lead qualification required.`,
+        priority: input.leadStatus === 'hot' ? 10 : 5,
+        payload: {
+          contact_id: data.id,
+          full_name: trimmedName,
+          phone: data.phone,
+          email: data.email,
+          lead_status: data.lead_status,
+        },
+      })
+    }
+
     revalidatePath('/dashboard/crm')
     revalidatePath('/admin/crm')
 
