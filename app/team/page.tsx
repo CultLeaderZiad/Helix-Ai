@@ -1,4 +1,5 @@
-import AboutPage, { metadata } from '@/app/about/page'
+import { redirect } from 'next/navigation'
 
-export { metadata }
-export default AboutPage
+export default function TeamPage() {
+  redirect('/about')
+}
