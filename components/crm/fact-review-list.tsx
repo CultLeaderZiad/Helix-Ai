@@ -1,7 +1,7 @@
 'use client'
 
 import { useActionState } from 'react'
-import { Check, Loader2, X } from 'lucide-react'
+import { Check, Loader2, X, ListChecks } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
@@ -25,6 +25,20 @@ export interface ReviewableFact {
 const initialState: FactReviewState = { status: 'idle' }
 
 export function FactReviewList({ facts }: { facts: ReviewableFact[] }) {
+  if (facts.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 text-center max-w-sm mx-auto">
+        <ListChecks className="size-12 text-accent stroke-[1.5]" />
+        <h3 className="mt-4 font-display text-lg font-semibold text-foreground">
+          No pending observations
+        </h3>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Agent observations and items requiring verification will appear here as incoming interactions are processed.
+        </p>
+      </div>
+    )
+  }
+
   return (
     <ul className="mt-4 space-y-3">
       {facts.map(fact => (
@@ -40,80 +54,84 @@ function FactRow({ fact }: { fact: ReviewableFact }) {
   const where = fact.contact?.company_name ? ` · ${fact.contact.company_name}` : ''
 
   return (
-    <li className="rounded-xl border border-white/10 bg-helix-surface p-4.5 shadow-sm hover:border-white/20 transition-all">
+    <li className="rounded-lg border border-border bg-panel p-4 transition-colors hover:bg-raised/40">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <Badge variant={fact.evidence_band} dot={fact.evidence_band === 'verified'}>
               {fact.evidence_band}
             </Badge>
-            <p className="text-xs font-semibold text-helix-ink">
+            <p className="text-xs font-semibold text-foreground">
               {who}
-              <span className="text-helix-muted font-normal">{where}</span>
+              <span className="text-muted-foreground font-normal">{where}</span>
             </p>
           </div>
-          <p className="mt-2 text-sm text-helix-ink">
-            <span className="font-semibold text-helix-ink capitalize">{fact.field_name.replace(/_/g, ' ')}:</span>{' '}
+          <p className="mt-2 text-sm text-foreground">
+            <span className="font-semibold capitalize">{fact.field_name.replace(/_/g, ' ')}:</span>{' '}
             {fact.field_value}
           </p>
-          <p className="mt-1 text-xs text-helix-muted font-mono">
+          <p className="mt-1 text-xs text-muted-foreground font-mono">
             Observed by {fact.source_tool}
-            {fact.score != null ? ` · ledger score ${fact.score}` : ''} ·{' '}
-            {new Date(fact.observed_at).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}
           </p>
+          {fact.score !== null && (
+            <p className="mt-1 text-[11px] text-muted-foreground tabular-nums font-mono">
+              Score: {fact.score.toFixed(2)}
+              {fact.method ? ` • Method: ${fact.method}` : ''}
+            </p>
+          )}
         </div>
 
-        {state.status === 'done' ? (
-          <p
-            role="status"
-            className={cn(
-              'shrink-0 text-small',
-              state.decision === 'approve'
-                ? 'text-status-success'
-                : 'text-muted-foreground',
-            )}
-          >
-            {state.decision === 'approve'
-              ? 'Approved and written to the contact record.'
-              : 'Dismissed. The contact record was not changed.'}
-          </p>
-        ) : state.status === 'error' ? (
-          <p role="alert" className="shrink-0 text-small text-status-danger">
-            {state.message}
-          </p>
-        ) : (
-          <form action={formAction} className="flex shrink-0 gap-2">
+        <div className="flex shrink-0 items-center gap-2 pt-1 lg:pt-0">
+          <form action={formAction}>
             <input type="hidden" name="fact_id" value={fact.id} />
+            <input type="hidden" name="decision" value="applied" />
             <Button
               type="submit"
-              name="decision"
-              value="approve"
               size="sm"
               disabled={pending}
               className="gap-1.5"
             >
               {pending ? (
-                <Loader2 aria-hidden="true" className="size-3.5 animate-spin" />
+                <Loader2 className="size-3.5 animate-spin" />
               ) : (
-                <Check aria-hidden="true" className="size-3.5" />
+                <Check className="size-3.5" />
               )}
-              Approve
+              <span>Approve</span>
             </Button>
+          </form>
+
+          <form action={formAction}>
+            <input type="hidden" name="fact_id" value={fact.id} />
+            <input type="hidden" name="decision" value="dismissed" />
             <Button
               type="submit"
-              name="decision"
-              value="dismiss"
               size="sm"
               variant="outline"
               disabled={pending}
               className="gap-1.5"
             >
-              <X aria-hidden="true" className="size-3.5" />
-              Dismiss
+              <X className="size-3.5" />
+              <span>Dismiss</span>
             </Button>
           </form>
-        )}
+        </div>
       </div>
+
+      {state.status === 'error' && (
+        <p role="alert" className="mt-2 text-xs text-status-danger">
+          {state.error}
+        </p>
+      )}
+      {state.status === 'applied' && (
+        <p role="status" className="mt-2 text-xs text-status-success font-medium">
+          Fact approved and committed to contact profile.
+        </p>
+      )}
+      {state.status === 'dismissed' && (
+        <p role="status" className="mt-2 text-xs text-muted-foreground font-medium">
+          Fact dismissed and archived.
+        </p>
+      )}
     </li>
   )
 }
