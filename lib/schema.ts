@@ -11,6 +11,32 @@ export type SystemType =
   | 'lead_attribution'
   | 'lead_reactivation'
   | 'ar_collections'
+  | 'rival_watch'
+  | 'handbook_bot'
+  | 'seo_scorecard'
+  | 'deck_factory'
+  | 'shorts_factory'
+  | 'lead_generation'
+
+export type WebhookDirection = 'helix_to_n8n' | 'n8n_to_helix'
+export type WebhookStatus = 'ok' | 'failed' | 'unknown' | 'healthy' | 'degraded' | 'pending'
+
+export interface SystemWebhook {
+  id: string
+  client_id: string
+  system_type: SystemType
+  direction: WebhookDirection
+  label?: string | null
+  webhook_url: string
+  secret_ciphertext?: string | null
+  secret_hash?: string | null
+  enabled: boolean
+  last_ping_at?: string | null
+  last_status?: WebhookStatus | null
+  last_error?: string | null
+  created_at: string
+  updated_at: string
+}
 
 export interface Profile {
   id: string
@@ -418,4 +444,106 @@ export interface SupportMessage {
   sender_profile_id: string
   body: string
   created_at: string
-}
+}
+
+export type LeadGenStatus = 'queued' | 'running' | 'paused' | 'succeeded' | 'failed'
+export type LeadGenStage =
+  | 'brief'
+  | 'seed'
+  | 'discover'
+  | 'fetch'
+  | 'extract'
+  | 'enrich'
+  | 'score'
+  | 'outreach'
+  | 'export'
+
+export type LeadGenEngine = 'http' | 'stealth' | 'dynamic'
+export type LeadGenMode = 'crawl' | 'sitemap' | 'shopify' | 'csv_feed' | 'digest'
+
+export interface LeadGenJob {
+  id: string
+  client_id: string
+  user_id: string | null
+  status: LeadGenStatus
+  stage: LeadGenStage
+  stage_label: string
+  stage_index: number
+  stages_total: number
+  brief: {
+    icp: string
+    geos: string[]
+    languages: string[]
+    exclude_domains: string[]
+    max_pages: number
+    max_leads: number
+    credit_budget: number
+    outreach_min_score: number
+  }
+  seeds: {
+    urls: string[]
+    sitemap_url?: string | null
+    shopify_url?: string | null
+    domains_csv?: string | null
+  }
+  engine_default: LeadGenEngine
+  mode: LeadGenMode
+  recipe_id: string
+  robots_obey: boolean
+  adaptive: boolean
+  capture_xhr_pattern?: string | null
+  enrich_emails: boolean
+  generate_outreach: boolean
+  proxy_mode: string
+  checkpoint_path?: string | null
+  logs: string[]
+  leads_count: number
+  pages_fetched: number
+  pages_blocked: number
+  elapsed_ms: number
+  credits_used: number
+  credit_budget: number
+  error_msg?: string | null
+  owner_boot_id?: string | null
+  heartbeat_at?: string | null
+  created_at: string
+  started_at?: string | null
+  completed_at?: string | null
+  updated_at: string
+}
+
+export interface LeadGenLead {
+  id: string
+  job_id: string
+  client_id: string
+  company_name: string | null
+  website: string | null
+  domain: string | null
+  emails: string[]
+  phones: string[]
+  socials: Record<string, string>
+  address: string | null
+  decision_makers: Array<{ name: string; role?: string; linkedin?: string }>
+  markdown_excerpt: string | null
+  markdown_artifact_path?: string | null
+  extract_status: 'empty' | 'partial' | 'ok' | 'failed'
+  fetch_status: 'ok' | 'blocked' | 'rate_limited' | 'error'
+  engine_used: LeadGenEngine | string
+  email_source: 'website' | 'hunter' | 'bio' | 'none'
+  phone_source: 'website' | 'bio' | 'none'
+  lead_score: number
+  priority: 'high' | 'med' | 'low'
+  outreach: {
+    subject?: string
+    body?: string
+    dm?: string
+    personalization_points?: string[]
+    skipped_reason?: string
+  } | null
+  sources: Record<string, unknown>
+  crm_contact_id?: string | null
+  crm_company_id?: string | null
+  created_at: string
+  updated_at: string
+}
+

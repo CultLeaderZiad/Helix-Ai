@@ -19,8 +19,9 @@ const StudioMotionDemo = dynamic(() => import('./studio-motion-demo').then(mod =
 const StudioPipelineVisualizer = dynamic(() => import('./studio-pipeline-visualizer').then(mod => mod.StudioPipelineVisualizer), { loading: panelLoading })
 const StudioInteractiveSimulator = dynamic(() => import('./studio-interactive-simulator').then(mod => mod.StudioInteractiveSimulator), { loading: panelLoading })
 const StudioDirectivesGuardrails = dynamic(() => import('./studio-directives-guardrails').then(mod => mod.StudioDirectivesGuardrails), { loading: panelLoading })
+const LiveAgentTerminal = dynamic(() => import('@/components/terminal/live-agent-terminal').then(mod => mod.LiveAgentTerminal), { loading: panelLoading })
 
-type StudioMachineTab = 'simulator' | 'topology' | 'directives'
+type StudioMachineTab = 'simulator' | 'topology' | 'terminal' | 'directives'
 
 export function StudioWorkspace({
   initialClientName,
@@ -34,7 +35,7 @@ export function StudioWorkspace({
   const [language, setLanguage] = useState<'en' | 'ar'>('en')
   const isAr = language === 'ar'
   const [view, setView] = useState<'catalog' | 'demo'>(initialSystemId ? 'demo' : 'catalog')
-  const [brandName, setBrandName] = useState(initialClientName || 'Al Noor Specialty Clinic')
+  const [brandName, setBrandName] = useState(initialClientName || 'Operations Workspace')
   const [machineTab, setMachineTab] = useState<StudioMachineTab>('simulator')
   const [isPending, startTransition] = useTransition()
   const [modalResult, setModalResult] = useState<RequestBuildResult | null>(null)
@@ -62,7 +63,7 @@ export function StudioWorkspace({
   const catalog = useMemo(() => SYSTEM_TEMPLATES, [])
 
   return (
-    <div className="mx-auto w-full max-w-6xl space-y-6" dir={isAr ? 'rtl' : 'ltr'}>
+    <div className="w-full space-y-6" dir={isAr ? 'rtl' : 'ltr'}>
       <PageHeader
         title={isAr ? 'كتالوج الأنظمة' : view === 'catalog' ? 'System catalog' : content.name}
         subtitle={
@@ -157,6 +158,7 @@ export function StudioWorkspace({
               [
                 { id: 'simulator', label: isAr ? 'المحاكي' : 'Simulator' },
                 { id: 'topology', label: isAr ? 'المسار' : 'Flow' },
+                { id: 'terminal', label: isAr ? 'الطرفية الحية' : 'Live Terminal' },
                 { id: 'directives', label: isAr ? 'التعليمات' : 'Directives' },
               ] as const
             ).map(tab => (
@@ -165,7 +167,7 @@ export function StudioWorkspace({
                 type="button"
                 onClick={() => setMachineTab(tab.id)}
                 className={cn(
-                  'rounded-full px-3 py-1.5 text-13',
+                  'rounded-full px-3 py-1.5 text-13 transition-colors',
                   machineTab === tab.id ? 'bg-helix-ink text-helix-surface' : 'text-helix-muted hover:bg-helix-canvas'
                 )}
               >
@@ -190,6 +192,26 @@ export function StudioWorkspace({
                 accentColor={accentColor}
                 isAr={isAr}
               />
+            )}
+            {machineTab === 'terminal' && (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between pb-2 border-b border-helix-border">
+                  <div className="text-xs text-helix-muted">
+                    <span className="font-semibold text-helix-ink">Deterministic Telemetry Proof:</span> Inspect execution stream for {selectedTemplate.systemTypeKey} · {content.name}.
+                  </div>
+                </div>
+                <LiveAgentTerminal
+                  initialSystem={
+                    selectedTemplate.id === 'missed-call-responder'
+                      ? 'system_1'
+                      : selectedTemplate.id === 'lead-reactivation'
+                      ? 'system_11'
+                      : 'system_2'
+                  }
+                  brandName={brandName}
+                  isLive={false}
+                />
+              </div>
             )}
             {machineTab === 'directives' && (
               <StudioDirectivesGuardrails

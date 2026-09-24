@@ -197,13 +197,13 @@ export function UpdatesManagerView({ initialUpdates }: UpdatesManagerViewProps) 
       {/* Feedback Toast */}
       {feedback && (
         <div
-          className={`flex items-center gap-2 rounded-xl p-3 text-sm font-medium border animate-in fade-in slide-in-from-top-2 ${
+          className={`flex items-center gap-2 rounded-xl p-3 text-sm font-semibold border animate-in fade-in slide-in-from-top-2 ${
             feedback.type === 'success'
-              ? 'bg-emerald-950/70 border-emerald-500/50 text-emerald-300'
-              : 'bg-rose-950/70 border-rose-500/50 text-rose-300'
+              ? 'bg-[#0B6E4F]/10 border-[#0B6E4F]/30 text-[#0B6E4F]'
+              : 'bg-rose-50 border-rose-200 text-rose-700'
           }`}
         >
-          {feedback.type === 'success' ? <CheckCircle2 className="size-4 shrink-0" /> : <AlertCircle className="size-4 shrink-0" />}
+          {feedback.type === 'success' ? <CheckCircle2 className="size-4 shrink-0 text-[#0B6E4F]" /> : <AlertCircle className="size-4 shrink-0 text-rose-600" />}
           <span>{feedback.message}</span>
         </div>
       )}
@@ -307,7 +307,7 @@ export function UpdatesManagerView({ initialUpdates }: UpdatesManagerViewProps) 
                     required
                     value={formData.version}
                     onChange={(e) => setFormData({ ...formData, version: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900 px-3.5 py-2 text-xs font-mono text-helix-ink"
+                    className="mt-1 w-full rounded-xl border border-helix-border bg-helix-canvas px-3.5 py-2 text-xs font-mono text-helix-ink placeholder:text-helix-muted focus:border-helix-ink focus:outline-hidden"
                   />
                 </div>
                 <div>
@@ -316,7 +316,7 @@ export function UpdatesManagerView({ initialUpdates }: UpdatesManagerViewProps) 
                     required
                     value={formData.date}
                     onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900 px-3.5 py-2 text-xs text-helix-ink"
+                    className="mt-1 w-full rounded-xl border border-helix-border bg-helix-canvas px-3.5 py-2 text-xs text-helix-ink placeholder:text-helix-muted focus:border-helix-ink focus:outline-hidden"
                   />
                 </div>
               </div>
@@ -326,7 +326,7 @@ export function UpdatesManagerView({ initialUpdates }: UpdatesManagerViewProps) 
                 <select
                   value={formData.category}
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900 px-3.5 py-2 text-xs text-helix-ink"
+                  className="mt-1 w-full rounded-xl border border-helix-border bg-helix-canvas px-3.5 py-2 text-xs text-helix-ink focus:border-helix-ink focus:outline-hidden"
                 >
                   <option value="Core Architecture">Core Architecture</option>
                   <option value="Security Hardening">Security Hardening</option>
@@ -343,7 +343,7 @@ export function UpdatesManagerView({ initialUpdates }: UpdatesManagerViewProps) 
                   placeholder="e.g. Dual-workspace authentication & cross-tenant RLS isolation"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="mt-1 w-full rounded-xl border border-helix-border bg-slate-900 px-3.5 py-2 text-xs text-helix-ink"
+                  className="mt-1 w-full rounded-xl border border-helix-border bg-helix-canvas px-3.5 py-2 text-xs text-helix-ink placeholder:text-helix-muted focus:border-helix-ink focus:outline-hidden"
                 />
               </div>
 
@@ -353,7 +353,7 @@ export function UpdatesManagerView({ initialUpdates }: UpdatesManagerViewProps) 
                   <button
                     type="button"
                     onClick={() => setFormData({ ...formData, highlights: [...formData.highlights, ''] })}
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-sky-400 hover:text-sky-300"
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-helix-accent hover:underline"
                   >
                     <Plus className="size-3" />
                     <span>Add Bullet</span>
@@ -371,7 +371,7 @@ export function UpdatesManagerView({ initialUpdates }: UpdatesManagerViewProps) 
                           highlights: formData.highlights.map((h, i) => (i === idx ? val : h)),
                         })
                       }}
-                      className="flex-1 rounded-xl border border-helix-border bg-slate-900 px-3.5 py-2 text-xs text-helix-ink"
+                      className="flex-1 rounded-xl border border-helix-border bg-helix-canvas px-3.5 py-2 text-xs text-helix-ink placeholder:text-helix-muted focus:border-helix-ink focus:outline-hidden"
                     />
                     {formData.highlights.length > 1 && (
                       <button
@@ -382,7 +382,7 @@ export function UpdatesManagerView({ initialUpdates }: UpdatesManagerViewProps) 
                             highlights: formData.highlights.filter((_, i) => i !== idx),
                           })
                         }
-                        className="p-1 text-helix-muted hover:text-rose-400"
+                        className="p-1 text-helix-muted hover:text-rose-600"
                       >
                         <Trash2 className="size-3.5" />
                       </button>
@@ -397,9 +397,9 @@ export function UpdatesManagerView({ initialUpdates }: UpdatesManagerViewProps) 
                   id="pubToggle"
                   checked={formData.is_published}
                   onChange={(e) => setFormData({ ...formData, is_published: e.target.checked })}
-                  className="h-4 w-4 rounded border-helix-border bg-slate-900 text-sky-500"
+                  className="h-4 w-4 rounded border-helix-border text-helix-ink"
                 />
-                <label htmlFor="pubToggle" className="text-xs font-medium text-helix-ink/80 cursor-pointer">
+                <label htmlFor="pubToggle" className="text-xs font-medium text-helix-ink cursor-pointer">
                   Publish to public /updates immediately
                 </label>
               </div>
@@ -408,14 +408,14 @@ export function UpdatesManagerView({ initialUpdates }: UpdatesManagerViewProps) 
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="rounded-xl border border-helix-border bg-slate-800 px-4 py-2 text-xs font-semibold text-helix-ink/80 hover:text-helix-ink"
+                  className="rounded-xl border border-helix-border bg-helix-canvas px-4 py-2 text-xs font-semibold text-helix-ink hover:bg-helix-border/40 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="rounded-xl bg-helix-ink px-4 py-2 text-xs font-bold text-helix-surface hover:bg-helix-ink/90"
+                  className="rounded-xl bg-helix-ink px-4 py-2 text-xs font-bold text-helix-surface hover:bg-helix-ink/90 transition-colors"
                 >
                   {editingId ? 'Save Changes' : 'Publish Release'}
                 </button>

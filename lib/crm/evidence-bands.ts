@@ -17,12 +17,14 @@ export const TOOL_EVIDENCE_BANDS = {
   'lead_attribution.form_submission': 'verified',
   'ar_collections.payment_receipt': 'verified',
   'reactivation.opt_in_reply': 'verified',
+  'leadgen_scrapling.public_page': 'verified',
   // Probable: strong signal from a system-mediated exchange that was not an
   // explicit party confirmation of the recorded field.
   'missed_call_response.callback': 'probable',
   'lead_attribution.utm_match': 'probable',
   'reactivation.reply_sentiment': 'probable',
   'ar_collections.promise_to_pay': 'probable',
+  'leadgen_scrapling.enrichment': 'probable',
   // Possible: ambient or secondhand signal; human review required.
   'missed_call_response.voicemail_detection': 'possible',
   'reactivation.number_ported': 'possible',

@@ -31,8 +31,8 @@ export function PageHeader({
   return (
     <div className={cn('flex flex-wrap items-start justify-between gap-4', className)}>
       <div className="min-w-0">
-        <h1 className="helix-title text-28">{title}</h1>
-        {subtitle ? <p className="mt-1 text-13 text-helix-muted">{subtitle}</p> : null}
+        <h1 className="font-display text-24 font-bold tracking-tight text-[#141414]">{title}</h1>
+        {subtitle ? <p className="mt-1 text-13 text-[#6E6B65]">{subtitle}</p> : null}
       </div>
       {actions ? <div className="flex flex-wrap items-center gap-2">{actions}</div> : null}
     </div>
@@ -53,12 +53,12 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        'flex flex-col items-center justify-center rounded-[16px] border border-dashed border-helix-border bg-helix-canvas/60 px-6 py-12 text-center',
+        'flex flex-col items-center justify-center rounded-xl border border-dashed border-[#D9D4CB] bg-[#FFFEFA] px-6 py-12 text-center',
         className
       )}
     >
-      <h3 className="helix-title text-15">{title}</h3>
-      {body ? <p className="mt-1 max-w-md text-13 text-helix-muted">{body}</p> : null}
+      <h3 className="text-15 font-semibold text-[#141414]">{title}</h3>
+      {body ? <p className="mt-1 max-w-md text-13 text-[#6E6B65]">{body}</p> : null}
       {action ? <div className="mt-4">{action}</div> : null}
     </div>
   )
@@ -76,12 +76,12 @@ export function HelixKpi({
   return (
     <div
       className={cn(
-        'rounded-[16px] border border-helix-border bg-helix-surface px-5 py-4',
+        'rounded-xl border border-[#D9D4CB] bg-[#FFFEFA] px-4 py-3.5 shadow-2xs',
         className
       )}
     >
-      <div className="helix-title text-28 tabular-nums leading-none">{value}</div>
-      <p className="mt-1.5 text-13 text-helix-muted">{label}</p>
+      <div className="font-display text-24 font-bold text-[#141414] tabular-nums leading-none">{value}</div>
+      <p className="mt-1.5 text-12 text-[#6E6B65]">{label}</p>
     </div>
   )
 }
@@ -98,13 +98,13 @@ export function Pill({
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-full px-2 py-0.5 text-11 font-medium',
-        tone === 'core' && 'bg-helix-ink text-helix-surface',
-        tone === 'demo' && 'bg-helix-accent-soft text-helix-accent',
-        tone === 'preview' && 'border border-helix-border bg-helix-canvas text-helix-muted',
-        tone === 'live' && 'bg-helix-accent-soft text-helix-ok',
-        tone === 'accent' && 'bg-helix-accent-soft text-helix-accent',
-        tone === 'warn' && 'bg-[#f8eedd] text-helix-warn',
+        'inline-flex items-center rounded-md px-2 py-0.5 text-11 font-medium',
+        tone === 'core' && 'bg-[#141414] text-white',
+        tone === 'demo' && 'border border-[#D9D4CB] bg-[#F7F5F0] text-[#141414]',
+        tone === 'preview' && 'border border-[#D9D4CB] bg-[#F7F5F0] text-[#6E6B65]',
+        tone === 'live' && 'bg-[#0B6E4F]/10 text-[#0B6E4F] border border-[#0B6E4F]/30',
+        tone === 'accent' && 'bg-[#0B6E4F]/10 text-[#0B6E4F] border border-[#0B6E4F]/30',
+        tone === 'warn' && 'bg-amber-500/10 text-amber-800 border border-amber-500/30',
         className
       )}
     >
@@ -121,7 +121,7 @@ export function JobSubnav({
   activeHref: string
 }) {
   return (
-    <nav aria-label="Section" className="mb-6 flex flex-wrap gap-1">
+    <nav aria-label="Section" className="mb-6 flex flex-wrap gap-1.5">
       {items.map(item => {
         const active = activeHref === item.href || activeHref.startsWith(`${item.href}/`)
         return (
@@ -129,10 +129,10 @@ export function JobSubnav({
             key={item.href}
             href={item.href}
             className={cn(
-              'rounded-full px-3 py-1.5 text-13 transition-colors',
+              'rounded-lg px-3 py-1.5 text-12 font-medium transition-all duration-150',
               active
-                ? 'bg-helix-ink text-helix-surface'
-                : 'text-helix-muted hover:bg-helix-canvas hover:text-helix-ink'
+                ? 'bg-[#141414] text-white shadow-xs'
+                : 'text-[#6E6B65] hover:bg-[#E6E2D9] hover:text-[#141414]'
             )}
           >
             {item.label}
@@ -142,17 +142,3 @@ export function JobSubnav({
     </nav>
   )
 }
-
-export function HelixSelect({
-  className,
-  children,
-  ...props
-}: React.SelectHTMLAttributes<HTMLSelectElement>) {
-  return (
-    <select className={cn('helix-field', className)} {...props}>
-      {children}
-    </select>
-  )
-}
-
-export const KPI = HelixKpi

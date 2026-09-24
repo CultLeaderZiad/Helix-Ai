@@ -21,7 +21,7 @@ export default async function AdminFaqPage() {
 
   return (
     <ConsoleShell variant="admin" email={session.user.email ?? ''} businessName={null}>
-      <div className="mx-auto w-full max-w-6xl">
+      <div className="w-full">
         <AdminTabs />
         <FaqManagerView initialFaqs={faqs} />
       </div>

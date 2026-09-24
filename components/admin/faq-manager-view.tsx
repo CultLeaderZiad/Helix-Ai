@@ -172,8 +172,8 @@ export function FaqManagerView({ initialFaqs }: FaqManagerViewProps) {
           className={cn(
             'flex items-center justify-between rounded-xl border p-3.5 text-xs',
             feedback.type === 'success'
-              ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-300'
-              : 'border-rose-500/40 bg-rose-500/10 text-rose-300'
+              ? 'border-[#0B6E4F]/30 bg-[#0B6E4F]/10 text-[#0B6E4F] font-semibold'
+              : 'border-rose-300 bg-rose-50 text-rose-700 font-semibold'
           )}
         >
           <span>{feedback.text}</span>
@@ -189,8 +189,8 @@ export function FaqManagerView({ initialFaqs }: FaqManagerViewProps) {
 
       {/* FAQs List Table */}
       <div className="rounded-2xl border border-helix-border bg-helix-canvas overflow-hidden shadow-xl">
-        <div className="p-4 border-b border-helix-border/80 flex items-center justify-between bg-[#111c34]">
-          <span className="text-xs font-semibold uppercase tracking-wider text-helix-ink/80">
+        <div className="p-4 border-b border-helix-border/80 flex items-center justify-between bg-helix-surface">
+          <span className="text-xs font-semibold uppercase tracking-wider text-helix-ink">
             Current Questions ({faqs.length})
           </span>
           <span className="text-[11px] text-helix-muted font-mono">
@@ -209,7 +209,7 @@ export function FaqManagerView({ initialFaqs }: FaqManagerViewProps) {
                 key={item.id}
                 className={cn(
                   'p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-colors',
-                  item.is_active ? 'bg-transparent' : 'bg-slate-900/40 opacity-70'
+                  item.is_active ? 'bg-transparent' : 'bg-helix-canvas/60 opacity-80'
                 )}
               >
                 <div className="space-y-1.5 max-w-3xl">
@@ -217,15 +217,15 @@ export function FaqManagerView({ initialFaqs }: FaqManagerViewProps) {
                     <span className="text-xs font-mono font-bold text-helix-muted">
                       #{idx + 1}
                     </span>
-                    <span className="rounded-md border border-helix-border bg-slate-800 px-2 py-0.5 text-[10px] font-mono uppercase text-helix-ink/80">
+                    <span className="rounded-md border border-helix-border bg-helix-canvas px-2 py-0.5 text-[10px] font-mono uppercase text-helix-ink">
                       {item.category || 'General'}
                     </span>
                     <span
                       className={cn(
                         'rounded-full px-2 py-0.5 text-[9px] font-mono font-semibold uppercase',
                         item.is_active
-                          ? 'border border-emerald-500/40 bg-emerald-500/10 text-emerald-400'
-                          : 'border border-helix-border bg-slate-800 text-helix-muted'
+                          ? 'border border-[#0B6E4F]/30 bg-[#0B6E4F]/10 text-[#0B6E4F]'
+                          : 'border border-helix-border bg-helix-canvas text-helix-muted'
                       )}
                     >
                       {item.is_active ? 'Active' : 'Hidden'}
@@ -354,8 +354,8 @@ export function FaqManagerView({ initialFaqs }: FaqManagerViewProps) {
                     className={cn(
                       'w-full flex items-center justify-center gap-2 rounded-xl border px-3 py-2 text-xs font-semibold transition-colors',
                       formIsActive
-                        ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-300'
-                        : 'border-helix-border bg-slate-800 text-helix-muted'
+                        ? 'border-[#0B6E4F]/40 bg-[#0B6E4F]/10 text-[#0B6E4F]'
+                        : 'border-helix-border bg-helix-surface text-helix-muted'
                     )}
                   >
                     {formIsActive ? <Check className="size-3.5" /> : <X className="size-3.5" />}
@@ -369,7 +369,7 @@ export function FaqManagerView({ initialFaqs }: FaqManagerViewProps) {
               <button
                 type="button"
                 onClick={() => setModalOpen(false)}
-                className="rounded-xl border border-helix-border px-4 py-2 text-xs text-helix-ink/80 hover:bg-slate-800"
+                className="rounded-xl border border-helix-border bg-helix-canvas px-4 py-2 text-xs font-semibold text-helix-ink hover:bg-helix-border/40 transition-colors"
               >
                 Cancel
               </button>

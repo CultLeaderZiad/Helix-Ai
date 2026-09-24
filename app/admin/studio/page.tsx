@@ -33,7 +33,7 @@ export default async function AdminStudioPage() {
 
   return (
     <ConsoleShell variant="admin" email={session.user.email ?? ''} businessName={null}>
-      <div className="mx-auto w-full max-w-6xl space-y-8">
+      <div className="w-full space-y-8">
         <PageHeader
           title="System catalog"
           subtitle={`Core production packs + preview add-ons. Demo is not live. ${CORE_SYSTEM_COUNT} core · ${PREVIEW_SYSTEM_COUNT} preview.`}

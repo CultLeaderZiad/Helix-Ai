@@ -1,0 +1,24 @@
+{
+  "id": "competitor-pricing-digest",
+  "label": "Competitor Pricing Digest",
+  "label_ar": "ملخص أسعار المنافسين",
+  "description": "Dynamic JS evaluation of SaaS or agency pricing tiers with structured markdown digest generation.",
+  "mode": "digest",
+  "engine_default": "dynamic",
+  "adaptive": true,
+  "max_pages": 30,
+  "allow": [".*/(pricing|plans|products|rates|الأسعار|باقات).*"],
+  "deny": [".*/(terms|privacy|signin).*"],
+  "selectors": {
+    "company_name": { "css": "h1, title, meta[property='og:site_name']", "adaptive": true },
+    "emails": { "css": "a[href^='mailto:']", "attr": "href", "adaptive": true },
+    "phones": { "css": "a[href^='tel:']", "attr": "href", "adaptive": true }
+  },
+  "extract": {
+    "company_name": "string",
+    "markdown_excerpt": "string",
+    "emails": "string[]"
+  },
+  "ad_block": true,
+  "robots_obey": true
+}

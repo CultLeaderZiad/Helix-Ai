@@ -1,0 +1,29 @@
+{
+  "id": "directory-outbound",
+  "label": "B2B Directory Outbound",
+  "label_ar": "دليل الشركات وتوليد العملاء",
+  "description": "Crawl regional trade association listings, follow outward company domains, and isolate executive emails.",
+  "mode": "crawl",
+  "engine_default": "stealth",
+  "adaptive": true,
+  "max_pages": 100,
+  "allow": [".*/(company|listing|directory|member|profile)/.*"],
+  "deny": [".*/(search|filter|page=\\d+).*"],
+  "link_extractor": {
+    "unique": true
+  },
+  "selectors": {
+    "company_name": { "css": ".company-title, h1, .member-name", "adaptive": true },
+    "emails": { "css": "a[href^='mailto:']", "attr": "href", "adaptive": true },
+    "phones": { "css": "a[href^='tel:']", "attr": "href", "adaptive": true },
+    "address": { "css": ".city, .country, address", "adaptive": true }
+  },
+  "extract": {
+    "company_name": "string",
+    "emails": "string[]",
+    "phones": "string[]",
+    "address": "string"
+  },
+  "ad_block": true,
+  "robots_obey": true
+}

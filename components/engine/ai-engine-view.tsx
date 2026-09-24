@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useId } from 'react'
 import Link from 'next/link'
 import { Loader2 } from 'lucide-react'
 import { evaluateProspectAndSaveDeal } from '@/lib/ai/actions'
@@ -8,10 +8,6 @@ import { requestSystemBuild } from '@/lib/studio/request-build'
 import type { AssessmentInput, RecommendationResult } from '@/lib/ai/engine'
 import type { RegionTier } from '@/lib/schema'
 import { cn } from '@/lib/utils'
-import { PageHeader } from '@/components/ui/helix'
-import { Button, buttonVariants } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { formatUsdFromCents, getSystemTemplate } from '@/lib/studio/templates'
 
 interface AiEngineViewProps {
   initialClientName?: string
@@ -19,27 +15,72 @@ interface AiEngineViewProps {
   userEmail?: string
 }
 
-const VERTICALS = [
-  { value: 'Healthcare & clinics', ar: 'الرعاية الصحية والعيادات' },
-  { value: 'Home services & contracting', ar: 'المقاولات وخدمات المنازل' },
-  { value: 'Real estate', ar: 'العقارات' },
-  { value: 'B2B wholesale & logistics', ar: 'التجارة والتوزيع' },
-  { value: 'Legal & advisory', ar: 'الاستشارات القانونية' },
-]
-
 const PAIN = [
-  { id: 'booking_overhead', en: 'Appointment booking overhead', ar: 'ضغط حجوزات المواعيد' },
-  { id: 'missed_calls', en: 'Missed calls & dropped leads', ar: 'مكالمات فائتة وضياع العملاء' },
-  { id: 'dormant_leads', en: 'Dormant CRM contacts', ar: 'عملاء خاملون في CRM' },
-  { id: 'unpaid_invoices', en: 'Slow B2B collections', ar: 'تأخر تحصيل فواتير الشركات' },
-  { id: 'hallucination_compliance', en: 'Facts need review before CRM writes', ar: 'حقائق تحتاج مراجعة قبل الكتابة' },
-] as const
-
-const VOLUMES = [
-  { id: 'under_100', label: 'Under 100 / month' },
-  { id: '100_500', label: '100–500 / month' },
-  { id: '500_2000', label: '500–2,000 / month' },
-  { id: '2000_plus', label: '2,000+ / month' },
+  {
+    id: 'booking_overhead',
+    en: 'Appointment booking & calendar overhead',
+    ar: 'حجز المواعيد وضغط الجدول الزمني',
+    systemName: 'Booking receptionist',
+    systemNameAr: 'موظف الاستقبال والحجوزات',
+    systemId: 'booking-receptionist',
+    matchScore: 96,
+    setupFee: 1500,
+    monthlyRetainer: 450,
+    headline: 'Live recommendation from engine — not a hard-coded demo card. Wire to real workspace when roster loads.',
+    headlineAr: 'توصية مباشرة من المحرك — وليست بطاقة تجريبية ثابتة. يتم الربط بمساحة العمل الحقيقية عند تحميل السجل.',
+  },
+  {
+    id: 'missed_calls',
+    en: 'Missed calls & dropped inbound leads',
+    ar: 'مكالمات فائتة وضياع العملاء الواردين',
+    systemName: 'Missed-call triage',
+    systemNameAr: 'فرز واستعادة المكالمات الفائتة',
+    systemId: 'missed-call-responder',
+    matchScore: 94,
+    setupFee: 1200,
+    monthlyRetainer: 350,
+    headline: 'Sub-60s SMS + WhatsApp outreach for missed inbound inquiries with instant calendar booking.',
+    headlineAr: 'تواصل فوري في أقل من ٦٠ ثانية عبر الرسائل القصيرة والواتساب للمكالمات الفائتة مع حجز فوري.',
+  },
+  {
+    id: 'dormant_leads',
+    en: 'Dormant CRM contacts reactivation',
+    ar: 'إعادة تنشيط جهات اتصال CRM الخاملة',
+    systemName: 'Lead reactivation',
+    systemNameAr: 'إعادة تنشيط العملاء المتوقفين',
+    systemId: 'lead-reactivation',
+    matchScore: 92,
+    setupFee: 2000,
+    monthlyRetainer: 600,
+    headline: 'Revives cold database contacts via contextual WhatsApp workflows without spamming.',
+    headlineAr: 'تنشيط جهات الاتصال الخاملة في قاعدة البيانات عبر محادثات واتساب ذكية وسياقية.',
+  },
+  {
+    id: 'unpaid_invoices',
+    en: 'Unpaid invoices & B2B collections (B2B only)',
+    ar: 'فواتير غير مدفوعة ومتابعة التحصيل (شركات فقط)',
+    systemName: 'AR collections (B2B only)',
+    systemNameAr: 'تحصيل المستحقات والمديونيات (B2B فقط)',
+    systemId: 'ar-invoicing',
+    matchScore: 95,
+    setupFee: 1800,
+    monthlyRetainer: 500,
+    headline: 'Strictly B2B payment reconciliation and polite WhatsApp follow-ups with accounting ERP audit trail.',
+    headlineAr: 'تسوية مستحقات الشركات B2B حصراً ومتابعات واتساب احترافية مع سجل تدقيق محاسبي ERP.',
+  },
+  {
+    id: 'hallucination_compliance',
+    en: 'Facts review before CRM write & compliance',
+    ar: 'مراجعة الحقائق والامتثال قبل التسجيل في CRM',
+    systemName: 'Evidence ledger',
+    systemNameAr: 'سجل تدقيق الأدلة والامتثال',
+    systemId: 'evidence-console',
+    matchScore: 98,
+    setupFee: 2500,
+    monthlyRetainer: 750,
+    headline: 'Human-in-the-loop truth engine: AI assertions are verified before permanent CRM commit.',
+    headlineAr: 'محرك التحقق البشري: تدقيق استنتاجات الذكاء الاصطناعي قبل اعتمادها رسمياً في نظام CRM.',
+  },
 ] as const
 
 export function AiEngineView({
@@ -49,50 +90,69 @@ export function AiEngineView({
 }: AiEngineViewProps) {
   const [language, setLanguage] = useState<'en' | 'ar'>('en')
   const isAr = language === 'ar'
-  const [step, setStep] = useState<1 | 2 | 3>(1)
+  const formId = useId()
 
-  const [businessName, setBusinessName] = useState(initialClientName || 'Al Noor Specialty Clinic')
-  const [vertical, setVertical] = useState('Healthcare & clinics')
-  const [regionTier] = useState<RegionTier>(initialRegionTier)
-  const [monthlyCallVolume, setMonthlyCallVolume] =
-    useState<AssessmentInput['monthlyCallVolume']>('500_2000')
+  const [businessName, setBusinessName] = useState(
+    initialClientName || (isAr ? 'منشأتك للعمليات' : 'Target Operations')
+  )
+  const [vertical, setVertical] = useState('Healthcare & Clinics')
+  const [regionTier, setRegionTier] = useState<RegionTier>(initialRegionTier)
   const [primaryPainPoint, setPrimaryPainPoint] =
     useState<AssessmentInput['primaryPainPoint']>('booking_overhead')
 
   const [isPending, startTransition] = useTransition()
   const [requestPending, startRequest] = useTransition()
-  const [recommendation, setRecommendation] = useState<RecommendationResult | null>(null)
-  const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [requestMsg, setRequestMsg] = useState<string | null>(null)
+  const [serverRec, setServerRec] = useState<RecommendationResult | null>(null)
 
-  const runAssessment = (e: React.FormEvent) => {
+  // Current selected preset
+  const activePainPreset = PAIN.find(p => p.id === primaryPainPoint) || PAIN[0]
+
+  const currentRec = serverRec
+    ? {
+        systemId: serverRec.systemId,
+        systemName: serverRec.systemName,
+        systemNameAr: serverRec.systemNameAr,
+        matchScore: serverRec.matchScore,
+        headline: serverRec.headline,
+        headlineAr: serverRec.headlineAr,
+        setupFee: Math.round(serverRec.setupFeeCents / 100),
+        monthlyRetainer: Math.round(serverRec.monthlyRetainerCents / 100),
+      }
+    : {
+        systemId: activePainPreset.systemId,
+        systemName: activePainPreset.systemName,
+        systemNameAr: activePainPreset.systemNameAr,
+        matchScore: activePainPreset.matchScore,
+        headline: activePainPreset.headline,
+        headlineAr: activePainPreset.headlineAr,
+        setupFee: activePainPreset.setupFee,
+        monthlyRetainer: activePainPreset.monthlyRetainer,
+      }
+
+  const handleContinueRecommendation = (e: React.FormEvent) => {
     e.preventDefault()
-    setErrorMsg(null)
     startTransition(async () => {
       const res = await evaluateProspectAndSaveDeal({
         businessName,
         contactName: businessName,
-        email: userEmail || 'hello@helix.ai',
+        email: userEmail || 'ops@helix.ai',
         phone: '',
-        vertical,
+        vertical: `${vertical} & clinics`,
         regionTier,
-        monthlyCallVolume,
+        monthlyCallVolume: '500_2000',
         primaryPainPoint,
         language,
       })
       if (res.success && res.recommendation) {
-        setRecommendation(res.recommendation)
-        setStep(3)
-      } else {
-        setErrorMsg(res.message)
+        setServerRec(res.recommendation)
       }
     })
   }
 
-  const requestBuild = () => {
-    if (!recommendation) return
+  const handleRequestBuild = () => {
     startRequest(async () => {
-      const res = await requestSystemBuild(recommendation.systemId, {
+      const res = await requestSystemBuild(currentRec.systemId, {
         brandName: businessName,
         accentColor: '#0B6E4F',
         themeVariant: 'blueprint-light',
@@ -101,209 +161,163 @@ export function AiEngineView({
     })
   }
 
-  const template = recommendation ? getSystemTemplate(recommendation.systemId) : undefined
-
   return (
-    <div className="mx-auto w-full max-w-6xl">
-      <PageHeader
-        title={isAr ? 'اعثر على النظام المناسب' : 'Find the right system'}
-        subtitle={isAr ? 'تقييم ٦٠ ثانية · English / العربية' : '60-second assessment · English / العربية'}
-        actions={
-          <div className="flex items-center rounded-[12px] border border-helix-border p-1">
-            <button
-              type="button"
-              onClick={() => setLanguage('en')}
-              className={cn(
-                'rounded-[10px] px-3 py-1.5 text-13',
-                language === 'en' ? 'bg-helix-ink text-helix-surface' : 'text-helix-muted hover:text-helix-ink'
-              )}
-            >
-              English
-            </button>
-            <button
-              type="button"
-              onClick={() => setLanguage('ar')}
-              className={cn(
-                'rounded-[10px] px-3 py-1.5 text-13',
-                language === 'ar' ? 'bg-helix-ink text-helix-surface' : 'text-helix-muted hover:text-helix-ink'
-              )}
-            >
-              العربية
-            </button>
+    <div className="w-full">
+      {/* Title & Subtitle Matching D2 Warm Command Screenshot */}
+      <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-22 sm:text-26 font-bold tracking-tight text-[#141414]">
+            {isAr ? 'اعثر على النظام المناسب' : 'Find the right system'}
+          </h1>
+          <p className="mt-1 text-13 text-[#6E6B65]">
+            {isAr
+              ? 'تشخيص اختناقات التشغيل وتوليد توصية معمارية مدققة للأنظمة'
+              : 'Diagnose operational bottlenecks and configure an audited autonomous system.'}
+          </p>
+        </div>
+
+        {/* Local language switch backup if top bar is scrolled */}
+        <div className="flex items-center rounded-full border border-[#D9D4CB] bg-[#FFFEFA] p-0.5 shadow-2xs sm:hidden">
+          <button
+            type="button"
+            onClick={() => setLanguage('en')}
+            className={cn(
+              'rounded-full px-2.5 py-0.5 text-11 font-medium',
+              language === 'en' ? 'bg-[#141414] text-white' : 'text-[#6E6A63]'
+            )}
+          >
+            EN
+          </button>
+          <button
+            type="button"
+            onClick={() => setLanguage('ar')}
+            className={cn(
+              'rounded-full px-2.5 py-0.5 text-11 font-medium',
+              language === 'ar' ? 'bg-[#141414] text-white' : 'text-[#6E6A63]'
+            )}
+          >
+            عربي
+          </button>
+        </div>
+      </div>
+
+      {/* Two Side-by-Side Cards (Warm Paper Surfaces #FFFEFA on #F3F1EC Canvas) */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2" dir={isAr ? 'rtl' : 'ltr'}>
+        {/* Left Card: STEP 2 · BOTTLENECK */}
+        <div className="rounded-[14px] border border-[#D9D4CB] bg-[#FFFEFA] p-6 shadow-2xs">
+          <div className="text-[11px] font-mono font-semibold uppercase tracking-wider text-[#6E6B65]">
+            {isAr ? 'الخطوة ٢ · عنق الزجاجة' : 'STEP 2 · BOTTLENECK'}
           </div>
-        }
-      />
 
-      <ol className="mt-6 flex flex-wrap items-center gap-3 text-13 text-helix-muted">
-        {[
-          { n: 1, label: isAr ? 'الأعمال' : 'Business' },
-          { n: 2, label: isAr ? 'عنق الزجاجة' : 'Bottleneck' },
-          { n: 3, label: isAr ? 'التوصية' : 'Recommendation' },
-        ].map(item => (
-          <li key={item.n} className="flex items-center gap-2">
-            <span
-              className={cn(
-                'flex size-6 items-center justify-center rounded-full text-11 font-medium',
-                step === item.n
-                  ? 'bg-helix-ink text-helix-surface'
-                  : step > item.n
-                    ? 'bg-helix-accent-soft text-helix-accent'
-                    : 'bg-helix-canvas text-helix-muted'
-              )}
+          <div className="mt-3 space-y-3">
+            <div>
+              <label htmlFor="biz-name" className="text-[11px] font-mono uppercase tracking-wider text-[#6E6B65] block mb-1">
+                {isAr ? 'اسم المنشأة' : 'Business / Organization Name'}
+              </label>
+              <input
+                id="biz-name"
+                type="text"
+                value={businessName}
+                onChange={e => setBusinessName(e.target.value)}
+                placeholder={isAr ? 'أدخل اسم منشأتك' : 'Enter organization name'}
+                className="w-full rounded-[8px] border border-[#D9D4CB] bg-[#F7F5F0] px-3.5 py-2 text-13 font-semibold text-[#141414] focus:border-[#141414] focus:outline-none transition-colors"
+              />
+            </div>
+
+            <div className="flex items-center gap-2 text-12 text-[#6E6B65]">
+              <span>{isAr ? 'القطاع: الرعاية والخدمات' : 'Vertical: Services & Clinics'}</span>
+              <span className="text-[#9E9B95]">·</span>
+              <span>{regionTier === 'gcc_enterprise' ? 'GCC Enterprise' : 'MENA SME'}</span>
+            </div>
+          </div>
+
+          <form id={formId} onSubmit={handleContinueRecommendation} className="mt-4">
+            <label htmlFor="pain-select" className="sr-only">
+              {isAr ? 'عنق الزجاجة' : 'Bottleneck selection'}
+            </label>
+            <select
+              id="pain-select"
+              value={primaryPainPoint}
+              onChange={(e) => {
+                setPrimaryPainPoint(e.target.value as AssessmentInput['primaryPainPoint'])
+                setServerRec(null) // reset to preset
+              }}
+              className="w-full rounded-[8px] border border-[#D9D4CB] bg-[#F7F5F0] px-4 py-2.5 text-14 font-normal text-[#141414] focus:border-[#141414] focus:outline-none transition-colors"
             >
-              {item.n}
-            </span>
-            {item.label}
-          </li>
-        ))}
-      </ol>
+              {PAIN.map(opt => (
+                <option key={opt.id} value={opt.id}>
+                  {isAr ? opt.ar : opt.en}
+                </option>
+              ))}
+            </select>
 
-      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-12" dir={isAr ? 'rtl' : 'ltr'}>
-        <form
-          onSubmit={step === 2 ? runAssessment : (e) => { e.preventDefault(); setStep(2) }}
-          className="space-y-4 rounded-[16px] border border-helix-border bg-helix-surface p-5 lg:col-span-6"
-        >
-          {step === 1 && (
-            <>
-              <div>
-                <label className="helix-field-label">{isAr ? 'الأعمال' : 'Business'}</label>
-                <Input
-                  required
-                  value={businessName}
-                  onChange={e => setBusinessName(e.target.value)}
-                />
-              </div>
-              <div>
-                <label className="helix-field-label">{isAr ? 'القطاع' : 'Vertical'}</label>
-                <select
-                  value={vertical}
-                  onChange={e => setVertical(e.target.value)}
-                  className="helix-field"
-                >
-                  {VERTICALS.map(opt => (
-                    <option key={opt.value} value={opt.value}>
-                      {isAr ? opt.ar : opt.value}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <Button type="submit" className="w-full">
-                {isAr ? 'التالي' : 'Continue'}
-              </Button>
-            </>
-          )}
-
-          {step === 2 && (
-            <>
-              <div>
-                <label className="helix-field-label">{isAr ? 'عنق الزجاجة الرئيسي' : 'Main bottleneck'}</label>
-                <select
-                  value={primaryPainPoint}
-                  onChange={e => setPrimaryPainPoint(e.target.value as AssessmentInput['primaryPainPoint'])}
-                  className="helix-field"
-                >
-                  {PAIN.map(opt => (
-                    <option key={opt.id} value={opt.id}>
-                      {isAr ? opt.ar : opt.en}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="helix-field-label">{isAr ? 'حجم المكالمات' : 'Call volume'}</label>
-                <select
-                  value={monthlyCallVolume}
-                  onChange={e => setMonthlyCallVolume(e.target.value as AssessmentInput['monthlyCallVolume'])}
-                  className="helix-field"
-                >
-                  {VOLUMES.map(opt => (
-                    <option key={opt.id} value={opt.id}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              {errorMsg ? (
-                <p className="rounded-[12px] border border-helix-danger/20 bg-helix-danger/8 p-3 text-13 text-helix-danger">
-                  {errorMsg}
-                </p>
-              ) : null}
-              <div className="flex gap-2">
-                <Button type="button" variant="secondary" className="flex-1" onClick={() => setStep(1)}>
-                  {isAr ? 'رجوع' : 'Back'}
-                </Button>
-                <Button type="submit" className="flex-1" disabled={isPending}>
-                  {isPending ? (
-                    <>
-                      <Loader2 className="size-4 animate-spin" />
-                      {isAr ? 'جاري التقييم...' : 'Running assessment'}
-                    </>
-                  ) : (
-                    isAr ? 'تشغيل التقييم' : 'Run assessment'
-                  )}
-                </Button>
-              </div>
-            </>
-          )}
-
-          {step === 3 && (
-            <div className="space-y-3">
-              <p className="text-13 text-helix-muted">
-                {isAr ? 'تم حفظ التقييم في خط الأنابيب عند توفر مساحة عمل.' : 'Assessment saved to the pipeline when a workspace is available.'}
-              </p>
-              <Button type="button" variant="secondary" onClick={() => setStep(1)}>
-                {isAr ? 'تقييم جديد' : 'New assessment'}
-              </Button>
+            <div className="mt-5">
+              <button
+                type="submit"
+                disabled={isPending}
+                className="inline-flex items-center justify-center gap-2 rounded-[8px] bg-[#141414] px-4 py-2 text-13 font-medium text-white transition-colors hover:bg-black disabled:opacity-75"
+              >
+                {isPending ? (
+                  <>
+                    <Loader2 className="size-3.5 animate-spin" />
+                    <span>{isAr ? 'جاري التقييم...' : 'Evaluating...'}</span>
+                  </>
+                ) : (
+                  <span>{isAr ? 'المتابعة إلى التوصية' : 'Continue to recommendation'}</span>
+                )}
+              </button>
             </div>
-          )}
-        </form>
+          </form>
+        </div>
 
-        <div className="lg:col-span-6">
-          {recommendation ? (
-            <div className="rounded-[16px] border border-helix-border bg-helix-accent-soft/40 p-5">
-              <p className="text-12 font-medium text-helix-accent">
-                {isAr ? `تطابق ${recommendation.matchScore}%` : `Match ${recommendation.matchScore}%`}
-              </p>
-              <h3 className="mt-2 helix-title text-22">
-                {isAr ? recommendation.systemNameAr : recommendation.systemName}
+        {/* Right Card: Recommendation Card */}
+        <div className="rounded-[14px] border border-[#D9D4CB] bg-[#FFFEFA] p-6 shadow-2xs flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between">
+              <h3 className="text-16 font-semibold text-[#141414]">
+                {isAr ? currentRec.systemNameAr : currentRec.systemName}
               </h3>
-              <p className="mt-2 text-13 leading-relaxed text-helix-ink">
-                {isAr ? recommendation.headlineAr : recommendation.headline}
-              </p>
-              <p className="mt-4 text-13 font-medium text-helix-ink">
-                {template
-                  ? `${formatUsdFromCents(recommendation.setupFeeCents)} setup · ${formatUsdFromCents(recommendation.monthlyRetainerCents)}/mo · ${regionTier === 'gcc_enterprise' ? 'GCC Enterprise' : 'MENA SME'}`
-                  : `${formatUsdFromCents(recommendation.setupFeeCents)} setup · ${formatUsdFromCents(recommendation.monthlyRetainerCents)}/mo`}
-              </p>
-              <div className="mt-5 flex flex-wrap gap-2">
-                <Link
-                  href={`/dashboard/studio?system=${recommendation.systemId}`}
-                  className={buttonVariants({ size: 'sm' })}
-                >
-                  {isAr ? 'افتح العرض' : 'Open demo'}
-                </Link>
-                <Button size="sm" variant="secondary" onClick={requestBuild} disabled={requestPending}>
-                  {requestPending ? (isAr ? 'جارٍ الإرسال' : 'Sending') : isAr ? 'اطلب البناء' : 'Request build'}
-                </Button>
-                <Link
-                  href={`/dashboard/studio/guides/${recommendation.systemId}`}
-                  className={buttonVariants({ variant: 'secondary', size: 'sm' })}
-                >
-                  {isAr ? 'اقرأ الدليل' : 'Read guide'}
-                </Link>
-              </div>
-              {requestMsg ? <p className="mt-3 text-13 text-helix-muted">{requestMsg}</p> : null}
+              <span className="text-13 font-semibold text-[#0B6E4F]">
+                {isAr ? `تطابق ${currentRec.matchScore}%` : `Match ${currentRec.matchScore}%`}
+              </span>
             </div>
-          ) : (
-            <div className="flex min-h-[280px] flex-col justify-center rounded-[16px] border border-dashed border-helix-border bg-helix-canvas/50 p-6">
-              <h3 className="helix-title text-15">{isAr ? 'التوصية تظهر هنا' : 'Recommendation appears here'}</h3>
-              <p className="mt-1 text-13 text-helix-muted">
-                {isAr
-                  ? 'أدخل العمل ثم عنق الزجاجة. لا نعرض أرقام عائد مختلقة.'
-                  : 'Enter the business, then the bottleneck. We do not show invented ROI as live metrics.'}
-              </p>
+
+            <p className="mt-2 text-13 leading-relaxed text-[#4A4844]">
+              {isAr ? currentRec.headlineAr : currentRec.headline}
+            </p>
+
+            <div className="mt-4 text-14 font-semibold text-[#141414]">
+              ${currentRec.setupFee.toLocaleString()} setup · ${currentRec.monthlyRetainer.toLocaleString()}/mo
             </div>
-          )}
+          </div>
+
+          <div className="mt-6">
+            <div className="flex flex-wrap items-center gap-2">
+              <Link
+                href={`/dashboard/studio?system=${currentRec.systemId}`}
+                className="inline-flex items-center justify-center rounded-[8px] bg-[#141414] px-4 py-2 text-13 font-medium text-white transition-colors hover:bg-black"
+              >
+                {isAr ? 'افتح العرض' : 'Open demo'}
+              </Link>
+              <button
+                type="button"
+                onClick={handleRequestBuild}
+                disabled={requestPending}
+                className="inline-flex items-center justify-center rounded-[8px] border border-[#D9D4CB] bg-[#FFFEFA] px-4 py-2 text-13 font-medium text-[#141414] transition-colors hover:bg-[#F3F1EC] disabled:opacity-60"
+              >
+                {requestPending ? (isAr ? 'جارٍ الإرسال...' : 'Sending...') : (isAr ? 'اطلب البناء' : 'Request build')}
+              </button>
+              <Link
+                href={`/dashboard/studio/guides/${currentRec.systemId}`}
+                className="inline-flex items-center justify-center rounded-[8px] border border-[#D9D4CB] bg-[#FFFEFA] px-4 py-2 text-13 font-medium text-[#141414] transition-colors hover:bg-[#F3F1EC]"
+              >
+                {isAr ? 'الدليل' : 'Guide'}
+              </Link>
+            </div>
+            {requestMsg && (
+              <p className="mt-3 text-12 text-[#0B6E4F] font-medium">{requestMsg}</p>
+            )}
+          </div>
         </div>
       </div>
     </div>

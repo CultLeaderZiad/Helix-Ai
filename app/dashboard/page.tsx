@@ -22,7 +22,13 @@ const SYSTEM_NAME: Record<SystemType, string> = {
   booking_receptionist: 'Booking receptionist',
   lead_attribution: 'Lead attribution',
   lead_reactivation: 'Lead reactivation',
-  ar_collections: 'A/R collections',
+  ar_collections: 'A/R collections (B2B)',
+  rival_watch: 'Rival Watch',
+  handbook_bot: 'Handbook Answers',
+  seo_scorecard: 'Visibility Scorecard',
+  deck_factory: 'Deck Factory',
+  shorts_factory: 'Clip Factory',
+  lead_generation: 'Lead Generation',
 }
 
 // The real table each system's weekly activity sentence is computed from.
@@ -32,6 +38,12 @@ const ACTIVITY_SOURCE: Record<SystemType, { table: string; ts: string; label: st
   lead_attribution: { table: 'attribution_events', ts: 'occurred_at', label: 'attribution events' },
   lead_reactivation: { table: 'reactivation_touches', ts: 'created_at', label: 'reactivation touches' },
   ar_collections: { table: 'payment_promises', ts: 'created_at', label: 'payment promises logged' },
+  rival_watch: { table: 'activity_log', ts: 'created_at', label: 'competitor scans run' },
+  handbook_bot: { table: 'activity_log', ts: 'created_at', label: 'SOP queries answered' },
+  seo_scorecard: { table: 'activity_log', ts: 'created_at', label: 'visibility audits completed' },
+  deck_factory: { table: 'activity_log', ts: 'created_at', label: 'proposal decks built' },
+  shorts_factory: { table: 'activity_log', ts: 'created_at', label: 'video clips exported' },
+  lead_generation: { table: 'leadgen_leads', ts: 'created_at', label: 'verified leads extracted' },
 }
 
 function formatCurrency(cents: number): string {
@@ -155,7 +167,7 @@ export default async function ClientDashboardPage() {
 
   return (
     <ConsoleShell variant="client" email={session.user.email ?? ''} businessName={client?.business_name ?? null}>
-      <div className="mx-auto w-full max-w-5xl">
+      <div className="w-full">
         <header className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <h1 className="font-display text-h2">{client?.business_name ?? 'Your workspace'}</h1>

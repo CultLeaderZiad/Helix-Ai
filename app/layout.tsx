@@ -69,8 +69,8 @@ export const viewport: Viewport = {
   maximumScale: 5,
   colorScheme: 'light',
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#F4F4F2' },
-    { media: '(prefers-color-scheme: dark)', color: '#0F1115' },
+    { media: '(prefers-color-scheme: light)', color: '#F3F1EC' },
+    { media: '(prefers-color-scheme: dark)', color: '#1C1B19' },
   ],
 }
 
@@ -82,10 +82,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${spaceGrotesk.variable} bg-background`}
+      className={`${inter.variable} ${spaceGrotesk.variable} bg-[#F3F1EC] text-[#141414]`}
       suppressHydrationWarning
     >
-      <body className="antialiased" suppressHydrationWarning>
+      <body className="antialiased bg-[#F3F1EC] text-[#141414]" suppressHydrationWarning>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

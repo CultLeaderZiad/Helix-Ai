@@ -178,7 +178,7 @@ export default async function AnalyticsPage({
 
   return (
     <ConsoleShell variant="admin" email={session.user.email ?? ''} businessName={null}>
-      <div className="mx-auto w-full max-w-6xl">
+      <div className="w-full">
         <header className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <h1 className="font-display text-h2">Analytics</h1>

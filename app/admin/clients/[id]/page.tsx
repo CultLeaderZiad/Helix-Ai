@@ -101,7 +101,7 @@ export default async function AdminClientDetailPage({
 
   return (
     <ConsoleShell variant="admin" email={session.user.email ?? ''} businessName={null}>
-      <div className="mx-auto w-full max-w-5xl">
+      <div className="w-full">
         <header className="flex flex-col gap-1">
           <Link
             href="/admin"
@@ -316,7 +316,13 @@ const SYSTEM_GLOSS: Record<SystemType, string> = {
   booking_receptionist: 'Booking receptionist',
   lead_attribution: 'Lead attribution',
   lead_reactivation: 'Lead reactivation',
-  ar_collections: 'A/R collections',
+  ar_collections: 'A/R collections (B2B)',
+  rival_watch: 'Rival Watch',
+  handbook_bot: 'Handbook Answers',
+  seo_scorecard: 'Visibility Scorecard',
+  deck_factory: 'Deck Factory',
+  shorts_factory: 'Clip Factory',
+  lead_generation: 'Lead Generation',
 }
 
 const ACTIVITY_ICON: Record<CrmActivityType, typeof Phone> = {

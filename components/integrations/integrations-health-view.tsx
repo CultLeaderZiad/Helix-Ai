@@ -101,7 +101,7 @@ export function IntegrationsHealthView({ initialIntegrations, pingAction }: Inte
           type="button"
           onClick={handlePing}
           disabled={isPending}
-          className="flex items-center gap-2 rounded-xl border border-helix-border bg-slate-800/80 px-4 py-2 text-xs font-semibold text-helix-ink hover:bg-slate-700 transition-colors disabled:opacity-50"
+          className="flex items-center gap-2 rounded-xl border border-helix-border bg-helix-canvas px-4 py-2 text-xs font-semibold text-helix-ink hover:bg-helix-border/40 transition-colors disabled:opacity-50"
         >
           {isPending ? (
             <>
@@ -139,13 +139,13 @@ export function IntegrationsHealthView({ initialIntegrations, pingAction }: Inte
                   <Icon className="size-5" />
                 </div>
                 <span
-                  className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                  className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold ${
                     isConnected
-                      ? 'border border-emerald-500/40 bg-emerald-500/10 text-emerald-300'
-                      : 'border-yellow-500/40 bg-yellow-500/10 text-yellow-300'
+                      ? 'border border-[#0B6E4F]/30 bg-[#0B6E4F]/10 text-[#0B6E4F]'
+                      : 'border border-amber-600/30 bg-amber-500/10 text-amber-700'
                   }`}
                 >
-                  <span className={`size-1.5 rounded-full ${isConnected ? 'bg-emerald-400 animate-pulse' : 'bg-yellow-400'}`} />
+                  <span className={`size-1.5 rounded-full ${isConnected ? 'bg-[#0B6E4F] animate-pulse' : 'bg-amber-600'}`} />
                   {isConnected ? 'Connected' : int.status}
                 </span>
               </div>

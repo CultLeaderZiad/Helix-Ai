@@ -1,19 +1,36 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { signOut } from '@/lib/auth/sign-in'
-import { HelixMark } from '@/components/brand/helix-mark'
 import { NotificationBell } from '@/components/support/notification-bell'
-import { JobSubnav } from '@/components/ui/helix'
 import { cn } from '@/lib/utils'
-import { LogOut } from 'lucide-react'
+import {
+  Users,
+  Sparkles,
+  ListTodo,
+  PlugZap,
+  CreditCard,
+  Settings,
+  Building2,
+  BarChart3,
+  LogOut,
+  Cpu,
+  HelpCircle,
+  LayoutDashboard,
+  Menu,
+  X,
+  Target,
+} from 'lucide-react'
 
 export type ConsoleVariant = 'admin' | 'client'
 
 interface NavItem {
   href: string
   label: string
+  icon?: React.ComponentType<{ className?: string }>
+  badge?: string
   match: (path: string) => boolean
   section?: 'primary' | 'secondary'
 }
@@ -22,51 +39,77 @@ const ADMIN_NAV: NavItem[] = [
   {
     href: '/admin',
     label: 'Clients',
+    icon: Building2,
     section: 'primary',
-    match: p => p === '/admin' || p.startsWith('/admin/clients'),
+    match: p => p === '/admin' || (p.startsWith('/admin/clients') && !p.startsWith('/admin/crm')),
   },
   {
     href: '/admin/crm',
     label: 'Pipeline',
+    icon: Users,
     section: 'primary',
     match: p => p.startsWith('/admin/crm'),
   },
   {
     href: '/admin/studio',
     label: 'Systems',
+    icon: Sparkles,
     section: 'primary',
-    match: p =>
-      p.startsWith('/admin/studio') ||
-      p.startsWith('/admin/playbooks') ||
-      p.startsWith('/dashboard/studio'),
+    match: p => p === '/admin/studio' || p.startsWith('/admin/studio'),
+  },
+  {
+    href: '/dashboard/lead-generation',
+    label: 'Lead Generation',
+    icon: Target,
+    section: 'primary',
+    match: p => p.startsWith('/dashboard/lead-generation'),
   },
   {
     href: '/dashboard/engine',
     label: 'Intelligence',
+    icon: Cpu,
     section: 'primary',
-    match: p =>
-      p.startsWith('/dashboard/engine') ||
-      p.startsWith('/dashboard/reports') ||
-      p.startsWith('/admin/analytics') ||
-      p.startsWith('/admin/queue') ||
-      p.startsWith('/dashboard/queue') ||
-      p.startsWith('/dashboard/facts'),
+    match: p => p.startsWith('/dashboard/engine'),
+  },
+  {
+    href: '/dashboard/reports',
+    label: 'Reports',
+    icon: BarChart3,
+    section: 'primary',
+    match: p => p.startsWith('/dashboard/reports'),
+  },
+  {
+    href: '/admin/analytics',
+    label: 'Analytics',
+    icon: BarChart3,
+    section: 'primary',
+    match: p => p.startsWith('/admin/analytics'),
+  },
+  {
+    href: '/admin/queue',
+    label: 'Agent Queue',
+    icon: ListTodo,
+    section: 'primary',
+    match: p => p.startsWith('/admin/queue') || p.startsWith('/dashboard/queue'),
   },
   {
     href: '/admin/support',
     label: 'Support',
+    icon: HelpCircle,
     section: 'secondary',
-    match: p => p.startsWith('/admin/support'),
+    match: p => p.startsWith('/admin/support') || p.startsWith('/dashboard/support'),
   },
   {
     href: '/settings',
     label: 'Settings',
+    icon: Settings,
     section: 'secondary',
     match: p =>
       p.startsWith('/settings') ||
       p.startsWith('/admin/users') ||
       p.startsWith('/admin/pricing') ||
       p.startsWith('/admin/updates') ||
+      p.startsWith('/admin/webhooks') ||
       p.startsWith('/admin/faq'),
   },
 ]
@@ -74,127 +117,90 @@ const ADMIN_NAV: NavItem[] = [
 const CLIENT_NAV: NavItem[] = [
   {
     href: '/dashboard',
-    label: 'Home',
+    label: 'Overview',
+    icon: LayoutDashboard,
     section: 'primary',
     match: p => p === '/dashboard',
   },
   {
     href: '/dashboard/crm',
     label: 'Pipeline',
+    icon: Users,
     section: 'primary',
     match: p => p.startsWith('/dashboard/crm') || p.startsWith('/dashboard/contacts'),
   },
   {
     href: '/dashboard/studio',
     label: 'Systems',
+    icon: Sparkles,
     section: 'primary',
     match: p => p.startsWith('/dashboard/studio'),
   },
   {
-    href: '/dashboard/engine',
-    label: 'Intelligence',
+    href: '/dashboard/lead-generation',
+    label: 'Lead Generation',
+    icon: Target,
     section: 'primary',
-    match: p =>
-      p.startsWith('/dashboard/engine') ||
-      p.startsWith('/dashboard/reports') ||
-      p.startsWith('/dashboard/queue') ||
-      p.startsWith('/dashboard/facts'),
+    match: p => p.startsWith('/dashboard/lead-generation'),
+  },
+  {
+    href: '/dashboard/engine',
+    label: 'AI Engine',
+    icon: Cpu,
+    section: 'primary',
+    match: p => p.startsWith('/dashboard/engine'),
+  },
+  {
+    href: '/dashboard/reports',
+    label: 'Reports',
+    icon: BarChart3,
+    section: 'primary',
+    match: p => p.startsWith('/dashboard/reports'),
+  },
+  {
+    href: '/dashboard/queue',
+    label: 'Queue',
+    icon: ListTodo,
+    section: 'primary',
+    match: p => p.startsWith('/dashboard/queue') || p.startsWith('/dashboard/facts'),
+  },
+  {
+    href: '/dashboard/integrations',
+    label: 'Integrations',
+    icon: PlugZap,
+    section: 'secondary',
+    match: p => p.startsWith('/dashboard/integrations'),
+  },
+  {
+    href: '/dashboard/billing',
+    label: 'Billing',
+    icon: CreditCard,
+    section: 'secondary',
+    match: p => p.startsWith('/dashboard/billing'),
   },
   {
     href: '/dashboard/support',
     label: 'Support',
+    icon: HelpCircle,
     section: 'secondary',
     match: p => p.startsWith('/dashboard/support'),
   },
   {
     href: '/settings',
     label: 'Settings',
+    icon: Settings,
     section: 'secondary',
-    match: p =>
-      p.startsWith('/settings') ||
-      p.startsWith('/dashboard/billing') ||
-      p.startsWith('/dashboard/integrations'),
+    match: p => p.startsWith('/settings'),
   },
 ]
 
-const ADMIN_SYSTEMS_LINKS = [
-  { href: '/admin/studio', label: 'Catalog' },
-  { href: '/dashboard/studio', label: 'Demos' },
-  { href: '/admin/playbooks', label: 'Guides' },
-]
-
-const ADMIN_INTEL_LINKS = [
+// Secondary Top Rail for Intelligence / Engine
+const INTEL_TABS = [
   { href: '/dashboard/engine', label: 'Engine' },
   { href: '/dashboard/reports', label: 'Reports' },
   { href: '/admin/analytics', label: 'Analytics' },
   { href: '/admin/queue', label: 'Queue' },
 ]
-
-const CLIENT_INTEL_LINKS = [
-  { href: '/dashboard/engine', label: 'Engine' },
-  { href: '/dashboard/reports', label: 'Reports' },
-  { href: '/dashboard/queue', label: 'Queue' },
-  { href: '/dashboard/facts', label: 'Facts' },
-]
-
-const ADMIN_SETTINGS_LINKS = [
-  { href: '/settings', label: 'Workspace' },
-  { href: '/admin/users', label: 'Team' },
-  { href: '/admin/pricing', label: 'Pricing' },
-  { href: '/admin/updates', label: 'Updates' },
-  { href: '/admin/faq', label: 'FAQ' },
-]
-
-const CLIENT_SETTINGS_LINKS = [
-  { href: '/settings', label: 'Workspace' },
-  { href: '/dashboard/integrations', label: 'Integrations' },
-  { href: '/dashboard/billing', label: 'Billing' },
-]
-
-function subnavFor(pathname: string, variant: ConsoleVariant) {
-  if (variant === 'admin') {
-    if (
-      pathname.startsWith('/admin/studio') ||
-      pathname.startsWith('/dashboard/studio') ||
-      pathname.startsWith('/admin/playbooks')
-    ) {
-      return ADMIN_SYSTEMS_LINKS
-    }
-    if (
-      pathname.startsWith('/dashboard/engine') ||
-      pathname.startsWith('/dashboard/reports') ||
-      pathname.startsWith('/admin/analytics') ||
-      pathname.startsWith('/admin/queue') ||
-      pathname.startsWith('/dashboard/queue') ||
-      pathname.startsWith('/dashboard/facts')
-    ) {
-      return ADMIN_INTEL_LINKS
-    }
-    if (
-      pathname.startsWith('/settings') ||
-      pathname.startsWith('/admin/users') ||
-      pathname.startsWith('/admin/pricing') ||
-      pathname.startsWith('/admin/updates') ||
-      pathname.startsWith('/admin/faq')
-    ) {
-      return ADMIN_SETTINGS_LINKS
-    }
-    return null
-  }
-
-  if (
-    pathname.startsWith('/dashboard/engine') ||
-    pathname.startsWith('/dashboard/reports') ||
-    pathname.startsWith('/dashboard/queue') ||
-    pathname.startsWith('/dashboard/facts')
-  ) {
-    return CLIENT_INTEL_LINKS
-  }
-  if (pathname.startsWith('/settings') || pathname.startsWith('/dashboard/billing') || pathname.startsWith('/dashboard/integrations')) {
-    return CLIENT_SETTINGS_LINKS
-  }
-  return null
-}
 
 export function ConsoleShell({
   variant,
@@ -208,117 +214,193 @@ export function ConsoleShell({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false)
+  const [language, setLanguage] = useState<'en' | 'ar'>('en')
+
   const nav = variant === 'admin' ? ADMIN_NAV : CLIENT_NAV
   const title = variant === 'admin' ? 'Helix AI' : businessName ?? 'Workspace'
   const primary = nav.filter(item => item.section !== 'secondary')
   const secondary = nav.filter(item => item.section === 'secondary')
-  const subnav = subnavFor(pathname, variant)
-  const userInitial = email ? email.charAt(0).toUpperCase() : 'H'
-  const mobileNav = [...primary, ...secondary].slice(0, 5)
 
-  const navLink = (item: NavItem, layout: 'sidebar' | 'tab') => {
-    const active = item.match(pathname)
-    return (
-      <Link
-        key={item.href}
-        href={item.href}
-        aria-current={active ? 'page' : undefined}
-        className={cn(
-          layout === 'sidebar'
-            ? 'flex min-h-[36px] items-center rounded-[12px] px-3 py-2 text-14 font-medium transition-colors duration-150'
-            : 'flex min-h-[48px] flex-col items-center justify-center gap-1 border-t-2 py-1 text-12',
-          active
-            ? layout === 'sidebar'
-              ? 'bg-helix-canvas text-helix-ink'
-              : 'border-helix-ink text-helix-ink font-medium'
-            : layout === 'sidebar'
-              ? 'text-helix-muted hover:bg-helix-canvas/70 hover:text-helix-ink'
-              : 'border-transparent text-helix-muted hover:text-helix-ink',
-        )}
-      >
-        <span className="truncate">{item.label}</span>
-      </Link>
-    )
-  }
+  const isIntelRoute =
+    pathname.startsWith('/dashboard/engine') ||
+    pathname.startsWith('/dashboard/reports') ||
+    pathname.startsWith('/admin/analytics') ||
+    pathname.startsWith('/admin/queue') ||
+    pathname.startsWith('/dashboard/queue')
 
   return (
-    <div className="min-h-screen min-h-svh bg-helix-canvas p-3 text-helix-ink sm:p-4 lg:p-6">
-      <div className="helix-shell mx-auto flex min-h-[calc(100svh-1.5rem)] w-full max-w-[1280px] overflow-hidden lg:min-h-[calc(100svh-3rem)] lg:grid lg:grid-cols-[220px_1fr]">
-        <aside className="sticky top-0 hidden h-full min-h-[calc(100svh-3rem)] flex-col border-r border-helix-border bg-helix-surface lg:flex">
-          <div className="flex items-center gap-3 px-4 py-5">
-            <HelixMark size={32} rounded="rounded-[10px]" />
-            <div className="flex min-w-0 flex-col">
-              <span className="truncate text-15 font-semibold tracking-[-0.03em] text-helix-ink">
-                {title}
-              </span>
-              <span className="mt-0.5 text-11 font-medium uppercase tracking-[0.08em] text-helix-muted">
-                {variant === 'admin' ? 'Agency' : 'Workspace'}
-              </span>
+    <div className="h-screen h-dvh w-full overflow-hidden bg-[#F3F1EC] text-[#141414] flex flex-col lg:flex-row">
+      {/* Desktop Dark Ink Sidebar - 100% Fixed & Never Cut Off */}
+      <aside className="hidden lg:flex w-[240px] shrink-0 h-full flex-col border-r border-[#2B2A27] bg-[#1C1B19] text-white select-none z-30">
+        {/* Workspace Brand Header (Pinned at Top of Sidebar) */}
+        <div className="px-5 py-4 border-b border-[#2B2A27] shrink-0">
+          <span className="block font-display text-13 font-bold tracking-wider text-white uppercase">
+            {variant === 'admin' ? 'DIRECTION 2 · WARM COMMAND' : title}
+          </span>
+          <span className="mt-0.5 block text-[10px] font-mono tracking-widest text-[#9E9B95] uppercase">
+            {variant === 'admin' ? 'AGENCY · LIVE' : 'CLIENT WORKSPACE'}
+          </span>
+        </div>
+
+        {/* Navigation Item List (Independently Scrollable if height is constrained) */}
+        <nav aria-label="Console" className="flex-1 overflow-y-auto px-3 py-3 flex flex-col gap-0.5">
+          {primary.map(item => {
+            const active = item.match(pathname)
+            return (
+              <Link
+                key={item.label}
+                href={item.href}
+                aria-current={active ? 'page' : undefined}
+                className={cn(
+                  'flex items-center justify-between rounded-[8px] px-3 py-2 text-13 font-medium transition-colors duration-150',
+                  active
+                    ? 'bg-[#2B2A27] text-white font-semibold'
+                    : 'text-[#9E9B95] hover:bg-white/[0.04] hover:text-white'
+                )}
+              >
+                <span>{item.label}</span>
+                {item.badge && (
+                  <span className="rounded bg-[#0B6E4F] px-1.5 py-0.2 text-[9px] font-mono text-white">
+                    {item.badge}
+                  </span>
+                )}
+              </Link>
+            )
+          })}
+        </nav>
+
+        {/* Secondary Links & User Account (Pinned at Bottom of Sidebar) */}
+        <div className="shrink-0 border-t border-[#2B2A27] px-3 py-3 flex flex-col gap-0.5 bg-[#1C1B19]">
+          {secondary.map(item => {
+            const active = item.match(pathname)
+            return (
+              <Link
+                key={item.label}
+                href={item.href}
+                className={cn(
+                  'flex items-center justify-between rounded-[8px] px-3 py-1.5 text-13 font-medium transition-colors duration-150',
+                  active
+                    ? 'bg-[#2B2A27] text-white font-semibold'
+                    : 'text-[#9E9B95] hover:bg-white/[0.04] hover:text-white'
+                )}
+              >
+                <span>{item.label}</span>
+              </Link>
+            )
+          })}
+
+          <div className="mt-2 flex items-center justify-between border-t border-[#2B2A27]/80 px-1 pt-2.5 text-12 text-[#9E9B95]">
+            <span className="truncate text-[11px] max-w-[130px] font-mono">{email}</span>
+            <div className="flex items-center gap-1">
+              <NotificationBell isAdmin={variant === 'admin'} clientId={null} />
+              <form action={signOut}>
+                <button
+                  type="submit"
+                  aria-label="Sign out"
+                  title="Sign out"
+                  className="p-1 text-[#9E9B95] hover:text-rose-400 transition-colors"
+                >
+                  <LogOut className="size-3.5" />
+                </button>
+              </form>
             </div>
           </div>
+        </div>
+      </aside>
 
-          <nav aria-label="Console" className="flex flex-1 flex-col px-3 pb-3">
-            <div className="flex flex-col gap-0.5">{primary.map(item => navLink(item, 'sidebar'))}</div>
-            <div className="mt-auto flex flex-col gap-0.5 border-t border-helix-border pt-3">
-              {secondary.map(item => navLink(item, 'sidebar'))}
-              <div className="mt-3 flex items-center justify-between gap-2 rounded-[12px] px-2 py-2">
-                <div className="flex min-w-0 items-center gap-2">
-                  <div className="flex size-7 shrink-0 items-center justify-center rounded-[8px] bg-helix-canvas text-12 font-semibold text-helix-ink">
-                    {userInitial}
-                  </div>
-                  <p className="truncate text-12 text-helix-muted">{email}</p>
-                </div>
-                <div className="flex shrink-0 items-center">
-                  <NotificationBell isAdmin={variant === 'admin'} clientId={null} />
-                  <form action={signOut}>
-                    <button
-                      type="submit"
-                      aria-label="Sign out"
-                      title="Sign out"
-                      className="flex size-7 items-center justify-center rounded-[8px] text-helix-muted hover:bg-helix-canvas hover:text-helix-ink"
-                    >
-                      <LogOut className="size-3.5" />
-                    </button>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </nav>
-        </aside>
+      {/* Mobile Header */}
+      <header className="sticky top-0 z-40 flex items-center justify-between border-b border-[#2B2A27] bg-[#1C1B19] px-4 py-3 text-white shrink-0 lg:hidden">
+        <div>
+          <span className="font-display text-13 font-bold uppercase">{title}</span>
+          <span className="ml-2 text-[10px] font-mono text-[#9E9B95] uppercase">
+            {variant === 'admin' ? 'AGENCY · LIVE' : 'CLIENT'}
+          </span>
+        </div>
+        <button
+          type="button"
+          onClick={() => setMobileDrawerOpen(!mobileDrawerOpen)}
+          className="rounded-md border border-[#33312D] p-1.5 text-[#9E9B95] hover:text-white"
+        >
+          {mobileDrawerOpen ? <X className="size-4" /> : <Menu className="size-4" />}
+        </button>
+      </header>
 
-        <div className="flex min-h-0 flex-col bg-helix-surface">
-          <header className="sticky top-0 z-40 flex items-center justify-between border-b border-helix-border bg-helix-surface px-4 py-2.5 pt-[max(0.625rem,env(safe-area-inset-top))] lg:hidden">
-            <div className="flex items-center gap-2.5">
-              <HelixMark size={26} rounded="rounded-[8px]" />
-              <div>
-                <p className="truncate text-13 font-semibold text-helix-ink">{title}</p>
-                <p className="text-11 uppercase tracking-[0.08em] text-helix-muted">
-                  {variant === 'admin' ? 'Agency' : 'Workspace'}
-                </p>
-              </div>
-            </div>
-            <form action={signOut}>
-              <button
-                type="submit"
-                className="rounded-[10px] border border-helix-border px-2.5 py-1 text-12 text-helix-ink hover:bg-helix-canvas"
+      {/* Mobile Drawer Dropdown */}
+      {mobileDrawerOpen && (
+        <div className="border-b border-[#2B2A27] bg-[#1C1B19] px-4 py-3 text-white lg:hidden shrink-0">
+          <nav className="flex flex-col gap-1">
+            {[...primary, ...secondary].map(item => (
+              <Link
+                key={item.label}
+                href={item.href}
+                onClick={() => setMobileDrawerOpen(false)}
+                className="rounded px-2.5 py-1.5 text-13 text-[#9E9B95] hover:bg-[#2B2A27] hover:text-white"
               >
-                Sign out
-              </button>
-            </form>
-          </header>
-
-          <main className="flex-1 px-4 py-6 lg:px-8 lg:py-7">
-            {subnav ? <JobSubnav items={subnav} activeHref={pathname} /> : null}
-            {children}
-          </main>
-
-          <nav
-            aria-label="Console"
-            className="sticky bottom-0 z-40 flex items-center justify-around border-t border-helix-border bg-helix-surface py-1 pb-[max(0.25rem,env(safe-area-inset-bottom))] lg:hidden"
-          >
-            {mobileNav.map(item => navLink(item, 'tab'))}
+                {item.label}
+              </Link>
+            ))}
           </nav>
         </div>
+      )}
+
+      {/* Main Fluid Canvas with Dedicated Independent Scrolling */}
+      <div className="flex-1 h-full min-w-0 flex flex-col overflow-y-auto bg-[#F3F1EC]">
+        {/* Sticky Top Secondary Rail (Always Visible on Scroll) */}
+        <header className="sticky top-0 z-20 shrink-0 border-b border-[#D9D4CB]/70 bg-[#F3F1EC]/90 backdrop-blur-md px-6 py-2.5 sm:px-8 flex flex-wrap items-center justify-between gap-3">
+          {(isIntelRoute || variant === 'admin') ? (
+            <nav className="flex items-center gap-1.5" aria-label="Intelligence Sections">
+              {INTEL_TABS.map(tab => {
+                const active = pathname === tab.href || pathname.startsWith(`${tab.href}/`)
+                return (
+                  <Link
+                    key={tab.label}
+                    href={tab.href}
+                    className={cn(
+                      'rounded-[8px] px-3.5 py-1.5 text-13 font-medium transition-colors',
+                      active
+                        ? 'bg-[#141414] text-white shadow-xs'
+                        : 'text-[#6E6A63] hover:text-[#141414] hover:bg-[#E6E2D9]'
+                    )}
+                  >
+                    {tab.label}
+                  </Link>
+                )
+              })}
+            </nav>
+          ) : (
+            <div />
+          )}
+
+          {/* Language Toggle Pill */}
+          <div className="flex items-center rounded-[8px] border border-[#D9D4CB] bg-[#FFFEFA] p-0.5 shadow-2xs">
+            <button
+              type="button"
+              onClick={() => setLanguage('en')}
+              className={cn(
+                'rounded-[6px] px-3 py-1 text-12 font-medium transition-colors',
+                language === 'en' ? 'bg-[#141414] text-white' : 'text-[#6E6A63] hover:text-[#141414]'
+              )}
+            >
+              English
+            </button>
+            <button
+              type="button"
+              onClick={() => setLanguage('ar')}
+              className={cn(
+                'rounded-[6px] px-3 py-1 text-12 font-medium transition-colors',
+                language === 'ar' ? 'bg-[#141414] text-white' : 'text-[#6E6A63] hover:text-[#141414]'
+              )}
+            >
+              العربية
+            </button>
+          </div>
+        </header>
+
+        {/* Standardized Fixed Format Content Container */}
+        <main className="flex-1 w-full px-6 py-6 sm:px-8 sm:py-8 max-w-[1520px] mx-auto">
+          {children}
+        </main>
       </div>
     </div>
   )

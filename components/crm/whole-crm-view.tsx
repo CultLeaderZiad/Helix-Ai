@@ -117,7 +117,7 @@ export function WholeCrmView({
   })
 
   return (
-    <div className="relative mx-auto w-full max-w-7xl space-y-6">
+    <div className="relative w-full space-y-6">
       {/* Header & Title */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
@@ -252,11 +252,11 @@ export function WholeCrmView({
                     {/* Name & Avatar */}
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-3">
-                        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-slate-800/90 text-xs font-bold text-sky-400 shadow-xs">
+                        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-helix-border bg-helix-canvas text-xs font-bold text-helix-ink shadow-xs">
                           {initial}
                         </div>
                         <div>
-                          <div className="font-medium text-helix-ink group-hover:text-sky-300 transition-colors">
+                          <div className="font-medium text-helix-ink transition-colors">
                             {contact.full_name ?? 'Anonymous Contact'}
                           </div>
                           <div className="text-[11px] text-helix-muted font-mono">{contact.email ?? 'No email logged'}</div>
@@ -311,11 +311,11 @@ export function WholeCrmView({
       {/* Slide-out Contact Telemetry Drawer */}
       {drawerOpen && selectedContact && (
         <div className="fixed inset-0 z-50 flex justify-end bg-black/75 backdrop-blur-xs transition-opacity">
-          <div className="relative flex h-full w-full max-w-md flex-col border-l border-white/10 bg-helix-surface p-6 shadow-2xl animate-in slide-in-from-right duration-200">
+          <div className="relative flex h-full w-full max-w-md flex-col border-l border-helix-border bg-helix-surface p-6 shadow-2xl animate-in slide-in-from-right duration-200">
             {/* Drawer Header */}
-            <div className="flex items-start justify-between border-b border-white/[0.08] pb-5">
+            <div className="flex items-start justify-between border-b border-helix-border pb-5">
               <div className="flex items-center gap-3">
-                <div className="flex size-10 items-center justify-center rounded-lg border border-white/10 bg-slate-800 text-sky-400 font-bold text-base shadow-xs">
+                <div className="flex size-10 items-center justify-center rounded-lg border border-helix-border bg-helix-canvas text-helix-ink font-bold text-base shadow-xs">
                   {(selectedContact.full_name?.[0] ?? 'C').toUpperCase()}
                 </div>
                 <div>
@@ -336,7 +336,7 @@ export function WholeCrmView({
             </div>
 
             {/* Contact Attributes */}
-            <div className="mt-5 space-y-3 rounded-xl border border-white/[0.08] bg-white/[0.02] p-4 text-xs">
+            <div className="mt-5 space-y-3 rounded-xl border border-helix-border bg-helix-canvas p-4 text-xs">
               <div className="flex items-center justify-between">
                 <span className="text-helix-muted flex items-center gap-2"><Mail className="size-3.5 text-helix-muted" /> Email</span>
                 <span className="text-helix-ink font-medium">{selectedContact.email ?? '—'}</span>
@@ -363,31 +363,31 @@ export function WholeCrmView({
               </div>
 
               <div className="mt-3 space-y-3">
-                <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-3.5">
+                <div className="rounded-xl border border-helix-border bg-helix-canvas p-3.5">
                   <div className="flex items-center justify-between text-[11px] text-helix-muted">
-                    <span className="font-semibold text-sky-400 flex items-center gap-1.5">
+                    <span className="font-semibold text-helix-accent flex items-center gap-1.5">
                       <MessageSquare className="size-3" /> Inbound Voice Call
                     </span>
                     <span className="font-mono text-[10px]">1h ago</span>
                   </div>
-                  <p className="mt-2 text-xs leading-relaxed text-helix-ink/80">
+                  <p className="mt-2 text-xs leading-relaxed text-helix-ink">
                     Autonomous voice agent handled query regarding appointment reschedule. Customer requested Tuesday 10:00 AM slot.
                   </p>
                   <div className="mt-2 flex items-center gap-2 text-[10px] text-helix-muted font-mono">
                     <span>HASH: 8f4b..32a1</span>
                     <span>•</span>
-                    <span className="text-emerald-400">Audio Persisted</span>
+                    <span className="text-[#0B6E4F] font-semibold">Audio Persisted</span>
                   </div>
                 </div>
 
-                <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-3.5">
+                <div className="rounded-xl border border-helix-border bg-helix-canvas p-3.5">
                   <div className="flex items-center justify-between text-[11px] text-helix-muted">
-                    <span className="font-semibold text-purple-400 flex items-center gap-1.5">
+                    <span className="font-semibold text-purple-600 flex items-center gap-1.5">
                       <Sparkles className="size-3" /> Verified Fact Extracted
                     </span>
                     <span className="font-mono text-[10px]">3h ago</span>
                   </div>
-                  <p className="mt-2 text-xs leading-relaxed text-helix-ink/80">
+                  <p className="mt-2 text-xs leading-relaxed text-helix-ink">
                     Extracted confirmed intent: Customer authorized payment for preliminary invoice #204.
                   </p>
                   <div className="mt-2">
@@ -400,7 +400,7 @@ export function WholeCrmView({
             </div>
 
             {/* Quick Actions Drawer Footer */}
-            <div className="mt-5 border-t border-white/[0.08] pt-4 flex gap-2.5">
+            <div className="mt-5 border-t border-helix-border pt-4 flex gap-2.5">
               <Button
                 variant="outline"
                 onClick={() => alert(`Initiating voice callback to ${selectedContact.phone}...`)}

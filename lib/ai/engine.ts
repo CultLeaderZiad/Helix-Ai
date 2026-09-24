@@ -15,11 +15,26 @@ export interface AssessmentInput {
     | 'dormant_leads'
     | 'unpaid_invoices'
     | 'hallucination_compliance'
+    | 'competitor_pricing'
+    | 'staff_sop_training'
+    | 'local_seo_visibility'
+    | 'sales_proposal_prep'
+    | 'social_video_content'
   language?: 'en' | 'ar'
 }
 
 export interface RecommendationResult {
-  systemId: 'booking-receptionist' | 'missed-call-responder' | 'lead-reactivation' | 'evidence-console' | 'ar-invoicing'
+  systemId:
+    | 'booking-receptionist'
+    | 'missed-call-responder'
+    | 'lead-reactivation'
+    | 'evidence-console'
+    | 'ar-invoicing'
+    | 'rival-watch'
+    | 'handbook-answers'
+    | 'seo-scorecard'
+    | 'proposal-deck-factory'
+    | 'clip-factory'
   systemName: string
   systemNameAr: string
   matchScore: number
@@ -68,6 +83,26 @@ export async function generateEngineRecommendation(
   } else if (input.primaryPainPoint === 'unpaid_invoices') {
     systemId = 'ar-invoicing'
     baseSetup = 180000
+    baseRetainer = 50000
+  } else if (input.primaryPainPoint === 'competitor_pricing') {
+    systemId = 'rival-watch'
+    baseSetup = 160000
+    baseRetainer = 35000
+  } else if (input.primaryPainPoint === 'staff_sop_training') {
+    systemId = 'handbook-answers'
+    baseSetup = 150000
+    baseRetainer = 25000
+  } else if (input.primaryPainPoint === 'local_seo_visibility') {
+    systemId = 'seo-scorecard'
+    baseSetup = 140000
+    baseRetainer = 30000
+  } else if (input.primaryPainPoint === 'sales_proposal_prep') {
+    systemId = 'proposal-deck-factory'
+    baseSetup = 250000
+    baseRetainer = 20000
+  } else if (input.primaryPainPoint === 'social_video_content') {
+    systemId = 'clip-factory'
+    baseSetup = 300000
     baseRetainer = 50000
   } else {
     // missed_calls
@@ -170,8 +205,28 @@ function getSystemName(id: string, lang: 'en' | 'ar'): string {
       ar: 'سجل الأدلة',
     },
     'ar-invoicing': {
-      en: 'AR collections',
-      ar: 'تحصيل المستحقات',
+      en: 'AR collections (B2B only)',
+      ar: 'تحصيل المستحقات (شركات فقط)',
+    },
+    'rival-watch': {
+      en: 'Rival Watch',
+      ar: 'رصد المنافسين',
+    },
+    'handbook-answers': {
+      en: 'Handbook Answers',
+      ar: 'إجابات دليل التشغيل',
+    },
+    'seo-scorecard': {
+      en: 'Visibility Scorecard',
+      ar: 'بطاقة الظهور المحلي',
+    },
+    'proposal-deck-factory': {
+      en: 'Deck Factory',
+      ar: 'مصنع العروض',
+    },
+    'clip-factory': {
+      en: 'Clip Factory',
+      ar: 'مصنع المقاطع',
     },
   }
   return names[id]?.[lang] ?? id
@@ -277,13 +332,13 @@ function getDeterministicRecommendation(
       whatsappStrategyAr: 'مطابقة شروط الاتفاقيات الواردة في الواتساب مع العقود الرسمية للمؤسسة.',
     },
     'ar-invoicing': {
-      systemName: 'AR collections',
-      systemNameAr: 'تحصيل المستحقات',
+      systemName: 'AR collections (B2B only)',
+      systemNameAr: 'تحصيل المستحقات (شركات فقط)',
       matchScore: 94,
-      headline: 'Polite WhatsApp follow-ups for commercial invoices. MENA payment links (Tap, Paymob, Moyasar). B2B only.',
-      headlineAr: 'متابعات واتساب مهذبة لفواتير الشركات. روابط دفع إقليمية (Tap و Paymob و Moyasar). للشركات فقط.',
-      rationale: `Manual collection calls burn staff time. The B2B WhatsApp follow-up sends itemized commercial invoices with Tap, Paymob, or Moyasar payment links — never consumer debt collection.`,
-      rationaleAr: `المتابعة اليدوية تستهلك وقت الفريق. متابعة الواتساب للشركات ترسل الفواتير التجارية مع روابط Tap أو Paymob أو Moyasar — وليست تحصيل ديون استهلاكية.`,
+      headline: 'Polite WhatsApp follow-ups for commercial invoices. MENA payment links. B2B only.',
+      headlineAr: 'متابعات واتساب مهذبة لفواتير الشركات. روابط دفع إقليمية. للشركات فقط.',
+      rationale: `Manual collection calls burn staff time. The B2B WhatsApp follow-up sends itemized commercial invoices with Tap, Paymob, or Moyasar payment links — strictly commercial B2B AR, never consumer debt.`,
+      rationaleAr: `المتابعة اليدوية تستهلك وقت الفريق. متابعة الواتساب للشركات ترسل الفواتير التجارية مع روابط سداد إقليمية — مستحقات تجارية فقط.`,
       estimatedMonthlyRoi: 'Illustrative only — recovered AR vs fee, not a live metric',
       suggestedSteps: [
         'Sync open accounts receivable ledger to Supabase',
@@ -297,6 +352,116 @@ function getDeterministicRecommendation(
       ],
       whatsappStrategy: 'Itemized invoice PDF dispatch with one-tap payment links and automatic settlement receipts.',
       whatsappStrategyAr: 'إرسال الفاتورة بصيغة PDF مع رابط سداد مباشر وإشعار إلكتروني فوري بالسداد.',
+    },
+    'rival-watch': {
+      systemName: 'Rival Watch',
+      systemNameAr: 'رصد المنافسين',
+      matchScore: 93,
+      headline: 'Automated competitor pricing and stock intelligence alerts on WhatsApp.',
+      headlineAr: 'رصد آلي لتحركات أسعار ومخزون المنافسين مع تنبيهات واتساب.',
+      rationale: `In ${input.vertical}, pricing shifts happen daily. Rival Watch scrapes competitor public catalogs and alerts your pricing team to market changes via WhatsApp.`,
+      rationaleAr: `في قطاع ${input.vertical}، تتغير الأسعار بشكل دوري. يقوم نظام رصد المنافسين بجمع الأسعار العامة وإشعار فريقك بأي تغييرات في السوق.`,
+      estimatedMonthlyRoi: 'Illustrative only — margin preservation vs fee',
+      suggestedSteps: [
+        'Submit list of competitor public storefront URLs',
+        'Configure scraping interval & price delta threshold',
+        'Set up WhatsApp alert recipient group in n8n',
+      ],
+      suggestedStepsAr: [
+        'تحديد روابط المتاجر والصفحات العامة للمنافسين',
+        'ضبط وتيرة الفحص ونسبة التغير المنبهة للأسعار',
+        'تفعيل مجموعة إشعارات الواتساب عبر n8n',
+      ],
+      whatsappStrategy: 'Daily/weekly delta digests sent directly to WhatsApp sales leadership.',
+      whatsappStrategyAr: 'ملخص يومي أو أسبوعي بفروقات الأسعار يُرسل لمسؤولي المبيعات عبر الواتساب.',
+    },
+    'handbook-answers': {
+      systemName: 'Handbook Answers',
+      systemNameAr: 'إجابات دليل التشغيل',
+      matchScore: 91,
+      headline: 'Private staff assistant trained strictly on company SOPs and policies.',
+      headlineAr: 'مساعد ذكي خاص بالموظفين مدرب على سياسات وإجراءات الشركة بدقة.',
+      rationale: `Internal operations staff waste hours searching PDFs for operational guidelines. Handbook Answers provides instant grounded answers with citations.`,
+      rationaleAr: `يستهلك فريق التشغيل وقتاً طويلاً في البحث داخل الملفات. يقدم بوت دليل التشغيل إجابات دقيقة وموثقة من لوائح الشركة المعتمدة فوراً.`,
+      estimatedMonthlyRoi: 'Illustrative only — internal labor hours saved',
+      suggestedSteps: [
+        'Upload verified company SOP documents and handbooks',
+        'Configure private retrieval-augmented generation vector store',
+        'Integrate internal staff WhatsApp or Slack gateway',
+      ],
+      suggestedStepsAr: [
+        'رفع ملفات لوائح وإجراءات العمل المعتمدة',
+        'بناء قاعدة المعرفة والبحث الدلالي الخاص بالمؤسسة',
+        'تفعيل بوابة وصول الموظفين عبر الواتساب أو سلاك',
+      ],
+      whatsappStrategy: 'Internal WhatsApp bot providing verified policy answers with page citations.',
+      whatsappStrategyAr: 'بوت واتساب داخلي للموظفين يقدم الإجابات المعتمدة مع الإشارة لرقم الصفحة في الدليل.',
+    },
+    'seo-scorecard': {
+      systemName: 'Visibility Scorecard',
+      systemNameAr: 'بطاقة الظهور المحلي',
+      matchScore: 90,
+      headline: 'Monthly local visibility scorecard + top 3 high-impact ranking fixes.',
+      headlineAr: 'بطاقة تقييم شهرية للظهور المحلي مع أهم ٣ حلول لتحسين الترتيب.',
+      rationale: `Local service businesses lose organic inquiries when Google Business Profile signals decay. Visibility Scorecard identifies missing rank signals automatically.`,
+      rationaleAr: `تفقد الشركات المحلية العملاء عند تراجع إشارات خرائط جوجل. تقوم بطاقة الظهور بكشف الفجوات وتحديد أهم 3 تحسينات مطلوبة.`,
+      estimatedMonthlyRoi: 'Illustrative only — pipeline door opener',
+      suggestedSteps: [
+        'Input business location and primary search keywords',
+        'Run automated Google Business Profile & local directory audit',
+        'Generate monthly white-label scorecard PDF for client delivery',
+      ],
+      suggestedStepsAr: [
+        'إدخال بيانات الموقع الجغرافي والكلمات المفتاحية',
+        'تشغيل التدقيق الآلي لملف النشاط التجاري والأدلة المحلية',
+        'إصدار تقرير التقييم الشهري بهوية الوكالة للعميل',
+      ],
+      whatsappStrategy: 'Monthly PDF scorecard delivery via WhatsApp with automated consultation booking link.',
+      whatsappStrategyAr: 'إرسال بطاقة التقييم بصيغة PDF عبر الواتساب مع رابط حجز جلسة استشارية.',
+    },
+    'proposal-deck-factory': {
+      systemName: 'Deck Factory',
+      systemNameAr: 'مصنع العروض',
+      matchScore: 94,
+      headline: '8 fields → branded editable PPTX client proposal deck in minutes.',
+      headlineAr: '٨ حقول → عرض تقديمي PPTX بهوية العميل جاهز للتعديل خلال دقائق.',
+      rationale: `Agency deals stall when proposal creation takes days. Deck Factory generates custom client-ready presentations on the discovery call and advances deal stage.`,
+      rationaleAr: `تتعطل الصفقات عندما يتأخر إعداد العروض لأيام. يقوم مصنع العروض بإنشاء عرض مقترح مخصص وقابل للتعديل أثناء المكالمة فوراً.`,
+      estimatedMonthlyRoi: 'Illustrative only — sales velocity acceleration',
+      suggestedSteps: [
+        'Complete the 8-field discovery qualification form',
+        'Trigger automated proposal presentation generation',
+        'Review customized PPTX slides and auto-update deal stage to Proposal Sent',
+      ],
+      suggestedStepsAr: [
+        'تعبئة نموذج التأهيل المكون من 8 حقول أثناء المكالمة',
+        'تشغيل التوليد الآلي للشرائح بهوية العميل والوكالة',
+        'مراجعة ملف PPTX وتحديث مرحلة الصفقة تلقائياً إلى "تم إرسال العرض"',
+      ],
+      whatsappStrategy: 'Sends proposal preview link and meeting agenda directly to prospect WhatsApp.',
+      whatsappStrategyAr: 'إرسال رابط معاينة العرض المقترح وجدول الاجتماع للعميل عبر الواتساب.',
+    },
+    'clip-factory': {
+      systemName: 'Clip Factory',
+      systemNameAr: 'مصنع المقاطع',
+      matchScore: 89,
+      headline: 'Long-form webinar or podcast video → 8–10 captioned vertical short clips.',
+      headlineAr: 'تحويل الفيديوهات والندوات الطويلة إلى ٨-١٠ مقاطع رأسية مع ترجمة توضيحية.',
+      rationale: `Creating short-form video for social distribution requires hours of manual editing. Clip Factory segments long recordings into viral vertical clips automatically.`,
+      rationaleAr: `صناعة المقاطع القصيرة تستنزف ساعات من المونتاج اليدوي. يقوم مصنع المقاطع بتقطيع التسجيلات الطويلة إلى مقاطع رأسية مصنفة مع ترجمة نصوص ديناميكية.`,
+      estimatedMonthlyRoi: 'Illustrative only — media repurposing speed',
+      suggestedSteps: [
+        'Provide long-form recording URL (webinar, podcast, or presentation)',
+        'Automated AI transcript analysis identifies high-engagement hooks',
+        'Export vertical MP4 clips with animated captions for social distribution',
+      ],
+      suggestedStepsAr: [
+        'إدخال رابط التسجيل الطويل (بودكاست، ندوة، أو عرض تقديمي)',
+        'تحليل النص واكتشاف اللحظات الأكثر جذباً وتأثيراً',
+        'تصدير مقاطع رأسية MP4 مع نصوص ملونة للنشر في المنصات',
+      ],
+      whatsappStrategy: 'Sends finished clip download zip and approval links to client WhatsApp marketing channel.',
+      whatsappStrategyAr: 'إرسال روابط تحميل المقاطع الجاهزة إلى فريق التسويق عبر الواتساب للاعتماد.',
     },
   }
 

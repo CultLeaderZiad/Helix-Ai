@@ -1,0 +1,25 @@
+{
+  "id": "sitemap-company-crawl",
+  "label": "Sitemap Bounded Crawl",
+  "label_ar": "زحف خريطة الموقع المقيد",
+  "description": "Inspect XML sitemap entries to selectively target contact, executive, and about pages with low network overhead.",
+  "mode": "sitemap",
+  "engine_default": "http",
+  "adaptive": true,
+  "max_pages": 50,
+  "allow": [".*/(contact|team|about|leadership).*"],
+  "deny": [".*/(tag|category|author|feed).*"],
+  "selectors": {
+    "company_name": { "css": "h1, title, meta[property='og:site_name']", "adaptive": true },
+    "emails": { "css": "a[href^='mailto:']", "attr": "href", "adaptive": true },
+    "phones": { "css": "a[href^='tel:']", "attr": "href", "adaptive": true }
+  },
+  "extract": {
+    "company_name": "string",
+    "emails": "string[]",
+    "phones": "string[]",
+    "markdown_excerpt": "string"
+  },
+  "ad_block": true,
+  "robots_obey": true
+}

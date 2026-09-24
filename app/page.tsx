@@ -2,8 +2,9 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { PillNav } from '@/components/navigation/pill-nav'
 import { LightfallCanvas } from '@/components/lightfall-canvas'
-import { ShieldCheck, Activity, Database } from 'lucide-react'
+import { ShieldCheck, Activity, Database, ArrowRight } from 'lucide-react'
 import { LandingDemo } from '@/components/studio/landing-demo'
+import { LiveAgentTerminal } from '@/components/terminal/live-agent-terminal'
 import { HelixFooter } from '@/components/footer/helix-footer'
 import { FaqAccordion } from '@/components/faq/faq-accordion'
 import { getPublicFaqs } from '@/lib/faq/actions'
@@ -66,10 +67,10 @@ export default async function LandingPage() {
             Start free trial
           </Link>
           <Link
-            href="/login"
+            href="/dashboard/studio"
             className="flex h-12 w-full items-center justify-center rounded-xl border border-slate-700/80 bg-slate-900/80 px-8 text-sm font-medium text-slate-200 backdrop-blur-md transition-all duration-200 hover:border-slate-600 hover:bg-slate-800 hover:text-white active:scale-[0.98] sm:w-auto"
           >
-            Sign in to Console
+            Open Studio
           </Link>
         </div>
 
@@ -79,24 +80,40 @@ export default async function LandingPage() {
           <span>7-day unrestricted trial • No credit card required • Instant tenant isolation</span>
         </div>
 
-        {/* Studio Animated Motion Showcase (Hero Video Style Frame) */}
+        {/* Live Flowing Agentic Terminal (Proof Module) */}
         <section
-          aria-label="Studio Live Workflow Preview"
+          aria-label="Live Flowing Agentic Terminal"
           className="mt-14 w-full scroll-mt-28"
         >
           <div className="mb-4 text-center">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-purple-500/30 bg-purple-500/10 px-3 py-0.5 text-xs font-semibold uppercase tracking-wider text-purple-300">
-              Interactive System Architecture
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-0.5 text-xs font-semibold uppercase tracking-wider text-emerald-300">
+              Live Agentic Pipeline
             </span>
             <h2 className="mt-2 font-display text-2xl font-bold tracking-tight text-white sm:text-3xl">
-              Watch How Helix AI Powers Real Autonomous Workflows
+              Watch Autonomous Systems Run Live
             </h2>
             <p className="mt-1 text-xs sm:text-sm text-slate-400 max-w-xl mx-auto">
-              A pre-choreographed walkthrough demonstrating automated voice reception, instant WhatsApp confirmation, and live CRM telemetry.
+              Inspect live webhook ingress, dialect extraction, n8n orchestration, and instant WhatsApp & Cal.com dispatches.
             </p>
           </div>
 
-          <LandingDemo />
+          <LiveAgentTerminal />
+
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href="/signup"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-500 px-6 py-2.5 text-xs font-bold text-slate-950 shadow-md hover:bg-emerald-400 transition-all active:scale-98"
+            >
+              <span>Start Your Build</span>
+              <ArrowRight className="size-3.5" />
+            </Link>
+            <Link
+              href="/dashboard/studio"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-900/80 px-6 py-2.5 text-xs font-semibold text-slate-200 hover:bg-slate-800 transition-all active:scale-98"
+            >
+              <span>Explore Interactive Studio</span>
+            </Link>
+          </div>
         </section>
 
         {/* Feature Proof Pillars */}

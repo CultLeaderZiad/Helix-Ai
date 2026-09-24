@@ -94,7 +94,7 @@ export default async function AttentionQueuePage() {
 
   return (
     <ConsoleShell variant="client" email={session.user.email ?? ''} businessName={client?.business_name ?? null}>
-      <div className="mx-auto w-full max-w-5xl">
+      <div className="w-full">
         {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>

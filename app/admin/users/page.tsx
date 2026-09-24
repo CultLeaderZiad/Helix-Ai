@@ -49,7 +49,7 @@ export default async function AdminUsersPage() {
 
   return (
     <ConsoleShell variant="admin" email={session.user.email ?? ''} businessName={null}>
-      <div className="mx-auto w-full max-w-6xl">
+      <div className="w-full">
         <AdminTabs />
         <UsersManager
           initialUsers={usersWithClients}

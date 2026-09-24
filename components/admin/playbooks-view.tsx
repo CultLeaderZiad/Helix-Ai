@@ -48,7 +48,7 @@ export function PlaybooksView() {
         <button
           type="button"
           onClick={() => setLanguage(l => (l === 'en' ? 'ar' : 'en'))}
-          className="flex items-center gap-1.5 rounded-xl border border-helix-border bg-[#121c2e] px-3.5 py-2 text-xs font-semibold text-helix-ink/80 hover:text-helix-ink"
+          className="flex items-center gap-1.5 rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs font-semibold text-helix-ink hover:bg-helix-canvas transition-colors"
         >
           <Languages className="size-3.5" />
           {isAr ? 'English' : 'العربية'}
@@ -74,7 +74,7 @@ export function PlaybooksView() {
                 'flex shrink-0 items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold transition-all',
                 isActive
                   ? 'bg-helix-accent-soft text-helix-accent border border-helix-border shadow-xs'
-                  : 'text-helix-muted hover:text-helix-ink hover:bg-slate-800/60'
+                  : 'text-helix-muted hover:text-helix-ink hover:bg-helix-border/40'
               )}
             >
               <Icon className="size-3.5" />
@@ -106,13 +106,13 @@ export function PlaybooksView() {
                     `Hi [Name], quick question—have you ever called your own clinic line at 8:30 PM to see what a new patient hears? When patients search for appointments after hours, they hang up and book with whoever answers first. We deployed an autonomous bilingual voice receptionist that answers in < 400ms in Gulf Arabic, confirms calendar slots on Cal.com, and sends an instant WhatsApp itinerary. Can I send you a 1-minute test sandbox to test on your phone?`
                   )
                 }
-                className="flex items-center gap-1.5 rounded-lg border border-helix-border bg-slate-800 px-3 py-1.5 text-xs font-medium text-helix-ink hover:text-helix-ink"
+                className="flex items-center gap-1.5 rounded-lg border border-helix-border bg-helix-surface px-3 py-1.5 text-xs font-medium text-helix-ink hover:bg-helix-border/40 transition-colors"
               >
-                {copiedKey === 'script-a' ? <Check className="size-3.5 text-emerald-400" /> : <Copy className="size-3.5" />}
+                {copiedKey === 'script-a' ? <Check className="size-3.5 text-[#0B6E4F]" /> : <Copy className="size-3.5" />}
                 {copiedKey === 'script-a' ? (isAr ? 'تم النسخ!' : 'Copied!') : (isAr ? 'نسخ النص' : 'Copy Pitch')}
               </button>
             </div>
-            <div className="mt-4 text-xs text-helix-ink/80 space-y-2 leading-relaxed bg-[#121c2e] p-4 rounded-xl border border-helix-border/80">
+            <div className="mt-4 text-xs text-helix-ink space-y-2 leading-relaxed bg-helix-surface p-4 rounded-xl border border-helix-border">
               <p>
                 <strong>{isAr ? 'المتصل (الممثل):' : 'Caller (Rep):'}</strong> "
                 {isAr
@@ -138,7 +138,7 @@ export function PlaybooksView() {
           <div className="rounded-2xl border border-helix-border bg-helix-canvas p-6 shadow-xl">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-helix-border pb-3">
               <div>
-                <span className="rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 text-[10px] text-emerald-300 font-mono">
+                <span className="rounded-full bg-[#0B6E4F]/10 border border-[#0B6E4F]/20 px-2.5 py-0.5 text-[10px] text-[#0B6E4F] font-mono font-semibold">
                   CONTRACTORS & HOME SERVICES
                 </span>
                 <h3 className="mt-1.5 font-display text-lg font-bold text-helix-ink">
@@ -153,13 +153,13 @@ export function PlaybooksView() {
                     `Hi [Name], in emergency home services, 70% of missed calls hire a competitor within 3 minutes. When your line is busy, Helix AI fires a WhatsApp in under 4 seconds: 'Hi, we missed your call—what emergency service do you need right now?' It captures the address and pings your technician dispatch queue instantly.`
                   )
                 }
-                className="flex items-center gap-1.5 rounded-lg border border-helix-border bg-slate-800 px-3 py-1.5 text-xs font-medium text-helix-ink hover:text-helix-ink"
+                className="flex items-center gap-1.5 rounded-lg border border-helix-border bg-helix-surface px-3 py-1.5 text-xs font-medium text-helix-ink hover:bg-helix-border/40 transition-colors"
               >
-                {copiedKey === 'script-b' ? <Check className="size-3.5 text-emerald-400" /> : <Copy className="size-3.5" />}
+                {copiedKey === 'script-b' ? <Check className="size-3.5 text-[#0B6E4F]" /> : <Copy className="size-3.5" />}
                 {copiedKey === 'script-b' ? (isAr ? 'تم النسخ!' : 'Copied!') : (isAr ? 'نسخ النص' : 'Copy Pitch')}
               </button>
             </div>
-            <div className="mt-4 text-xs text-helix-ink/80 space-y-2 leading-relaxed bg-[#121c2e] p-4 rounded-xl border border-helix-border/80">
+            <div className="mt-4 text-xs text-helix-ink space-y-2 leading-relaxed bg-helix-surface p-4 rounded-xl border border-helix-border">
               <p>
                 <strong>{isAr ? 'المتصل (الممثل):' : 'Caller (Rep):'}</strong> "
                 {isAr
@@ -175,9 +175,9 @@ export function PlaybooksView() {
       {/* Tab 2: WhatsApp Outreach Sequences */}
       {activeTab === 'whatsapp' && (
         <div className="mt-8 space-y-6">
-          <div className="rounded-2xl border border-emerald-500/30 bg-[#0a1c17] p-6 shadow-xl">
-            <div className="flex items-center justify-between border-b border-emerald-500/20 pb-3">
-              <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-2">
+          <div className="rounded-2xl border border-helix-border bg-helix-canvas p-6 shadow-xl">
+            <div className="flex items-center justify-between border-b border-helix-border pb-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#0B6E4F] flex items-center gap-2">
                 <MessageSquare className="size-4" />
                 {isAr ? 'رسالة الواتساب المباشرة الأولى (Touch 1)' : 'WhatsApp First Touch Sequence'}
               </span>
@@ -191,13 +191,13 @@ export function PlaybooksView() {
                       : `Hi [Name], when prospective high-value clients call [Business] after hours, do they get sent to voicemail or booked instantly? Our autonomous voice & WhatsApp agent picks up in < 400ms in Gulf Arabic/English, coordinates Cal.com bookings, and sends instant WhatsApp itineraries: https://helixai.com/dashboard/studio`
                   )
                 }
-                className="flex items-center gap-1.5 rounded-lg border border-emerald-500/40 bg-emerald-500/20 px-3 py-1.5 text-xs font-semibold text-emerald-300 hover:bg-emerald-500/30"
+                className="flex items-center gap-1.5 rounded-lg border border-[#0B6E4F]/30 bg-[#0B6E4F]/10 px-3 py-1.5 text-xs font-semibold text-[#0B6E4F] hover:bg-[#0B6E4F]/20 transition-colors"
               >
                 {copiedKey === 'wa-touch-1' ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
                 {copiedKey === 'wa-touch-1' ? 'Copied!' : 'Copy Template'}
               </button>
             </div>
-            <p className="mt-4 text-xs text-helix-ink leading-relaxed font-mono bg-[#0f2a22] p-4 rounded-xl border border-emerald-500/20">
+            <p className="mt-4 text-xs text-helix-ink leading-relaxed font-mono bg-helix-surface p-4 rounded-xl border border-helix-border">
               {isAr
                 ? 'مرحباً أستاذ [الاسم]، لاحظنا تميز أعمالكم في [الشركة]. عندما يتصل عميل مهتم خارج أوقات الدوام، هل يُفقد الاتصال أم يُثبت حجزه فوراً؟ قمنا بتطوير موظف استقبال صوتي ذكي يجيب خلال 400 ميلي ثانية باللهجة الخليجية ويثبت الموعد ويرسل تأكيد الواتساب فوراً. جرب المختبر التفاعلي هنا: https://helixai.com/dashboard/studio'
                 : 'Hi [Name], when prospective high-value clients call [Business] after hours, do they get sent to voicemail or booked instantly? Our autonomous voice & WhatsApp agent picks up in < 400ms in Gulf Arabic/English, coordinates Cal.com bookings, and sends instant WhatsApp itineraries: https://helixai.com/dashboard/studio'}

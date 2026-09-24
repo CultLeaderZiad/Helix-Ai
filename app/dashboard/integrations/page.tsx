@@ -66,7 +66,7 @@ export default async function IntegrationsHealthPage() {
 
   return (
     <ConsoleShell variant="client" email={session.user.email ?? ''} businessName={client?.business_name ?? null}>
-      <div className="mx-auto w-full max-w-5xl">
+      <div className="w-full">
         <IntegrationsHealthView
           initialIntegrations={integrations}
           pingAction={pingAction}

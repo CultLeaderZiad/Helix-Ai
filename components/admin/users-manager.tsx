@@ -209,16 +209,16 @@ export function UsersManager({ initialUsers, clients, currentUserId }: UsersMana
       {/* Global Feedback Banner */}
       {feedback && (
         <div
-          className={`flex items-center gap-3 rounded-xl border p-3.5 text-xs font-medium ${
+          className={`flex items-center gap-3 rounded-xl border p-3.5 text-xs font-semibold ${
             feedback.type === 'success'
-              ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300'
-              : 'border-red-500/30 bg-red-500/10 text-red-300'
+              ? 'border-[#0B6E4F]/30 bg-[#0B6E4F]/10 text-[#0B6E4F]'
+              : 'border-rose-300 bg-rose-50 text-rose-700'
           }`}
         >
           {feedback.type === 'success' ? (
-            <Check className="size-4 shrink-0 text-emerald-400" />
+            <Check className="size-4 shrink-0 text-[#0B6E4F]" />
           ) : (
-            <AlertCircle className="size-4 shrink-0 text-red-400" />
+            <AlertCircle className="size-4 shrink-0 text-rose-600" />
           )}
           <span>{feedback.message}</span>
         </div>
@@ -323,7 +323,7 @@ export function UsersManager({ initialUsers, clients, currentUserId }: UsersMana
                   <TableRow key={user.id}>
                     <TableCell>
                       <div className="flex items-center gap-3">
-                        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-slate-800 text-xs font-bold text-sky-400 shadow-xs">
+                        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-helix-border bg-helix-canvas text-xs font-bold text-helix-ink shadow-xs">
                           {user.full_name?.charAt(0) || user.email?.charAt(0) || 'U'}
                         </div>
                         <div>
@@ -416,10 +416,10 @@ export function UsersManager({ initialUsers, clients, currentUserId }: UsersMana
       {/* Invite Modal */}
       {isInviteOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-xs animate-in fade-in">
-          <div className="w-full max-w-lg rounded-2xl border border-white/10 bg-helix-surface p-6 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
+          <div className="w-full max-w-lg rounded-2xl border border-helix-border bg-helix-surface p-6 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-helix-border pb-4">
               <div className="flex items-center gap-2 text-sm font-bold text-helix-ink">
-                <UserPlus className="size-4 text-sky-400" />
+                <UserPlus className="size-4 text-helix-accent" />
                 <span>Invite & Provision New User</span>
               </div>
               <Button
@@ -443,7 +443,7 @@ export function UsersManager({ initialUsers, clients, currentUserId }: UsersMana
                   placeholder="e.g. Alex Vance"
                   value={inviteName}
                   onChange={e => setInviteName(e.target.value)}
-                  className="mt-1.5 h-10"
+                  className="mt-1.5 h-10 bg-helix-canvas text-helix-ink"
                 />
               </div>
 
@@ -457,7 +457,7 @@ export function UsersManager({ initialUsers, clients, currentUserId }: UsersMana
                   placeholder="e.g. alex@company.com"
                   value={inviteEmail}
                   onChange={e => setInviteEmail(e.target.value)}
-                  className="mt-1.5 h-10"
+                  className="mt-1.5 h-10 bg-helix-canvas text-helix-ink"
                 />
               </div>
 
@@ -468,7 +468,7 @@ export function UsersManager({ initialUsers, clients, currentUserId }: UsersMana
                 <select
                   value={inviteRole}
                   onChange={e => setInviteRole(e.target.value as UserRole)}
-                  className="mt-1.5 h-10 w-full rounded-xl border border-white/10 bg-[#161E31] px-3.5 text-xs text-helix-ink focus:border-sky-500 focus:outline-none"
+                  className="mt-1.5 h-10 w-full rounded-xl border border-helix-border bg-helix-canvas px-3.5 text-xs text-helix-ink focus:border-helix-ink focus:outline-none"
                 >
                   <option value="agency_admin">Agency Administrator (Full Agency Access)</option>
                   <option value="client_user">Client Owner (Manage Client Workspace)</option>
@@ -490,7 +490,7 @@ export function UsersManager({ initialUsers, clients, currentUserId }: UsersMana
                     value={inviteClientId}
                     onChange={e => setInviteClientId(e.target.value)}
                     required
-                    className="mt-1.5 h-10 w-full rounded-xl border border-white/10 bg-[#161E31] px-3.5 text-xs text-helix-ink focus:border-sky-500 focus:outline-none"
+                    className="mt-1.5 h-10 w-full rounded-xl border border-helix-border bg-helix-canvas px-3.5 text-xs text-helix-ink focus:border-helix-ink focus:outline-none"
                   >
                     {clients.map(c => (
                       <option key={c.id} value={c.id}>
@@ -562,12 +562,12 @@ export function UsersManager({ initialUsers, clients, currentUserId }: UsersMana
               </Button>
             </div>
 
-            <div className="mt-4 rounded-xl border border-white/10 bg-[#161E31] p-3.5 text-xs text-helix-ink/80">
+            <div className="mt-4 rounded-xl border border-helix-border bg-helix-canvas p-3.5 text-xs text-helix-ink">
               <p className="font-semibold text-helix-ink">{editingUser.full_name || 'User'}</p>
               <p className="text-helix-muted font-mono text-[11px]">{editingUser.email}</p>
               <p className="mt-2 text-helix-muted">
                 Current Role:{' '}
-                <strong className="text-sky-300 font-semibold">{editingUser.role}</strong>
+                <strong className="text-helix-accent font-semibold">{editingUser.role}</strong>
               </p>
             </div>
 
@@ -579,7 +579,7 @@ export function UsersManager({ initialUsers, clients, currentUserId }: UsersMana
                 <select
                   value={newRole}
                   onChange={e => setNewRole(e.target.value as UserRole)}
-                  className="mt-1.5 h-10 w-full rounded-xl border border-white/10 bg-[#161E31] px-3.5 text-xs text-helix-ink focus:border-sky-500 focus:outline-none"
+                  className="mt-1.5 h-10 w-full rounded-xl border border-helix-border bg-helix-canvas px-3.5 text-xs text-helix-ink focus:border-helix-ink focus:outline-none"
                 >
                   <option value="agency_admin">Agency Administrator (Full Agency Access)</option>
                   <option value="client_user">Client Owner (Workspace Operator)</option>
@@ -587,12 +587,12 @@ export function UsersManager({ initialUsers, clients, currentUserId }: UsersMana
                 </select>
                 <div className="mt-2">
                   {newRole === 'agency_admin' ? (
-                    <div className="rounded-lg border border-purple-500/30 bg-purple-500/10 p-2.5 text-[11px] text-purple-200">
+                    <div className="rounded-lg border border-[#0B6E4F]/30 bg-[#0B6E4F]/10 p-2.5 text-[11px] text-[#0B6E4F]">
                       ★ <strong>Upgrading to Agency Admin:</strong> User will gain immediate access to the
                       Agency Console (`/admin`), cross-client CRM, template builds, and agent queues.
                     </div>
                   ) : (
-                    <div className="rounded-lg border border-white/10 bg-[#161E31] p-2.5 text-[11px] text-helix-muted">
+                    <div className="rounded-lg border border-helix-border bg-helix-canvas p-2.5 text-[11px] text-helix-muted">
                       User will be scoped to their specific assigned workspace under Postgres RLS.
                     </div>
                   )}
@@ -608,7 +608,7 @@ export function UsersManager({ initialUsers, clients, currentUserId }: UsersMana
                     value={targetClientId}
                     onChange={e => setTargetClientId(e.target.value)}
                     required
-                    className="mt-1.5 h-10 w-full rounded-xl border border-white/10 bg-[#161E31] px-3.5 text-xs text-helix-ink focus:border-sky-500 focus:outline-none"
+                    className="mt-1.5 h-10 w-full rounded-xl border border-helix-border bg-helix-canvas px-3.5 text-xs text-helix-ink focus:border-helix-ink focus:outline-none"
                   >
                     {clients.map(c => (
                       <option key={c.id} value={c.id}>

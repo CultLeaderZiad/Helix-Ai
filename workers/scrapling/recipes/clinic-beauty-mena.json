@@ -1,0 +1,32 @@
+{
+  "id": "clinic-beauty-mena",
+  "label": "Clinics & Aesthetics · MENA",
+  "label_ar": "العيادات والتجميل · الشرق الأوسط",
+  "description": "Crawl medical clinics, dental practices, and aesthetic centers for verified management and reception contact points.",
+  "mode": "crawl",
+  "engine_default": "stealth",
+  "adaptive": true,
+  "max_pages": 60,
+  "allow": [".*/(contact|book|branches|doctors|تواصل|حجز|فروعنا).*"],
+  "deny": [".*/(portal|patient-login|cart|admin).*"],
+  "link_extractor": {
+    "allow_domains": [],
+    "unique": true
+  },
+  "selectors": {
+    "company_name": { "css": "h1, .brand-title, meta[property='og:site_name']", "adaptive": true },
+    "emails": { "css": "a[href^='mailto:']", "attr": "href", "adaptive": true },
+    "phones": { "css": "a[href^='tel:']", "attr": "href", "adaptive": true },
+    "address": { "css": ".location, .clinic-address, address", "adaptive": true }
+  },
+  "extract": {
+    "company_name": "string",
+    "emails": "string[]",
+    "phones": "string[]",
+    "socials": "object",
+    "address": "string",
+    "markdown_excerpt": "string"
+  },
+  "ad_block": true,
+  "robots_obey": true
+}

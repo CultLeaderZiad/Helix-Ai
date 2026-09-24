@@ -209,7 +209,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
           <Link
             href="/pricing"
             target="_blank"
-            className="inline-flex items-center gap-1.5 rounded-xl border border-helix-border bg-slate-800/80 px-3.5 py-2 text-xs font-semibold text-helix-ink hover:border-slate-600 hover:text-helix-ink transition-all shadow-sm"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-helix-border bg-helix-canvas px-3.5 py-2 text-xs font-semibold text-helix-ink hover:bg-helix-border/40 transition-all shadow-xs"
           >
             <span>Preview /pricing</span>
             <ExternalLink className="size-3.5" />
@@ -218,7 +218,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
             type="button"
             onClick={handleReset}
             disabled={isPending}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-rose-500/30 bg-rose-500/10 px-3.5 py-2 text-xs font-semibold text-rose-300 hover:bg-rose-500/20 transition-all"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-rose-300 bg-rose-50 px-3.5 py-2 text-xs font-semibold text-rose-700 hover:bg-rose-100 transition-all"
           >
             <RotateCcw className="size-3.5" />
             <span>Reset Defaults</span>
@@ -231,8 +231,8 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
         <div
           className={`flex items-center gap-2 rounded-xl p-3 text-sm font-medium border animate-in fade-in slide-in-from-top-2 ${
             feedback.type === 'success'
-              ? 'bg-emerald-950/70 border-emerald-500/50 text-emerald-300'
-              : 'bg-rose-950/70 border-rose-500/50 text-rose-300'
+              ? 'bg-[#0B6E4F]/10 border-[#0B6E4F]/30 text-[#0B6E4F]'
+              : 'bg-rose-50 border-rose-200 text-rose-700'
           }`}
         >
           {feedback.type === 'success' ? <CheckCircle2 className="size-4 shrink-0" /> : <AlertCircle className="size-4 shrink-0" />}
@@ -347,7 +347,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
             <button
               type="submit"
               disabled={isPending}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-helix-border bg-slate-800 px-4 py-1.5 text-xs font-semibold text-helix-ink hover:bg-slate-700 hover:text-helix-ink transition-all"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-helix-border bg-helix-canvas px-4 py-1.5 text-xs font-semibold text-helix-ink hover:bg-helix-border/40 transition-all"
             >
               <Save className="size-3.5" />
               <span>Update Tier Header</span>
@@ -951,7 +951,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                 <button
                   type="button"
                   onClick={() => setShowAddPlanModal(false)}
-                  className="rounded-xl border border-helix-border bg-slate-800 px-4 py-2 text-xs font-semibold text-helix-ink/80 hover:text-helix-ink"
+                  className="rounded-xl border border-helix-border bg-helix-canvas px-4 py-2 text-xs font-semibold text-helix-ink hover:bg-helix-border/40 transition-colors"
                 >
                   Cancel
                 </button>
