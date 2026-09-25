@@ -184,6 +184,11 @@ export async function routeFetchTarget(
   let currentResult = await fetchHttp(targetUrl, { robotsObey })
   await recordEngineUsage('http', clientId, 0, 1)
 
+  // F3: Never escalate or spam errors on 404/410
+  if (currentResult.status === 404 || currentResult.status === 410 || currentResult.fetch_status === 'not_found') {
+    return { result: currentResult, logLines }
+  }
+
   const isBlocked = isBlockedContent(currentResult.status, currentResult.html)
   const isShell = !isBlocked && isJsShell(currentResult.html)
 

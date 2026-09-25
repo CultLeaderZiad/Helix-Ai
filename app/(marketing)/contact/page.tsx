@@ -13,14 +13,10 @@ export default async function ContactPage() {
   const navAuth = await getNavAuth()
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <PillNav isAuthenticated={navAuth.isAuthenticated} consoleHref={navAuth.consoleHref} />
-
-      <main className="mx-auto max-w-5xl px-4 pt-28 pb-24 md:pt-36">
+    <div className="w-full">
+      <main className="mx-auto max-w-5xl px-4 pt-12 pb-24">
         <ContactForm />
       </main>
-
-      <HelixFooter />
     </div>
   )
 }

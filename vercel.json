@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/process-agent-tasks",
       "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/search-watches",
+      "schedule": "0 5 * * *"
     }
   ]
 }

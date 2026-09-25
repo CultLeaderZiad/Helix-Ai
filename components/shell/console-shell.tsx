@@ -22,6 +22,7 @@ import {
   Menu,
   X,
   Target,
+  Search,
 } from 'lucide-react'
 
 export type ConsoleVariant = 'admin' | 'client'
@@ -29,6 +30,7 @@ export type ConsoleVariant = 'admin' | 'client'
 interface NavItem {
   href: string
   label: string
+  labelAr?: string
   icon?: React.ComponentType<{ className?: string }>
   badge?: string
   match: (path: string) => boolean
@@ -58,8 +60,17 @@ const ADMIN_NAV: NavItem[] = [
     match: p => p === '/admin/studio' || p.startsWith('/admin/studio'),
   },
   {
+    href: '/dashboard/search',
+    label: 'Search',
+    labelAr: 'بحث',
+    icon: Search,
+    section: 'primary',
+    match: p => p.startsWith('/dashboard/search'),
+  },
+  {
     href: '/dashboard/lead-generation',
     label: 'Lead Generation',
+    labelAr: 'توليد العملاء',
     icon: Target,
     section: 'primary',
     match: p => p.startsWith('/dashboard/lead-generation'),
@@ -137,8 +148,17 @@ const CLIENT_NAV: NavItem[] = [
     match: p => p.startsWith('/dashboard/studio'),
   },
   {
+    href: '/dashboard/search',
+    label: 'Search',
+    labelAr: 'بحث',
+    icon: Search,
+    section: 'primary',
+    match: p => p.startsWith('/dashboard/search'),
+  },
+  {
     href: '/dashboard/lead-generation',
     label: 'Lead Generation',
+    labelAr: 'توليد العملاء',
     icon: Target,
     section: 'primary',
     match: p => p.startsWith('/dashboard/lead-generation'),
@@ -259,7 +279,7 @@ export function ConsoleShell({
                     : 'text-[#9E9B95] hover:bg-white/[0.04] hover:text-white'
                 )}
               >
-                <span>{item.label}</span>
+                <span>{language === 'ar' ? (item.labelAr ?? item.label) : item.label}</span>
                 {item.badge && (
                   <span className="rounded bg-[#0B6E4F] px-1.5 py-0.2 text-[9px] font-mono text-white">
                     {item.badge}

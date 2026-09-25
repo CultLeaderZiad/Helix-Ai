@@ -32,13 +32,9 @@ export default async function PricingPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-[#0B0F19]/20 via-transparent to-[#0B0F19]" />
       </div>
 
-      <PillNav isAuthenticated={navAuth.isAuthenticated} consoleHref={navAuth.consoleHref} />
-
-      <main className="relative z-10 mx-auto max-w-6xl px-4 pt-28 pb-20 md:pt-36">
+      <main className="relative z-10 mx-auto max-w-6xl px-4 pt-12 pb-20">
         <PricingView initialConfigs={configs} />
       </main>
-
-      <HelixFooter />
     </div>
   )
 }

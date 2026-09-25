@@ -39,8 +39,6 @@ export default async function LandingPage() {
         <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[#0B0F19] to-transparent" />
       </div>
 
-      {/* Global Public Navigation */}
-      <PillNav isAuthenticated={navAuth.isAuthenticated} consoleHref={navAuth.consoleHref} />
 
       {/* Hero Section */}
       <main className="relative z-10 mx-auto flex min-h-[calc(100vh-80px)] max-w-5xl flex-col items-center justify-center px-4 pt-28 pb-16 text-center md:pt-36">
@@ -217,9 +215,6 @@ export default async function LandingPage() {
       <section id="faq" aria-label="Frequently Asked Questions" className="relative z-10">
         <FaqAccordion initialFaqs={faqs} />
       </section>
-
-      {/* Detailed Helix Watermark Footer */}
-      <HelixFooter />
     </div>
   )
 }

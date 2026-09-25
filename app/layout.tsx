@@ -2,6 +2,9 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Inter, Space_Grotesk } from 'next/font/google'
 import { AuthHashHandler } from '@/components/auth/auth-hash-handler'
+import { geistSans, geistMono, ibmPlexSansArabic } from '@/app/fonts'
+import { getLang, dirOf } from '@/lib/i18n/server'
+import { AppProviders } from '@/components/providers/app-providers'
 import './globals.css'
 
 const inter = Inter({
@@ -74,15 +77,19 @@ export const viewport: Viewport = {
   ],
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const lang = await getLang()
+  const dir = dirOf(lang)
+
   return (
     <html
-      lang="en"
-      className={`${inter.variable} ${spaceGrotesk.variable} bg-[#F3F1EC] text-[#141414]`}
+      lang={lang}
+      dir={dir}
+      className={`${geistSans.variable} ${geistMono.variable} ${ibmPlexSansArabic.variable} ${inter.variable} ${spaceGrotesk.variable}`}
       suppressHydrationWarning
     >
       <body className="antialiased bg-[#F3F1EC] text-[#141414]" suppressHydrationWarning>
@@ -110,8 +117,10 @@ export default function RootLayout({
             }),
           }}
         />
-        <AuthHashHandler />
-        {children}
+        <AppProviders initialLanguage={lang}>
+          <AuthHashHandler />
+          {children}
+        </AppProviders>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

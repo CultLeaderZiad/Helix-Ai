@@ -14,11 +14,9 @@ export default async function PublicStudioPage() {
 
   return (
     <div className="relative min-h-screen bg-helix-canvas text-helix-ink">
-      <PillNav isAuthenticated={navAuth.isAuthenticated} consoleHref={navAuth.consoleHref} />
-      <main className="relative z-10 mx-auto max-w-7xl px-4 pt-28 pb-20 md:pt-36">
+      <main className="relative z-10 mx-auto max-w-7xl px-4 pt-10 pb-20">
         <StudioWorkspace initialClientName="Al Noor Specialty Clinic" />
       </main>
-      <HelixFooter />
     </div>
   )
 }

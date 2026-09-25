@@ -10,10 +10,8 @@ export const metadata: Metadata = {
 export default async function PrivacyPage() {
   const navAuth = await getNavAuth()
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <PillNav isAuthenticated={navAuth.isAuthenticated} consoleHref={navAuth.consoleHref} />
-
-      <main className="mx-auto max-w-5xl px-4 pt-28 pb-24 md:pt-36">
+    <div className="w-full">
+      <main className="mx-auto max-w-5xl px-4 pt-12 pb-24">
         <header className="border-b border-border pb-8">
           <div className="text-xs font-semibold uppercase tracking-wider text-accent">Privacy & Compliance</div>
           <h1 className="mt-2 font-display text-3xl font-bold tracking-tight sm:text-4xl">Privacy Policy</h1>

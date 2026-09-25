@@ -8,17 +8,17 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          'border border-transparent bg-helix-ink text-helix-surface hover:bg-helix-ink/90',
+          'border border-transparent bg-helix-accent text-white hover:bg-helix-accent/90 shadow-2xs',
         primary:
-          'border border-transparent bg-helix-ink text-helix-surface hover:bg-helix-ink/90',
+          'border border-transparent bg-helix-accent text-white hover:bg-helix-accent/90 shadow-2xs',
         secondary:
-          'border border-helix-border bg-helix-surface text-helix-ink hover:bg-helix-canvas',
+          'border border-helix-border bg-helix-surface text-helix-ink hover:bg-helix-surface-2',
         outline:
-          'border border-helix-border bg-transparent text-helix-ink hover:bg-helix-canvas',
+          'border border-helix-border bg-transparent text-helix-ink hover:bg-helix-surface-2',
         accent:
-          'border border-transparent bg-helix-accent text-helix-surface hover:bg-helix-accent/90',
+          'border border-transparent bg-helix-accent text-white hover:bg-helix-accent/90 shadow-2xs',
         ghost:
-          'text-helix-muted hover:bg-helix-canvas hover:text-helix-ink',
+          'text-helix-muted hover:bg-helix-surface-2 hover:text-helix-ink',
         destructive:
           'border border-helix-danger/20 bg-helix-danger/8 text-helix-danger hover:bg-helix-danger/12',
         link: 'text-helix-accent underline-offset-4 hover:underline',

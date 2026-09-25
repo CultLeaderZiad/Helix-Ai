@@ -13,10 +13,7 @@ export default async function AboutPage() {
   const navAuth = await getNavAuth()
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col justify-between">
-      <div>
-        <PillNav isAuthenticated={navAuth.isAuthenticated} consoleHref={navAuth.consoleHref} />
-
-        <main className="mx-auto max-w-5xl px-4 pt-28 pb-24 md:pt-36">
+        <main className="mx-auto max-w-5xl px-4 pt-12 pb-24">
           <header className="mx-auto max-w-3xl text-center">
             <div className="text-xs font-semibold uppercase tracking-wider text-accent">Operational Truth</div>
             <h1 className="mt-4 font-display text-4xl font-bold tracking-tight sm:text-5xl">
@@ -66,9 +63,6 @@ export default async function AboutPage() {
             </div>
           </section>
         </main>
-      </div>
-
-      <HelixFooter />
     </div>
   )
 }

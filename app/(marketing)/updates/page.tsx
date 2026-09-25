@@ -15,10 +15,8 @@ export default async function UpdatesPage() {
   const [releases, navAuth] = await Promise.all([Promise.resolve(getUpdates(false)), getNavAuth()])
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <PillNav isAuthenticated={navAuth.isAuthenticated} consoleHref={navAuth.consoleHref} />
-
-      <main className="mx-auto max-w-4xl px-4 pt-28 pb-24 md:pt-36">
+    <div className="w-full">
+      <main className="mx-auto max-w-4xl px-4 pt-12 pb-24">
         <header className="text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-border bg-panel px-3 py-1 text-xs font-semibold uppercase tracking-wider text-accent">
             <Sparkles className="size-3.5" />
@@ -69,8 +67,6 @@ export default async function UpdatesPage() {
           ))}
         </div>
       </main>
-
-      <HelixFooter />
     </div>
   )
 }

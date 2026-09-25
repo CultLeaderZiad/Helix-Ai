@@ -302,24 +302,24 @@ export function WebhooksManagerView({
   return (
     <div className="w-full space-y-6">
       {/* Help Banner: Production vs Test URL */}
-      <div className="flex items-start gap-3 rounded-[12px] border border-[#D9D4CB] bg-[#FFFEFA] p-4 shadow-2xs">
-        <Info className="size-5 shrink-0 text-[#0B6E4F] mt-0.5" />
-        <div className="text-13 text-[#141414]">
-          <span className="font-semibold text-[#141414]">Important: </span>
-          Paste the n8n <strong className="font-semibold">Production Webhook URL</strong> (<code className="rounded bg-[#F3F1EC] px-1.5 py-0.5 text-12 font-mono text-[#141414]">/webhook/...</code>), not the Test URL (<code className="rounded bg-[#F3F1EC] px-1.5 py-0.5 text-12 font-mono text-[#6E6B65]">/webhook-test/...</code>).
+      <div className="flex items-start gap-3 rounded-[12px] border border-helix-border bg-helix-surface p-4 shadow-card">
+        <Info className="size-5 shrink-0 text-helix-accent mt-0.5" />
+        <div className="text-13 text-helix-muted">
+          <span className="font-semibold text-helix-ink">Important: </span>
+          Paste the n8n <strong className="font-semibold text-helix-ink">Production Webhook URL</strong> (<code className="rounded bg-helix-surface-2 px-1.5 py-0.5 text-12 font-mono text-helix-ink">/webhook/...</code>), not the Test URL (<code className="rounded bg-helix-surface-2 px-1.5 py-0.5 text-12 font-mono text-helix-muted">/webhook-test/...</code>).
           Changes saved here are applied immediately to all live events. Helix automatically signs every request with HMAC-SHA256 headers.
         </div>
       </div>
 
-      {/* Tenant Selector & Filter Bar (Warm Paper #FFFEFA on #F3F1EC) */}
-      <div className="flex flex-col gap-4 rounded-[14px] border border-[#D9D4CB] bg-[#FFFEFA] p-5 shadow-2xs sm:flex-row sm:items-center sm:justify-between">
+      {/* Tenant Selector & Filter Bar */}
+      <div className="flex flex-col gap-4 rounded-[14px] border border-helix-border bg-helix-surface p-4.5 shadow-card sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex size-9 items-center justify-center rounded-[8px] bg-[#141414] text-white">
+          <div className="flex size-9 items-center justify-center rounded-[8px] border border-helix-border bg-helix-surface-2 text-helix-accent">
             <PlugZap className="size-4" />
           </div>
           <div>
-            <h2 className="text-15 font-bold text-[#141414]">n8n Production Webhook Registry</h2>
-            <p className="text-12 text-[#6E6B65]">
+            <h2 className="text-14 font-semibold text-helix-ink">n8n Production Webhook Registry</h2>
+            <p className="text-12 text-helix-muted">
               Configure, rotate secrets, and ping outbound webhook endpoints per tenant
             </p>
           </div>
@@ -327,11 +327,11 @@ export function WebhooksManagerView({
 
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2">
-            <span className="text-12 font-mono text-[#6E6B65]">Workspace:</span>
+            <span className="text-12 font-mono text-helix-muted">Workspace:</span>
             <select
               value={selectedClientId}
               onChange={e => setSelectedClientId(e.target.value)}
-              className="h-9 rounded-[8px] border border-[#D9D4CB] bg-[#F7F5F0] px-3 text-13 font-semibold text-[#141414] focus:border-[#141414] focus:outline-none"
+              className="h-8.5 rounded-[8px] border border-helix-border bg-helix-surface-2 px-3 text-12 font-medium text-helix-ink focus:border-helix-accent focus:outline-none"
             >
               {clients.map(c => (
                 <option key={c.id} value={c.id}>
@@ -342,13 +342,13 @@ export function WebhooksManagerView({
           </div>
 
           {/* Lane Filter Tabs */}
-          <div className="flex items-center rounded-[8px] border border-[#D9D4CB] bg-[#F7F5F0] p-0.5 text-12 font-medium">
+          <div className="flex items-center rounded-[8px] border border-helix-border bg-helix-surface-2 p-0.5 text-12 font-medium">
             <button
               type="button"
               onClick={() => setActiveLaneTab('all')}
               className={cn(
-                'rounded-[6px] px-2.5 py-1 transition-colors',
-                activeLaneTab === 'all' ? 'bg-[#141414] text-white' : 'text-[#6E6B65] hover:text-[#141414]'
+                'rounded-[6px] px-2.5 py-1 transition-all',
+                activeLaneTab === 'all' ? 'bg-helix-surface text-helix-ink shadow-2xs font-semibold' : 'text-helix-muted hover:text-helix-ink'
               )}
             >
               All (10)
@@ -357,8 +357,8 @@ export function WebhooksManagerView({
               type="button"
               onClick={() => setActiveLaneTab('core')}
               className={cn(
-                'rounded-[6px] px-2.5 py-1 transition-colors',
-                activeLaneTab === 'core' ? 'bg-[#141414] text-white' : 'text-[#6E6B65] hover:text-[#141414]'
+                'rounded-[6px] px-2.5 py-1 transition-all',
+                activeLaneTab === 'core' ? 'bg-helix-surface text-helix-ink shadow-2xs font-semibold' : 'text-helix-muted hover:text-helix-ink'
               )}
             >
               Core (5)
@@ -367,8 +367,8 @@ export function WebhooksManagerView({
               type="button"
               onClick={() => setActiveLaneTab('add_on')}
               className={cn(
-                'rounded-[6px] px-2.5 py-1 transition-colors',
-                activeLaneTab === 'add_on' ? 'bg-[#141414] text-white' : 'text-[#6E6B65] hover:text-[#141414]'
+                'rounded-[6px] px-2.5 py-1 transition-all',
+                activeLaneTab === 'add_on' ? 'bg-helix-surface text-helix-ink shadow-2xs font-semibold' : 'text-helix-muted hover:text-helix-ink'
               )}
             >
               Add-ons (4)
@@ -377,8 +377,8 @@ export function WebhooksManagerView({
               type="button"
               onClick={() => setActiveLaneTab('preview')}
               className={cn(
-                'rounded-[6px] px-2.5 py-1 transition-colors',
-                activeLaneTab === 'preview' ? 'bg-[#141414] text-white' : 'text-[#6E6B65] hover:text-[#141414]'
+                'rounded-[6px] px-2.5 py-1 transition-all',
+                activeLaneTab === 'preview' ? 'bg-helix-surface text-helix-ink shadow-2xs font-semibold' : 'text-helix-muted hover:text-helix-ink'
               )}
             >
               Preview (1)
@@ -402,38 +402,38 @@ export function WebhooksManagerView({
           return (
             <div
               key={sys.systemType}
-              className="rounded-[14px] border border-[#D9D4CB] bg-[#FFFEFA] p-5 shadow-2xs transition-colors hover:border-[#141414]/40"
+              className="rounded-[14px] border border-helix-border bg-helix-surface p-4.5 shadow-card transition-colors hover:border-helix-border-strong"
             >
               {/* Header row */}
               <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                 <div className="min-w-0 max-w-2xl">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="text-14 font-bold text-[#141414]">{sys.name}</h3>
+                    <h3 className="text-14 font-semibold text-helix-ink">{sys.name}</h3>
                     <span
                       className={cn(
-                        'rounded-[6px] px-2 py-0.5 text-[10px] font-mono font-semibold uppercase',
+                        'rounded-[6px] px-2 py-0.5 text-[10px] font-mono font-medium uppercase',
                         sys.lane === 'core'
-                          ? 'bg-[#141414] text-white'
+                          ? 'border border-helix-accent/25 bg-helix-accent-soft text-helix-accent font-semibold'
                           : sys.lane === 'add_on'
-                          ? 'border border-[#D9D4CB] bg-[#F7F5F0] text-[#141414]'
-                          : 'border border-dashed border-[#D9D4CB] bg-[#F7F5F0] text-[#6E6B65]'
+                          ? 'border border-helix-border bg-helix-surface-2 text-helix-muted'
+                          : 'border border-dashed border-helix-border bg-helix-surface-2 text-helix-subtle'
                       )}
                     >
                       {sys.lane === 'core' ? 'Core System' : sys.lane === 'add_on' ? 'Add-On Pack' : 'Preview'}
                     </span>
                     {sys.b2bOnly && (
-                      <span className="rounded-[6px] border border-amber-300 bg-amber-50 px-2 py-0.5 text-[10px] font-mono font-semibold uppercase text-amber-900">
+                      <span className="rounded-[6px] border border-amber-300 bg-amber-50 px-2 py-0.5 text-[10px] font-mono font-medium uppercase text-amber-800">
                         B2B Only
                       </span>
                     )}
                   </div>
-                  <p className="mt-1 text-12 text-[#6E6B65]">{sys.description}</p>
-                  <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] font-mono text-[#9E9B95]">
+                  <p className="mt-1 text-12 text-helix-muted">{sys.description}</p>
+                  <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] font-mono text-helix-subtle">
                     <span>Channel: {sys.channel}</span>
                     <span>·</span>
-                    <span>system_type: <code className="text-[#141414]">{sys.systemType}</code></span>
+                    <span>system_type: <code className="text-helix-ink">{sys.systemType}</code></span>
                     <span>·</span>
-                    <span>Direction: <code className="text-[#141414]">helix_to_n8n</code></span>
+                    <span>Direction: <code className="text-helix-ink">helix_to_n8n</code></span>
                   </div>
                 </div>
 
@@ -441,8 +441,8 @@ export function WebhooksManagerView({
                 <div className="flex items-center gap-3 shrink-0">
                   <div className="flex items-center gap-1.5">
                     {status === 'ok' || status === 'healthy' ? (
-                      <span className="inline-flex items-center gap-1 rounded-full border border-[#0B6E4F]/20 bg-[#0B6E4F]/10 px-2.5 py-0.5 text-11 font-mono font-semibold text-[#0B6E4F]">
-                        <CheckCircle2 className="size-3 text-[#0B6E4F]" />
+                      <span className="inline-flex items-center gap-1 rounded-full border border-helix-accent/20 bg-helix-accent-soft px-2.5 py-0.5 text-11 font-mono font-semibold text-helix-accent">
+                        <CheckCircle2 className="size-3 text-helix-accent" />
                         ok
                       </span>
                     ) : status === 'failed' ? (
@@ -451,24 +451,24 @@ export function WebhooksManagerView({
                         failed
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 rounded-full border border-[#D9D4CB] bg-[#F7F5F0] px-2.5 py-0.5 text-11 font-mono text-[#6E6B65]">
-                        <span className="size-1.5 rounded-full bg-[#9E9B95]" />
+                      <span className="inline-flex items-center gap-1 rounded-full border border-helix-border bg-helix-surface-2 px-2.5 py-0.5 text-11 font-mono text-helix-muted">
+                        <span className="size-1.5 rounded-full bg-helix-muted" />
                         unknown
                       </span>
                     )}
                     {webhook?.last_ping_at && (
-                      <span className="text-[10px] font-mono text-[#9E9B95]">
+                      <span className="text-[10px] font-mono text-helix-subtle">
                         {new Date(webhook.last_ping_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </span>
                     )}
                   </div>
 
-                  <label className="flex items-center gap-1.5 cursor-pointer text-12 font-medium text-[#141414]">
+                  <label className="flex items-center gap-1.5 cursor-pointer text-12 font-medium text-helix-ink">
                     <input
                       type="checkbox"
                       checked={isEnabled}
                       onChange={e => handleToggleEnabled(sys.systemType, e.target.checked)}
-                      className="size-4 rounded border-[#D9D4CB] text-[#141414] focus:ring-[#141414]"
+                      className="size-4 rounded border-helix-border text-helix-accent focus:ring-helix-accent"
                     />
                     Enabled
                   </label>
@@ -476,7 +476,7 @@ export function WebhooksManagerView({
               </div>
 
               {/* Form Controls: Production Webhook URL + Secret */}
-              <div className="mt-4 space-y-3 pt-3 border-t border-[#D9D4CB]/60">
+              <div className="mt-4 space-y-3 pt-3 border-t border-helix-border">
                 {/* Webhook URL Input */}
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                   <div className="relative flex-1">
@@ -485,7 +485,7 @@ export function WebhooksManagerView({
                       placeholder={`https://n8n.your-agency.com${sys.defaultPath}`}
                       value={webhook?.webhook_url || ''}
                       onChange={e => handleUrlChange(sys.systemType, e.target.value)}
-                      className="h-9 w-full font-mono text-12 text-[#141414] bg-[#F7F5F0] border-[#D9D4CB] focus:border-[#141414]"
+                      className="h-8.5 w-full font-mono text-12 text-helix-ink bg-helix-surface-2 border-helix-border focus:border-helix-accent focus:bg-helix-surface"
                     />
                   </div>
 
@@ -496,17 +496,17 @@ export function WebhooksManagerView({
                       variant="outline"
                       onClick={() => handleCopyUrl(key, webhook?.webhook_url || '')}
                       disabled={!webhook?.webhook_url}
-                      className="h-9 border-[#D9D4CB] bg-[#FFFEFA] text-12 text-[#141414] hover:bg-[#F3F1EC]"
+                      className="h-8.5 border-helix-border bg-helix-surface text-12 text-helix-ink hover:bg-helix-surface-2 font-medium"
                       title="Copy URL"
                     >
                       {copiedKey === key ? (
                         <>
-                          <Check className="size-3.5 mr-1 text-[#0B6E4F]" />
+                          <Check className="size-3.5 mr-1 text-helix-accent" />
                           Copied
                         </>
                       ) : (
                         <>
-                          <Copy className="size-3.5 mr-1 text-[#6E6B65]" />
+                          <Copy className="size-3.5 mr-1 text-helix-muted" />
                           Copy URL
                         </>
                       )}
@@ -515,11 +515,12 @@ export function WebhooksManagerView({
                     <Button
                       type="button"
                       size="sm"
+                      variant="accent"
                       onClick={() => handleSave(sys.systemType)}
                       disabled={isPending}
-                      className="h-9 bg-[#141414] text-white hover:bg-black text-12 font-medium"
+                      className="h-8.5 bg-helix-accent text-white hover:bg-helix-accent/90 text-12 font-medium shadow-2xs"
                     >
-                      <Save className="size-3.5 mr-1" />
+                      <Save className="size-3.5 mr-1.5" />
                       Save & apply
                     </Button>
 
@@ -529,9 +530,9 @@ export function WebhooksManagerView({
                       variant="outline"
                       onClick={() => handlePing(sys.systemType)}
                       disabled={isPending}
-                      className="h-9 border-[#D9D4CB] bg-[#FFFEFA] text-[#141414] hover:bg-[#F3F1EC] text-12 font-medium"
+                      className="h-8.5 border-helix-border bg-helix-surface text-helix-ink hover:bg-helix-surface-2 text-12 font-medium"
                     >
-                      <Radio className="size-3.5 mr-1 text-[#0B6E4F]" />
+                      <Radio className="size-3.5 mr-1.5 text-helix-accent" />
                       Ping
                     </Button>
                   </div>
@@ -545,18 +546,18 @@ export function WebhooksManagerView({
                       placeholder={webhook?.secret_hash || (webhook as any)?.has_secret ? '•••••••••••• (Leave blank to keep current secret)' : 'Enter webhook secret (or leave blank for default)'}
                       value={enteredSecret}
                       onChange={e => handleSecretChange(sys.systemType, e.target.value)}
-                      className="h-8 pr-8 font-mono text-11 bg-[#F7F5F0] border-[#D9D4CB] text-[#141414]"
+                      className="h-8 pr-8 font-mono text-11 bg-helix-surface-2 border-helix-border text-helix-ink focus:border-helix-accent focus:bg-helix-surface"
                     />
                     <button
                       type="button"
                       onClick={() => setShowSecretState(prev => ({ ...prev, [key]: !showSecret }))}
-                      className="absolute right-2.5 top-2 text-[#9E9B95] hover:text-[#141414]"
+                      className="absolute right-2.5 top-2 text-helix-subtle hover:text-helix-ink"
                       title={showSecret ? 'Hide' : 'Show'}
                     >
                       {showSecret ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
                     </button>
                   </div>
-                  <span className="text-[11px] font-mono text-[#9E9B95]">
+                  <span className="text-[11px] font-mono text-helix-subtle">
                     {webhook?.secret_hash || (webhook as any)?.has_secret ? 'Secret configured ✓' : 'Using global secret'}
                   </span>
                 </div>
@@ -564,9 +565,9 @@ export function WebhooksManagerView({
 
               {/* Ping & Save Feedback Line */}
               {(saveMsg || pingInfo) && (
-                <div className="mt-2.5 flex items-center justify-between text-[11px] font-mono border-t border-[#D9D4CB]/40 pt-2">
+                <div className="mt-2.5 flex items-center justify-between text-[11px] font-mono border-t border-helix-border pt-2">
                   {saveMsg && (
-                    <span className={cn(saveMsg.startsWith('Error') ? 'text-rose-600 font-semibold' : 'text-[#0B6E4F] font-semibold')}>
+                    <span className={cn(saveMsg.startsWith('Error') ? 'text-helix-danger font-semibold' : 'text-helix-accent font-semibold')}>
                       {saveMsg}
                     </span>
                   )}
@@ -574,7 +575,7 @@ export function WebhooksManagerView({
                     <span
                       className={cn(
                         'ml-auto',
-                        pingInfo.status === 'ok' || pingInfo.status === 'healthy' ? 'text-[#0B6E4F] font-semibold' : 'text-rose-600 font-semibold'
+                        pingInfo.status === 'ok' || pingInfo.status === 'healthy' ? 'text-helix-accent font-semibold' : 'text-helix-danger font-semibold'
                       )}
                     >
                       {pingInfo.message}

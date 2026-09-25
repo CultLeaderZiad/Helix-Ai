@@ -3,7 +3,8 @@
 import React from 'react'
 
 interface ExportBarProps {
-  onExportCsv: () => void
+  onExportCsv: (detail?: 'simple' | 'full') => void
+  onExportXlsx: () => void
   onExportJsonl: () => void
   leadCount: number
   disabled?: boolean
@@ -12,6 +13,7 @@ interface ExportBarProps {
 
 export function ExportBar({
   onExportCsv,
+  onExportXlsx,
   onExportJsonl,
   leadCount,
   disabled = false,
@@ -28,10 +30,28 @@ export function ExportBar({
         <button
           type="button"
           disabled={disabled || leadCount === 0}
-          onClick={onExportCsv}
+          onClick={onExportXlsx}
           className="rounded border border-[#cfd6df] dark:border-white/15 bg-white dark:bg-[#11151c] px-3 py-1.5 text-xs font-semibold text-[#0f141b] dark:text-[#e8ecf2] hover:bg-[#eaeef3] dark:hover:bg-[#171c25] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          {isArabic ? 'تصدير CSV (مع المصادر)' : 'Export CSV (Provenance)'}
+          {isArabic ? 'تصدير .xlsx' : 'Export .xlsx'}
+        </button>
+
+        <button
+          type="button"
+          disabled={disabled || leadCount === 0}
+          onClick={() => onExportCsv('simple')}
+          className="rounded border border-[#cfd6df] dark:border-white/15 bg-white dark:bg-[#11151c] px-3 py-1.5 text-xs font-semibold text-[#0f141b] dark:text-[#e8ecf2] hover:bg-[#eaeef3] dark:hover:bg-[#171c25] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          {isArabic ? 'تصدير CSV' : 'Export CSV'}
+        </button>
+
+        <button
+          type="button"
+          disabled={disabled || leadCount === 0}
+          onClick={() => onExportCsv('full')}
+          className="rounded border border-[#cfd6df] dark:border-white/15 bg-white dark:bg-[#11151c] px-3 py-1.5 text-xs font-semibold text-[#0f141b] dark:text-[#e8ecf2] hover:bg-[#eaeef3] dark:hover:bg-[#171c25] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          {isArabic ? 'CSV كامل (17 عمود)' : 'Full CSV (17 cols)'}
         </button>
 
         <button

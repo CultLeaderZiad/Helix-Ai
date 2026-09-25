@@ -59,9 +59,8 @@ export async function proxy(request: NextRequest) {
 }
 
 // Cron endpoints carry their own shared-secret guard (CRON_SECRET) and must
-// stay reachable by the scheduler without a browser session, so /api/cron/*
-// is the one explicit matcher exception. Every other /api path still
-// requires a verified session.
+// stay reachable by the scheduler without a browser session. /api/mcp carries its
+// own API key verification header. Every other /api path still requires a verified session.
 export const config = {
   matcher: [
     '/login',
@@ -71,6 +70,6 @@ export const config = {
     '/dashboard',
     '/dashboard/:path*',
     '/client/:path*',
-    '/api/((?!cron/).*)',
+    '/api/((?!cron/|mcp$).*)',
   ],
 }

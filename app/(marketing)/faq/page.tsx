@@ -31,13 +31,9 @@ export default async function FaqPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-[#070A11]/60 via-transparent to-[#070A11]" />
       </div>
 
-      <PillNav isAuthenticated={navAuth.isAuthenticated} consoleHref={navAuth.consoleHref} />
-
-      <main className="relative z-10 pt-28 pb-20 md:pt-36">
+      <main className="relative z-10 pt-12 pb-20">
         <FaqAccordion initialFaqs={faqs} />
       </main>
-
-      <HelixFooter />
     </div>
   )
 }
