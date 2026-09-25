@@ -3,12 +3,10 @@
 import { useActionState, useId, useState } from 'react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
-import { AlertCircle, Eye, EyeOff, Loader2 } from 'lucide-react'
+import { AlertCircle, ArrowLeft, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { signIn, type Portal, type SignInState } from '@/lib/auth/sign-in'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { cn } from '@/lib/utils'
+import { authCopy, localizeAuthError } from '@/components/auth/auth-copy'
+import type { HelixLang } from '@/lib/public-prefs'
 
 // Lazy load modal only if user triggers password recovery
 const PasswordResetModal = dynamic(
@@ -18,12 +16,8 @@ const PasswordResetModal = dynamic(
 
 const initialState: SignInState = { status: 'idle' }
 
-const PORTALS: { value: Portal; label: string; hint: string }[] = [
-  { value: 'admin', label: 'Agency console', hint: 'Agency administrators' },
-  { value: 'client', label: 'Client portal', hint: 'Client users and staff' },
-]
-
-export function LoginForm() {
+export function LoginForm({ lang, verifyFailed = false }: { lang: HelixLang; verifyFailed?: boolean }) {
+  const copy = authCopy[lang]
   const [state, formAction, pending] = useActionState(signIn, initialState)
   const [showPassword, setShowPassword] = useState(false)
   const [showResetModal, setShowResetModal] = useState(false)
@@ -44,188 +38,141 @@ export function LoginForm() {
   const authError = state.status === 'auth_error' ? (state as Extract<SignInState, { status: 'auth_error' }>) : null
   const locked = false
 
+  const portals: { value: Portal; label: string; hint: string }[] = [
+    { value: 'admin', label: copy.agency, hint: copy.agencyHint },
+    { value: 'client', label: copy.client, hint: copy.clientHint },
+  ]
+
   return (
     <>
-      <form action={formAction} noValidate aria-busy={pending} className="flex flex-col gap-6">
-        <header className="flex flex-col gap-1.5">
-          <div className="flex items-center justify-between">
-            <h2 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Console</h2>
-            <Link
-              href="/"
-              className="text-xs text-muted-foreground transition-colors hover:text-foreground"
-            >
-              ← Back to home
-            </Link>
-          </div>
-          <p className="text-small text-muted-foreground">Access your Helix AI operations workspace</p>
-        </header>
+      <Link href="/" className="auth-back">
+        <ArrowLeft size={14} className={lang === 'ar' ? 'flip' : undefined} />
+        {copy.backHome}
+      </Link>
+      <h1 className="auth-title">{copy.signInTitle}</h1>
+      <p className="auth-lead">{copy.signInLead}</p>
 
+      <form action={formAction} noValidate aria-busy={pending} className="auth-form">
+        {verifyFailed ? (
+          <div role="alert" className="auth-alert">
+            <AlertCircle aria-hidden="true" size={16} />
+            <p>{copy.verifyFailed}</p>
+          </div>
+        ) : null}
         {authError ? (
-          <div
-            id={ids.banner}
-            role="alert"
-            className="flex gap-3 rounded-lg border border-status-danger/40 bg-status-danger/10 p-3.5 text-small text-foreground"
-          >
-            <AlertCircle aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-status-danger" />
-            <div className="flex flex-col gap-2">
-              <p>{authError.message}</p>
+          <div id={ids.banner} role="alert" className="auth-alert">
+            <AlertCircle aria-hidden="true" size={16} />
+            <div>
+              <p>{localizeAuthError(lang, authError.message)}</p>
               {authError.code === 'ROLE_MISMATCH' && authError.actual_portal ? (
-                <button
-                  type="button"
-                  onClick={() => setPortal(authError.actual_portal as Portal)}
-                  className="self-start font-medium text-accent underline-offset-4 hover:underline"
-                >
-                  Switch to {authError.actual_portal === 'admin' ? 'Agency console' : 'Client portal'} →
+                <button type="button" onClick={() => setPortal(authError.actual_portal as Portal)}>
+                  {authError.actual_portal === 'admin' ? copy.switchAgency : copy.switchClient}
                 </button>
               ) : null}
             </div>
           </div>
         ) : null}
 
-        <fieldset className="flex flex-col gap-2" disabled={pending || locked}>
-          <legend className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Select Workspace
-          </legend>
-          <div
-            role="radiogroup"
-            aria-label="Workspace"
-            className="grid grid-cols-2 gap-1 rounded-lg border border-border bg-raised p-1"
-          >
-            {PORTALS.map(p => {
-              const checked = portal === p.value
+        <fieldset disabled={pending || locked}>
+          <legend className="auth-legend">{copy.workspace}</legend>
+          <div role="radiogroup" aria-label={copy.workspace} className="auth-seg">
+            {portals.map(item => {
+              const checked = portal === item.value
               return (
-                <label
-                  key={p.value}
-                  className={cn(
-                    'flex cursor-pointer flex-col gap-0.5 rounded-md p-2.5 transition-all text-left',
-                    checked
-                      ? 'bg-panel text-foreground shadow-xs font-medium'
-                      : 'text-muted-foreground hover:text-foreground',
-                  )}
-                >
+                <label key={item.value} className={checked ? 'on' : undefined}>
                   <input
                     type="radio"
                     name="portal"
-                    value={p.value}
+                    value={item.value}
                     checked={checked}
-                    onChange={() => setPortal(p.value)}
+                    onChange={() => setPortal(item.value)}
                     className="sr-only"
                   />
-                  <div className="flex items-center gap-1.5 text-small font-semibold">
-                    <span
-                      aria-hidden="true"
-                      className={cn(
-                        'size-2 rounded-full',
-                        checked ? 'bg-accent' : 'bg-muted-foreground/40',
-                      )}
-                    />
-                    {p.label}
-                  </div>
-                  <span className="text-[11px] text-muted-foreground">{p.hint}</span>
+                  <span className="seg-name">
+                    <span className="pip" aria-hidden="true" />
+                    {item.label}
+                  </span>
+                  <span className="seg-hint">{item.hint}</span>
                 </label>
               )
             })}
           </div>
         </fieldset>
 
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <Label htmlFor={ids.email}>Work email</Label>
-            <Input
-              id={ids.email}
-              name="email"
-              type="email"
-              inputMode="email"
-              autoComplete="username"
-              autoCapitalize="none"
-              spellCheck={false}
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              disabled={pending || locked}
-              placeholder="jane@company.com"
-              aria-invalid={Boolean(fieldErrors.email) || undefined}
-              aria-describedby={fieldErrors.email ? ids.emailErr : undefined}
-              className="h-11 rounded-lg bg-panel px-3 text-body"
-            />
-            {fieldErrors.email ? (
-              <p id={ids.emailErr} className="text-small text-status-danger">
-                {fieldErrors.email}
-              </p>
-            ) : null}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor={ids.password}>Password</Label>
-              <button
-                type="button"
-                onClick={() => setShowResetModal(true)}
-                className="text-small text-accent underline-offset-4 hover:underline"
-              >
-                Forgot password?
-              </button>
-            </div>
-            <div className="relative">
-              <Input
-                id={ids.password}
-                name="password"
-                type={showPassword ? 'text' : 'password'}
-                autoComplete="current-password"
-                disabled={pending || locked}
-                aria-invalid={Boolean(fieldErrors.password) || undefined}
-                aria-describedby={fieldErrors.password ? ids.passwordErr : undefined}
-                className="h-11 rounded-lg bg-panel px-3 pr-12 text-body"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(v => !v)}
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
-                aria-pressed={showPassword}
-                disabled={pending || locked}
-                className="absolute inset-y-0 right-0 flex min-h-[44px] min-w-[44px] items-center justify-center text-muted-foreground hover:text-foreground disabled:opacity-50"
-              >
-                {showPassword ? <EyeOff className="size-4" aria-hidden="true" /> : <Eye className="size-4" aria-hidden="true" />}
-              </button>
-            </div>
-            {fieldErrors.password ? (
-              <p id={ids.passwordErr} className="text-small text-status-danger">
-                {fieldErrors.password}
-              </p>
-            ) : null}
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-3 pt-2">
-          <Button
-            type="submit"
-            size="lg"
+        <div className="auth-field">
+          <label htmlFor={ids.email}>{copy.email}</label>
+          <input
+            id={ids.email}
+            className="fld"
+            name="email"
+            type="email"
+            inputMode="email"
+            autoComplete="username"
+            autoCapitalize="none"
+            spellCheck={false}
+            value={email}
+            onChange={e => setEmail(e.target.value)}
             disabled={pending || locked}
-            className="h-11 w-full rounded-lg bg-accent font-semibold text-accent-foreground shadow-sm hover:bg-accent/90 disabled:opacity-60"
-          >
-            {pending ? (
-              <>
-                <Loader2 aria-hidden="true" className="size-4 animate-spin" />
-                Verifying credentials...
-              </>
-            ) : (
-              'Open workspace'
-            )}
-          </Button>
-
-          <div className="rounded-lg border border-border bg-raised/60 p-3 text-center text-small text-muted-foreground">
-            Don&apos;t have an account?{' '}
-            <Link href="/signup" className="font-semibold text-accent underline-offset-4 hover:underline">
-              Start 7-day free trial →
-            </Link>
-          </div>
-
-          <p className="text-center text-[11px] text-muted-foreground">
-            Authentication is secured by Supabase.
-          </p>
+            placeholder={copy.emailPh}
+            aria-invalid={Boolean(fieldErrors.email) || undefined}
+            aria-describedby={fieldErrors.email ? ids.emailErr : undefined}
+          />
+          {fieldErrors.email ? (
+            <p id={ids.emailErr} className="auth-error">{localizeAuthError(lang, fieldErrors.email)}</p>
+          ) : null}
         </div>
+
+        <div className="auth-field">
+          <div className="auth-label-row">
+            <label htmlFor={ids.password}>{copy.password}</label>
+            <button type="button" className="auth-linkish" onClick={() => setShowResetModal(true)}>
+              {copy.forgot}
+            </button>
+          </div>
+          <div className="auth-field-wrap">
+            <input
+              id={ids.password}
+              className="fld"
+              name="password"
+              type={showPassword ? 'text' : 'password'}
+              autoComplete="current-password"
+              disabled={pending || locked}
+              aria-invalid={Boolean(fieldErrors.password) || undefined}
+              aria-describedby={fieldErrors.password ? ids.passwordErr : undefined}
+            />
+            <button
+              type="button"
+              className="auth-eye"
+              onClick={() => setShowPassword(v => !v)}
+              aria-label={showPassword ? copy.hide : copy.show}
+              aria-pressed={showPassword}
+              disabled={pending || locked}
+            >
+              {showPassword ? <EyeOff size={16} aria-hidden="true" /> : <Eye size={16} aria-hidden="true" />}
+            </button>
+          </div>
+          {fieldErrors.password ? (
+            <p id={ids.passwordErr} className="auth-error">{localizeAuthError(lang, fieldErrors.password)}</p>
+          ) : null}
+        </div>
+
+        <button type="submit" className="btn btn-primary auth-submit" disabled={pending || locked}>
+          {pending ? (
+            <>
+              <Loader2 aria-hidden="true" size={16} className="spin" />
+              {copy.verifying}
+            </>
+          ) : (
+            copy.open
+          )}
+        </button>
+        <p className="auth-foot">
+          {copy.noAccount} <Link href="/signup">{copy.trial}</Link>
+        </p>
       </form>
 
       <PasswordResetModal
+        lang={lang}
         initialEmail={email}
         open={showResetModal}
         onClose={() => setShowResetModal(false)}

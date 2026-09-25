@@ -1,32 +1,30 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-import { BrandPanel } from '@/components/login/brand-panel'
+import { AuthShell } from '@/components/auth/auth-shell'
 import { LoginForm } from '@/components/login/login-form'
-import { getPlatformStatus } from '@/lib/platform-status'
 import { getNavAuth } from '@/lib/auth/nav-auth'
+import { getPublicPrefs } from '@/lib/public-prefs'
 
 export const metadata: Metadata = {
-  title: 'Console — Helix AI',
+  title: 'Sign in — Helix AI',
   robots: { index: false, follow: false },
 }
 
-export default async function LoginPage() {
-  // If user is already authenticated, redirect to their console — no flash
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>
+}) {
   const navAuth = await getNavAuth()
   if (navAuth.isAuthenticated) {
     redirect(navAuth.consoleHref)
   }
 
-  const status = await getPlatformStatus()
+  const [prefs, params] = await Promise.all([getPublicPrefs(), searchParams])
 
   return (
-    <main className="grid min-h-svh grid-rows-[auto_1fr] lg:grid-cols-[480px_minmax(0,1fr)] lg:grid-rows-1">
-      <BrandPanel status={status} />
-      <section className="flex flex-col items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-12">
-        <div className="w-full max-w-[440px] rounded-2xl border border-border bg-panel p-6 shadow-xl sm:p-8">
-          <LoginForm />
-        </div>
-      </section>
-    </main>
+    <AuthShell>
+      <LoginForm lang={prefs.lang} verifyFailed={params.error === 'verification_failed'} />
+    </AuthShell>
   )
 }
