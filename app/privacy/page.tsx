@@ -1,19 +1,14 @@
 import type { Metadata } from 'next'
-import { PillNav } from '@/components/navigation/pill-nav'
-import { getNavAuth } from '@/lib/auth/nav-auth'
+import { SitePage } from '@/components/marketing/site-page'
 
 export const metadata: Metadata = {
   title: 'Privacy Policy — Helix AI',
   description: 'Telemetry privacy disclosures, data retention rules, and GDPR compliance commitments.',
 }
 
-export default async function PrivacyPage() {
-  const navAuth = await getNavAuth()
+export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <PillNav isAuthenticated={navAuth.isAuthenticated} consoleHref={navAuth.consoleHref} />
-
-      <main className="mx-auto max-w-5xl px-4 pt-28 pb-24 md:pt-36">
+    <SitePage>
         <header className="border-b border-border pb-8">
           <div className="text-xs font-semibold uppercase tracking-wider text-accent">Privacy & Compliance</div>
           <h1 className="mt-2 font-display text-3xl font-bold tracking-tight sm:text-4xl">Privacy Policy</h1>
@@ -73,7 +68,6 @@ export default async function PrivacyPage() {
             </section>
           </article>
         </div>
-      </main>
-    </div>
+    </SitePage>
   )
 }

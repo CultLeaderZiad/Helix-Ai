@@ -1,0 +1,6 @@
+.term-win{border-radius:16px;background:#0B0D10;border:1px solid rgba(255,255,255,.1);overflow:hidden;box-shadow:0 30px 80px -30px rgba(0,0,0,.8)}
+.term-bar{display:flex;align-items:center;gap:8px;height:42px;padding:0 14px;border-bottom:1px solid rgba(255,255,255,.08);font-size:12px;color:#8A93A3}
+.term-bar i{width:10px;height:10px;border-radius:50%;background:#2A313C;display:block}
+.term{font-family:'Geist Mono',monospace;font-size:12.5px;line-height:1.95;color:#D5DBE3}
+.term .ts{color:#56606F}.term .k{display:inline-block;width:74px;font-size:10.5px;letter-spacing:.06em;text-align:center;border-radius:4px;padding:0 4px;margin:0 10px}
+.k-in{background:rgba(56,198,224,.12);color:#7FDDF0}.k-au{background:rgba(255,255,255,.07);color:#B6BFCC}.k-rs{background:rgba(245,180,85,.12);color:#F5C27A}.k-eg{background:rgba(167,139,250,.12);color:#C4B5FD}.k-ds{background:rgba(52,224,161,.12);color:#6EF0BD}

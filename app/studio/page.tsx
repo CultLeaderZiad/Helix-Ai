@@ -1,24 +1,22 @@
 import type { Metadata } from 'next'
-import { PillNav } from '@/components/navigation/pill-nav'
+import { SystemsCatalog } from '@/components/marketing/home-view'
+import { SitePage } from '@/components/marketing/site-page'
 import { StudioWorkspace } from '@/components/studio/studio-workspace'
-import { HelixFooter } from '@/components/footer/helix-footer'
-import { getNavAuth } from '@/lib/auth/nav-auth'
 
 export const metadata: Metadata = {
   title: 'Studio — Helix AI',
   description: 'Core production packs and preview add-ons. Try a demo or read a guide.',
 }
 
-export default async function PublicStudioPage() {
-  const navAuth = await getNavAuth()
-
+export default function PublicStudioPage() {
   return (
-    <div className="relative min-h-screen bg-helix-canvas text-helix-ink">
-      <PillNav isAuthenticated={navAuth.isAuthenticated} consoleHref={navAuth.consoleHref} />
-      <main className="relative z-10 mx-auto max-w-7xl px-4 pt-28 pb-20 md:pt-36">
-        <StudioWorkspace initialClientName="Al Noor Specialty Clinic" />
-      </main>
-      <HelixFooter />
-    </div>
+    <SitePage bare>
+      <SystemsCatalog />
+      <div className="page-main">
+        <div className="wrap">
+          <StudioWorkspace initialClientName="Al Noor Specialty Clinic" />
+        </div>
+      </div>
+    </SitePage>
   )
 }

@@ -1,27 +1,29 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { signOut } from '@/lib/auth/sign-in'
 import { NotificationBell } from '@/components/support/notification-bell'
-import { cn } from '@/lib/utils'
+import { CommandPalette, DASHBOARD_COMMANDS } from '@/components/dashboard/command-palette'
+import { HelixMark } from '@/components/marketing/helix-mark'
 import {
-  Users,
-  Sparkles,
-  ListTodo,
-  PlugZap,
-  CreditCard,
-  Settings,
-  Building2,
   BarChart3,
-  LogOut,
+  Bot,
+  ChevronsUpDown,
   Cpu,
-  HelpCircle,
+  CreditCard,
+  Inbox,
   LayoutDashboard,
+  LifeBuoy,
+  LogOut,
   Menu,
-  X,
+  Plug,
+  Search,
+  Settings,
   Target,
+  Users,
+  X,
 } from 'lucide-react'
 
 export type ConsoleVariant = 'admin' | 'client'
@@ -29,178 +31,45 @@ export type ConsoleVariant = 'admin' | 'client'
 interface NavItem {
   href: string
   label: string
-  icon?: React.ComponentType<{ className?: string }>
+  labelAr: string
+  icon: React.ComponentType<{ size?: number; className?: string }>
   badge?: string
   match: (path: string) => boolean
-  section?: 'primary' | 'secondary'
+  section: 'top' | 'systems' | 'account'
 }
 
-const ADMIN_NAV: NavItem[] = [
-  {
-    href: '/admin',
-    label: 'Clients',
-    icon: Building2,
-    section: 'primary',
-    match: p => p === '/admin' || (p.startsWith('/admin/clients') && !p.startsWith('/admin/crm')),
-  },
-  {
-    href: '/admin/crm',
-    label: 'Pipeline',
-    icon: Users,
-    section: 'primary',
-    match: p => p.startsWith('/admin/crm'),
-  },
-  {
-    href: '/admin/studio',
-    label: 'Systems',
-    icon: Sparkles,
-    section: 'primary',
-    match: p => p === '/admin/studio' || p.startsWith('/admin/studio'),
-  },
-  {
-    href: '/dashboard/lead-generation',
-    label: 'Lead Generation',
-    icon: Target,
-    section: 'primary',
-    match: p => p.startsWith('/dashboard/lead-generation'),
-  },
-  {
-    href: '/dashboard/engine',
-    label: 'Intelligence',
-    icon: Cpu,
-    section: 'primary',
-    match: p => p.startsWith('/dashboard/engine'),
-  },
-  {
-    href: '/dashboard/reports',
-    label: 'Reports',
-    icon: BarChart3,
-    section: 'primary',
-    match: p => p.startsWith('/dashboard/reports'),
-  },
-  {
-    href: '/admin/analytics',
-    label: 'Analytics',
-    icon: BarChart3,
-    section: 'primary',
-    match: p => p.startsWith('/admin/analytics'),
-  },
-  {
-    href: '/admin/queue',
-    label: 'Agent Queue',
-    icon: ListTodo,
-    section: 'primary',
-    match: p => p.startsWith('/admin/queue') || p.startsWith('/dashboard/queue'),
-  },
-  {
-    href: '/admin/support',
-    label: 'Support',
-    icon: HelpCircle,
-    section: 'secondary',
-    match: p => p.startsWith('/admin/support') || p.startsWith('/dashboard/support'),
-  },
-  {
-    href: '/settings',
-    label: 'Settings',
-    icon: Settings,
-    section: 'secondary',
-    match: p =>
-      p.startsWith('/settings') ||
-      p.startsWith('/admin/users') ||
-      p.startsWith('/admin/pricing') ||
-      p.startsWith('/admin/updates') ||
-      p.startsWith('/admin/webhooks') ||
-      p.startsWith('/admin/faq'),
-  },
-]
-
 const CLIENT_NAV: NavItem[] = [
-  {
-    href: '/dashboard',
-    label: 'Overview',
-    icon: LayoutDashboard,
-    section: 'primary',
-    match: p => p === '/dashboard',
-  },
-  {
-    href: '/dashboard/crm',
-    label: 'Pipeline',
-    icon: Users,
-    section: 'primary',
-    match: p => p.startsWith('/dashboard/crm') || p.startsWith('/dashboard/contacts'),
-  },
-  {
-    href: '/dashboard/studio',
-    label: 'Systems',
-    icon: Sparkles,
-    section: 'primary',
-    match: p => p.startsWith('/dashboard/studio'),
-  },
-  {
-    href: '/dashboard/lead-generation',
-    label: 'Lead Generation',
-    icon: Target,
-    section: 'primary',
-    match: p => p.startsWith('/dashboard/lead-generation'),
-  },
-  {
-    href: '/dashboard/engine',
-    label: 'AI Engine',
-    icon: Cpu,
-    section: 'primary',
-    match: p => p.startsWith('/dashboard/engine'),
-  },
-  {
-    href: '/dashboard/reports',
-    label: 'Reports',
-    icon: BarChart3,
-    section: 'primary',
-    match: p => p.startsWith('/dashboard/reports'),
-  },
-  {
-    href: '/dashboard/queue',
-    label: 'Queue',
-    icon: ListTodo,
-    section: 'primary',
-    match: p => p.startsWith('/dashboard/queue') || p.startsWith('/dashboard/facts'),
-  },
-  {
-    href: '/dashboard/integrations',
-    label: 'Integrations',
-    icon: PlugZap,
-    section: 'secondary',
-    match: p => p.startsWith('/dashboard/integrations'),
-  },
-  {
-    href: '/dashboard/billing',
-    label: 'Billing',
-    icon: CreditCard,
-    section: 'secondary',
-    match: p => p.startsWith('/dashboard/billing'),
-  },
-  {
-    href: '/dashboard/support',
-    label: 'Support',
-    icon: HelpCircle,
-    section: 'secondary',
-    match: p => p.startsWith('/dashboard/support'),
-  },
-  {
-    href: '/settings',
-    label: 'Settings',
-    icon: Settings,
-    section: 'secondary',
-    match: p => p.startsWith('/settings'),
-  },
+  { href: '/dashboard', label: 'Overview', labelAr: 'نظرة عامة', icon: LayoutDashboard, section: 'top', match: p => p === '/dashboard' },
+  { href: '/dashboard/search', label: 'Search', labelAr: 'بحث', icon: Search, badge: 'New', section: 'top', match: p => p.startsWith('/dashboard/search') },
+  { href: '/dashboard/lead-generation', label: 'Lead Generation', labelAr: 'توليد العملاء', icon: Target, section: 'top', match: p => p.startsWith('/dashboard/lead-generation') },
+  { href: '/dashboard/contacts', label: 'Contacts', labelAr: 'جهات الاتصال', icon: Users, section: 'top', match: p => p.startsWith('/dashboard/contacts') },
+  { href: '/dashboard/crm', label: 'CRM', labelAr: 'إدارة العملاء', icon: Users, section: 'top', match: p => p.startsWith('/dashboard/crm') },
+  { href: '/dashboard/queue', label: 'Attention queue', labelAr: 'طابور المتابعة', icon: Inbox, section: 'top', match: p => p.startsWith('/dashboard/queue') || p.startsWith('/dashboard/facts') },
+  { href: '/dashboard/studio', label: 'Studio', labelAr: 'الاستوديو', icon: Bot, section: 'systems', match: p => p.startsWith('/dashboard/studio') },
+  { href: '/dashboard/integrations', label: 'Integrations', labelAr: 'التكاملات', icon: Plug, section: 'systems', match: p => p.startsWith('/dashboard/integrations') },
+  { href: '/dashboard/reports', label: 'Reports', labelAr: 'التقارير', icon: BarChart3, section: 'systems', match: p => p.startsWith('/dashboard/reports') },
+  { href: '/dashboard/engine', label: 'AI Engine', labelAr: 'المحرك', icon: Cpu, section: 'systems', match: p => p.startsWith('/dashboard/engine') },
+  { href: '/dashboard/billing', label: 'Billing', labelAr: 'الفوترة', icon: CreditCard, section: 'account', match: p => p.startsWith('/dashboard/billing') },
+  { href: '/dashboard/support', label: 'Support', labelAr: 'الدعم', icon: LifeBuoy, section: 'account', match: p => p.startsWith('/dashboard/support') },
+  { href: '/settings', label: 'Settings', labelAr: 'الإعدادات', icon: Settings, section: 'account', match: p => p.startsWith('/settings') },
 ]
 
-// Secondary Top Rail for Intelligence / Engine
-const INTEL_TABS = [
-  { href: '/dashboard/engine', label: 'Engine' },
-  { href: '/dashboard/reports', label: 'Reports' },
-  { href: '/admin/analytics', label: 'Analytics' },
-  { href: '/admin/queue', label: 'Queue' },
+const ADMIN_NAV: NavItem[] = [
+  { href: '/admin', label: 'Clients', labelAr: 'العملاء', icon: LayoutDashboard, section: 'top', match: p => p === '/admin' || p.startsWith('/admin/clients') },
+  { href: '/admin/crm', label: 'Pipeline', labelAr: 'المسار', icon: Users, section: 'top', match: p => p.startsWith('/admin/crm') },
+  { href: '/admin/studio', label: 'Systems', labelAr: 'الأنظمة', icon: Bot, section: 'systems', match: p => p.startsWith('/admin/studio') },
+  { href: '/dashboard/lead-generation', label: 'Lead Generation', labelAr: 'توليد العملاء', icon: Target, section: 'systems', match: p => p.startsWith('/dashboard/lead-generation') || p.startsWith('/admin/leadgen') },
+  { href: '/admin/queue', label: 'Agent Queue', labelAr: 'طابور الوكلاء', icon: Inbox, section: 'systems', match: p => p.startsWith('/admin/queue') },
+  { href: '/admin/analytics', label: 'Analytics', labelAr: 'التحليلات', icon: BarChart3, section: 'systems', match: p => p.startsWith('/admin/analytics') },
+  { href: '/admin/support', label: 'Support', labelAr: 'الدعم', icon: LifeBuoy, section: 'account', match: p => p.startsWith('/admin/support') },
+  { href: '/settings', label: 'Settings', labelAr: 'الإعدادات', icon: Settings, section: 'account', match: p => p.startsWith('/settings') || p.startsWith('/admin/users') || p.startsWith('/admin/pricing') || p.startsWith('/admin/faq') || p.startsWith('/admin/updates') || p.startsWith('/admin/webhooks') },
 ]
+
+function crumbLabel(pathname: string, nav: NavItem[], lang: 'en' | 'ar') {
+  const hit = nav.find(item => item.match(pathname))
+  if (!hit) return lang === 'ar' ? 'اللوحة' : 'Console'
+  return lang === 'ar' ? hit.labelAr : hit.label
+}
 
 export function ConsoleShell({
   variant,
@@ -214,194 +83,100 @@ export function ConsoleShell({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
-  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false)
-  const [language, setLanguage] = useState<'en' | 'ar'>('en')
-
+  const [openNav, setOpenNav] = useState(false)
+  const [palette, setPalette] = useState(false)
+  const [lang, setLang] = useState<'en' | 'ar'>('en')
   const nav = variant === 'admin' ? ADMIN_NAV : CLIENT_NAV
-  const title = variant === 'admin' ? 'Helix AI' : businessName ?? 'Workspace'
-  const primary = nav.filter(item => item.section !== 'secondary')
-  const secondary = nav.filter(item => item.section === 'secondary')
+  const workspace = businessName || (variant === 'admin' ? 'Agency' : 'Workspace')
+  const initials = (email || 'HX').slice(0, 2).toUpperCase()
 
-  const isIntelRoute =
-    pathname.startsWith('/dashboard/engine') ||
-    pathname.startsWith('/dashboard/reports') ||
-    pathname.startsWith('/admin/analytics') ||
-    pathname.startsWith('/admin/queue') ||
-    pathname.startsWith('/dashboard/queue')
+  useEffect(() => {
+    function onKey(event: KeyboardEvent) {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault()
+        setPalette(open => !open)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
+
+  useEffect(() => {
+    document.documentElement.lang = lang === 'ar' ? 'ar' : 'en'
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr'
+  }, [lang])
+
+  const sections: Array<{ id: NavItem['section']; label: string; labelAr: string }> = [
+    { id: 'top', label: '', labelAr: '' },
+    { id: 'systems', label: 'Systems', labelAr: 'الأنظمة' },
+    { id: 'account', label: 'Account', labelAr: 'الحساب' },
+  ]
 
   return (
-    <div className="h-screen h-dvh w-full overflow-hidden bg-[#F3F1EC] text-[#141414] flex flex-col lg:flex-row">
-      {/* Desktop Dark Ink Sidebar - 100% Fixed & Never Cut Off */}
-      <aside className="hidden lg:flex w-[240px] shrink-0 h-full flex-col border-r border-[#2B2A27] bg-[#1C1B19] text-white select-none z-30">
-        {/* Workspace Brand Header (Pinned at Top of Sidebar) */}
-        <div className="px-5 py-4 border-b border-[#2B2A27] shrink-0">
-          <span className="block font-display text-13 font-bold tracking-wider text-white uppercase">
-            {variant === 'admin' ? 'DIRECTION 2 · WARM COMMAND' : title}
-          </span>
-          <span className="mt-0.5 block text-[10px] font-mono tracking-widest text-[#9E9B95] uppercase">
-            {variant === 'admin' ? 'AGENCY · LIVE' : 'CLIENT WORKSPACE'}
-          </span>
-        </div>
-
-        {/* Navigation Item List (Independently Scrollable if height is constrained) */}
-        <nav aria-label="Console" className="flex-1 overflow-y-auto px-3 py-3 flex flex-col gap-0.5">
-          {primary.map(item => {
-            const active = item.match(pathname)
-            return (
-              <Link
-                key={item.label}
-                href={item.href}
-                aria-current={active ? 'page' : undefined}
-                className={cn(
-                  'flex items-center justify-between rounded-[8px] px-3 py-2 text-13 font-medium transition-colors duration-150',
-                  active
-                    ? 'bg-[#2B2A27] text-white font-semibold'
-                    : 'text-[#9E9B95] hover:bg-white/[0.04] hover:text-white'
-                )}
-              >
-                <span>{item.label}</span>
-                {item.badge && (
-                  <span className="rounded bg-[#0B6E4F] px-1.5 py-0.2 text-[9px] font-mono text-white">
-                    {item.badge}
-                  </span>
-                )}
-              </Link>
-            )
-          })}
-        </nav>
-
-        {/* Secondary Links & User Account (Pinned at Bottom of Sidebar) */}
-        <div className="shrink-0 border-t border-[#2B2A27] px-3 py-3 flex flex-col gap-0.5 bg-[#1C1B19]">
-          {secondary.map(item => {
-            const active = item.match(pathname)
-            return (
-              <Link
-                key={item.label}
-                href={item.href}
-                className={cn(
-                  'flex items-center justify-between rounded-[8px] px-3 py-1.5 text-13 font-medium transition-colors duration-150',
-                  active
-                    ? 'bg-[#2B2A27] text-white font-semibold'
-                    : 'text-[#9E9B95] hover:bg-white/[0.04] hover:text-white'
-                )}
-              >
-                <span>{item.label}</span>
-              </Link>
-            )
-          })}
-
-          <div className="mt-2 flex items-center justify-between border-t border-[#2B2A27]/80 px-1 pt-2.5 text-12 text-[#9E9B95]">
-            <span className="truncate text-[11px] max-w-[130px] font-mono">{email}</span>
-            <div className="flex items-center gap-1">
-              <NotificationBell isAdmin={variant === 'admin'} clientId={null} />
-              <form action={signOut}>
-                <button
-                  type="submit"
-                  aria-label="Sign out"
-                  title="Sign out"
-                  className="p-1 text-[#9E9B95] hover:text-rose-400 transition-colors"
-                >
-                  <LogOut className="size-3.5" />
-                </button>
-              </form>
+    <div className="dash" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+      <div className="app">
+        <aside className={`sb${openNav ? ' open' : ''}`}>
+          <div className="ws">
+            <span className="m"><HelixMark size={16} light /></span>
+            <div className="grow">
+              <div style={{ fontSize: 13.5, fontWeight: 500, color: '#fff' }}>Helix AI</div>
+              <div style={{ fontSize: 11.5, color: '#8a867f' }}>{workspace} · {variant === 'admin' ? (lang === 'ar' ? 'وكالة' : 'agency') : (lang === 'ar' ? 'عميل' : 'client')}</div>
             </div>
+            <ChevronsUpDown size={14} />
           </div>
-        </div>
-      </aside>
-
-      {/* Mobile Header */}
-      <header className="sticky top-0 z-40 flex items-center justify-between border-b border-[#2B2A27] bg-[#1C1B19] px-4 py-3 text-white shrink-0 lg:hidden">
-        <div>
-          <span className="font-display text-13 font-bold uppercase">{title}</span>
-          <span className="ml-2 text-[10px] font-mono text-[#9E9B95] uppercase">
-            {variant === 'admin' ? 'AGENCY · LIVE' : 'CLIENT'}
-          </span>
-        </div>
-        <button
-          type="button"
-          onClick={() => setMobileDrawerOpen(!mobileDrawerOpen)}
-          className="rounded-md border border-[#33312D] p-1.5 text-[#9E9B95] hover:text-white"
-        >
-          {mobileDrawerOpen ? <X className="size-4" /> : <Menu className="size-4" />}
-        </button>
-      </header>
-
-      {/* Mobile Drawer Dropdown */}
-      {mobileDrawerOpen && (
-        <div className="border-b border-[#2B2A27] bg-[#1C1B19] px-4 py-3 text-white lg:hidden shrink-0">
-          <nav className="flex flex-col gap-1">
-            {[...primary, ...secondary].map(item => (
-              <Link
-                key={item.label}
-                href={item.href}
-                onClick={() => setMobileDrawerOpen(false)}
-                className="rounded px-2.5 py-1.5 text-13 text-[#9E9B95] hover:bg-[#2B2A27] hover:text-white"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-        </div>
-      )}
-
-      {/* Main Fluid Canvas with Dedicated Independent Scrolling */}
-      <div className="flex-1 h-full min-w-0 flex flex-col overflow-y-auto bg-[#F3F1EC]">
-        {/* Sticky Top Secondary Rail (Always Visible on Scroll) */}
-        <header className="sticky top-0 z-20 shrink-0 border-b border-[#D9D4CB]/70 bg-[#F3F1EC]/90 backdrop-blur-md px-6 py-2.5 sm:px-8 flex flex-wrap items-center justify-between gap-3">
-          {(isIntelRoute || variant === 'admin') ? (
-            <nav className="flex items-center gap-1.5" aria-label="Intelligence Sections">
-              {INTEL_TABS.map(tab => {
-                const active = pathname === tab.href || pathname.startsWith(`${tab.href}/`)
+          {sections.map(section => (
+            <div key={section.id}>
+              {section.label ? <div className="sbl">{lang === 'ar' ? section.labelAr : section.label}</div> : null}
+              {nav.filter(item => item.section === section.id).map(item => {
+                const Icon = item.icon
+                const on = item.match(pathname)
                 return (
-                  <Link
-                    key={tab.label}
-                    href={tab.href}
-                    className={cn(
-                      'rounded-[8px] px-3.5 py-1.5 text-13 font-medium transition-colors',
-                      active
-                        ? 'bg-[#141414] text-white shadow-xs'
-                        : 'text-[#6E6A63] hover:text-[#141414] hover:bg-[#E6E2D9]'
-                    )}
-                  >
-                    {tab.label}
+                  <Link key={item.href + item.label} href={item.href} className={`nv${on ? ' on' : ''}`} aria-current={on ? 'page' : undefined} onClick={() => setOpenNav(false)}>
+                    <Icon size={16} />
+                    <span>{lang === 'ar' ? item.labelAr : item.label}</span>
+                    {item.badge ? <span className="new">{lang === 'ar' ? 'جديد' : item.badge}</span> : null}
                   </Link>
                 )
               })}
-            </nav>
-          ) : (
-            <div />
-          )}
-
-          {/* Language Toggle Pill */}
-          <div className="flex items-center rounded-[8px] border border-[#D9D4CB] bg-[#FFFEFA] p-0.5 shadow-2xs">
-            <button
-              type="button"
-              onClick={() => setLanguage('en')}
-              className={cn(
-                'rounded-[6px] px-3 py-1 text-12 font-medium transition-colors',
-                language === 'en' ? 'bg-[#141414] text-white' : 'text-[#6E6A63] hover:text-[#141414]'
-              )}
-            >
-              English
-            </button>
-            <button
-              type="button"
-              onClick={() => setLanguage('ar')}
-              className={cn(
-                'rounded-[6px] px-3 py-1 text-12 font-medium transition-colors',
-                language === 'ar' ? 'bg-[#141414] text-white' : 'text-[#6E6A63] hover:text-[#141414]'
-              )}
-            >
-              العربية
-            </button>
+            </div>
+          ))}
+          <div className="grow" />
+          <div className="nv" style={{ border: '1px solid var(--sb-line)', background: 'var(--sb2)' }}>
+            <span style={{ width: 26, height: 26, borderRadius: '50%', background: '#34E0A1', color: '#04130D', display: 'grid', placeItems: 'center', fontSize: 11, fontWeight: 600 }}>{initials}</span>
+            <div style={{ minWidth: 0 }}>
+              <div style={{ fontSize: 13, color: '#fff', overflow: 'hidden', textOverflow: 'ellipsis' }}>{email || 'Signed in'}</div>
+              <div style={{ fontSize: 11, color: '#8a867f' }}>{variant === 'admin' ? (lang === 'ar' ? 'مدير الوكالة' : 'Agency admin') : (lang === 'ar' ? 'عميل' : 'Client')}</div>
+            </div>
+            <form action={signOut} style={{ marginInlineStart: 'auto' }}>
+              <button type="submit" aria-label={lang === 'ar' ? 'خروج' : 'Sign out'}><LogOut size={14} /></button>
+            </form>
           </div>
-        </header>
-
-        {/* Standardized Fixed Format Content Container */}
-        <main className="flex-1 w-full px-6 py-6 sm:px-8 sm:py-8 max-w-[1520px] mx-auto">
-          {children}
+        </aside>
+        <main className="main">
+          <header className="top">
+            <button type="button" className="ib sb-toggle" aria-label="Menu" onClick={() => setOpenNav(value => !value)}>
+              {openNav ? <X size={16} /> : <Menu size={16} />}
+            </button>
+            <div className="crumb">
+              {workspace} <span style={{ color: '#c9c3b7' }}>/</span> <b>{crumbLabel(pathname, nav, lang)}</b>
+            </div>
+            <button type="button" className="cmdk" onClick={() => setPalette(true)}>
+              <Search size={14} />
+              <span className="grow">{lang === 'ar' ? 'ابحث أو انتقل…' : 'Search or jump to…'}</span>
+              <span className="kbd">⌘K</span>
+            </button>
+            <div className="seg" role="group" aria-label="Language">
+              <button type="button" className={lang === 'en' ? 'on' : undefined} onClick={() => setLang('en')}>EN</button>
+              <button type="button" className={lang === 'ar' ? 'on' : undefined} onClick={() => setLang('ar')}>عربي</button>
+            </div>
+            <span className="ib" style={{ padding: 0 }}>
+              <NotificationBell isAdmin={variant === 'admin'} clientId={null} />
+            </span>
+          </header>
+          <div className="page">{children}</div>
         </main>
       </div>
+      <CommandPalette open={palette} onClose={() => setPalette(false)} commands={DASHBOARD_COMMANDS} />
     </div>
   )
 }

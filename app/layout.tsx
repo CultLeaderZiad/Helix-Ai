@@ -1,19 +1,27 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
-import { Inter, Space_Grotesk } from 'next/font/google'
+import { Geist, Geist_Mono, IBM_Plex_Sans_Arabic } from 'next/font/google'
 import { AuthHashHandler } from '@/components/auth/auth-hash-handler'
+import { getPublicPrefs } from '@/lib/public-prefs'
 import './globals.css'
+import './overhaul.css'
 
-const inter = Inter({
+const geist = Geist({
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-geist',
   display: 'swap',
 })
 
-const spaceGrotesk = Space_Grotesk({
+const geistMono = Geist_Mono({
   subsets: ['latin'],
-  weight: ['700'],
-  variable: '--font-space-grotesk',
+  variable: '--font-geist-mono',
+  display: 'swap',
+})
+
+const plexArabic = IBM_Plex_Sans_Arabic({
+  subsets: ['arabic'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-plex',
   display: 'swap',
 })
 
@@ -67,25 +75,36 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
-  colorScheme: 'light',
+  colorScheme: 'dark light',
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#F3F1EC' },
-    { media: '(prefers-color-scheme: dark)', color: '#1C1B19' },
+    { media: '(prefers-color-scheme: light)', color: '#F7F5F0' },
+    { media: '(prefers-color-scheme: dark)', color: '#07090C' },
   ],
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const prefs = await getPublicPrefs()
+  const lang = prefs.lang === 'ar' ? 'ar' : 'en'
   return (
     <html
-      lang="en"
-      className={`${inter.variable} ${spaceGrotesk.variable} bg-[#F3F1EC] text-[#141414]`}
+      lang={lang}
+      dir={prefs.lang === 'ar' ? 'rtl' : 'ltr'}
+      data-theme={prefs.theme}
+      className={`${geist.variable} ${geistMono.variable} ${plexArabic.variable}`}
       suppressHydrationWarning
     >
-      <body className="antialiased bg-[#F3F1EC] text-[#141414]" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=document.cookie.match(/(?:^|; )helix_theme=([^;]+)/);var l=document.cookie.match(/(?:^|; )helix_lang=([^;]+)/);var theme=t&&decodeURIComponent(t[1])==='day'?'day':'night';var lang=l&&decodeURIComponent(l[1])==='ar'?'ar':'en';document.documentElement.dataset.theme=theme;document.documentElement.lang=lang==='ar'?'ar':'en';document.documentElement.dir=lang==='ar'?'rtl':'ltr';}catch(e){}})();`,
+          }}
+        />
+      </head>
+      <body className="antialiased" suppressHydrationWarning>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

@@ -1,24 +1,19 @@
 import type { Metadata } from 'next'
-import { PillNav } from '@/components/navigation/pill-nav'
 import { Sparkles, ArrowUpRight } from 'lucide-react'
 import Link from 'next/link'
-import { HelixFooter } from '@/components/footer/helix-footer'
+import { SitePage } from '@/components/marketing/site-page'
 import { getUpdates } from '@/lib/updates/updates-store'
-import { getNavAuth } from '@/lib/auth/nav-auth'
 
 export const metadata: Metadata = {
   title: 'Updates — Helix AI',
   description: 'Changelog, system upgrades, and platform releases for Helix AI.',
 }
 
-export default async function UpdatesPage() {
-  const [releases, navAuth] = await Promise.all([Promise.resolve(getUpdates(false)), getNavAuth()])
+export default function UpdatesPage() {
+  const releases = getUpdates(false)
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <PillNav isAuthenticated={navAuth.isAuthenticated} consoleHref={navAuth.consoleHref} />
-
-      <main className="mx-auto max-w-4xl px-4 pt-28 pb-24 md:pt-36">
+    <SitePage>
         <header className="text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-border bg-panel px-3 py-1 text-xs font-semibold uppercase tracking-wider text-accent">
             <Sparkles className="size-3.5" />
@@ -68,9 +63,6 @@ export default async function UpdatesPage() {
             </article>
           ))}
         </div>
-      </main>
-
-      <HelixFooter />
-    </div>
+    </SitePage>
   )
 }

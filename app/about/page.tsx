@@ -1,22 +1,15 @@
 import type { Metadata } from 'next'
-import { PillNav } from '@/components/navigation/pill-nav'
 import { ShieldCheck, Eye, Users } from 'lucide-react'
-import { HelixFooter } from '@/components/footer/helix-footer'
-import { getNavAuth } from '@/lib/auth/nav-auth'
+import { SitePage } from '@/components/marketing/site-page'
 
 export const metadata: Metadata = {
   title: 'About — Helix AI',
   description: 'Our mission and architectural principles behind verified autonomous operations.',
 }
 
-export default async function AboutPage() {
-  const navAuth = await getNavAuth()
+export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col justify-between">
-      <div>
-        <PillNav isAuthenticated={navAuth.isAuthenticated} consoleHref={navAuth.consoleHref} />
-
-        <main className="mx-auto max-w-5xl px-4 pt-28 pb-24 md:pt-36">
+    <SitePage>
           <header className="mx-auto max-w-3xl text-center">
             <div className="text-xs font-semibold uppercase tracking-wider text-accent">Operational Truth</div>
             <h1 className="mt-4 font-display text-4xl font-bold tracking-tight sm:text-5xl">
@@ -65,10 +58,6 @@ export default async function AboutPage() {
               </div>
             </div>
           </section>
-        </main>
-      </div>
-
-      <HelixFooter />
-    </div>
+    </SitePage>
   )
 }
