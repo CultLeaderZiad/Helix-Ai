@@ -1448,9 +1448,9 @@ html:not([lang="ar"]) .status-page .only-ar{display:none}
 }
 
 /* Pill nav and dark footer. The capsule and the footer stay dark on both themes. */
-html:has(.pill){scroll-padding-top:96px}
+html:has(.hx-nav){scroll-padding-top:96px}
 .hx-main{padding-top:calc(84px + env(safe-area-inset-top))}
-.hx .pill{
+.hx .hx-nav{
   position:fixed;
   z-index:50;
   top:max(12px,env(safe-area-inset-top));
@@ -1605,21 +1605,21 @@ html:has(.pill){scroll-padding-top:96px}
 .hx-live{position:relative;display:inline-flex;width:8px;height:8px}
 .hx-live-dot,.hx-live-ping{position:absolute;inset:0;border-radius:999px;background:#34d399}
 .hx-live-ping{animation:hx-ping 1.6s cubic-bezier(0,0,.2,1) infinite}
-.hx .pill a,.hx .hx-foot a{color:inherit}
-.hx .pill a.pill-brand,.hx .pill a.pill-brand .pill-ai{color:#fff}
-.hx .pill .pill-mark{color:#050b14}
-.hx .pill a.pill-link{color:#cbd5e1}
-.hx .pill a.pill-link:hover,.hx .pill a.pill-link.is-active{color:#fff}
-.hx .pill a.pill-console{color:#050b14}
-.hx .pill a.pill-console:hover{color:#050b14;background:#f4f4f5}
+.hx .hx-nav a,.hx .hx-foot a{color:inherit}
+.hx .hx-nav a.pill-brand,.hx .hx-nav a.pill-brand .pill-ai{color:#fff}
+.hx .hx-nav .pill-mark{color:#050b14}
+.hx .hx-nav a.pill-link{color:#cbd5e1}
+.hx .hx-nav a.pill-link:hover,.hx .hx-nav a.pill-link.is-active{color:#fff}
+.hx .hx-nav a.pill-console{color:#050b14}
+.hx .hx-nav a.pill-console:hover{color:#050b14;background:#f4f4f5}
 .hx .pill-sheet a{color:#cbd5e1}
 .hx .pill-sheet a.is-active,.hx .pill-sheet a:hover{color:#fff}
 .hx .hx-foot a.hx-foot-logo{color:#fff}
 .hx .hx-foot li a{color:#94a3b8}
 .hx .hx-foot li a:hover{color:#fff}
-.hx .pill a:focus-visible,.hx .pill button:focus-visible,.hx .hx-foot a:focus-visible,.hx .hx-foot button:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.hx .hx-nav a:focus-visible,.hx .hx-nav button:focus-visible,.hx .hx-foot a:focus-visible,.hx .hx-foot button:focus-visible{outline:2px solid #fff;outline-offset:3px}
 @media (min-width:1024px){
-  .hx .pill{width:max-content}
+  .hx .hx-nav{width:max-content}
   .hx .pill-bar{width:auto;justify-content:flex-start}
   .hx .pill-links,.hx .pill-tools{display:flex}
   .hx .pill-mobile{display:none}
