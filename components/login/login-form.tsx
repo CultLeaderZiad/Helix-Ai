@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { ArrowRight, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { signIn, type SignInState } from '@/lib/auth/sign-in'
 import { localizeAuthError } from '@/components/auth/auth-copy'
+import { ResendConfirmation } from '@/components/auth/resend-confirmation'
 import type { HelixLang } from '@/lib/public-prefs'
 
 const initialState: SignInState = { status: 'idle' }
@@ -73,6 +74,9 @@ export function LoginForm({ lang, verifyFailed = false }: { lang: HelixLang; ver
           <span>{ar ? 'من فريق Helix؟' : 'Helix team member?'} <Link href="/login?portal=agency">{ar ? 'دخول الوكالة' : 'Agency sign-in'}</Link></span>
         </div>
       </form>
+      {authError?.code === 'EMAIL_NOT_CONFIRMED' ? (
+        <ResendConfirmation email={authError.values.email || email} />
+      ) : null}
     </>
   )
 }

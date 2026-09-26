@@ -129,7 +129,9 @@ export async function fetchHttp(
 
     let fetch_status: FetchResult['fetch_status'] = 'ok'
     if (!res.ok) {
-      if (res.status === 403 || res.status === 429 || res.status === 503) {
+      if (res.status === 404 || res.status === 410) {
+        fetch_status = 'not_found'
+      } else if (res.status === 403 || res.status === 429 || res.status === 503) {
         fetch_status = 'blocked'
       } else {
         fetch_status = 'error'

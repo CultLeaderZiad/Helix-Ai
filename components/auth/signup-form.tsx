@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { AlertCircle, ArrowLeft, Check, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { signUpUser, type SignUpState } from '@/lib/auth/sign-up'
 import { authCopy, localizeAuthError } from '@/components/auth/auth-copy'
+import { ResendConfirmation } from '@/components/auth/resend-confirmation'
 import type { HelixLang } from '@/lib/public-prefs'
 
 const initialState: SignUpState = { status: 'idle' }
@@ -34,6 +35,7 @@ export function SignUpForm({ lang }: { lang: HelixLang }) {
         <p className="auth-lead">
           {copy.checkBody} <span style={{ color: 'var(--text)', fontWeight: 600 }}>{state.email}</span>. {copy.checkRest}
         </p>
+        <ResendConfirmation email={state.email ?? ''} />
         <Link href="/login" className="btn btn-primary auth-submit" style={{ marginTop: 12 }}>
           {copy.goSignIn}
         </Link>

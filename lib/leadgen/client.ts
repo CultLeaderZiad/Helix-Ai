@@ -132,7 +132,11 @@ export async function tickJob(id: string): Promise<{
   return handleResponse(res)
 }
 
-export function getExportUrl(id: string, format: 'csv' | 'jsonl'): string {
-  return `/api/leadgen/jobs/${id}/export?format=${format}`
+export function getExportUrl(
+  id: string,
+  format: 'csv' | 'xlsx' | 'jsonl',
+  detail: 'simple' | 'full' = 'simple',
+  lang: 'en' | 'ar' = 'en'
+): string {
+  return `/api/leadgen/jobs/${id}/export?format=${format}&detail=${detail}&lang=${lang}`
 }
-

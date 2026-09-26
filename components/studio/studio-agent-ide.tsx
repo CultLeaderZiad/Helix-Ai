@@ -45,7 +45,7 @@ import {
   MousePointerClick,
   Sparkle
 } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'motion/react'
 import { cn } from '@/lib/utils'
 import { SYSTEM_TEMPLATES, type SystemTemplate } from '@/lib/studio/templates'
 import { requestSystemBuild, type RequestBuildResult } from '@/lib/studio/request-build'

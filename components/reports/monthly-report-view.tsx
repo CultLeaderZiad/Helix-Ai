@@ -64,7 +64,7 @@ export function MonthlyReportView({ report }: MonthlyReportViewProps) {
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-[#0B6E4F]/30 bg-[#0B6E4F]/10 px-2.5 py-0.5 text-11 font-mono font-semibold text-[#0B6E4F]">
               <span className="size-1.5 rounded-full bg-[#0B6E4F]" />
-              {report.systemUptimePercentage} UPTIME SLA
+              {report.systemUptimePercentage}
             </span>
           </div>
 
@@ -72,7 +72,7 @@ export function MonthlyReportView({ report }: MonthlyReportViewProps) {
             {isAr ? 'تقرير الأداء والتحصيل الشهري' : 'Monthly Performance & ROI Report'}
           </h1>
           <p className="mt-1 text-xs text-[#6E6B65] font-mono">
-            {report.clientBusinessName} • {report.cyclePeriod} • GCC ENTERPRISE TENANT
+            {report.clientBusinessName} • {report.cyclePeriod} • {report.regionTier === 'mena_sme' ? 'MENA SME' : 'GCC'}
           </p>
         </div>
 
@@ -94,7 +94,7 @@ export function MonthlyReportView({ report }: MonthlyReportViewProps) {
             className="gap-1.5 bg-[#141414] text-white hover:bg-black"
           >
             <Printer className="size-3.5" />
-            <span>{isAr ? 'طباعة التقرير التنفيذي' : 'Export Executive PDF'}</span>
+            <span>{isAr ? 'طباعة' : 'Print'}</span>
           </Button>
         </div>
       </div>
@@ -104,27 +104,29 @@ export function MonthlyReportView({ report }: MonthlyReportViewProps) {
         <KpiCard
           title={isAr ? 'مكالمات صوتية' : 'Voice Calls Handled'}
           value={report.totalCallsHandled}
-          change={isAr ? '< 400 ميلي ثانية' : '< 400ms'}
-          changeType="positive"
-          hint={isAr ? 'الرد الفوري على المكالمات' : '100% Inbound capture rate'}
+          hint={isAr ? 'من سجل النشاط فقط' : 'Counted from the activity log only'}
           icon={<PhoneCall className="size-4 text-[#0B6E4F]" />}
         />
 
         <KpiCard
           title={isAr ? 'تفاعلات الواتساب' : 'WhatsApp Messages'}
           value={report.totalWhatsAppMessages}
-          change={isAr ? 'تأهيل آلي' : 'Automated'}
-          changeType="positive"
-          hint={isAr ? 'تأكيدات وتأهيل فوري' : 'Automated confirmations & triage'}
+          hint={isAr ? 'من سجل النشاط فقط' : 'Counted from the activity log only'}
           icon={<MessageSquare className="size-4 text-[#0B6E4F]" />}
         />
 
         <KpiCard
           title={isAr ? 'دقة الحقائق' : 'Fact Verification Rate'}
-          value={`${report.factAccuracyRate}%`}
-          change="Ground Truth"
-          changeType="positive"
-          hint={isAr ? 'تدقيق مشفر بدون هلوسة' : 'Zero unauthorized commitments'}
+          value={report.factAccuracyRate == null ? '—' : `${report.factAccuracyRate}%`}
+          hint={
+            report.factAccuracyRate == null
+              ? isAr
+                ? 'لا توجد حقائق مسجّلة'
+                : 'No facts recorded'
+              : isAr
+                ? 'الحقائق المؤكدة من أصل المسجّل'
+                : 'Verified facts divided by facts on file'
+          }
           icon={<ShieldCheck className="size-4 text-[#0B6E4F]" />}
         />
 
@@ -152,7 +154,7 @@ export function MonthlyReportView({ report }: MonthlyReportViewProps) {
             </h2>
           </div>
           <span className="rounded-[6px] bg-[#141414] px-2 py-0.5 font-mono text-[10px] font-semibold text-white">
-            CRYPTOGRAPHIC LEDGER AUDIT
+            {isAr ? 'من قاعدة البيانات' : 'FROM DATABASE'}
           </span>
         </div>
         <p className="text-14 text-[#141414]/90 leading-relaxed">
@@ -173,7 +175,7 @@ export function MonthlyReportView({ report }: MonthlyReportViewProps) {
           </div>
           <span className="inline-flex items-center gap-1.5 rounded-full border border-[#0B6E4F]/30 bg-[#0B6E4F]/10 px-2.5 py-0.5 text-11 font-mono font-semibold text-[#0B6E4F]">
             <span className="size-1.5 rounded-full bg-[#0B6E4F]" />
-            100% HEALTHY
+            {isAr ? 'أرقام مسجّلة' : 'RECORDED COUNTS'}
           </span>
         </div>
 
@@ -212,14 +214,14 @@ export function MonthlyReportView({ report }: MonthlyReportViewProps) {
               {isAr ? 'سجل الفواتير والدفعات الشهرية' : 'Retainer Invoicing & Financial Ledger'}
             </h2>
             <p className="text-12 text-[#6E6B65] mt-0.5">
-              {isAr
-                ? 'تدقيق مالي مباشر مرتبط بحساب العميل وسجلات الدفع الإلكتروني.'
-                : 'Direct financial settlement ledger tied to your tenant retainer contract.'}
+              {isAr ? 'فواتير مسجّلة في قاعدة البيانات فقط.' : 'Invoices stored in the database only.'}
             </p>
           </div>
           <div className="inline-flex items-center gap-2 rounded-[8px] border border-[#D9D4CB] bg-[#F7F5F0] px-3 py-1.5 text-12 font-mono">
-            <span className="text-[#6E6B65]">{isAr ? 'الاشتراك الشهري:' : 'Active Monthly Retainer:'}</span>
-            <strong className="text-[#141414] font-semibold">{formatMoney(report.monthlyRetainerCents)}</strong>
+            <span className="text-[#6E6B65]">{isAr ? 'المقابل الشهري:' : 'Monthly retainer:'}</span>
+            <strong className="text-[#141414] font-semibold">
+              {report.retainerKnown ? formatMoney(report.monthlyRetainerCents) : isAr ? 'غير مسجّل' : 'Not on file'}
+            </strong>
           </div>
         </div>
 

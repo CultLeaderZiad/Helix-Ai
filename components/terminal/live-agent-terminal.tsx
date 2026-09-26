@@ -10,7 +10,7 @@ import {
   PhoneCall,
   Calendar,
   MessageSquare,
-  Sparkles,
+  Activity,
   ShieldCheck,
   Zap,
   ArrowRight,
@@ -50,18 +50,18 @@ const SYSTEM_SCRIPTS: Record<TerminalSystemType, SystemScriptConfig> = {
     targetLatency: '142ms',
     lines: [
       { id: 1, time: '00:00.012', tag: 'INBOUND', text: 'Telephony webhook received: event="call.missed" channel="Vapi_SIP"' },
-      { id: 2, time: '00:00.028', tag: 'AUDIT', text: 'Headers verified: HMAC-SHA256 signature valid · tenant_id="cl_neogen_089"' },
+      { id: 2, time: '00:00.028', tag: 'AUDIT', text: 'Headers verified: HMAC-SHA256 signature valid · tenant_id="cl_demo"' },
       { id: 3, time: '00:00.045', tag: 'REASON', text: 'Caller identifier parsed: +971 50 *** 4182 · country="AE" · carrier="du"' },
       { id: 4, time: '00:00.061', tag: 'EGRESS', text: 'POST https://n8n.internal.helix/webhook/system-1-missed-call' },
       { id: 5, time: '00:00.082', tag: 'EGRESS', text: 'Payload: idempotency_key="idem_8f9c2d1b" system_type="missed_call_triage"' },
       { id: 6, time: '00:00.099', tag: 'DISPATCH', text: 'Triggering Meta WhatsApp Cloud API v20.0 via authorized template' },
       { id: 7, time: '00:00.118', tag: 'DISPATCH', text: 'Template: "rescue_inbound_ar_en" · lang="ar_AE" · recipient="+971 50 *** 4182"' },
-      { id: 8, time: '00:00.134', tag: 'DISPATCH', text: 'Message content: "مرحباً بك في نيوجين داينامكس، لاحظنا اتصالك الآن. كيف يمكننا مساعدتك فوراً؟"' },
+      { id: 8, time: '00:00.134', tag: 'DISPATCH', text: 'Message content: "مرحباً! لاحظنا اتصالك قبل قليل. كيف نقدر نساعدك؟"' },
       { id: 9, time: '00:00.155', tag: 'INBOUND', text: 'WhatsApp delivery receipt: wamid="wamid.HBgMN...QzMjE" status="DELIVERED"' },
-      { id: 10, time: '00:00.180', tag: 'REASON', text: 'Prospect reply received: "أحتاج استشارة طبية بخصوص زراعة الأسنان غداً إذا أمكن"' },
-      { id: 11, time: '00:00.210', tag: 'REASON', text: 'Llama-3.3-70b dialect extractor: intent="CONSULTATION_INQUIRY" urgency="HIGH"' },
+      { id: 10, time: '00:00.180', tag: 'REASON', text: 'Prospect reply received: "أبغى أحجز موعد تنظيف أسنان بكرة العصر"' },
+      { id: 11, time: '00:00.210', tag: 'REASON', text: 'Llama-3.3-70b dialect extractor: intent="BOOKING_CLEANING" urgency="HIGH"' },
       { id: 12, time: '00:00.235', tag: 'SUPABASE', text: 'UPSERT INTO public.contacts (phone, intent, deal_stage, tenant_id)' },
-      { id: 13, time: '00:00.260', tag: 'SUPABASE', text: 'Committed contact_id="cnt_77b102" · deal_value="AED 3,500" · stage="QUALIFIED"' },
+      { id: 13, time: '00:00.260', tag: 'SUPABASE', text: 'Committed contact_id="cnt_demo_01" · stage="QUALIFIED"' },
       { id: 14, time: '00:00.285', tag: 'AUDIT', text: 'Evidence recorded to contact_facts: confidence=0.98 status="verified"' },
       { id: 15, time: '00:00.310', tag: 'OK', text: 'Pipeline finished in 298ms · Egress ACK 200 · End of execution' },
     ],
@@ -74,18 +74,18 @@ const SYSTEM_SCRIPTS: Record<TerminalSystemType, SystemScriptConfig> = {
     category: 'Bilingual Voice AI',
     targetLatency: '215ms',
     lines: [
-      { id: 1, time: '00:00.015', tag: 'INBOUND', text: 'SIP trunk connect: inbound_caller="+966 55 *** 9210" tenant="cl_aramco_012"' },
+      { id: 1, time: '00:00.015', tag: 'INBOUND', text: 'SIP trunk connect: inbound_caller="+966 55 *** 9210" tenant="cl_demo"' },
       { id: 2, time: '00:00.032', tag: 'AUDIT', text: 'Tenant verified: region_tier="gcc_enterprise" · billing_state="active"' },
       { id: 3, time: '00:00.054', tag: 'REASON', text: 'Retell Voice Engine streaming: Gulf Arabic tokenization active' },
-      { id: 4, time: '00:00.078', tag: 'INBOUND', text: 'Caller audio transcript: "أبغى موعد كشفية مع الدكتور طارق يوم الخميس العصر"' },
-      { id: 5, time: '00:00.105', tag: 'REASON', text: 'Groq LPU Intent Classifier: action="BOOK_CALENDAR" doctor="Dr. Tariq" target="Thu 15:00"' },
+      { id: 4, time: '00:00.078', tag: 'INBOUND', text: 'Caller audio transcript: "أبغى موعد كشفية للأسنان يوم الخميس العصر"' },
+      { id: 5, time: '00:00.105', tag: 'REASON', text: 'Groq LPU Intent Classifier: action="BOOK_CALENDAR" service="Consultation" target="Thu 15:00"' },
       { id: 6, time: '00:00.128', tag: 'EGRESS', text: 'POST https://api.cal.com/v2/bookings/reserve · slot="2026-09-24T15:00:00Z"' },
       { id: 7, time: '00:00.155', tag: 'EGRESS', text: 'Cal.com reservation response: booking_id="cal_88921" status="ACCEPTED"' },
-      { id: 8, time: '00:00.182', tag: 'DISPATCH', text: 'Voice synthesis: "تم تثبيت موعدك يا فهد يوم الخميس الساعة ٣ عصراً. أرسلنا التفاصيل للواتساب."' },
+      { id: 8, time: '00:00.182', tag: 'DISPATCH', text: 'Voice synthesis: "تم تثبيت موعدك يوم الخميس الساعة ٣ عصراً. أرسلنا التفاصيل للواتساب."' },
       { id: 9, time: '00:00.210', tag: 'EGRESS', text: 'POST https://n8n.internal.helix/webhook/system-2-booking-dispatch' },
-      { id: 10, time: '00:00.238', tag: 'DISPATCH', text: 'WhatsApp automated dispatch: Cal.com ICS calendar invite + Google Maps clinic pin' },
-      { id: 11, time: '00:00.265', tag: 'SUPABASE', text: 'INSERT INTO public.deals (client_id, stage, booking_ref, deal_value)' },
-      { id: 12, time: '00:00.290', tag: 'SUPABASE', text: 'Committed deal_id="deal_094" stage="DEMO_BOOKED" amount="SAR 1,200"' },
+      { id: 10, time: '00:00.238', tag: 'DISPATCH', text: 'WhatsApp automated dispatch: Cal.com ICS calendar invite + Google Maps pin' },
+      { id: 11, time: '00:00.265', tag: 'SUPABASE', text: 'INSERT INTO public.deals (client_id, stage, booking_ref)' },
+      { id: 12, time: '00:00.290', tag: 'SUPABASE', text: 'Committed deal_id="deal_demo" stage="DEMO_BOOKED"' },
       { id: 13, time: '00:00.315', tag: 'AUDIT', text: 'SHA-256 evidence ledger signed: hash="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"' },
       { id: 14, time: '00:00.340', tag: 'OK', text: 'Call completed duration=42s · Cal.com synced · WhatsApp delivered [200 OK]' },
     ],
@@ -99,16 +99,16 @@ const SYSTEM_SCRIPTS: Record<TerminalSystemType, SystemScriptConfig> = {
     targetLatency: '88ms',
     lines: [
       { id: 1, time: '00:00.010', tag: 'INBOUND', text: 'Inbound lead webhook from Meta Ads campaign: utm_campaign="gcc_ai_ops_2026"' },
-      { id: 2, time: '00:00.022', tag: 'AUDIT', text: 'Tenant match: workspace="Al-Futtaim Tech" tenant_id="cl_alfuttaim_tech"' },
+      { id: 2, time: '00:00.022', tag: 'AUDIT', text: 'Tenant match: workspace="Example Dental Clinic" tenant_id="cl_demo"' },
       { id: 3, time: '00:00.038', tag: 'REASON', text: 'Parsing form telemetry: employees="50-200" call_vol="1500/mo" pain="missed_calls"' },
       { id: 4, time: '00:00.052', tag: 'EGRESS', text: 'POST https://n8n.internal.helix/webhook/system-11-lead-qualification' },
       { id: 5, time: '00:00.071', tag: 'REASON', text: 'Rule evaluation: call_volume > 1000 && gcc_enterprise -> Qualified Tier A' },
-      { id: 6, time: '00:00.089', tag: 'REASON', text: 'Scoring: intent_score=94/100 · attribution="PAID_META_LEAD" · target_mrr="AED 4,500"' },
+      { id: 6, time: '00:00.089', tag: 'REASON', text: 'Scoring: intent_score=94/100 · attribution="PAID_META_LEAD"' },
       { id: 7, time: '00:00.110', tag: 'SUPABASE', text: 'UPSERT INTO public.clients (status="engaged", funnel_stage="QUALIFIED_TO_BUY")' },
-      { id: 8, time: '00:00.130', tag: 'SUPABASE', text: 'INSERT INTO public.deals (client_id, stage="proposal_sent", value=4500)' },
+      { id: 8, time: '00:00.130', tag: 'SUPABASE', text: 'INSERT INTO public.deals (client_id, stage="proposal_sent")' },
       { id: 9, time: '00:00.152', tag: 'DISPATCH', text: 'Internal alert dispatched to Agency Admin queue via webhook egress' },
       { id: 10, time: '00:00.175', tag: 'DISPATCH', text: 'Automated WhatsApp briefing dispatched to assigned account manager' },
-      { id: 11, time: '00:00.198', tag: 'AUDIT', text: 'Attribution key linked: idempotency="idem_meta_lead_448192" committed' },
+      { id: 11, time: '00:00.198', tag: 'AUDIT', text: 'Attribution key linked: idempotency="idem_meta_lead_demo" committed' },
       { id: 12, time: '00:00.220', tag: 'OK', text: 'Lead scored and enrolled in autonomous sequence · Latency 88ms [200 OK]' },
     ],
   },
@@ -347,13 +347,13 @@ export function LiveAgentTerminal({
                 <span
                   className={cn(
                     'shrink-0 rounded px-1.5 py-0.2 text-[9px] font-bold tracking-wide uppercase',
-                    line.tag === 'INBOUND' && 'bg-sky-500/20 text-sky-300 border border-sky-500/30',
-                    line.tag === 'EGRESS' && 'bg-purple-500/20 text-purple-300 border border-purple-500/30',
-                    line.tag === 'REASON' && 'bg-amber-500/20 text-amber-300 border border-amber-500/30',
-                    line.tag === 'DISPATCH' && 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30',
-                    line.tag === 'SUPABASE' && 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30',
-                    line.tag === 'AUDIT' && 'bg-slate-700/50 text-slate-300 border border-slate-600',
-                    line.tag === 'OK' && 'bg-emerald-500 text-slate-950 font-extrabold'
+                    line.tag === 'INBOUND' && 'bg-[rgba(56,198,224,0.12)] text-[#7FDDF0] border border-[#7FDDF0]/20',
+                    line.tag === 'EGRESS' && 'bg-white/[0.03] text-[#E2E8F0] border border-white/[0.14]',
+                    line.tag === 'REASON' && 'bg-[rgba(245,180,85,0.12)] text-[#F5C27A] border border-[#F5C27A]/20',
+                    line.tag === 'DISPATCH' && 'bg-[rgba(52,224,161,0.12)] text-[#6EF0BD] border border-[#6EF0BD]/20',
+                    line.tag === 'SUPABASE' && 'bg-white/[0.04] text-[#38C6E0] border border-[#38C6E0]/20',
+                    line.tag === 'AUDIT' && 'bg-white/[0.07] text-[#B6BFCC] border border-white/10',
+                    line.tag === 'OK' && 'bg-[#34E0A1] text-[#04130D] font-extrabold'
                   )}
                 >
                   {line.tag}
@@ -385,8 +385,8 @@ export function LiveAgentTerminal({
           <div>
             <div className="flex items-center justify-between pb-3 border-b border-slate-800">
               <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-                <Sparkles className="size-3 text-emerald-400" />
-                Live Side Telemetry Mock
+                <Activity className="size-3 text-[#34E0A1]" />
+                DEMO SCRIPT · Pipeline Observation
               </span>
               <span className="rounded bg-slate-800 px-2 py-0.5 text-[9px] font-mono text-slate-400">
                 {currentScript.category}
@@ -407,7 +407,7 @@ export function LiveAgentTerminal({
 
                   <div className="rounded-lg bg-[#0F2620] p-2.5 text-[11px] text-slate-200 space-y-1 border border-emerald-500/20">
                     <p className="font-bold text-white">
-                      {brandName || 'Neogen Dynamics'} // Reception
+                      {brandName || 'Example Dental Clinic'} · Reception
                     </p>
                     <p className="text-slate-300 leading-relaxed text-[10.5px]">
                       &ldquo;مرحباً بك، لاحظنا اتصالك الآن دون رد نظراً لضغط الخطوط. تم فتح تذكرة خاصة بك مباشرة، كيف يمكن لمكتب الاستقبال خدمتك؟&rdquo;
@@ -445,7 +445,7 @@ export function LiveAgentTerminal({
 
                   <div>
                     <div className="text-[10px] font-mono text-slate-400 uppercase">Consultation Appointment</div>
-                    <div className="text-sm font-bold text-white mt-0.5">Dr. Tariq Al-Mansoor</div>
+                    <div className="text-sm font-bold text-white mt-0.5">Example Dental Clinic · Consultation</div>
                     <div className="mt-1 flex items-center gap-1.5 text-xs text-slate-300">
                       <Clock className="size-3 text-emerald-400" />
                       <span>Thursday, Sept 24 • 3:00 PM (GST)</span>
@@ -480,11 +480,11 @@ export function LiveAgentTerminal({
 
                   <div>
                     <div className="text-[10px] font-mono text-slate-400 uppercase">Account Qualified</div>
-                    <div className="text-sm font-bold text-white mt-0.5">Al-Futtaim Tech Operations</div>
+                    <div className="text-sm font-bold text-white mt-0.5">Example Dental Clinic (Demo Lead)</div>
                     <div className="mt-2 grid grid-cols-2 gap-2 text-[10px] font-mono">
                       <div className="rounded bg-slate-900 p-1.5 border border-slate-800">
                         <div className="text-slate-400">Target MRR</div>
-                        <div className="text-emerald-400 font-bold text-xs mt-0.5">AED 4,500/mo</div>
+                        <div className="text-emerald-400 font-bold text-xs mt-0.5">SAMPLE VALUE</div>
                       </div>
                       <div className="rounded bg-slate-900 p-1.5 border border-slate-800">
                         <div className="text-slate-400">Intent Score</div>

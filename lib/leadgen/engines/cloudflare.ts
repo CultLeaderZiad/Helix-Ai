@@ -129,10 +129,37 @@ export async function fetchCloudflareBrowser(
       }
     }
 
+    const metaStatus = data.meta?.status || 200
+    if (metaStatus === 404 || metaStatus === 410) {
+      return {
+        ok: false,
+        engine: 'dynamic',
+        status: metaStatus,
+        fetch_status: 'not_found',
+        html: data.result,
+        finalUrl: data.meta?.finalUrl || targetUrl,
+        browser_ms,
+        error: `Page not found (HTTP ${metaStatus})`,
+      }
+    }
+
+    if (metaStatus >= 400) {
+      return {
+        ok: false,
+        engine: 'dynamic',
+        status: metaStatus,
+        fetch_status: metaStatus === 403 ? 'blocked' : 'error',
+        html: data.result,
+        finalUrl: data.meta?.finalUrl || targetUrl,
+        browser_ms,
+        error: `Page returned HTTP ${metaStatus}`,
+      }
+    }
+
     return {
       ok: true,
       engine: 'dynamic',
-      status: data.meta?.status || 200,
+      status: metaStatus,
       fetch_status: 'ok',
       html: data.result,
       finalUrl: data.meta?.finalUrl || targetUrl,

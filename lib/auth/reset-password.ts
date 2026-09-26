@@ -1,6 +1,7 @@
 'use server'
 
 import { createSupabaseServerClient } from '@/lib/supabase'
+import { authCallbackUrl } from '@/lib/auth/site-url'
 
 export type ResetState =
   | { status: 'idle' }
@@ -22,7 +23,9 @@ export async function resetPassword(_prev: ResetState, formData: FormData): Prom
 
   try {
     const supabase = await createSupabaseServerClient()
-    const { error } = await supabase.auth.resetPasswordForEmail(email)
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: authCallbackUrl('/reset-password'),
+    })
     if (error) {
       return {
         status: 'error',

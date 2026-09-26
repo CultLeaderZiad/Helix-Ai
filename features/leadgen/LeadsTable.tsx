@@ -20,6 +20,7 @@ export function LeadsTable({ leads, selectedLeadId, onSelectLead, isArabic = fal
         !filterQuery ||
         (l.company_name?.toLowerCase().includes(filterQuery.toLowerCase()) ?? false) ||
         (l.domain?.toLowerCase().includes(filterQuery.toLowerCase()) ?? false) ||
+        (l.city?.toLowerCase().includes(filterQuery.toLowerCase()) ?? false) ||
         l.emails.some(e => e.toLowerCase().includes(filterQuery.toLowerCase()))
 
       const matchPriority = filterPriority === 'all' || l.priority === filterPriority
@@ -36,7 +37,7 @@ export function LeadsTable({ leads, selectedLeadId, onSelectLead, isArabic = fal
             type="search"
             value={filterQuery}
             onChange={e => setFilterQuery(e.target.value)}
-            placeholder={isArabic ? 'بحث بالشركة أو النطاق أو البريد...' : 'Filter by company, domain, or email...'}
+            placeholder={isArabic ? 'بحث بالشركة أو المدينة أو البريد...' : 'Filter by company, city, or email...'}
             className="w-56 sm:w-72 rounded border border-[#cfd6df] dark:border-white/15 bg-white dark:bg-[#11151c] px-2.5 py-1 text-xs text-[#0f141b] dark:text-[#e8ecf2] placeholder-[#8b95a7] focus:border-[#0e8da6] focus:outline-none dark:focus:border-[#38c6e0]"
           />
 
@@ -62,25 +63,23 @@ export function LeadsTable({ leads, selectedLeadId, onSelectLead, isArabic = fal
         <table className="w-full text-left text-xs border-collapse">
           <thead>
             <tr className="border-b border-[#d9dee6] dark:border-white/10 bg-[#eaeef3]/60 dark:bg-[#171c25]/60 text-[11px] font-medium uppercase tracking-wider text-[#5b6577] dark:text-[#8b95a7]">
-              <th className="px-3 py-2.5">{isArabic ? 'الشركة / النطاق' : 'Company / Domain'}</th>
-              <th className="px-3 py-2.5">{isArabic ? 'البريد الإلكتروني' : 'Verified Email'}</th>
-              <th className="px-3 py-2.5">{isArabic ? 'مصدر البريد' : 'Email Source'}</th>
+              <th className="px-3 py-2.5">{isArabic ? 'الشركة' : 'Company'}</th>
+              <th className="px-3 py-2.5">{isArabic ? 'الوصف' : 'Description'}</th>
+              <th className="px-3 py-2.5">{isArabic ? 'البريد' : 'Email'}</th>
               <th className="px-3 py-2.5">{isArabic ? 'الهاتف' : 'Phone'}</th>
+              <th className="px-3 py-2.5">{isArabic ? 'الشبكات' : 'Socials'}</th>
+              <th className="px-3 py-2.5">{isArabic ? 'المدينة' : 'City'}</th>
               <th className="px-3 py-2.5 text-right">{isArabic ? 'الدرجة' : 'Score'}</th>
-              <th className="px-3 py-2.5">{isArabic ? 'الأولوية' : 'Priority'}</th>
-              <th className="px-3 py-2.5">{isArabic ? 'CRM' : 'CRM Status'}</th>
+              <th className="px-3 py-2.5">{isArabic ? 'المصدر' : 'Source'}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#d9dee6]/60 dark:divide-white/5">
             {filtered.length > 0 ? (
               filtered.map(lead => {
                 const isSelected = lead.id === selectedLeadId
-                const priorityColor =
-                  lead.priority === 'high'
-                    ? 'text-[#1f8a3b] dark:text-[#3fb950] bg-[#1f8a3b]/10 dark:bg-[#3fb950]/15'
-                    : lead.priority === 'med'
-                    ? 'text-[#a86a00] dark:text-[#d29922] bg-[#a86a00]/10 dark:bg-[#d29922]/15'
-                    : 'text-[#5b6577] dark:text-[#8b95a7] bg-[#eaeef3] dark:bg-[#171c25]'
+                const socialsMap = (lead.socials as Record<string, string>) || {}
+                const socialKeys = Object.keys(socialsMap).filter(k => typeof socialsMap[k] === 'string' && socialsMap[k].length > 0)
+                const sourceStr = (lead as any).origin || (lead.sources as any)?.origin || 'website'
 
                 return (
                   <tr
@@ -110,6 +109,11 @@ export function LeadsTable({ leads, selectedLeadId, onSelectLead, isArabic = fal
                       )}
                     </td>
 
+                    {/* Description */}
+                    <td className="px-3 py-2.5 max-w-[200px] truncate text-[#5b6577] dark:text-[#8b95a7]" title={lead.description || ''}>
+                      {lead.description || <span className="italic text-[#8b95a7]">{isArabic ? 'غير متوفر' : 'none'}</span>}
+                    </td>
+
                     {/* Email */}
                     <td className="px-3 py-2.5 font-mono text-[11px]">
                       {lead.emails && lead.emails.length > 0 ? (
@@ -122,15 +126,8 @@ export function LeadsTable({ leads, selectedLeadId, onSelectLead, isArabic = fal
                           )}
                         </div>
                       ) : (
-                        <span className="text-[#8b95a7] italic">none</span>
+                        <span className="text-[#8b95a7] italic">{isArabic ? 'غير متوفر' : 'none'}</span>
                       )}
-                    </td>
-
-                    {/* Email Source */}
-                    <td className="px-3 py-2.5">
-                      <span className="inline-block rounded bg-[#eaeef3] dark:bg-[#171c25] px-1.5 py-0.5 font-mono text-[10px] text-[#5b6577] dark:text-[#8b95a7]">
-                        {lead.email_source}
-                      </span>
                     </td>
 
                     {/* Phone */}
@@ -138,32 +135,41 @@ export function LeadsTable({ leads, selectedLeadId, onSelectLead, isArabic = fal
                       {lead.phones && lead.phones.length > 0 ? lead.phones[0] : '—'}
                     </td>
 
+                    {/* Socials (chips/text) */}
+                    <td className="px-3 py-2.5">
+                      {socialKeys.length > 0 ? (
+                        <div className="flex gap-1 flex-wrap">
+                          {socialKeys.slice(0, 3).map(k => (
+                            <span key={k} className="inline-block px-1 py-0.2 rounded bg-muted text-[10px] font-mono text-muted-foreground">
+                              {k}
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <span className="text-[#8b95a7] text-[10px]">—</span>
+                      )}
+                    </td>
+
+                    {/* City */}
+                    <td className="px-3 py-2.5 text-[#5b6577] dark:text-[#8b95a7]">
+                      {lead.city || lead.country || '—'}
+                    </td>
+
                     {/* Score */}
                     <td className="px-3 py-2.5 text-right font-mono font-semibold tabular-nums text-[#0f141b] dark:text-[#e8ecf2]">
                       {lead.lead_score}
                     </td>
 
-                    {/* Priority */}
-                    <td className="px-3 py-2.5">
-                      <span className={`inline-block rounded px-2 py-0.5 font-mono text-[10px] uppercase font-semibold ${priorityColor}`}>
-                        {lead.priority}
-                      </span>
-                    </td>
-
-                    {/* CRM Link Status */}
-                    <td className="px-3 py-2.5 font-mono text-[11px]">
-                      {lead.crm_contact_id || lead.crm_company_id ? (
-                        <span className="text-[#1f8a3b] dark:text-[#3fb950] font-medium">pushed</span>
-                      ) : (
-                        <span className="text-[#5b6577] dark:text-[#8b95a7]">unlinked</span>
-                      )}
+                    {/* Source */}
+                    <td className="px-3 py-2.5 font-mono text-[10px] text-[#5b6577] dark:text-[#8b95a7]">
+                      {sourceStr}
                     </td>
                   </tr>
                 )
               })
             ) : (
               <tr>
-                <td colSpan={7} className="px-3 py-8 text-center text-[#5b6577] dark:text-[#8b95a7] italic">
+                <td colSpan={8} className="px-3 py-8 text-center text-[#5b6577] dark:text-[#8b95a7] italic">
                   {isArabic ? 'لا توجد جهات مطابقة للبحث' : 'No matching leads found.'}
                 </td>
               </tr>

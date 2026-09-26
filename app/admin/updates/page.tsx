@@ -4,7 +4,7 @@ import { getVerifiedSession } from '@/lib/auth/session'
 import { ConsoleShell } from '@/components/shell/console-shell'
 import { AdminTabs } from '@/components/admin/admin-tabs'
 import { UpdatesManagerView } from '@/components/admin/updates-manager-view'
-import { getUpdates } from '@/lib/updates/updates-store'
+import { getUpdatesAction } from '@/lib/updates/actions'
 
 export const metadata = {
   title: 'Updates & Changelog Management — Helix AI Admin',
@@ -17,7 +17,7 @@ export default async function AdminUpdatesPage() {
   if (!session) redirect('/login')
   if (session.claims.role !== 'agency_admin') redirect('/dashboard')
 
-  const updates = getUpdates(true)
+  const updates = await getUpdatesAction(true)
 
   return (
     <ConsoleShell variant="admin" email={session.user.email ?? ''} businessName={null}>

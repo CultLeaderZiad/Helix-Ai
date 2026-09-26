@@ -26,20 +26,7 @@ export default async function IntegrationsHealthPage() {
   ])
 
   const client = clientRes.data
-  let integrations = (integrationsRes.data ?? []) as ClientIntegration[]
-
-  // Auto-seed baseline integration rows if empty
-  if (integrations.length === 0) {
-    const baseline = [
-      { client_id: clientId, system_type: 'missed_call_response', status: 'connected' as const },
-      { client_id: clientId, system_type: 'booking_receptionist', status: 'connected' as const },
-      { client_id: clientId, system_type: 'lead_attribution', status: 'connected' as const },
-    ]
-    const { data: seeded } = await supabase.from('client_integrations').insert(baseline).select('*')
-    if (seeded) {
-      integrations = seeded as ClientIntegration[]
-    }
-  }
+  const integrations = (integrationsRes.data ?? []) as ClientIntegration[]
 
   async function pingAction() {
     'use server'
@@ -50,18 +37,44 @@ export default async function IntegrationsHealthPage() {
     }
 
     const targetClientId = currentSession.claims.client_id
-    const now = new Date().toISOString()
-    const { error } = await serverSupabase
-      .from('client_integrations')
-      .update({ last_ping_at: now, status: 'connected' })
+    const { data: hooks, error: hookError } = await serverSupabase
+      .from('system_webhooks')
+      .select('id, webhook_url, enabled, system_type')
       .eq('client_id', targetClientId)
+      .eq('enabled', true)
 
-    if (error) {
-      return { error: `Failed to ping endpoints: ${error.message}` }
+    if (hookError) {
+      return { error: `Webhook lookup failed: ${hookError.message}` }
+    }
+    if (!hooks || hooks.length === 0) {
+      return { error: 'Not connected. No enabled webhook URL is saved for this workspace.' }
+    }
+
+    const now = new Date().toISOString()
+    let reachable = 0
+    for (const hook of hooks) {
+      let status: 'connected' | 'degraded' = 'degraded'
+      try {
+        const response = await fetch(hook.webhook_url, { method: 'GET', signal: AbortSignal.timeout(5000) })
+        if (response.ok) {
+          status = 'connected'
+          reachable += 1
+        }
+      } catch {
+        status = 'degraded'
+      }
+      await serverSupabase
+        .from('client_integrations')
+        .update({ last_ping_at: now, status })
+        .eq('client_id', targetClientId)
+        .eq('system_type', hook.system_type)
     }
 
     revalidatePath('/dashboard/integrations')
-    return { success: true }
+    if (reachable === 0) {
+      return { error: 'No webhook URL responded. Status left as degraded.' }
+    }
+    return { success: true, message: `${reachable} of ${hooks.length} webhook URLs responded.` }
   }
 
   return (

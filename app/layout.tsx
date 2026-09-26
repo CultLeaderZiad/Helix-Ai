@@ -2,6 +2,7 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono, IBM_Plex_Sans_Arabic, Instrument_Serif } from 'next/font/google'
 import { AuthHashHandler } from '@/components/auth/auth-hash-handler'
+import { AppProviders } from '@/components/providers/app-providers'
 import { getPublicPrefs } from '@/lib/public-prefs'
 import './globals.css'
 import './v5.css'
@@ -33,47 +34,28 @@ const plexArabic = IBM_Plex_Sans_Arabic({
   display: 'swap',
 })
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
-  title: 'Helix — Missed calls answered. Appointments booked.',
+  metadataBase: new URL(siteUrl),
+  title: 'Helix — AI front desk for clinics and service businesses in the GCC',
   description:
     'Helix builds and runs AI systems for clinics, real-estate and service businesses across the GCC and MENA. Missed calls get a WhatsApp reply, a real conversation, and a confirmed booking.',
-  keywords: [
-    'Helix AI',
-    'AI Receptionist',
-    'WhatsApp Business Automation',
-    'CRM Intelligence',
-    'Voice AI Middle East',
-    'Dubai AI Automation',
-    'Saudi Enterprise AI',
-  ],
-  authors: [{ name: 'Helix AI' }],
-  other: {
-    'geo.region': 'AE;SA;QA;EG;JO',
-    'geo.placename': 'Dubai, Riyadh, Doha, Cairo, Amman',
-  },
+  authors: [{ name: 'Helix' }],
   openGraph: {
-    title: 'Helix AI — Autonomous CRM & Revenue AI Systems',
-    description: 'Autonomous voice and WhatsApp AI infrastructure for modern enterprises.',
-    url: 'https://helixai.co',
-    siteName: 'Helix AI',
+    title: 'Helix — Missed calls answered. Appointments booked.',
+    description:
+      'Helix builds and runs AI systems for clinics, real-estate and service businesses. Every missed call gets a WhatsApp reply and a confirmed booking.',
+    url: siteUrl,
+    siteName: 'Helix',
     locale: 'en_US',
     type: 'website',
   },
   icons: {
     icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
+      { url: '/icon-light-32x32.png', media: '(prefers-color-scheme: light)' },
+      { url: '/icon-dark-32x32.png', media: '(prefers-color-scheme: dark)' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
     ],
     apple: '/apple-icon.png',
   },
@@ -108,7 +90,7 @@ export default async function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=document.cookie.match(/(?:^|; )helix_theme=([^;]+)/);var l=document.cookie.match(/(?:^|; )helix_lang=([^;]+)/);var theme=t&&decodeURIComponent(t[1])==='day'?'day':'night';var lang=l&&decodeURIComponent(l[1])==='ar'?'ar':'en';document.documentElement.dataset.theme=theme;document.documentElement.lang=lang==='ar'?'ar':'en';document.documentElement.dir=lang==='ar'?'rtl':'ltr';}catch(e){}})();`,
+            __html: `(function(){try{var t=document.cookie.match(/(?:^|; )helix_theme=([^;]+)/);var l=document.cookie.match(/(?:^|; )helix_lang=([^;]+)/);if(!l){l=document.cookie.match(/(?:^|; )helix-lang=([^;]+)/);}var theme=t&&decodeURIComponent(t[1])==='day'?'day':'night';var lang=l&&decodeURIComponent(l[1])==='ar'?'ar':'en';document.documentElement.dataset.theme=theme;document.documentElement.lang=lang==='ar'?'ar':'en';document.documentElement.dir=lang==='ar'?'rtl':'ltr';}catch(e){}})();`,
           }}
         />
       </head>
@@ -119,14 +101,9 @@ export default async function RootLayout({
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@type': 'SoftwareApplication',
-              name: 'Helix AI',
+              name: 'Helix',
               applicationCategory: 'BusinessApplication',
               operatingSystem: 'Web',
-              offers: {
-                '@type': 'Offer',
-                priceCurrency: 'USD',
-                eligibleRegion: ['AE', 'SA', 'QA', 'EG', 'JO'],
-              },
               areaServed: [
                 { '@type': 'Country', name: 'United Arab Emirates' },
                 { '@type': 'Country', name: 'Saudi Arabia' },
@@ -137,11 +114,12 @@ export default async function RootLayout({
             }),
           }}
         />
-        <AuthHashHandler />
-        {children}
+        <AppProviders initialLanguage={lang}>
+          <AuthHashHandler />
+          {children}
+        </AppProviders>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
   )
 }
-

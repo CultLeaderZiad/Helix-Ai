@@ -1,6 +1,14 @@
-import type { LeadGenJob, LeadGenLead, LeadGenEngine, LeadGenMode, LeadGenStatus, LeadGenStage } from '@/lib/schema'
+import type { LeadGenJob, LeadGenLead, LeadGenEngine, LeadGenMode, LeadGenStatus, LeadGenStage, LeadGenJobKind } from '@/lib/schema'
 
-export type { LeadGenJob, LeadGenLead, LeadGenEngine, LeadGenMode, LeadGenStatus, LeadGenStage }
+export type { LeadGenJob, LeadGenLead, LeadGenEngine, LeadGenMode, LeadGenStatus, LeadGenStage, LeadGenJobKind }
+
+export interface LeadGenDecisionMaker {
+  name: string
+  title?: string
+  email?: string
+  phone?: string
+  linkedin_url?: string
+}
 
 export interface LeadGenBrief {
   icp: string
@@ -56,6 +64,18 @@ export interface CreateJobPayload {
   capture_xhr_pattern?: string | null
   enrich_emails: boolean
   generate_outreach: boolean
+  job_kind?: LeadGenJobKind
+  find?: {
+    query: string
+    sources?: string[]
+    limit?: number
+    radius_m?: number
+  }
+  hunter?: {
+    enabled: boolean
+    departments?: string[]
+    limit?: number
+  }
 }
 
 export interface WorkerHealthResponse {

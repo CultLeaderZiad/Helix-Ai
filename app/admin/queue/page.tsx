@@ -19,51 +19,34 @@ export default async function AdminQueuePage() {
   // Agency admin reads all pending facts across tenants
   const { data: rawFacts } = await supabase
     .from('contact_facts')
-    .select('id, fact_key, fact_value, evidence_band, source_tool, status, score, method, observed_at, contact_id')
+    .select('id, field_name, field_value, evidence_band, source_tool, status, score, method, observed_at, contact_id')
     .eq('status', 'pending')
 
-  const facts: ReviewableFact[] = (rawFacts ?? []).length > 0
-    ? rawFacts!.map(f => ({
-        id: f.id,
-        field_name: f.fact_key,
-        field_value: f.fact_value,
-        evidence_band: f.evidence_band as 'verified' | 'probable' | 'possible',
-        source_tool: f.source_tool,
-        status: f.status as any,
-        score: f.score,
-        method: f.method,
-        observed_at: f.observed_at,
-        contact_id: f.contact_id,
-        contact: { full_name: 'Cross-Tenant Record', company_name: 'Agency Fleet' },
-      }))
-    : [
-        {
-          id: 'adm-f1',
-          field_name: 'sla_breach_risk',
-          field_value: 'Inbound customer inquiry unresponded for > 15 minutes on WhatsApp',
-          evidence_band: 'verified',
-          source_tool: 'WhatsApp Channel Supervisor (client: Nexus Health)',
-          status: 'pending',
-          score: 0.99,
-          method: 'timer_sla_monitor',
-          observed_at: new Date(Date.now() - 15 * 60000).toISOString(),
-          contact_id: 'c-sla',
-          contact: { full_name: 'Nexus Health Inbound', company_name: 'Nexus Health' },
-        },
-        {
-          id: 'adm-f2',
-          field_name: 'high_value_contract',
-          field_value: '$120,000 enterprise annual contract negotiation initiated',
-          evidence_band: 'verified',
-          source_tool: 'Vapi Voice Agent (client: Acme Logistics)',
-          status: 'pending',
-          score: 0.96,
-          method: 'deal_term_classifier',
-          observed_at: new Date(Date.now() - 45 * 60000).toISOString(),
-          contact_id: 'c-deal',
-          contact: { full_name: 'Acme Logistics CFO', company_name: 'Acme Logistics' },
-        },
-      ]
+  const rows = rawFacts ?? []
+  const contactIds = [...new Set(rows.map(fact => fact.contact_id).filter(Boolean))]
+  const contactsRes = contactIds.length
+    ? await supabase.from('contacts').select('id, full_name, company_name').in('id', contactIds)
+    : { data: [] as Array<{ id: string; full_name: string | null; company_name: string | null }> }
+  const contactById = new Map((contactsRes.data ?? []).map(contact => [contact.id, contact]))
+
+  const facts: ReviewableFact[] = rows.map(f => {
+    const contact = contactById.get(f.contact_id)
+    return {
+      id: f.id,
+      field_name: f.field_name,
+      field_value: f.field_value,
+      evidence_band: f.evidence_band as 'verified' | 'probable' | 'possible',
+      source_tool: f.source_tool,
+      status: f.status as ReviewableFact['status'],
+      score: f.score,
+      method: f.method,
+      observed_at: f.observed_at,
+      contact_id: f.contact_id,
+      contact: contact
+        ? { full_name: contact.full_name, company_name: contact.company_name }
+        : { full_name: null, company_name: null },
+    }
+  })
 
   return (
     <ConsoleShell variant="admin" email={session.user.email ?? ''} businessName={null}>

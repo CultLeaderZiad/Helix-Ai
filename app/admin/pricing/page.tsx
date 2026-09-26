@@ -4,7 +4,7 @@ import { getVerifiedSession } from '@/lib/auth/session'
 import { ConsoleShell } from '@/components/shell/console-shell'
 import { AdminTabs } from '@/components/admin/admin-tabs'
 import { PricingManagerView } from '@/components/admin/pricing-manager-view'
-import { getPricingConfigs } from '@/lib/pricing/pricing-store'
+import { getPricingAction } from '@/lib/pricing/actions'
 
 export const metadata = {
   title: 'Pricing Management — Helix AI Admin',
@@ -17,7 +17,7 @@ export default async function AdminPricingPage() {
   if (!session) redirect('/login')
   if (session.claims.role !== 'agency_admin') redirect('/dashboard')
 
-  const configs = getPricingConfigs()
+  const configs = await getPricingAction()
 
   return (
     <ConsoleShell variant="admin" email={session.user.email ?? ''} businessName={null}>

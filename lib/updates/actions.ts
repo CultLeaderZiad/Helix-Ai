@@ -5,15 +5,28 @@ import { createSupabaseServerClient } from '@/lib/supabase'
 import { getVerifiedSession } from '@/lib/auth/session'
 import {
   getUpdates,
-  createUpdate,
-  updateRelease,
-  deleteUpdate,
-  togglePublishUpdate,
+  saveUpdates,
   type PlatformUpdate,
 } from './updates-store'
+import { loadSiteDocument, persistSiteDocument } from '@/lib/content/site-documents'
+
+async function loadUpdates(): Promise<PlatformUpdate[]> {
+  const remote = await loadSiteDocument<PlatformUpdate[]>('updates')
+  if (Array.isArray(remote)) return remote
+  return getUpdates(true)
+}
+
+async function saveUpdateList(updates: PlatformUpdate[]): Promise<{ ok: boolean; error?: string }> {
+  const remote = await persistSiteDocument('updates', updates)
+  if (remote.ok) return remote
+  const fileOk = saveUpdates(updates)
+  if (fileOk && !process.env.VERCEL) return { ok: true }
+  return remote
+}
 
 export async function getUpdatesAction(includeUnpublished = false) {
-  return getUpdates(includeUnpublished)
+  const updates = await loadUpdates()
+  return includeUnpublished ? updates : updates.filter(update => update.is_published)
 }
 
 export async function createUpdateAction(data: {
@@ -30,14 +43,15 @@ export async function createUpdateAction(data: {
     return { success: false, error: 'Unauthorized. Admin access required.' }
   }
 
-  const res = createUpdate(data)
-  if (!res) {
-    return { success: false, error: 'Failed to create platform update.' }
-  }
+  const updates = await loadUpdates()
+  const created: PlatformUpdate = { ...data, id: `rel-${Date.now()}` }
+  updates.unshift(created)
+  const saved = await saveUpdateList(updates)
+  if (!saved.ok) return { success: false, error: saved.error || 'Failed to create platform update.' }
 
   revalidatePath('/updates')
   revalidatePath('/admin/updates')
-  return { success: true, update: res }
+  return { success: true, update: created }
 }
 
 export async function updateReleaseAction(id: string, data: Partial<PlatformUpdate>) {
@@ -47,10 +61,12 @@ export async function updateReleaseAction(id: string, data: Partial<PlatformUpda
     return { success: false, error: 'Unauthorized. Admin access required.' }
   }
 
-  const ok = updateRelease(id, data)
-  if (!ok) {
-    return { success: false, error: 'Failed to update release details.' }
-  }
+  const updates = await loadUpdates()
+  const index = updates.findIndex(update => update.id === id)
+  if (index === -1) return { success: false, error: 'Release not found.' }
+  updates[index] = { ...updates[index], ...data }
+  const saved = await saveUpdateList(updates)
+  if (!saved.ok) return { success: false, error: saved.error || 'Failed to update release details.' }
 
   revalidatePath('/updates')
   revalidatePath('/admin/updates')
@@ -64,10 +80,11 @@ export async function deleteUpdateAction(id: string) {
     return { success: false, error: 'Unauthorized. Admin access required.' }
   }
 
-  const ok = deleteUpdate(id)
-  if (!ok) {
-    return { success: false, error: 'Failed to delete release.' }
-  }
+  const updates = await loadUpdates()
+  const filtered = updates.filter(update => update.id !== id)
+  if (filtered.length === updates.length) return { success: false, error: 'Release not found.' }
+  const saved = await saveUpdateList(filtered)
+  if (!saved.ok) return { success: false, error: saved.error || 'Failed to delete release.' }
 
   revalidatePath('/updates')
   revalidatePath('/admin/updates')
@@ -81,10 +98,12 @@ export async function togglePublishUpdateAction(id: string) {
     return { success: false, error: 'Unauthorized. Admin access required.' }
   }
 
-  const ok = togglePublishUpdate(id)
-  if (!ok) {
-    return { success: false, error: 'Failed to toggle publish status.' }
-  }
+  const updates = await loadUpdates()
+  const index = updates.findIndex(update => update.id === id)
+  if (index === -1) return { success: false, error: 'Release not found.' }
+  updates[index].is_published = !updates[index].is_published
+  const saved = await saveUpdateList(updates)
+  if (!saved.ok) return { success: false, error: saved.error || 'Failed to toggle publish status.' }
 
   revalidatePath('/updates')
   revalidatePath('/admin/updates')

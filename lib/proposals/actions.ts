@@ -69,18 +69,17 @@ export async function generateProposalAction(dealId: string): Promise<GeneratePr
     const { error: updateError } = await supabase
       .from('deals')
       .update({
-        stage: 'proposal_sent',
+        stage: 'CONTRACT_SENT',
         custom_fields: updatedCustomFields,
       })
       .eq('id', deal.id)
 
     if (updateError) {
-      console.warn('Notice updating deal stage:', updateError)
+      return { success: false, message: `The proposal was built but the deal was not updated. ${updateError.message}` }
     }
 
-    // 5. Insert invoice record for setup deposit
     const dueDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-    await supabase.from('invoices').insert({
+    const { error: invoiceError } = await supabase.from('invoices').insert({
       client_id: deal.client_id,
       amount_cents: proposal.totalSetupCents,
       due_date: dueDate,
@@ -92,12 +91,14 @@ export async function generateProposalAction(dealId: string): Promise<GeneratePr
       client_id: deal.client_id,
       deal_id: deal.id,
       type: 'stage_change',
-      body: `Bespoke Proposal generated (${proposal.currency} ${(proposal.totalFirstMonthCents / 100).toLocaleString()}). Stage updated to proposal_sent.`,
+      body: `Proposal saved on the deal (${proposal.currency} ${(proposal.totalFirstMonthCents / 100).toLocaleString()}). Stage set to CONTRACT_SENT. ${invoiceError ? 'Invoice was not created.' : 'A pending invoice row was created.'}`,
     })
 
     return {
       success: true,
-      message: 'Proposal generated and dispatched.',
+      message: invoiceError
+        ? 'Proposal saved on the deal. The invoice row was not created.'
+        : 'Proposal saved on the deal and a pending invoice row was created. Nothing was emailed.',
       proposal,
     }
   } catch (err) {

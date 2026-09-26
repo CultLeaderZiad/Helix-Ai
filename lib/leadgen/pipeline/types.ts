@@ -6,7 +6,7 @@ export interface FetchResult {
   ok: boolean
   engine: FetchEngineId
   status: number
-  fetch_status: 'ok' | 'blocked' | 'rate_limited' | 'error'
+  fetch_status: 'ok' | 'blocked' | 'rate_limited' | 'error' | 'not_found'
   html: string
   finalUrl?: string
   browser_ms?: number

@@ -11,6 +11,8 @@ export const metadata = {
   robots: { index: false, follow: false },
 }
 
+export const dynamic = 'force-dynamic'
+
 export default async function SettingsPage() {
   const supabase = await createSupabaseServerClient()
   const session = await getVerifiedSession(supabase)
@@ -59,7 +61,7 @@ export default async function SettingsPage() {
               </div>
               <div>
                 <dt className="text-helix-muted">Status</dt>
-                <dd className="mt-1 text-helix-ok">{clientData?.status ?? 'Active'}</dd>
+                <dd className="mt-1 text-helix-ink">{clientData?.status ?? (isAdmin ? 'Agency account' : 'Not set')}</dd>
               </div>
             </dl>
           </section>

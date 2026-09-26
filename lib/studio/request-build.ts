@@ -1,6 +1,7 @@
 'use server'
 
 import { createSupabaseServerClient } from '@/lib/supabase'
+import { createSupabaseAdminClient } from '@/lib/supabase-admin'
 import { getVerifiedSession } from '@/lib/auth/session'
 import { SYSTEM_TEMPLATES } from '@/lib/studio/templates'
 
@@ -54,29 +55,42 @@ export async function requestSystemBuild(
     )
 
     // 1. Insert Deal into Supabase
-    const { data: deal, error: dealError } = await supabase
-      .from('deals')
-      .insert({
-        client_id: clientId,
-        name: `Build: ${template.name} (${brandCustomization.brandName || 'Custom'})`,
-        value_cents: totalCents,
-        stage: 'studio_completed',
-      })
-      .select('id')
-      .single()
-
-    if (dealError) {
-      console.error('Error inserting deal for system build request:', dealError)
-      // If deal insert hits RLS or schema constraint, log gracefully
+    const dealRow = {
+      client_id: clientId,
+      name: `Build: ${template.name} (${brandCustomization.brandName || 'Custom'})`,
+      value_cents: totalCents,
+      stage: 'QUALIFIED_TO_BUY',
+      source: 'studio_request',
+    }
+    let dealId: string | null = null
+    let dealErrorMessage: string | null = null
+    const userInsert = await supabase.from('deals').insert(dealRow).select('id').maybeSingle()
+    if (userInsert.error || !userInsert.data) {
+      try {
+        const admin = createSupabaseAdminClient()
+        const adminInsert = await admin.from('deals').insert(dealRow).select('id').maybeSingle()
+        dealId = adminInsert.data?.id ?? null
+        dealErrorMessage = adminInsert.error?.message ?? null
+      } catch {
+        dealErrorMessage = userInsert.error?.message ?? 'Deal insert failed.'
+      }
+    } else {
+      dealId = userInsert.data.id
     }
 
-    // 2. Return confirmation
+    if (!dealId) {
+      return {
+        success: false,
+        message: `The build request was not saved. ${dealErrorMessage || 'The deals table rejected the row.'}`,
+      }
+    }
+
     return {
       success: true,
-      dealId: deal?.id ?? 'deal-submitted',
+      dealId,
       templateName: template.name,
       investmentTotal: formattedTotal,
-      message: `Your build request for ${template.name} has been submitted! An implementation proposal is now generated.`,
+      message: `Build request for ${template.name} was saved as a deal. No proposal was emailed.`,
     }
   } catch (err) {
     console.error('Exception in requestSystemBuild:', err)

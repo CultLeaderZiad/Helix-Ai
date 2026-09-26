@@ -4,8 +4,9 @@ import { createSupabaseServerClient } from '@/lib/supabase'
 import { createSupabaseAdminClient } from '@/lib/supabase-admin'
 import { getVerifiedSession } from '@/lib/auth/session'
 import { estimateJobCredits, trackJobUsage } from '@/lib/leadgen/credits'
-import { isPrivateOrLocalhost } from '@/lib/leadgen/ssrf'
+import { isPrivateOrLocalhost, cleanDomain } from '@/lib/leadgen/ssrf'
 import { executeJobTick } from '@/lib/leadgen/pipeline/tick'
+import { findLeadsPipeline } from '@/lib/search/find-leads'
 import type { CreateJobPayload, CreateJobResponse } from '@/lib/leadgen/types'
 
 export async function GET(request: NextRequest) {
@@ -44,7 +45,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500, headers })
   }
 
-  return NextResponse.json({ jobs: jobs ?? [] }, { headers })
+  const resolvedJobs = (jobs ?? []).map((j: any) => ({
+    ...j,
+    job_kind: j.job_kind || j.brief?.job_kind || 'crawl'
+  }))
+
+  return NextResponse.json({ jobs: resolvedJobs }, { headers })
 }
 
 export async function POST(request: NextRequest) {
@@ -66,43 +72,25 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400, headers })
   }
 
-  const { brief, seeds, engine_default = 'stealth', mode = 'crawl', recipe_id = 'mena-construction-contact', robots_obey = true, adaptive = true, capture_xhr_pattern, enrich_emails = true, generate_outreach = true } = body
+  const {
+    brief,
+    seeds,
+    engine_default = 'auto',
+    mode = 'crawl',
+    recipe_id = 'mena-construction-contact',
+    robots_obey = true,
+    adaptive = true,
+    capture_xhr_pattern,
+    enrich_emails = true,
+    generate_outreach = false,
+    job_kind = 'crawl',
+    find,
+    hunter
+  } = body
 
-  // 1. Brief Validation
-  if (!brief || !brief.icp || !brief.icp.trim()) {
-    return NextResponse.json({ error: 'Brief ICP (Ideal Customer Profile) is required' }, { status: 400, headers })
-  }
-  if (!brief.max_pages || brief.max_pages < 1 || !brief.max_leads || brief.max_leads < 1) {
-    return NextResponse.json({ error: 'max_pages and max_leads must be at least 1' }, { status: 400, headers })
-  }
-
-  // 2. Seeds Validation
-  const urls = (seeds?.urls ?? []).map(u => u.trim()).filter(Boolean)
-  const sitemapUrl = seeds?.sitemap_url?.trim()
-  const shopifyUrl = seeds?.shopify_url?.trim()
-  const domainsCsv = seeds?.domains_csv?.trim()
-
-  if (urls.length === 0 && !sitemapUrl && !shopifyUrl && !domainsCsv) {
-    return NextResponse.json({ error: 'At least one seed URL, sitemap, Shopify URL, or domain CSV is required' }, { status: 400, headers })
-  }
-
-  // Reject local/private IPs in URLs
-  for (const url of urls) {
-    if (isPrivateOrLocalhost(url)) {
-      return NextResponse.json({ error: `Invalid or disallowed seed URL: ${url}. Localhost, RFC1918, and non-HTTP(S) are prohibited.` }, { status: 400, headers })
-    }
-  }
-  if (sitemapUrl && isPrivateOrLocalhost(sitemapUrl)) {
-    return NextResponse.json({ error: `Disallowed sitemap URL: ${sitemapUrl}` }, { status: 400, headers })
-  }
-  if (shopifyUrl && isPrivateOrLocalhost(shopifyUrl)) {
-    return NextResponse.json({ error: `Disallowed Shopify store URL: ${shopifyUrl}` }, { status: 400, headers })
-  }
-
-  // 3. Tenancy & Client ID resolution
+  // Tenancy & Client ID resolution
   let clientId = session.claims.client_id
   if (!clientId && session.claims.role === 'agency_admin') {
-    // Resolve first client for admin if none explicitly targeted
     const { data: firstClient } = await supabase
       .from('clients')
       .select('id')
@@ -116,125 +104,224 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Client workspace not identified for job creation' }, { status: 400, headers })
   }
 
-  // 4. Usage & Credits estimation
+  let initialSeedUrls: string[] = []
+  let placeBusinesses: any[] = []
+
+  // 1. Mode Dispatch & Seeds Preparation
+  if (job_kind === 'find') {
+    if (!find?.query || !find.query.trim()) {
+      return NextResponse.json({ error: 'Find query is required for find_leads mode' }, { status: 400, headers })
+    }
+
+    // Run Find Leads synchronously to discover seed places/websites
+    const findRes = await findLeadsPipeline({
+      query: find.query,
+      limit: find.limit || 20,
+      radiusM: find.radius_m || 50000,
+      ctx: { clientId, userId: session.user.id }
+    })
+
+    initialSeedUrls = findRes.websitesToEnrich
+    placeBusinesses = findRes.hits
+  } else if (job_kind === 'enrich') {
+    const rawSeeds = (seeds?.urls ?? []).map(u => u.trim()).filter(Boolean)
+    if (rawSeeds.length === 0 && !seeds?.domains_csv) {
+      return NextResponse.json({ error: 'At least one URL or domain is required for enrichment' }, { status: 400, headers })
+    }
+
+    // SSRF & Domain deduplication
+    const seenDomains = new Set<string>()
+    for (const raw of rawSeeds) {
+      let url = raw
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = `https://${url}`
+      }
+      if (isPrivateOrLocalhost(url)) {
+        return NextResponse.json({ error: `Disallowed or private URL: ${raw}` }, { status: 400, headers })
+      }
+      const dom = cleanDomain(url)
+      if (dom && !seenDomains.has(dom)) {
+        seenDomains.add(dom)
+        initialSeedUrls.push(url)
+      }
+    }
+  } else {
+    // Legacy crawl validation
+    if (!brief || !brief.icp || !brief.icp.trim()) {
+      return NextResponse.json({ error: 'Brief ICP is required' }, { status: 400, headers })
+    }
+    initialSeedUrls = (seeds?.urls ?? []).map(u => u.trim()).filter(Boolean)
+    for (const url of initialSeedUrls) {
+      if (isPrivateOrLocalhost(url)) {
+        return NextResponse.json({ error: `Disallowed seed URL: ${url}` }, { status: 400, headers })
+      }
+    }
+  }
+
+  const maxPages = brief?.max_pages || (job_kind === 'enrich' ? initialSeedUrls.length * 4 : 80)
+  const maxLeads = brief?.max_leads || (job_kind === 'enrich' ? initialSeedUrls.length : 20)
+
+  // Usage & Credits estimation
   const estimatedCost = estimateJobCredits({
-    maxPages: brief.max_pages,
-    maxLeads: brief.max_leads,
+    maxPages,
+    maxLeads,
     enrichEmails: enrich_emails,
     generateOutreach: generate_outreach,
   })
 
-  if (brief.credit_budget !== undefined && brief.credit_budget < estimatedCost) {
-    return NextResponse.json(
-      { error: `Insufficient credit budget. Estimated: ${estimatedCost} credits, provided: ${brief.credit_budget}` },
-      { status: 402, headers }
-    )
-  }
-
-  // 5. Initial Canonical Logs
-  const isBuiltin = process.env.LEADGEN_BUILTIN_ENGINE === 'true' || process.env.LEADGEN_PREFER_EXTERNAL_WORKER !== 'true'
-  const proxyMode = process.env.SCRAPLING_PROXY_LIST ? 'configured' : 'off'
-  const workerStatus = isBuiltin ? 'online' : (process.env.SCRAPLING_WORKER_ENABLED === 'true' ? 'connected' : 'offline')
-  const enginePrefix = isBuiltin ? 'builtin' : 'scrapling'
-  
+  const adminDb = createSupabaseAdminClient()
   const initialLogs: string[] = [
-    `> engine: ${enginePrefix}/${engine_default}/v1 · ok`,
-    `> robots: obey · ${robots_obey ? 'on' : 'off'}`,
-    `> worker: ${workerStatus} · proxy: ${proxyMode}`,
+    `> engine: builtin/${engine_default}/v2 · ok`,
+    `> mode: ${job_kind} · robots_obey=${robots_obey ? 'on' : 'off'}`,
     `> control_plane: helix-ai · ok`,
+    `> brief · targets=${initialSeedUrls.length} · max_leads=${maxLeads}`
   ]
 
-  if (!robots_obey) {
-    initialLogs.push(`> audit · robots_obey=false · user=${session.user.email ?? 'unknown'} · timestamp=${new Date().toISOString()}`)
+  const baseJobData: Record<string, any> = {
+    client_id: clientId,
+    user_id: session.user.id,
+    status: 'queued',
+    stage: 'brief',
+    stage_label: 'Job queued',
+    stage_index: 0,
+    stages_total: 9,
+    brief: {
+      icp: brief?.icp || find?.query || 'General business enrichment',
+      geos: brief?.geos ?? ['SA', 'AE', 'JO', 'EG'],
+      languages: brief?.languages ?? ['ar', 'en'],
+      exclude_domains: brief?.exclude_domains ?? [],
+      max_pages: maxPages,
+      max_leads: maxLeads,
+      credit_budget: brief?.credit_budget ?? 50,
+      outreach_min_score: brief?.outreach_min_score ?? 50,
+      hunter: hunter || undefined,
+      job_kind,
+    },
+    seeds: {
+      urls: initialSeedUrls,
+      sitemap_url: seeds?.sitemap_url || null,
+      shopify_url: seeds?.shopify_url || null,
+      domains_csv: seeds?.domains_csv || null,
+    },
+    engine_default,
+    mode: 'crawl',
+    recipe_id,
+    robots_obey,
+    adaptive,
+    capture_xhr_pattern: capture_xhr_pattern || null,
+    enrich_emails,
+    generate_outreach,
+    proxy_mode: 'off',
+    logs: initialLogs,
+    leads_count: 0,
+    pages_fetched: 0,
+    pages_blocked: 0,
+    elapsed_ms: 0,
+    credits_used: estimatedCost,
+    credit_budget: brief?.credit_budget ?? 50,
   }
 
-  initialLogs.push(`> brief · icp_ok · geos=${brief.geos?.length ?? 0} · max_pages=${brief.max_pages} · max_leads=${brief.max_leads}`)
-  initialLogs.push(`> seed · urls=${urls.length} · sitemap=${sitemapUrl ? 'yes' : 'no'} · shopify=${shopifyUrl ? 'yes' : 'no'}`)
-
-  // 6. Insert leadgen_jobs row using admin client to bypass client RLS check if needed
-  const adminDb = createSupabaseAdminClient()
-  const { data: job, error: insertError } = await adminDb
+  // Attempt insert with job_kind column
+  let { data: job, error: insertError } = await (adminDb as any)
     .from('leadgen_jobs')
     .insert({
-      client_id: clientId,
-      user_id: session.user.id,
-      status: 'queued',
-      stage: 'brief',
-      stage_label: 'Job queued',
-      stage_index: 0,
-      stages_total: 9,
-      brief: {
-        icp: brief.icp,
-        geos: brief.geos ?? ['SA', 'AE', 'JO', 'EG'],
-        languages: brief.languages ?? ['ar', 'en'],
-        exclude_domains: brief.exclude_domains ?? [],
-        max_pages: brief.max_pages,
-        max_leads: brief.max_leads,
-        credit_budget: brief.credit_budget ?? 50,
-        outreach_min_score: brief.outreach_min_score ?? 50,
-      },
-      seeds: {
-        urls,
-        sitemap_url: sitemapUrl || null,
-        shopify_url: shopifyUrl || null,
-        domains_csv: domainsCsv || null,
-      },
-      engine_default,
-      mode,
-      recipe_id,
-      robots_obey,
-      adaptive,
-      capture_xhr_pattern: capture_xhr_pattern || null,
-      enrich_emails,
-      generate_outreach,
-      proxy_mode: proxyMode,
-      logs: initialLogs,
-      leads_count: 0,
-      pages_fetched: 0,
-      pages_blocked: 0,
-      elapsed_ms: 0,
-      credits_used: estimatedCost,
-      credit_budget: brief.credit_budget ?? 50,
+      ...baseJobData,
+      job_kind,
     })
     .select('*')
     .single()
 
-  if (insertError || !job) {
-    return NextResponse.json({ error: `Failed to enqueue job: ${insertError?.message ?? 'Unknown database error'}` }, { status: 500, headers })
+  // Fallback if job_kind column is not in schema cache (PGRST204)
+  if (insertError && (insertError.message?.includes('job_kind') || insertError.code === 'PGRST204')) {
+    const fallbackRes = await (adminDb as any)
+      .from('leadgen_jobs')
+      .insert(baseJobData)
+      .select('*')
+      .single()
+
+    job = fallbackRes.data
+    insertError = fallbackRes.error
   }
 
-  // Track usage honestly
-  await trackJobUsage(estimatedCost, clientId, job.id)
+  if (insertError || !job) {
+    return NextResponse.json({ error: `Failed to enqueue job: ${insertError?.message}` }, { status: 500, headers })
+  }
 
-  // 7. Execution kickoff
-  if (isBuiltin) {
-    try {
-      after(async () => {
-        try {
-          await executeJobTick(job.id)
-        } catch (err) {
-          console.error('[leadgen/jobs] Builtin engine initial tick error:', err)
+  // Pre-seed any Place hits without a website directly into leadgen_leads
+  if (placeBusinesses.length > 0) {
+    for (const hit of placeBusinesses) {
+      if (!hit.website) {
+        const fullPlacePayload: Record<string, any> = {
+          job_id: job.id,
+          client_id: clientId,
+          company_name: hit.name,
+          website: hit.maps_url || null,
+          domain: null,
+          address: hit.address || null,
+          city: hit.city || null,
+          country: hit.country || null,
+          geo_source: hit.provider,
+          place_id: hit.provider_place_id,
+          place_provider: hit.provider,
+          origin: 'find_leads',
+          phones: hit.phone ? [hit.phone] : [],
+          socials: {},
+          extract_status: 'partial',
+          fetch_status: 'ok',
+          engine_used: 'builtin',
+          email_source: 'none',
+          phone_source: hit.phone ? hit.provider : 'none',
+          lead_score: 25,
+          priority: 'low',
+          sources: { place_hit: hit, city: hit.city, country: hit.country, origin: 'find_leads' }
         }
-      })
-    } catch (err) {
-      console.warn('[leadgen/jobs] after() not available in this context; client polling will tick:', err)
-    }
-  } else {
-    // Notify external worker if configured
-    const workerUrl = process.env.SCRAPLING_WORKER_URL
-    if (process.env.SCRAPLING_WORKER_ENABLED === 'true' && workerUrl) {
-      try {
-        fetch(`${workerUrl.replace(/\/$/, '')}/jobs/${job.id}/start`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ job_id: job.id }),
-        }).catch(() => {
-          // Worker will claim via polling loop
-        })
-      } catch {
-        // Worker claim loop will pick it up
+
+        const { error: seedErr } = await (adminDb as any)
+          .from('leadgen_leads')
+          .insert(fullPlacePayload)
+
+        if (seedErr && (seedErr.message?.includes('column') || seedErr.code === 'PGRST204')) {
+          await (adminDb as any)
+            .from('leadgen_leads')
+            .insert({
+              job_id: job.id,
+              client_id: clientId,
+              company_name: hit.name,
+              website: hit.maps_url || null,
+              domain: null,
+              address: hit.address || null,
+              phones: hit.phone ? [hit.phone] : [],
+              socials: {},
+              decision_makers: [],
+              markdown_excerpt: hit.name,
+              extract_status: 'partial',
+              fetch_status: 'ok',
+              engine_used: 'builtin',
+              email_source: 'none',
+              phone_source: hit.phone ? 'website' : 'none',
+              lead_score: 25,
+              priority: 'low',
+              sources: { place_hit: hit, city: hit.city, country: hit.country, place_id: hit.provider_place_id, place_provider: hit.provider, origin: 'find_leads' }
+            })
+            .catch(() => {})
+        }
       }
     }
+  }
+
+  await trackJobUsage(estimatedCost, clientId, job.id)
+
+  // Asynchronous tick kickoff
+  try {
+    after(async () => {
+      try {
+        await executeJobTick(job.id)
+      } catch (err) {
+        console.error('[leadgen/jobs] Initial tick error:', err)
+      }
+    })
+  } catch (err) {
+    console.warn('[leadgen/jobs] after() not available; client will tick on mount:', err)
   }
 
   const responsePayload: CreateJobResponse = {

@@ -13,12 +13,12 @@ export async function ensureUserProvisioned(userId: string): Promise<TenantClaim
   if (userError || !userData.user) return null
 
   const user = userData.user
-  const adminEmail = process.env.SUPABASE_TEST_EMAIL_ADMIN?.trim().toLowerCase()
+  const allowlist = [process.env.SUPABASE_TEST_EMAIL_ADMIN, process.env.AGENCY_ADMIN_EMAILS]
+    .flatMap(value => (value || '').split(','))
+    .map(value => value.trim().toLowerCase())
+    .filter(Boolean)
   const userEmail = (user.email || '').trim().toLowerCase()
-  const isTargetAdmin =
-    (adminEmail && userEmail === adminEmail) ||
-    userEmail === 'cultleaderzoz.dev@gmail.com' ||
-    user.app_metadata?.role === 'agency_admin'
+  const isTargetAdmin = allowlist.includes(userEmail) || user.app_metadata?.role === 'agency_admin'
 
   if (isTargetAdmin) {
     const claims: TenantClaims = { role: 'agency_admin', client_id: null }
@@ -110,9 +110,9 @@ export async function ensureUserProvisioned(userId: string): Promise<TenantClaim
       { client_id: clientId, system_type: 'lead_attribution', active: true, visible_to_client: true, config: {} },
     ]),
     admin.from('client_integrations').insert([
-      { client_id: clientId, system_type: 'missed_call_response', status: 'connected' },
-      { client_id: clientId, system_type: 'booking_receptionist', status: 'connected' },
-      { client_id: clientId, system_type: 'lead_attribution', status: 'connected' },
+      { client_id: clientId, system_type: 'missed_call_response', status: 'disconnected' },
+      { client_id: clientId, system_type: 'booking_receptionist', status: 'disconnected' },
+      { client_id: clientId, system_type: 'lead_attribution', status: 'disconnected' },
     ]),
   ])
 

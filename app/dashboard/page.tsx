@@ -136,7 +136,7 @@ export default async function ClientDashboardPage() {
         .gte(source.ts, weekAgoIso)
         .order(source.ts, { ascending: false })
         .limit(1)
-      if (error) throw new Error('System activity could not be loaded.')
+      if (error) return null
       const rows = (data ?? []) as unknown as Array<Record<string, string>>
       const last: string | null = rows.length ? rows[0][source.ts] : null
       return { systemId: s.id, count: count ?? 0, last, label: source.label }

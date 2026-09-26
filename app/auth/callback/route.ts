@@ -2,13 +2,15 @@ import { NextResponse } from 'next/server'
 import { createSupabaseServerClient } from '@/lib/supabase'
 import { ensureUserProvisioned } from '@/lib/auth/provisioning'
 import { parseTenantClaims } from '@/lib/auth/claims'
+import { safeNextPath } from '@/lib/auth/site-url'
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url)
   const code = requestUrl.searchParams.get('code')
   const token_hash = requestUrl.searchParams.get('token_hash')
   const type = requestUrl.searchParams.get('type')
-  const next = requestUrl.searchParams.get('next') ?? '/dashboard'
+  const next = safeNextPath(requestUrl.searchParams.get('next'))
+  const recovery = type === 'recovery'
 
   const supabase = await createSupabaseServerClient()
 
@@ -25,7 +27,11 @@ export async function GET(request: Request) {
         // Refetch latest user to inspect claims
         const { data: userData } = await supabase.auth.getUser()
         const claims = parseTenantClaims(userData?.user?.app_metadata ?? data.user.app_metadata)
-        const destination = claims?.role === 'agency_admin' ? '/admin' : next.startsWith('/') ? next : '/dashboard'
+        const destination = recovery
+          ? '/reset-password'
+          : claims?.role === 'agency_admin'
+            ? '/admin'
+            : next
         return NextResponse.redirect(new URL(destination, request.url))
       }
     }
@@ -40,7 +46,11 @@ export async function GET(request: Request) {
         await supabase.auth.refreshSession()
         const { data: userData } = await supabase.auth.getUser()
         const claims = parseTenantClaims(userData?.user?.app_metadata ?? data.user.app_metadata)
-        const destination = claims?.role === 'agency_admin' ? '/admin' : next.startsWith('/') ? next : '/dashboard'
+        const destination = recovery || type === 'recovery'
+          ? '/reset-password'
+          : claims?.role === 'agency_admin'
+            ? '/admin'
+            : next
         return NextResponse.redirect(new URL(destination, request.url))
       }
     }

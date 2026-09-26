@@ -99,67 +99,23 @@ export function ClientsRosterView({
         </div>
       )}
 
-      {/* KPI Band — Warm Command Style */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {/* Card 1: Total ARR */}
         <div className="rounded-xl border border-[#D9D4CB] bg-[#FFFEFA] p-5 shadow-2xs">
-          <div className="flex items-center justify-between text-xs text-[#6E6A63]">
-            <span className="font-mono text-[11px] font-medium uppercase tracking-wider text-[#6E6A63]">
-              Total ARR
-            </span>
-            <span className="rounded bg-[#E6F3EE] px-2 py-0.5 font-mono text-[11px] font-semibold text-[#0B6E4F]">
-              +18.4% YoY
-            </span>
-          </div>
-          <div className="mt-2 font-display text-28 font-bold tracking-tight text-[#141414]">
-            $18,450,300
-          </div>
-          <div className="mt-3 flex items-center gap-1.5">
-            <div className="h-1.5 w-full rounded-full bg-[#EBE7DF] overflow-hidden">
-              <div className="h-full w-[78%] rounded-full bg-[#0B6E4F]" />
-            </div>
-          </div>
+          <p className="font-mono text-[11px] font-medium uppercase tracking-wider text-[#6E6A63]">Workspaces</p>
+          <div className="mt-2 font-display text-28 font-bold tracking-tight text-[#141414]">{clients.length}</div>
+          <p className="mt-2 text-xs text-[#6E6A63]">Rows in clients. No revenue is calculated here.</p>
         </div>
-
-        {/* Card 2: Active Deployed Agents */}
         <div className="rounded-xl border border-[#D9D4CB] bg-[#FFFEFA] p-5 shadow-2xs">
-          <div className="flex items-center justify-between text-xs text-[#6E6A63]">
-            <span className="font-mono text-[11px] font-medium uppercase tracking-wider text-[#6E6A63]">
-              Active Deployed Agents
-            </span>
-            <span className="font-mono text-[11px] text-[#0B6E4F] font-semibold">
-              Live Systems
-            </span>
-          </div>
-          <div className="mt-2 font-display text-28 font-bold tracking-tight text-[#141414]">
-            {totalSystems.toLocaleString()}{' '}
-            <span className="text-15 font-normal text-[#6E6A63] font-mono">/ 4,000</span>
-          </div>
-          <div className="mt-3 flex items-center gap-1.5">
-            <div className="h-1.5 w-full rounded-full bg-[#EBE7DF] overflow-hidden">
-              <div className="h-full w-[65%] rounded-full bg-[#0B6E4F]" />
-            </div>
-          </div>
+          <p className="font-mono text-[11px] font-medium uppercase tracking-wider text-[#6E6A63]">Installed systems</p>
+          <div className="mt-2 font-display text-28 font-bold tracking-tight text-[#141414]">{totalSystems}</div>
+          <p className="mt-2 text-xs text-[#6E6A63]">Count of client_systems rows.</p>
         </div>
-
-        {/* Card 3: System Health */}
         <div className="rounded-xl border border-[#D9D4CB] bg-[#FFFEFA] p-5 shadow-2xs sm:col-span-2 lg:col-span-1">
-          <div className="flex items-center justify-between text-xs text-[#6E6A63]">
-            <span className="font-mono text-[11px] font-medium uppercase tracking-wider text-[#6E6A63]">
-              System Health
-            </span>
-            <span className="rounded-full bg-[#E6F3EE] px-2 py-0.5 font-mono text-[11px] font-bold text-[#0B6E4F]">
-              Match 98.7%
-            </span>
-          </div>
+          <p className="font-mono text-[11px] font-medium uppercase tracking-wider text-[#6E6A63]">Connected integrations</p>
           <div className="mt-2 font-display text-28 font-bold tracking-tight text-[#141414]">
-            98.7% <span className="text-15 font-normal text-[#6E6A63] font-mono">/ GCC OPS</span>
+            {clients.filter(client => client.integration === 'connected').length}
           </div>
-          <div className="mt-3 flex items-center gap-1.5">
-            <div className="h-1.5 w-full rounded-full bg-[#EBE7DF] overflow-hidden">
-              <div className="h-full w-[98%] rounded-full bg-[#0B6E4F]" />
-            </div>
-          </div>
+          <p className="mt-2 text-xs text-[#6E6A63]">Workspaces whose worst channel is connected.</p>
         </div>
       </div>
 
@@ -237,7 +193,7 @@ export function ClientsRosterView({
             </thead>
             <tbody className="divide-y divide-[#D9D4CB]">
               {filteredClients.map(row => {
-                const isOptimal = row.integration === 'connected' || (!row.integration && row.systemCount > 20)
+                const isOptimal = row.integration === 'connected'
                 const isCaution = row.integration === 'degraded' || row.status === 'onboarding'
 
                 return (
@@ -275,7 +231,7 @@ export function ClientsRosterView({
                     {/* Vertical */}
                     <td className="px-3 py-3 text-[#141414]">
                       <span className="rounded border border-[#D9D4CB] bg-[#F3F1EC] px-2 py-0.5 text-12 text-[#141414]">
-                        {row.vertical || 'Enterprise'}
+                        {row.vertical || 'Not set'}
                       </span>
                     </td>
 

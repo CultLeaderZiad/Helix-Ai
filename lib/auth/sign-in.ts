@@ -16,7 +16,7 @@ export type SignInState =
     }
   | {
       status: 'auth_error'
-      code: 'INVALID_CREDENTIALS' | 'ROLE_MISMATCH' | 'UNAVAILABLE' | 'CLAIMS_MISSING'
+      code: 'INVALID_CREDENTIALS' | 'ROLE_MISMATCH' | 'UNAVAILABLE' | 'CLAIMS_MISSING' | 'EMAIL_NOT_CONFIRMED'
       message: string
       actual_portal?: Portal
       values: { email: string; portal: Portal }
@@ -52,6 +52,15 @@ export async function signIn(_prev: SignInState, formData: FormData): Promise<Si
     const supabase = await createSupabaseServerClient()
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error || !data.session) {
+      const lower = (error?.message || '').toLowerCase()
+      if (error?.code === 'email_not_confirmed' || lower.includes('email not confirmed')) {
+        return {
+          status: 'auth_error',
+          code: 'EMAIL_NOT_CONFIRMED',
+          message: 'This email is not confirmed yet. Use the link in the confirmation message, or resend it below.',
+          values,
+        }
+      }
       return {
         status: 'auth_error',
         code: 'INVALID_CREDENTIALS',
@@ -99,8 +108,21 @@ export async function signIn(_prev: SignInState, formData: FormData): Promise<Si
       }
     }
 
-    // Direct the user into their authorized workspace console
-    portalPath = claims.role === 'agency_admin' ? '/admin' : '/dashboard'
+    const actualPortal: Portal = claims.role === 'agency_admin' ? 'admin' : 'client'
+    if (portal !== actualPortal) {
+      await supabase.auth.signOut({ scope: 'local' })
+      return {
+        status: 'auth_error',
+        code: 'ROLE_MISMATCH',
+        message: actualPortal === 'admin'
+          ? 'This account is an agency admin. Switch to the Agency console.'
+          : 'This account is a client workspace. Switch to the Client portal.',
+        actual_portal: actualPortal,
+        values,
+      }
+    }
+
+    portalPath = actualPortal === 'admin' ? '/admin' : '/dashboard'
   } catch (err) {
     return unavailable(values, err)
   }
@@ -114,4 +136,5 @@ export async function signOut() {
   const supabase = await createSupabaseServerClient()
   const { error } = await supabase.auth.signOut({ scope: 'local' })
   if (error) throw new Error('Sign-out could not be completed.')
+  redirect('/login')
 }
