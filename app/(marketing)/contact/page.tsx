@@ -3,14 +3,21 @@ import { ContactForm } from '@/components/contact/contact-form'
 import { SitePage } from '@/components/marketing/site-page'
 
 export const metadata: Metadata = {
-  title: 'Contact — Helix AI',
-  description: 'Get in touch with the Helix AI operations team for enterprise inquiries.',
+  title: 'Book a discovery call — Helix',
+  description: 'Tell us how enquiries reach you. We reply with a time for a short call and a live walkthrough.',
 }
 
-export default function ContactPage() {
+export default async function ContactPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ plan?: string | string[]; systems?: string | string[]; scope?: string | string[] }>
+}) {
+  const query = await searchParams
+  const one = (value?: string | string[]) => (Array.isArray(value) ? value[0] : value)
+  const systems = Array.isArray(query.systems) ? query.systems.join(',') : query.systems
   return (
     <SitePage>
-      <ContactForm />
+      <ContactForm plan={one(query.plan)} systems={systems} scope={one(query.scope)} />
     </SitePage>
   )
 }

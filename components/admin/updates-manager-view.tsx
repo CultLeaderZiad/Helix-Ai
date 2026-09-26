@@ -159,18 +159,8 @@ export function UpdatesManagerView({ initialUpdates }: UpdatesManagerViewProps) 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-helix-border pb-6">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 px-2.5 py-0.5 text-xs font-semibold text-sky-400">
-              <Sparkles className="size-3.5" />
-              CHANGELOG & RELEASES
-            </span>
-            <span className="text-xs text-helix-muted font-mono">// Live sync with /updates</span>
-          </div>
-          <h1 className="mt-2 text-2xl font-bold tracking-tight text-helix-ink sm:text-3xl font-display">
-            Platform Updates & Changelog Control
-          </h1>
-          <p className="mt-1 text-sm text-helix-muted">
-            Publish system upgrades, feature announcements, and security advisories shown to public visitors.
+          <p className="text-sm text-helix-muted">
+            Published rows are the ones visitors can read.
           </p>
         </div>
 
@@ -178,7 +168,7 @@ export function UpdatesManagerView({ initialUpdates }: UpdatesManagerViewProps) 
           <Link
             href="/updates"
             target="_blank"
-            className="inline-flex items-center gap-1.5 rounded-xl border border-helix-border bg-slate-800/80 px-3.5 py-2 text-xs font-semibold text-helix-ink hover:border-slate-600 hover:text-helix-ink transition-all shadow-sm"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-helix-border bg-slate-800/80 px-3.5 py-2 text-xs font-semibold text-ink hover:border-slate-600 hover:text-ink transition-all shadow-sm"
           >
             <span>Preview /updates</span>
             <ExternalLink className="size-3.5" />
@@ -186,7 +176,7 @@ export function UpdatesManagerView({ initialUpdates }: UpdatesManagerViewProps) 
           <button
             type="button"
             onClick={handleOpenCreate}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-helix-ink px-4 py-2 text-xs font-bold text-helix-surface hover:bg-helix-ink/90 transition-all"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-ink px-4 py-2 text-xs font-bold text-helix-surface hover:bg-ink/90 transition-all"
           >
             <Plus className="size-3.5" />
             <span>Create New Release</span>
@@ -233,7 +223,7 @@ export function UpdatesManagerView({ initialUpdates }: UpdatesManagerViewProps) 
                     <Calendar className="size-3.5" />
                     {update.date}
                   </span>
-                  <span className="rounded-full border border-helix-border bg-slate-800/60 px-2.5 py-0.5 text-[11px] font-medium text-helix-ink/80">
+                  <span className="rounded-full border border-helix-border bg-slate-800/60 px-2.5 py-0.5 text-[11px] font-medium text-ink/80">
                     {update.category}
                   </span>
                 </div>
@@ -257,7 +247,7 @@ export function UpdatesManagerView({ initialUpdates }: UpdatesManagerViewProps) 
                     type="button"
                     onClick={() => handleOpenEdit(update)}
                     disabled={isPending}
-                    className="inline-flex items-center gap-1 rounded-lg border border-helix-border bg-slate-800 px-2.5 py-1 text-xs font-medium text-helix-ink hover:bg-slate-700"
+                    className="inline-flex items-center gap-1 rounded-lg border border-helix-border bg-slate-800 px-2.5 py-1 text-xs font-medium text-ink hover:bg-slate-700"
                   >
                     <Edit2 className="size-3" />
                     <span>Edit</span>
@@ -275,10 +265,10 @@ export function UpdatesManagerView({ initialUpdates }: UpdatesManagerViewProps) 
               </div>
 
               <div className="mt-4">
-                <h3 className="text-base font-bold text-helix-ink sm:text-lg">{update.title}</h3>
+                <h3 className="text-base font-bold text-ink sm:text-lg">{update.title}</h3>
                 <ul className="mt-3 space-y-2">
                   {update.highlights.map((h, i) => (
-                    <li key={i} className="flex items-start gap-2.5 text-xs sm:text-sm text-helix-ink/80">
+                    <li key={i} className="flex items-start gap-2.5 text-xs sm:text-sm text-ink/80">
                       <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-helix-accent" />
                       <span>{h}</span>
                     </li>
@@ -294,7 +284,7 @@ export function UpdatesManagerView({ initialUpdates }: UpdatesManagerViewProps) 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
           <div className="w-full max-w-lg rounded-2xl border border-helix-border bg-helix-surface p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <h3 className="text-lg font-bold text-helix-ink flex items-center gap-2">
+            <h3 className="text-lg font-bold text-ink flex items-center gap-2">
               <Sparkles className="size-4 text-sky-400" />
               {editingId ? 'Edit Release Details' : 'Create New Release'}
             </h3>
@@ -307,7 +297,7 @@ export function UpdatesManagerView({ initialUpdates }: UpdatesManagerViewProps) 
                     required
                     value={formData.version}
                     onChange={(e) => setFormData({ ...formData, version: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-helix-border bg-helix-canvas px-3.5 py-2 text-xs font-mono text-helix-ink placeholder:text-helix-muted focus:border-helix-ink focus:outline-hidden"
+                    className="mt-1 w-full rounded-xl border border-helix-border bg-helix-canvas px-3.5 py-2 text-xs font-mono text-ink placeholder:text-helix-muted focus:border-ink focus:outline-hidden"
                   />
                 </div>
                 <div>
@@ -316,7 +306,7 @@ export function UpdatesManagerView({ initialUpdates }: UpdatesManagerViewProps) 
                     required
                     value={formData.date}
                     onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-helix-border bg-helix-canvas px-3.5 py-2 text-xs text-helix-ink placeholder:text-helix-muted focus:border-helix-ink focus:outline-hidden"
+                    className="mt-1 w-full rounded-xl border border-helix-border bg-helix-canvas px-3.5 py-2 text-xs text-ink placeholder:text-helix-muted focus:border-ink focus:outline-hidden"
                   />
                 </div>
               </div>
@@ -326,7 +316,7 @@ export function UpdatesManagerView({ initialUpdates }: UpdatesManagerViewProps) 
                 <select
                   value={formData.category}
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="mt-1 w-full rounded-xl border border-helix-border bg-helix-canvas px-3.5 py-2 text-xs text-helix-ink focus:border-helix-ink focus:outline-hidden"
+                  className="mt-1 w-full rounded-xl border border-helix-border bg-helix-canvas px-3.5 py-2 text-xs text-ink focus:border-ink focus:outline-hidden"
                 >
                   <option value="Core Architecture">Core Architecture</option>
                   <option value="Security Hardening">Security Hardening</option>
@@ -343,7 +333,7 @@ export function UpdatesManagerView({ initialUpdates }: UpdatesManagerViewProps) 
                   placeholder="e.g. Dual-workspace authentication & cross-tenant RLS isolation"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="mt-1 w-full rounded-xl border border-helix-border bg-helix-canvas px-3.5 py-2 text-xs text-helix-ink placeholder:text-helix-muted focus:border-helix-ink focus:outline-hidden"
+                  className="mt-1 w-full rounded-xl border border-helix-border bg-helix-canvas px-3.5 py-2 text-xs text-ink placeholder:text-helix-muted focus:border-ink focus:outline-hidden"
                 />
               </div>
 
@@ -371,7 +361,7 @@ export function UpdatesManagerView({ initialUpdates }: UpdatesManagerViewProps) 
                           highlights: formData.highlights.map((h, i) => (i === idx ? val : h)),
                         })
                       }}
-                      className="flex-1 rounded-xl border border-helix-border bg-helix-canvas px-3.5 py-2 text-xs text-helix-ink placeholder:text-helix-muted focus:border-helix-ink focus:outline-hidden"
+                      className="flex-1 rounded-xl border border-helix-border bg-helix-canvas px-3.5 py-2 text-xs text-ink placeholder:text-helix-muted focus:border-ink focus:outline-hidden"
                     />
                     {formData.highlights.length > 1 && (
                       <button
@@ -397,9 +387,9 @@ export function UpdatesManagerView({ initialUpdates }: UpdatesManagerViewProps) 
                   id="pubToggle"
                   checked={formData.is_published}
                   onChange={(e) => setFormData({ ...formData, is_published: e.target.checked })}
-                  className="h-4 w-4 rounded border-helix-border text-helix-ink"
+                  className="h-4 w-4 rounded border-helix-border text-ink"
                 />
-                <label htmlFor="pubToggle" className="text-xs font-medium text-helix-ink cursor-pointer">
+                <label htmlFor="pubToggle" className="text-xs font-medium text-ink cursor-pointer">
                   Publish to public /updates immediately
                 </label>
               </div>
@@ -408,14 +398,14 @@ export function UpdatesManagerView({ initialUpdates }: UpdatesManagerViewProps) 
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="rounded-xl border border-helix-border bg-helix-canvas px-4 py-2 text-xs font-semibold text-helix-ink hover:bg-helix-border/40 transition-colors"
+                  className="rounded-xl border border-helix-border bg-helix-canvas px-4 py-2 text-xs font-semibold text-ink hover:bg-helix-border/40 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="rounded-xl bg-helix-ink px-4 py-2 text-xs font-bold text-helix-surface hover:bg-helix-ink/90 transition-colors"
+                  className="rounded-xl bg-ink px-4 py-2 text-xs font-bold text-helix-surface hover:bg-ink/90 transition-colors"
                 >
                   {editingId ? 'Save Changes' : 'Publish Release'}
                 </button>

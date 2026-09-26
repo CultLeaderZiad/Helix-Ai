@@ -5,7 +5,7 @@ import { getPublicFaqs } from '@/lib/faq/actions'
 
 export const metadata: Metadata = {
   title: 'FAQ — Helix AI',
-  description: 'Frequently asked questions about Helix AI architecture, security, integrations, and pricing.',
+  description: 'Plain answers about phone numbers, languages, setup, ownership and plans.',
 }
 
 export default async function FaqPage() {

@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createSupabaseServerClient } from '@/lib/supabase'
 import { getVerifiedSession } from '@/lib/auth/session'
 import { ConsoleShell } from '@/components/shell/console-shell'
+import { AdminFrame, PageHead } from '@/components/admin/v5'
 import { WholeCrmView } from '@/components/crm/whole-crm-view'
 import { mapDirectoryContacts, sumDealValueCents, type DirectoryActivity } from '@/lib/crm/directory'
 
@@ -45,6 +46,13 @@ export default async function AdminCrossClientCrmPage() {
 
   return (
     <ConsoleShell variant="admin" email={session.user.email ?? ''} businessName={null}>
+      <AdminFrame>
+      <PageHead
+        title="Pipeline"
+        titleAr="المسار"
+        lede="Contacts and deals across workspaces."
+        ledeAr="جهات الاتصال والصفقات عبر مساحات العمل."
+      />
       <WholeCrmView
         contacts={contacts}
         totalContacts={contacts.length}
@@ -53,6 +61,7 @@ export default async function AdminCrossClientCrmPage() {
         totalFactCount={(factsRes.data ?? []).length}
         activities={activities}
       />
+      </AdminFrame>
     </ConsoleShell>
   )
 }

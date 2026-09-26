@@ -1,9 +1,11 @@
+import { type DashLang, type DashTheme } from '@/lib/dashboard/lang'
 import { redirect } from 'next/navigation'
 import { createSupabaseServerClient } from '@/lib/supabase'
 import { getVerifiedSession } from '@/lib/auth/session'
 import { ConsoleShell } from '@/components/shell/console-shell'
 import { generateClientMonthlyReport } from '@/lib/reports/generator'
 import { MonthlyReportView } from '@/components/reports/monthly-report-view'
+import { readDashLang, readDashTheme } from '@/lib/dashboard/lang.server'
 
 export const metadata = {
   title: 'Helix AI — Monthly Performance Report',
@@ -28,15 +30,21 @@ export default async function ReportsPage() {
     targetClientId = firstClient?.id || '00000000-0000-0000-0000-000000000000'
   }
 
-  const reportData = await generateClientMonthlyReport(supabase, targetClientId)
+  const [reportData, lang, theme] = await Promise.all([
+    generateClientMonthlyReport(supabase, targetClientId),
+    readDashLang(),
+    readDashTheme(),
+  ])
 
   return (
     <ConsoleShell
       variant={session.claims.role === 'agency_admin' ? 'admin' : 'client'}
       email={session.user.email ?? ''}
       businessName={reportData.clientBusinessName}
+      lang={lang}
+      theme={theme}
     >
-      <MonthlyReportView report={reportData} />
+      <MonthlyReportView report={reportData} lang={lang} />
     </ConsoleShell>
   )
 }

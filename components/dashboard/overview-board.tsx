@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import '@/components/dashboard/dash.css'
 import {
   AlertCircle,
   Bell,
@@ -6,50 +7,49 @@ import {
   Check,
   Headset,
   MessageCircle,
-  Mic,
   PhoneMissed,
   Plus,
   RefreshCw,
 } from 'lucide-react'
+import { EmptyState, InlineError, KpiCard, PageHead, Panel, StatusChip } from '@/components/dashboard/ui'
+import { tx, type DashLang } from '@/lib/dashboard/lang'
 
 export type OverviewBar = { day: string; whatsapp: number; phone: number }
 export type OverviewDecision = { title: string; body: string; action: string; href: string }
 export type OverviewActivity = { verb: string; text: string; meta: string; time: string; tone: 'ok' | 'plain' }
 export type OverviewSystem = { name: string; meta: string; status: 'run' | 'pause' }
 export type OverviewJob = { title: string; meta: string; width: string; left: string; right: string }
-export type OverviewKpi = { label: string; value: string; small?: string; foot: string; delta?: string; spark?: string }
+export type OverviewKpi = { label: string; value: string; small?: string; hint?: string; foot?: string; delta?: string | null }
 
 export type OverviewModel = {
   variant: 'example' | 'empty' | 'live'
   firstName: string
+  title?: string
   summary: string
   kpis: OverviewKpi[]
   bars: OverviewBar[] | null
+  barsMode?: 'split' | 'total'
   barMax: number
+  range?: 7 | 30 | 90
+  chartError?: boolean
   decisions: OverviewDecision[]
   activity: OverviewActivity[]
   systems: OverviewSystem[]
   jobs: OverviewJob[]
 }
 
-const SPARKS = [
-  'M0 24 L15 20 L30 22 L45 14 L60 16 L75 8 L92 5',
-  'M0 18 L15 22 L30 14 L45 18 L60 10 L75 12 L92 8',
-  'M0 20 L15 16 L30 18 L45 10 L60 14 L75 9 L92 11',
-  'M0 8 L15 12 L30 10 L45 16 L60 14 L75 18 L92 20',
-]
-
 export const EXAMPLE_OVERVIEW: OverviewModel = {
   variant: 'example',
   firstName: 'Nadia',
   summary: 'This week your systems replied to 38 enquiries and booked 11 appointments. 2 things need your decision.',
   kpis: [
-    { label: 'Appointments booked', value: '11', foot: 'vs previous 7 days', delta: '+3', spark: SPARKS[0] },
-    { label: 'Missed calls answered', value: '17', small: 'of 18', foot: "1 caller isn't on WhatsApp", spark: SPARKS[1] },
-    { label: 'Conversations handled', value: '38', foot: 'vs previous 7 days', delta: '+6', spark: SPARKS[2] },
-    { label: 'Median first reply', value: '18', small: 'sec', foot: 'Day and night, including weekends', spark: SPARKS[3] },
+    { label: 'Appointments booked', value: '11', hint: 'vs previous 7 days', delta: '+3' },
+    { label: 'Missed calls answered', value: '17', small: 'of 18', hint: "1 caller isn't on WhatsApp" },
+    { label: 'Conversations handled', value: '38', hint: 'vs previous 7 days', delta: '+6' },
+    { label: 'Median first reply', value: '18', small: 'sec', hint: 'Day and night, including weekends' },
   ],
   barMax: 4,
+  barsMode: 'split',
   bars: [
     { day: 'Sat', whatsapp: 0, phone: 1 },
     { day: 'Sun', whatsapp: 1, phone: 1 },
@@ -60,7 +60,7 @@ export const EXAMPLE_OVERVIEW: OverviewModel = {
     { day: 'Fri', whatsapp: 0, phone: 1 },
   ],
   decisions: [
-    { title: 'Confirm a detail', body: "Caller's name was unclear in a voice call. Nothing is saved until you check.", action: 'Review', href: '/dashboard/facts' },
+    { title: 'Confirm a detail', body: "Caller's name was unclear in a voice call. Nothing is saved until you check.", action: 'Review', href: '/dashboard/queue' },
     { title: 'Customer asked for a person', body: 'Question about insurance coverage, waiting since 6:02 PM.', action: 'Reply', href: '/dashboard/queue' },
   ],
   activity: [
@@ -82,16 +82,24 @@ export const EXAMPLE_OVERVIEW: OverviewModel = {
   ],
 }
 
-export function emptyOverview(firstName: string): OverviewModel {
+export function emptyOverview(firstName: string, lang: DashLang = 'en'): OverviewModel {
+  const foot = tx(lang, 'Appears after your first conversation', 'تظهر بعد أول محادثة')
   return {
     variant: 'empty',
     firstName,
-    summary: 'Your workspace is ready. Connect WhatsApp and your calendar, then the first conversation will show up here.',
+    title: firstName
+      ? tx(lang, `Welcome to Helix, ${firstName}`, `مرحباً بك في Helix يا ${firstName}`)
+      : tx(lang, 'Welcome to Helix', 'مرحباً بك في Helix'),
+    summary: tx(
+      lang,
+      'Your workspace is ready. Connect WhatsApp and your calendar, then the first conversation will show up here.',
+      'مساحة العمل جاهزة. اربط واتساب والتقويم، ثم ستظهر أول محادثة هنا.',
+    ),
     kpis: [
-      { label: 'Appointments booked', value: '—', foot: 'Appears after your first conversation' },
-      { label: 'Missed calls answered', value: '—', foot: 'Appears after your first conversation' },
-      { label: 'Conversations handled', value: '—', foot: 'Appears after your first conversation' },
-      { label: 'Median first reply', value: '—', foot: 'Appears after your first conversation' },
+      { label: tx(lang, 'Appointments booked', 'المواعيد المحجوزة'), value: '—', hint: foot },
+      { label: tx(lang, 'Missed calls answered', 'المكالمات الفائتة التي تم الرد عليها'), value: '—', hint: foot },
+      { label: tx(lang, 'Conversations handled', 'المحادثات المُدارة'), value: '—', hint: foot },
+      { label: tx(lang, 'Median first reply', 'متوسط زمن أول رد'), value: '—', hint: foot },
     ],
     bars: null,
     barMax: 4,
@@ -102,67 +110,84 @@ export function emptyOverview(firstName: string): OverviewModel {
   }
 }
 
-function Spark({ d }: { d?: string }) {
-  if (!d) return null
-  return (
-    <svg className="spark" viewBox="0 0 92 30" aria-hidden>
-      <path d={d} fill="none" stroke="#0E6E4F" strokeWidth="1.8" strokeLinecap="round" />
-    </svg>
-  )
+function actionLabel(action: string, lang: DashLang) {
+  const key = action.toLowerCase()
+  if (key.startsWith('reply')) return tx(lang, 'Reply', 'رد')
+  if (key.startsWith('review')) return tx(lang, 'Review', 'مراجعة')
+  return action
 }
 
-export function OverviewBoard({ model }: { model: OverviewModel }) {
+function statusLabel(status: OverviewSystem['status'], lang: DashLang) {
+  return status === 'run' ? tx(lang, 'Running', 'يعمل') : tx(lang, 'Paused', 'متوقف مؤقتاً')
+}
+
+export function OverviewBoard({ model, lang = 'en' }: { model: OverviewModel; lang?: DashLang }) {
   const empty = model.variant === 'empty'
+  const range = model.range ?? 7
   const max = model.barMax || 1
+  const title = model.title ?? (empty ? `Welcome to Helix, ${model.firstName}` : `Good morning, ${model.firstName}`)
+  const split = model.barsMode !== 'total'
+  const hasBars = Boolean(model.bars && model.bars.some(bar => bar.whatsapp + bar.phone > 0))
+  const rangeLabel = tx(lang, `last ${range} days`, range === 7 ? 'آخر 7 أيام' : range === 30 ? 'آخر 30 يوماً' : 'آخر 90 يوماً')
+
   return (
     <>
-      <div className="ph">
-        <div>
-          <h1>{empty ? `Welcome to Helix, ${model.firstName}` : `Good morning, ${model.firstName}`}</h1>
-          <p>{model.summary}</p>
-        </div>
-        {empty ? null : (
-          <div className="row gap-12">
-            <div className="seg" aria-hidden><span className="on">7 days</span><span>30 days</span><span>90 days</span></div>
-            <Link className="btn-o" href="/dashboard/reports">Report</Link>
-          </div>
+      <PageHead
+        title={title}
+        lede={model.summary}
+        actions={empty ? null : (
+          <>
+            <div className="seg" role="group" aria-label={tx(lang, 'Date range', 'المدة')}>
+              {([7, 30, 90] as const).map(value => (
+                <Link key={value} href={`/dashboard?range=${value}`} className={range === value ? 'on' : undefined} aria-current={range === value ? 'true' : undefined}>
+                  {tx(lang, `${value} days`, value === 7 ? '٧ أيام' : value === 30 ? '٣٠ يوماً' : '٩٠ يوماً')}
+                </Link>
+              ))}
+            </div>
+            <Link className="btn-o" href="/dashboard/reports">{tx(lang, 'Report', 'تقرير')}</Link>
+          </>
         )}
-      </div>
+      />
       <div className="kpis">
         {model.kpis.map(kpi => (
-          <div className="kpi" key={kpi.label}>
-            <div className="kpi-l">{kpi.label}</div>
-            <div className="kpi-v">
-              <b className="num">{kpi.value}{kpi.small ? <small>{kpi.small}</small> : null}</b>
-              <Spark d={kpi.spark} />
-            </div>
-            <div className="foot">{kpi.delta ? <><span className="delta">{kpi.delta}</span>&nbsp;</> : null}{kpi.foot}</div>
-          </div>
+          <KpiCard key={kpi.label} label={kpi.label} value={kpi.value} small={kpi.small} hint={kpi.hint ?? kpi.foot} delta={kpi.delta} />
         ))}
       </div>
       <div className="row2">
-        <div className="pnl">
-          <div className="pnl-h">
-            <b>Appointments booked <small>last 7 days</small></b>
-            <div className="legend"><span><i style={{ background: '#0E6E4F' }} />Via WhatsApp</span><span><i style={{ background: '#9FD1B9' }} />Via phone</span></div>
-          </div>
-          {model.bars && model.bars.some(b => b.whatsapp + b.phone > 0) ? (
+        <Panel
+          title={<>{tx(lang, 'Appointments booked', 'المواعيد المحجوزة')} <small>{rangeLabel}</small></>}
+          extra={hasBars ? (
+            <div className="legend">
+              {split ? (
+                <>
+                  <span><i style={{ background: '#0E6E4F' }} />{tx(lang, 'Via WhatsApp', 'عبر واتساب')}</span>
+                  <span><i style={{ background: '#9FD1B9' }} />{tx(lang, 'Via phone', 'عبر الهاتف')}</span>
+                </>
+              ) : (
+                <span><i style={{ background: '#0E6E4F' }} />{tx(lang, 'Booked', 'محجوز')}</span>
+              )}
+            </div>
+          ) : null}
+        >
+          {model.chartError ? (
+            <InlineError>{tx(lang, "We couldn't load this section. Retry", 'تعذّر تحميل هذا القسم. إعادة المحاولة')}</InlineError>
+          ) : hasBars && model.bars ? (
             <>
-              <div className="chart">
-                <div className="yax">{[4, 3, 2, 1, 0].map(n => <span key={n}>{n}</span>)}</div>
+              <div className="chart" aria-hidden>
+                <div className="yax">{[max, Math.ceil(max * 0.75), Math.ceil(max * 0.5), Math.ceil(max * 0.25), 0].filter((n, i, arr) => arr.indexOf(n) === i).map(n => <span key={n}>{n}</span>)}</div>
                 <div className="plot">
                   {model.bars.map(bar => (
-                    <div className="col" key={bar.day}>
-                      <i className="vo" style={{ height: `${(bar.phone / max) * 100}%` }} />
-                      <i className="wa" style={{ height: `${(bar.whatsapp / max) * 100}%` }} />
+                    <div className="col" key={bar.day} title={`${bar.day}: ${bar.whatsapp + bar.phone}`}>
+                      {split ? <i className="vo" style={{ height: `${(bar.phone / max) * 100}%` }} /> : null}
+                      <i className="wa" style={{ height: `${((split ? bar.whatsapp : bar.whatsapp + bar.phone) / max) * 100}%` }} />
                       <span>{bar.day}</span>
                     </div>
                   ))}
                 </div>
               </div>
-              <table className="sr-chart" style={{ position: 'absolute', width: 1, height: 1, padding: 0, margin: -1, overflow: 'hidden', clip: 'rect(0,0,0,0)', border: 0 }}>
-                <caption>Appointments booked, last 7 days</caption>
-                <thead><tr><th>Day</th><th>WhatsApp</th><th>Phone</th></tr></thead>
+              <table className="sr-only">
+                <caption>{tx(lang, 'Appointments booked', 'المواعيد المحجوزة')}, {rangeLabel}</caption>
+                <thead><tr><th>{tx(lang, 'Day', 'اليوم')}</th><th>{tx(lang, 'WhatsApp', 'واتساب')}</th><th>{tx(lang, 'Phone', 'الهاتف')}</th></tr></thead>
                 <tbody>
                   {model.bars.map(bar => (
                     <tr key={bar.day}><td>{bar.day}</td><td>{bar.whatsapp}</td><td>{bar.phone}</td></tr>
@@ -171,36 +196,40 @@ export function OverviewBoard({ model }: { model: OverviewModel }) {
               </table>
             </>
           ) : (
-            <p>No bookings by day yet. The chart appears after the first appointment.</p>
+            <EmptyState title={tx(lang, 'No bookings by day yet.', 'لا توجد حجوزات حسب اليوم بعد.')} body={tx(lang, 'The chart appears after the first appointment.', 'يظهر المخطط بعد أول موعد.')} />
           )}
-        </div>
-        <div className="pnl">
-          <div className="pnl-h"><b>Needs your decision</b>{model.decisions.length ? <Link className="link" href="/dashboard/facts" style={{ fontSize: 13 }}>Open queue</Link> : null}</div>
+        </Panel>
+        <Panel
+          title={tx(lang, 'Needs your decision', 'يحتاج قرارك')}
+          extra={model.decisions.length ? <Link className="link" href="/dashboard/queue">{tx(lang, 'Open queue', 'افتح القائمة')}</Link> : null}
+        >
           {model.decisions.length ? (
             <ul className="att">
               {model.decisions.map(item => (
                 <li key={item.title}>
-                  <span className="ic a">{item.action === 'Reply' ? <Headset size={16} /> : <AlertCircle size={16} />}</span>
+                  <span className="ic">{item.action.toLowerCase().startsWith('reply') ? <Headset size={16} /> : <AlertCircle size={16} />}</span>
                   <div><b>{item.title}</b><span>{item.body}</span></div>
-                  <Link className="act" href={item.href}>{item.action}</Link>
+                  <Link className="act" href={item.href}>{actionLabel(item.action, lang)}</Link>
                 </li>
               ))}
             </ul>
           ) : (
-            <div className="allgood"><Check size={16} />Nothing needs you right now.</div>
+            <div className="allgood"><Check size={16} />{tx(lang, 'Nothing needs you right now.', 'لا شيء يحتاجك الآن.')}</div>
           )}
-          {model.decisions.length ? <div className="allgood"><Check size={16} />Everything else this week was handled automatically.</div> : null}
-        </div>
+          {model.decisions.length ? <div className="allgood"><Check size={16} />{tx(lang, 'Everything else this week was handled automatically.', 'كل ما عدا ذلك هذا الأسبوع تمّت معالجته تلقائياً.')}</div> : null}
+        </Panel>
       </div>
       <div className="row3">
-        <div className="pnl">
-          <div className="pnl-h"><b>Recent activity</b>{model.activity.length ? <Link className="link" href="/dashboard/contacts" style={{ fontSize: 13 }}>View all</Link> : null}</div>
+        <Panel
+          title={tx(lang, 'Recent activity', 'النشاط الأخير')}
+          extra={model.activity.length ? <Link className="link" href="/dashboard/contacts">{tx(lang, 'View all', 'عرض الكل')}</Link> : null}
+        >
           {model.activity.length ? (
             <ul className="feed">
               {model.activity.map(row => (
                 <li key={row.verb + row.time + row.text}>
                   <span className={`ic${row.tone === 'ok' ? ' g' : ''}`}>
-                    {row.verb.startsWith('Booked') ? <CalendarCheck size={15} /> : row.verb.startsWith('Replied') ? <MessageCircle size={15} /> : row.verb.startsWith('Reminder') ? <Bell size={15} /> : <Headset size={15} />}
+                    {row.verb.toLowerCase().includes('book') || row.verb.includes('حجز') ? <CalendarCheck size={15} /> : row.verb.toLowerCase().includes('repl') || row.verb.includes('رد') ? <MessageCircle size={15} /> : row.verb.toLowerCase().includes('remind') || row.verb.includes('تذكير') ? <Bell size={15} /> : <Headset size={15} />}
                   </span>
                   <span className="t"><em>{row.verb}</em> {row.text}<small>{row.meta}</small></span>
                   <time>{row.time}</time>
@@ -208,32 +237,37 @@ export function OverviewBoard({ model }: { model: OverviewModel }) {
               ))}
             </ul>
           ) : (
-            <p>No activity yet. Once your systems go live, every reply and booking shows up here.</p>
+            <EmptyState title={tx(lang, 'No activity yet.', 'لا يوجد نشاط بعد.')} body={tx(lang, 'Once your systems go live, every reply and booking shows up here.', 'عند تشغيل أنظمتك سيظهر هنا كل رد وكل حجز.')} />
           )}
-        </div>
-        <div className="pnl">
-          <div className="pnl-h"><b>Your systems</b><Link className="link" href="/dashboard/studio" style={{ fontSize: 13 }}>Manage</Link></div>
+        </Panel>
+        <Panel
+          title={tx(lang, 'Your systems', 'أنظمتك')}
+          extra={<Link className="link" href="/dashboard/systems">{tx(lang, 'Manage', 'إدارة')}</Link>}
+        >
           {model.systems.length ? (
             <ul className="sys">
               {model.systems.map(system => (
                 <li key={system.name}>
-                  <span className="ic">{system.name.includes('Booking') ? <Mic size={16} /> : system.status === 'pause' ? <RefreshCw size={16} /> : <PhoneMissed size={16} />}</span>
+                  <span className="ic">{system.status === 'pause' ? <RefreshCw size={16} /> : <PhoneMissed size={16} />}</span>
                   <div><b>{system.name}</b><span>{system.meta}</span></div>
-                  <span className={system.status === 'run' ? 'st run' : 'st pause'}>{system.status === 'run' ? 'Running' : 'Paused'}</span>
+                  <StatusChip tone={system.status === 'run' ? 'ok' : 'neutral'}>{statusLabel(system.status, lang)}</StatusChip>
                 </li>
               ))}
             </ul>
           ) : (
-            <p>No systems are visible yet. They appear here as onboarding finishes.</p>
+            <EmptyState title={tx(lang, 'No systems are visible yet.', 'لا تظهر أنظمة بعد.')} body={tx(lang, 'They appear here as onboarding finishes.', 'تظهر هنا عند اكتمال التجهيز.')} />
           )}
-          <div className="add"><span>Add lead qualification, collections and more</span><Link className="link" href="/studio">Browse systems</Link></div>
-        </div>
+          <div className="add">
+            <span>{tx(lang, 'Add lead qualification, collections and more', 'أضف تأهيل العملاء والتحصيل والمزيد')}</span>
+            <Link className="link" href="/dashboard/systems">{tx(lang, 'Browse systems', 'تصفح الأنظمة')}</Link>
+          </div>
+        </Panel>
       </div>
-      <div className="pnl lg">
-        <div className="pnl-h">
-          <b>Lead generation <small>{empty ? 'no jobs yet' : 'your latest jobs'}</small></b>
-          <Link className="btn-d" href="/dashboard/lead-generation"><Plus size={14} />New search</Link>
-        </div>
+      <Panel
+        className="lg"
+        title={<>{tx(lang, 'Lead generation', 'توليد العملاء')} <small>{empty || model.jobs.length === 0 ? tx(lang, 'no jobs yet', 'لا توجد مهام بعد') : tx(lang, 'your latest jobs', 'أحدث المهام')}</small></>}
+        extra={<Link className="btn-d" href="/dashboard/lead-generation"><Plus size={14} />{tx(lang, 'New search', 'بحث جديد')}</Link>}
+      >
         {model.jobs.length ? (
           <div className="jobs">
             {model.jobs.map(job => (
@@ -246,19 +280,30 @@ export function OverviewBoard({ model }: { model: OverviewModel }) {
             ))}
           </div>
         ) : (
-          <p>No jobs yet. Start by finding businesses in a city, or enrich a list you already have.</p>
+          <EmptyState title={tx(lang, 'No jobs yet.', 'لا توجد مهام بعد.')} body={tx(lang, 'Start by finding businesses in a city, or enrich a list you already have.', 'ابدأ بالبحث عن أنشطة في مدينة ما، أو أثرِ قائمة لديك.')} />
         )}
-      </div>
+      </Panel>
       {empty ? (
-        <div className="pnl" style={{ marginTop: 14 }}>
-          <div className="pnl-h"><b>Setup</b></div>
-          <ul className="sys">
-            <li><div><b>Connect WhatsApp</b><span>Your own business number</span></div><Link href="/dashboard/integrations">Connect</Link></li>
-            <li><div><b>Connect your calendar</b><span>Cal.com or Google Calendar</span></div><Link href="/dashboard/integrations">Connect</Link></li>
-            <li><div><b>Confirm business hours</b><span>So replies stay inside quiet hours</span></div><Link href="/settings">Review</Link></li>
-            <li><div><b>Test a missed call</b><span>After the first two are connected</span></div><span>Waiting</span></li>
+        <Panel className="lg" title={tx(lang, 'Setup', 'الإعداد')}>
+          <ul className="setup">
+            <li>
+              <div><b>{tx(lang, 'Connect WhatsApp', 'ربط واتساب')}</b><span>{tx(lang, 'Your own business number', 'رقم عملك')}</span></div>
+              <Link className="act" href="/dashboard/integrations">{tx(lang, 'Connect', 'ربط')}</Link>
+            </li>
+            <li>
+              <div><b>{tx(lang, 'Connect your calendar', 'ربط التقويم')}</b><span>{tx(lang, 'Cal.com or Google Calendar', 'Cal.com أو تقويم Google')}</span></div>
+              <Link className="act" href="/dashboard/integrations">{tx(lang, 'Connect', 'ربط')}</Link>
+            </li>
+            <li>
+              <div><b>{tx(lang, 'Confirm business hours', 'تأكيد ساعات العمل')}</b><span>{tx(lang, 'So replies stay inside quiet hours', 'لتبقى الردود ضمن ساعات الهدوء')}</span></div>
+              <Link className="act" href="/settings">{tx(lang, 'Review', 'مراجعة')}</Link>
+            </li>
+            <li>
+              <div><b>{tx(lang, 'Test a missed call', 'اختبار مكالمة فائتة')}</b><span>{tx(lang, 'After the first two are connected', 'بعد ربط الخطوتين الأوليين')}</span></div>
+              <span className="act">{tx(lang, 'Waiting', 'بانتظار')}</span>
+            </li>
           </ul>
-        </div>
+        </Panel>
       ) : null}
     </>
   )

@@ -201,8 +201,8 @@ function getSystemName(id: string, lang: 'en' | 'ar'): string {
       ar: 'إعادة تنشيط العملاء',
     },
     'evidence-console': {
-      en: 'Evidence ledger',
-      ar: 'سجل الأدلة',
+      en: 'Saved details',
+      ar: 'التفاصيل المحفوظة',
     },
     'ar-invoicing': {
       en: 'AR collections (B2B only)',
@@ -310,8 +310,8 @@ function getDeterministicRecommendation(
       whatsappStrategyAr: 'سلسلة من 3 رسائل محادثة مع أزرار رد تفاعلية للحجز الفوري بنقرة واحدة.',
     },
     'evidence-console': {
-      systemName: 'Evidence ledger',
-      systemNameAr: 'سجل الأدلة',
+      systemName: 'Saved details',
+      systemNameAr: 'التفاصيل المحفوظة',
       matchScore: 95,
       headline: 'Facts verified before CRM writes. Human review for probable claims.',
       headlineAr: 'حقائق تُراجع قبل الكتابة في CRM. مراجعة بشرية للادعاءات المحتملة.',

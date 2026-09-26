@@ -7,7 +7,7 @@ export default function RootLoading() {
       className="flex min-h-screen w-full flex-col items-center justify-center bg-background text-foreground"
     >
       <div className="relative flex flex-col items-center gap-4">
-        <div className="relative flex size-12 items-center justify-center rounded-2xl border border-border bg-panel shadow-lg">
+        <div className="relative flex size-12 items-center justify-center rounded-2xl border border-border bg-surface-card shadow-lg">
           <HelixMark size={28} className="animate-pulse" />
         </div>
         <div className="flex items-center gap-1.5">

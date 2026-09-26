@@ -305,8 +305,8 @@ export function WebhooksManagerView({
       <div className="flex items-start gap-3 rounded-[12px] border border-helix-border bg-helix-surface p-4 shadow-card">
         <Info className="size-5 shrink-0 text-helix-accent mt-0.5" />
         <div className="text-13 text-helix-muted">
-          <span className="font-semibold text-helix-ink">Important: </span>
-          Paste the n8n <strong className="font-semibold text-helix-ink">Production Webhook URL</strong> (<code className="rounded bg-helix-surface-2 px-1.5 py-0.5 text-12 font-mono text-helix-ink">/webhook/...</code>), not the Test URL (<code className="rounded bg-helix-surface-2 px-1.5 py-0.5 text-12 font-mono text-helix-muted">/webhook-test/...</code>).
+          <span className="font-semibold text-ink">Important: </span>
+          Paste the n8n <strong className="font-semibold text-ink">Production Webhook URL</strong> (<code className="rounded bg-helix-surface-2 px-1.5 py-0.5 text-12 font-mono text-ink">/webhook/...</code>), not the Test URL (<code className="rounded bg-helix-surface-2 px-1.5 py-0.5 text-12 font-mono text-helix-muted">/webhook-test/...</code>).
           Changes saved here are applied immediately to all live events. Helix automatically signs every request with HMAC-SHA256 headers.
         </div>
       </div>
@@ -318,7 +318,7 @@ export function WebhooksManagerView({
             <PlugZap className="size-4" />
           </div>
           <div>
-            <h2 className="text-14 font-semibold text-helix-ink">n8n Production Webhook Registry</h2>
+            <h2 className="text-14 font-semibold text-ink">n8n Production Webhook Registry</h2>
             <p className="text-12 text-helix-muted">
               Configure, rotate secrets, and ping outbound webhook endpoints per tenant
             </p>
@@ -331,7 +331,7 @@ export function WebhooksManagerView({
             <select
               value={selectedClientId}
               onChange={e => setSelectedClientId(e.target.value)}
-              className="h-8.5 rounded-[8px] border border-helix-border bg-helix-surface-2 px-3 text-12 font-medium text-helix-ink focus:border-helix-accent focus:outline-none"
+              className="h-8.5 rounded-[8px] border border-helix-border bg-helix-surface-2 px-3 text-12 font-medium text-ink focus:border-helix-accent focus:outline-none"
             >
               {clients.map(c => (
                 <option key={c.id} value={c.id}>
@@ -348,7 +348,7 @@ export function WebhooksManagerView({
               onClick={() => setActiveLaneTab('all')}
               className={cn(
                 'rounded-[6px] px-2.5 py-1 transition-all',
-                activeLaneTab === 'all' ? 'bg-helix-surface text-helix-ink shadow-2xs font-semibold' : 'text-helix-muted hover:text-helix-ink'
+                activeLaneTab === 'all' ? 'bg-helix-surface text-ink shadow-2xs font-semibold' : 'text-helix-muted hover:text-ink'
               )}
             >
               All (10)
@@ -358,7 +358,7 @@ export function WebhooksManagerView({
               onClick={() => setActiveLaneTab('core')}
               className={cn(
                 'rounded-[6px] px-2.5 py-1 transition-all',
-                activeLaneTab === 'core' ? 'bg-helix-surface text-helix-ink shadow-2xs font-semibold' : 'text-helix-muted hover:text-helix-ink'
+                activeLaneTab === 'core' ? 'bg-helix-surface text-ink shadow-2xs font-semibold' : 'text-helix-muted hover:text-ink'
               )}
             >
               Core (5)
@@ -368,7 +368,7 @@ export function WebhooksManagerView({
               onClick={() => setActiveLaneTab('add_on')}
               className={cn(
                 'rounded-[6px] px-2.5 py-1 transition-all',
-                activeLaneTab === 'add_on' ? 'bg-helix-surface text-helix-ink shadow-2xs font-semibold' : 'text-helix-muted hover:text-helix-ink'
+                activeLaneTab === 'add_on' ? 'bg-helix-surface text-ink shadow-2xs font-semibold' : 'text-helix-muted hover:text-ink'
               )}
             >
               Add-ons (4)
@@ -378,7 +378,7 @@ export function WebhooksManagerView({
               onClick={() => setActiveLaneTab('preview')}
               className={cn(
                 'rounded-[6px] px-2.5 py-1 transition-all',
-                activeLaneTab === 'preview' ? 'bg-helix-surface text-helix-ink shadow-2xs font-semibold' : 'text-helix-muted hover:text-helix-ink'
+                activeLaneTab === 'preview' ? 'bg-helix-surface text-ink shadow-2xs font-semibold' : 'text-helix-muted hover:text-ink'
               )}
             >
               Preview (1)
@@ -408,7 +408,7 @@ export function WebhooksManagerView({
               <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                 <div className="min-w-0 max-w-2xl">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="text-14 font-semibold text-helix-ink">{sys.name}</h3>
+                    <h3 className="text-14 font-semibold text-ink">{sys.name}</h3>
                     <span
                       className={cn(
                         'rounded-[6px] px-2 py-0.5 text-[10px] font-mono font-medium uppercase',
@@ -431,9 +431,9 @@ export function WebhooksManagerView({
                   <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] font-mono text-helix-subtle">
                     <span>Channel: {sys.channel}</span>
                     <span>·</span>
-                    <span>system_type: <code className="text-helix-ink">{sys.systemType}</code></span>
+                    <span>system_type: <code className="text-ink">{sys.systemType}</code></span>
                     <span>·</span>
-                    <span>Direction: <code className="text-helix-ink">helix_to_n8n</code></span>
+                    <span>Direction: <code className="text-ink">helix_to_n8n</code></span>
                   </div>
                 </div>
 
@@ -463,7 +463,7 @@ export function WebhooksManagerView({
                     )}
                   </div>
 
-                  <label className="flex items-center gap-1.5 cursor-pointer text-12 font-medium text-helix-ink">
+                  <label className="flex items-center gap-1.5 cursor-pointer text-12 font-medium text-ink">
                     <input
                       type="checkbox"
                       checked={isEnabled}
@@ -485,7 +485,7 @@ export function WebhooksManagerView({
                       placeholder={`https://n8n.your-agency.com${sys.defaultPath}`}
                       value={webhook?.webhook_url || ''}
                       onChange={e => handleUrlChange(sys.systemType, e.target.value)}
-                      className="h-8.5 w-full font-mono text-12 text-helix-ink bg-helix-surface-2 border-helix-border focus:border-helix-accent focus:bg-helix-surface"
+                      className="h-8.5 w-full font-mono text-12 text-ink bg-helix-surface-2 border-helix-border focus:border-helix-accent focus:bg-helix-surface"
                     />
                   </div>
 
@@ -496,7 +496,7 @@ export function WebhooksManagerView({
                       variant="outline"
                       onClick={() => handleCopyUrl(key, webhook?.webhook_url || '')}
                       disabled={!webhook?.webhook_url}
-                      className="h-8.5 border-helix-border bg-helix-surface text-12 text-helix-ink hover:bg-helix-surface-2 font-medium"
+                      className="h-8.5 border-helix-border bg-helix-surface text-12 text-ink hover:bg-helix-surface-2 font-medium"
                       title="Copy URL"
                     >
                       {copiedKey === key ? (
@@ -530,7 +530,7 @@ export function WebhooksManagerView({
                       variant="outline"
                       onClick={() => handlePing(sys.systemType)}
                       disabled={isPending}
-                      className="h-8.5 border-helix-border bg-helix-surface text-helix-ink hover:bg-helix-surface-2 text-12 font-medium"
+                      className="h-8.5 border-helix-border bg-helix-surface text-ink hover:bg-helix-surface-2 text-12 font-medium"
                     >
                       <Radio className="size-3.5 mr-1.5 text-helix-accent" />
                       Ping
@@ -546,12 +546,12 @@ export function WebhooksManagerView({
                       placeholder={webhook?.secret_hash || (webhook as any)?.has_secret ? '•••••••••••• (Leave blank to keep current secret)' : 'Enter webhook secret (or leave blank for default)'}
                       value={enteredSecret}
                       onChange={e => handleSecretChange(sys.systemType, e.target.value)}
-                      className="h-8 pr-8 font-mono text-11 bg-helix-surface-2 border-helix-border text-helix-ink focus:border-helix-accent focus:bg-helix-surface"
+                      className="h-8 pr-8 font-mono text-11 bg-helix-surface-2 border-helix-border text-ink focus:border-helix-accent focus:bg-helix-surface"
                     />
                     <button
                       type="button"
                       onClick={() => setShowSecretState(prev => ({ ...prev, [key]: !showSecret }))}
-                      className="absolute right-2.5 top-2 text-helix-subtle hover:text-helix-ink"
+                      className="absolute right-2.5 top-2 text-helix-subtle hover:text-ink"
                       title={showSecret ? 'Hide' : 'Show'}
                     >
                       {showSecret ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}

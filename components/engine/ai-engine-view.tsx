@@ -72,7 +72,7 @@ const PAIN = [
     id: 'hallucination_compliance',
     en: 'Facts review before CRM write & compliance',
     ar: 'مراجعة الحقائق والامتثال قبل التسجيل في CRM',
-    systemName: 'Evidence ledger',
+    systemName: 'Saved details',
     systemNameAr: 'سجل تدقيق الأدلة والامتثال',
     systemId: 'evidence-console',
     matchScore: 98,

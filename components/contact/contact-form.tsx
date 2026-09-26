@@ -1,131 +1,173 @@
 'use client'
 
-import { useActionState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Mail, Check, Loader2, AlertCircle } from 'lucide-react'
+import Link from 'next/link'
+import { useActionState, useMemo, useState } from 'react'
+import { useMarketingPrefs } from '@/components/marketing/public-frame'
+import { WhatsAppCta } from '@/components/marketing/whatsapp-cta'
 import { submitContactInquiry, type ContactInquiryState } from '@/lib/contact/inquiry'
+import { REGIONAL_PRICING_CONFIGS } from '@/lib/pricing/tiers'
+import { getSystemTemplate } from '@/lib/studio/templates'
 
 const initialState: ContactInquiryState = { status: 'idle' }
 
-export function ContactForm() {
+const TYPES = [
+  { value: 'Clinic', en: 'Clinic', ar: 'عيادة' },
+  { value: 'Real estate', en: 'Real estate', ar: 'عقارات' },
+  { value: 'Home services', en: 'Home services', ar: 'خدمات منزلية' },
+  { value: 'B2B', en: 'B2B', ar: 'شركات' },
+  { value: 'Other', en: 'Other', ar: 'أخرى' },
+]
+
+const TOPICS = [
+  { id: 'Missed calls', en: 'Missed calls', ar: 'مكالمات فائتة' },
+  { id: 'Slow replies to ads', en: 'Slow replies to ads', ar: 'ردود بطيئة على الإعلانات' },
+  { id: 'No-shows', en: 'No-shows', ar: 'غياب عن المواعيد' },
+  { id: 'Old leads', en: 'Old leads', ar: 'عملاء سابقون' },
+  { id: 'Overdue invoices', en: 'Overdue invoices', ar: 'فواتير متأخرة' },
+]
+
+function aboutLabel(plan: string | undefined, systems: string | undefined, scope: string | undefined, ar: boolean) {
+  if (plan) {
+    const match = [...REGIONAL_PRICING_CONFIGS.gcc_enterprise.plans, ...REGIONAL_PRICING_CONFIGS.mena_sme.plans]
+      .find(item => item.id === plan)
+    const name = match ? (ar ? match.nameAr : match.name) : plan
+    return ar ? `عن: باقة ${name}` : `About: ${name} plan`
+  }
+  if (systems) {
+    const names = systems.split(',').map(id => id.trim()).filter(Boolean).map(id => {
+      const template = getSystemTemplate(id)
+      return template ? (ar ? template.ar.name : template.en.name) : id
+    })
+    if (names.length === 0) return null
+    return ar ? `عن: ${names.join('، ')}` : `About: ${names.join(', ')}`
+  }
+  if (scope === 'custom') return ar ? 'عن: بناء مخصّص' : 'About: Custom build'
+  return null
+}
+
+export function ContactForm({
+  plan,
+  systems,
+  scope,
+}: {
+  plan?: string
+  systems?: string
+  scope?: string
+}) {
+  const { lang } = useMarketingPrefs()
+  const ar = lang === 'ar'
   const [state, formAction, pending] = useActionState(submitContactInquiry, initialState)
+  const [topics, setTopics] = useState<string[]>([])
+  const about = useMemo(() => aboutLabel(plan, systems, scope, ar), [plan, systems, scope, ar])
+  const [showAbout, setShowAbout] = useState(true)
+  const aboutText = showAbout ? about : null
+
+  if (state.status === 'saved') {
+    const name = state.name ?? ''
+    return (
+      <section className="container book">
+        <div className="book-form">
+          <h1 className="display">{ar ? `شكراً ${name}. سنراسلك على واتساب لتحديد موعد.` : `Thanks, ${name}. We'll message you on WhatsApp to pick a time.`}</h1>
+        </div>
+        <Aside ar={ar} />
+      </section>
+    )
+  }
 
   return (
-    <div className="grid grid-cols-1 gap-12 lg:grid-cols-[400px_1fr]">
-      <div>
-        <div className="text-xs font-semibold uppercase tracking-wider text-accent">Contact Operations</div>
-        <h1 className="mt-2 font-display text-3xl font-bold tracking-tight sm:text-4xl">
-          Speak with an operations architect
-        </h1>
-        <p className="mt-4 text-body text-muted-foreground leading-relaxed">
-          Discuss agency rollouts, high-volume telemetry ingestion, custom voice models, or dedicated PostgreSQL
-          tenancy.
+    <section className="container book">
+      <div className="book-form">
+        <h1 className="display">{ar ? 'احجز مكالمة تعريفية' : 'Book a discovery call'}</h1>
+        <p className="lead">
+          {ar
+            ? 'أخبرنا كيف تصلك الاستفسارات اليوم، وسنرد بموعد لمكالمة قصيرة وعرض مباشر.'
+            : 'Tell us how enquiries reach you today. We reply with a time for a short call and a live walkthrough.'}
         </p>
+        <form action={formAction} aria-busy={pending} className="book-fields">
+          {state.status === 'error' && state.message ? (
+            <p role="alert" className="form-error">{ar ? state.messageAr ?? state.message : state.message}</p>
+          ) : null}
+          {aboutText ? (
+            <div className="about-chip">
+              <span>{aboutText}</span>
+              <button type="button" onClick={() => setShowAbout(false)} aria-label={ar ? 'إزالة' : 'Remove'}>×</button>
+              <input type="hidden" name="about" value={aboutText} />
+            </div>
+          ) : null}
 
-        <div className="mt-8 space-y-4 text-small">
-          <div className="flex items-center gap-3 text-muted-foreground">
-            <Mail className="size-4 text-accent" />
-            <a href="mailto:operations@helix-ai.com">operations@helix-ai.com</a>
+          <label htmlFor="contact-name">{ar ? 'الاسم الكامل' : 'Full name'}</label>
+          <input id="contact-name" name="name" autoComplete="name" required />
+
+          <label htmlFor="contact-business">{ar ? 'اسم النشاط' : 'Business name'}</label>
+          <input id="contact-business" name="business" autoComplete="organization" required />
+
+          <label htmlFor="contact-type">{ar ? 'نوع النشاط' : 'Business type'}</label>
+          <select id="contact-type" name="businessType" required defaultValue="">
+            <option value="" disabled>{ar ? 'اختر' : 'Choose'}</option>
+            {TYPES.map(item => (
+              <option key={item.value} value={item.value}>{ar ? item.ar : item.en}</option>
+            ))}
+          </select>
+
+          <label htmlFor="contact-city">{ar ? 'المدينة والدولة' : 'City and country'}</label>
+          <input id="contact-city" name="city" autoComplete="address-level2" required />
+
+          <label htmlFor="contact-wa">{ar ? 'رقم واتساب' : 'WhatsApp number'}</label>
+          <input id="contact-wa" name="whatsapp" dir="ltr" inputMode="tel" autoComplete="tel" placeholder="+971…" required />
+
+          <label htmlFor="contact-note">{ar ? 'ما الذي يفوتك؟' : "What's slipping through?"}</label>
+          <textarea id="contact-note" name="message" rows={4} />
+          <div className="chips" role="group" aria-label={ar ? 'مواضيع' : 'Topics'}>
+            {TOPICS.map(topic => {
+              const on = topics.includes(topic.id)
+              return (
+                <button
+                  key={topic.id}
+                  type="button"
+                  aria-pressed={on}
+                  className={on ? 'on' : undefined}
+                  onClick={() => setTopics(current => (on ? current.filter(item => item !== topic.id) : [...current, topic.id]))}
+                >
+                  {ar ? topic.ar : topic.en}
+                </button>
+              )
+            })}
           </div>
-          <div className="flex items-center gap-3 text-muted-foreground">
-            <Mail className="size-4 text-accent" />
-            <a href="mailto:security@helix-ai.com">security@helix-ai.com</a>
-          </div>
-        </div>
+          {topics.map(topic => <input key={topic} type="hidden" name="topics" value={topic} />)}
+
+          <fieldset>
+            <legend>{ar ? 'اللغة المفضلة' : 'Preferred language'}</legend>
+            <label className="radio"><input type="radio" name="language" value="ar" defaultChecked={ar} /> {ar ? 'العربية' : 'Arabic'}</label>
+            <label className="radio"><input type="radio" name="language" value="en" defaultChecked={!ar} /> {ar ? 'الإنجليزية' : 'English'}</label>
+          </fieldset>
+
+          <button className="btn btn-primary" type="submit" disabled={pending}>
+            {pending ? (ar ? 'جارٍ الإرسال…' : 'Sending…') : ar ? 'اطلب مكالمتي' : 'Request my call'}
+          </button>
+        </form>
       </div>
+      <Aside ar={ar} />
+    </section>
+  )
+}
 
-      <div className="rounded-xl border border-border bg-panel p-6 shadow-sm sm:p-8">
-        {state.status === 'saved' ? (
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <div className="flex size-12 items-center justify-center rounded-full bg-status-success/10 text-status-success">
-              <Check className="size-6" />
-            </div>
-            <h3 className="mt-4 font-display text-h3 font-semibold">Inquiry saved</h3>
-            <p className="mt-2 max-w-sm text-small text-muted-foreground">{state.message}</p>
-            {state.messageAr ? (
-              <p className="mt-2 max-w-sm text-small text-muted-foreground" dir="rtl" lang="ar">
-                {state.messageAr}
-              </p>
-            ) : null}
-          </div>
-        ) : (
-          <form action={formAction} className="space-y-5">
-            {state.status === 'error' && state.message ? (
-              <div role="alert" className="flex items-start gap-3 rounded-md border border-status-danger/40 bg-status-danger/10 p-3.5 text-small">
-                <AlertCircle className="mt-0.5 size-4 shrink-0 text-status-danger" />
-                <div>
-                  <p>{state.message}</p>
-                  {state.messageAr ? (
-                    <p className="mt-1" dir="rtl" lang="ar">
-                      {state.messageAr}
-                    </p>
-                  ) : null}
-                </div>
-              </div>
-            ) : null}
-
-            <div className="space-y-2">
-              <Label htmlFor="contact-name">Full name</Label>
-              <Input id="contact-name" name="name" required placeholder="Jane Doe" className="h-10" />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="contact-email">Work email</Label>
-              <Input
-                id="contact-email"
-                name="email"
-                type="email"
-                required
-                placeholder="jane@acme.com"
-                className="h-10"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="contact-volume">Estimated monthly interaction volume</Label>
-              <select
-                id="contact-volume"
-                name="volume"
-                defaultValue="< 5,000 interactions"
-                className="flex h-10 w-full rounded-md border border-input bg-panel px-3 text-body shadow-xs transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring/60"
-              >
-                <option value="< 5,000 interactions">&lt; 5,000 interactions / mo</option>
-                <option value="5,000 - 50,000 interactions">5,000 – 50,000 interactions / mo</option>
-                <option value="50,000+ interactions">50,000+ interactions / mo</option>
-              </select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="contact-message">Requirements & timeline</Label>
-              <textarea
-                id="contact-message"
-                name="message"
-                rows={4}
-                required
-                placeholder="Tell us about your channels, clients, or specific compliance needs..."
-                className="flex w-full rounded-md border border-input bg-panel p-3 text-body shadow-xs transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring/60"
-              />
-            </div>
-
-            <Button
-              type="submit"
-              disabled={pending}
-              className="h-10 w-full bg-accent text-accent-foreground hover:bg-accent/90"
-            >
-              {pending ? (
-                <>
-                  <Loader2 className="size-4 animate-spin" />
-                  Sending inquiry...
-                </>
-              ) : (
-                'Submit inquiry'
-              )}
-            </Button>
-          </form>
-        )}
-      </div>
-    </div>
+function Aside({ ar }: { ar: boolean }) {
+  const steps = ar
+    ? ['نرد على واتساب أو بالبريد', 'مكالمة تعريفية قصيرة', 'عرض مباشر وخطة مكتوبة']
+    : ['We reply on WhatsApp or email', 'A short discovery call', 'A live demo and a written plan']
+  return (
+    <aside className="book-side">
+      <h2>{ar ? 'ماذا يحدث بعد ذلك' : 'What happens next'}</h2>
+      <ol>
+        {steps.map((step, index) => (
+          <li key={step}><span>{index + 1}</span>{step}</li>
+        ))}
+      </ol>
+      <WhatsAppCta ar={ar} className="btn btn-ghost" labelEn="Prefer WhatsApp?" labelAr="تفضّل واتساب؟" />
+      <p className="muted small">
+        {ar ? 'عميل حالياً؟' : 'Already a client?'}{' '}
+        <Link className="link" href="/login">{ar ? 'تسجيل الدخول' : 'Sign in'}</Link>
+      </p>
+    </aside>
   )
 }

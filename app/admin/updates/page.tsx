@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { createSupabaseServerClient } from '@/lib/supabase'
 import { getVerifiedSession } from '@/lib/auth/session'
 import { ConsoleShell } from '@/components/shell/console-shell'
-import { AdminTabs } from '@/components/admin/admin-tabs'
+import { AdminFrame, PageHead } from '@/components/admin/v5'
 import { UpdatesManagerView } from '@/components/admin/updates-manager-view'
 import { getUpdatesAction } from '@/lib/updates/actions'
 
@@ -21,10 +21,15 @@ export default async function AdminUpdatesPage() {
 
   return (
     <ConsoleShell variant="admin" email={session.user.email ?? ''} businessName={null}>
-      <div className="w-full">
-        <AdminTabs />
+      <AdminFrame>
+        <PageHead
+          title="Updates"
+          titleAr="التحديثات"
+          lede="Releases shown on the public updates page."
+          ledeAr="الإصدارات المعروضة في صفحة التحديثات."
+        />
         <UpdatesManagerView initialUpdates={updates} />
-      </div>
+      </AdminFrame>
     </ConsoleShell>
   )
 }

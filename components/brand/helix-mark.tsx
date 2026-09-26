@@ -14,7 +14,7 @@ export function HelixMark({
     <span
       aria-hidden
       className={cn(
-        'relative inline-flex shrink-0 items-center justify-center overflow-hidden border border-helix-border bg-helix-ink',
+        'relative inline-flex shrink-0 items-center justify-center overflow-hidden border border-helix-border bg-ink',
         rounded,
         className
       )}

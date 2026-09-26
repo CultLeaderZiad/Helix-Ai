@@ -23,6 +23,93 @@ export interface PricingPlan {
   }
   features: string[]
   featuresAr: string[]
+  /** Owner-facing copy. Marketing pages render this, never the raw feature strings. */
+  display?: {
+    en: PlanCopy
+    ar: PlanCopy
+  }
+}
+
+export interface PlanCopy {
+  tagline: string
+  taglineShort: string
+  features: string[]
+}
+
+/** Section 8 display copy. Prices stay on the plan objects. */
+export const GCC_PLAN_DISPLAY: Record<string, { en: PlanCopy; ar: PlanCopy }> = {
+  'starter-gcc': {
+    en: {
+      tagline: 'For a single location automating its phone and WhatsApp.',
+      taglineShort: 'Single location, phone and WhatsApp.',
+      features: [
+        'Up to 1,500 customer conversations a month',
+        'Bilingual voice agent, Gulf Arabic and English',
+        'Official WhatsApp Business connection',
+        'Cal.com and Google Calendar sync',
+        'Human review before anything uncertain is saved',
+        'UAE and KSA VAT-compliant invoices',
+      ],
+    },
+    ar: {
+      tagline: 'لموقع واحد يؤتمت الهاتف وواتساب.',
+      taglineShort: 'موقع واحد، هاتف وواتساب.',
+      features: [
+        'حتى 1,500 محادثة مع العملاء شهرياً',
+        'وكيل صوتي ثنائي اللغة: خليجي وإنجليزي',
+        'ربط رسمي مع واتساب للأعمال',
+        'مزامنة مع Cal.com وتقويم Google',
+        'مراجعة بشرية قبل حفظ أي معلومة غير مؤكدة',
+        'فواتير متوافقة مع ضريبة القيمة المضافة في الإمارات والسعودية',
+      ],
+    },
+  },
+  'growth-gcc': {
+    en: {
+      tagline: 'Missed-call triage, voice and WhatsApp working together.',
+      taglineShort: 'Missed-call triage, voice and WhatsApp together.',
+      features: [
+        'Up to 10,000 customer conversations a month',
+        'Voice, WhatsApp and email automation',
+        'Missed-call WhatsApp text-back and triage, in seconds',
+        'B2B payment reminders with Mada and Apple Pay links',
+      ],
+    },
+    ar: {
+      tagline: 'فرز المكالمات الفائتة والصوت وواتساب يعملون معاً.',
+      taglineShort: 'فرز المكالمات الفائتة، الصوت وواتساب معاً.',
+      features: [
+        'حتى 10,000 محادثة مع العملاء شهرياً',
+        'أتمتة الصوت وواتساب والبريد الإلكتروني',
+        'رد على المكالمات الفائتة عبر واتساب وفرزها، خلال ثوانٍ',
+        'تذكيرات دفع للشركات مع روابط مدى وApple Pay',
+      ],
+    },
+  },
+  'scale-gcc': {
+    en: {
+      tagline: 'For groups running multiple branches and brands.',
+      taglineShort: 'Multiple branches and brands.',
+      features: [
+        'Unlimited workspaces across branches and brands',
+        'Dialect tuning: Emirati, Najdi, Hijazi, Qatari',
+        'B2B collections and dispute handling',
+        'Cross-branch CRM governance and exports',
+        'Priority escalation support',
+      ],
+    },
+    ar: {
+      tagline: 'للمجموعات التي تدير عدة فروع وعلامات تجارية.',
+      taglineShort: 'عدة فروع وعلامات تجارية.',
+      features: [
+        'مساحات عمل غير محدودة لكل الفروع والعلامات',
+        'ضبط اللهجات: الإماراتية والنجدية والحجازية والقطرية',
+        'تحصيل مستحقات الشركات ومعالجة الاعتراضات',
+        'حوكمة بيانات العملاء وتصديرها عبر الفروع',
+        'دعم تصعيد ذو أولوية',
+      ],
+    },
+  },
 }
 
 export interface RegionPricingConfig {
@@ -49,15 +136,15 @@ export const REGIONAL_PRICING_CONFIGS: Record<RegionTier, RegionPricingConfig> =
     badgeAr: 'باقات المؤسسات المتميزة',
     description:
       'Built and run for multi-location businesses in the GCC.',
-    descriptionAr:
-      'مصممة لشبكات الرعاية الصحية الراقية، الشركات العقارية الكبرى، والقطاع الاستشاري مع التزام بمستوى خدمة فائق ووكلاء صوت وواتساب باللهجة الخليجية.',
+    descriptionAr: 'نبنيها ونشغّلها للأعمال متعددة الفروع في الخليج.',
     plans: [
       {
         id: 'starter-gcc',
         name: 'Enterprise Starter',
         nameAr: 'انطلاقة المؤسسات',
-        tagline: 'Single-location operations automating primary phone & WhatsApp channels.',
-        taglineAr: 'للأفرع والمنشآت التي ترغب في أتمتة الهاتف والواتساب دون فقدان أي عميل.',
+        tagline: 'For a single location automating its phone and WhatsApp.',
+        taglineAr: 'لموقع واحد يؤتمت الهاتف وواتساب.',
+        display: GCC_PLAN_DISPLAY['starter-gcc'],
         prices: { AED: 1800, SAR: 1850, USD: 490 },
         setupFee: { AED: 4500, SAR: 4600, USD: 1200 },
         features: [
@@ -81,8 +168,9 @@ export const REGIONAL_PRICING_CONFIGS: Record<RegionTier, RegionPricingConfig> =
         id: 'growth-gcc',
         name: 'Growth Enterprise',
         nameAr: 'نمو المؤسسات',
-        tagline: 'Multi-channel autonomous engine with instant missed-call triage & voice dispatch.',
-        taglineAr: 'محرك أوتوماتيكي متكامل يشمل الرد على المكالمات الفائتة وجدولة المواعيد.',
+        tagline: 'Missed-call triage, voice and WhatsApp working together.',
+        taglineAr: 'فرز المكالمات الفائتة والصوت وواتساب يعملون معاً.',
+        display: GCC_PLAN_DISPLAY['growth-gcc'],
         featured: true,
         prices: { AED: 4600, SAR: 4700, USD: 1250 },
         setupFee: { AED: 7500, SAR: 7650, USD: 2000 },
@@ -104,7 +192,8 @@ export const REGIONAL_PRICING_CONFIGS: Record<RegionTier, RegionPricingConfig> =
         name: 'Sovereign Scale',
         nameAr: 'المؤسسات الكبرى متعددة الفروع',
         tagline: 'For groups running multiple branches and brands.',
-        taglineAr: 'مساحات عمل غير محدودة للشركات القابضة مع تخصيص عميق للنماذج الذكية.',
+        taglineAr: 'للمجموعات التي تدير عدة فروع وعلامات تجارية.',
+        display: GCC_PLAN_DISPLAY['scale-gcc'],
         prices: { AED: 10200, SAR: 10500, USD: 2800 },
         setupFee: { AED: 15000, SAR: 15500, USD: 4000 },
         features: [
@@ -215,4 +304,14 @@ export const REGIONAL_PRICING_CONFIGS: Record<RegionTier, RegionPricingConfig> =
       },
     ],
   },
+}
+
+export function planDisplay(plan: PricingPlan, lang: 'en' | 'ar'): PlanCopy {
+  const embedded = plan.display?.[lang]
+  if (embedded && embedded.features.length > 0) return embedded
+  const seeded = GCC_PLAN_DISPLAY[plan.id]?.[lang]
+  if (seeded) return seeded
+  const features = lang === 'ar' ? plan.featuresAr : plan.features
+  const tagline = lang === 'ar' ? plan.taglineAr : plan.tagline
+  return { tagline, taglineShort: tagline, features }
 }

@@ -174,7 +174,7 @@ export function ProposalModal({ proposal, onClose }: ProposalModalProps) {
 
         {/* SLA Terms */}
         <div className="mt-6 rounded-xl border border-helix-border bg-helix-surface p-4 text-xs">
-          <span className="font-bold text-helix-ink flex items-center gap-1.5 mb-2">
+          <span className="font-bold text-ink flex items-center gap-1.5 mb-2">
             <ShieldCheck className="size-4 text-emerald-400" />
             {isAr ? 'ضمانات مستوى الخدمة والخصوصية (SLA):' : 'Enterprise Service Level Agreement (SLA):'}
           </span>

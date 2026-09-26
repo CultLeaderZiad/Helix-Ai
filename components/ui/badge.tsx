@@ -7,9 +7,9 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default: 'border-transparent bg-helix-ink text-helix-surface',
+        default: 'border-transparent bg-ink text-helix-surface',
         outline: 'border-helix-border bg-transparent text-helix-muted',
-        core: 'border-transparent bg-helix-ink text-helix-surface',
+        core: 'border-transparent bg-ink text-helix-surface',
         demo: 'border-transparent bg-helix-accent-soft text-helix-accent',
         preview: 'border-helix-border bg-helix-canvas text-helix-muted',
         live: 'border-transparent bg-helix-accent-soft text-helix-ok',

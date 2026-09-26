@@ -2,11 +2,11 @@
 
 import { useState } from 'react'
 import { TicketChat } from './ticket-chat'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Plus, MessageSquare } from 'lucide-react'
 import { createSupabaseBrowserClient } from '@/lib/supabase-browser'
 import type { SupportTicket, SupportMessage } from '@/lib/schema'
+import { tx, type DashLang } from '@/lib/dashboard/lang'
+import { useDashLang } from '@/components/dashboard/use-lang'
+import { EmptyState, FormField, StatusChip } from '@/components/dashboard/ui'
 
 interface SupportDashboardProps {
   initialTickets: (SupportTicket & { clientName?: string })[]
@@ -14,35 +14,35 @@ interface SupportDashboardProps {
   currentUserId: string
   clientId: string | null
   isAdmin: boolean
+  lang?: DashLang
+  businessName?: string | null
 }
 
-export function SupportDashboard({ initialTickets, allMessages, currentUserId, clientId, isAdmin }: SupportDashboardProps) {
+export function SupportDashboard({ initialTickets, allMessages, currentUserId, clientId, isAdmin, lang, businessName }: SupportDashboardProps) {
+  const active = useDashLang(lang ?? 'en')
   const [tickets, setTickets] = useState(initialTickets)
-  const [messages, setMessages] = useState(allMessages)
+  const messages = allMessages
   const [selectedTicketId, setSelectedTicketId] = useState<string | null>(initialTickets[0]?.id ?? null)
   const [isCreating, setIsCreating] = useState(false)
   const [newSubject, setNewSubject] = useState('')
   const supabase = createSupabaseBrowserClient()
 
-  const selectedTicket = tickets.find(t => t.id === selectedTicketId)
-  const ticketMessages = messages.filter(m => m.ticket_id === selectedTicketId).sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+  const selectedTicket = tickets.find(ticket => ticket.id === selectedTicketId)
+  const ticketMessages = messages.filter(message => message.ticket_id === selectedTicketId).sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
 
-  async function handleCreateTicket(e: React.FormEvent) {
-    e.preventDefault()
-    if (!newSubject.trim() || (!clientId && !isAdmin)) return // Admins shouldn't normally create tickets, but just in case.
+  async function handleCreateTicket(event: React.FormEvent) {
+    event.preventDefault()
+    if (!newSubject.trim() || (!clientId && !isAdmin)) return
 
     const { data, error } = await supabase.from('support_tickets').insert({
       client_id: clientId!,
       subject: newSubject.trim(),
       status: 'open',
       unread_by_admin: true,
-      unread_by_client: false
+      unread_by_client: false,
     }).select().single()
 
-    if (error) {
-      console.error(error)
-      return
-    }
+    if (error || !data) return
 
     setTickets([data as SupportTicket, ...tickets])
     setSelectedTicketId(data.id)
@@ -51,76 +51,55 @@ export function SupportDashboard({ initialTickets, allMessages, currentUserId, c
   }
 
   return (
-    <div className="grid h-[calc(100vh-12rem)] grid-cols-1 overflow-hidden rounded-xl border border-border bg-panel md:grid-cols-3">
-      {/* Sidebar */}
-      <div className="flex flex-col border-r border-border bg-background/50">
-        <div className="flex items-center justify-between border-b p-4">
-          <h2 className="font-display text-h4">Tickets</h2>
-          {!isAdmin && (
-            <Button size="sm" onClick={() => setIsCreating(true)}>
-              <Plus className="mr-2 size-4" />
-              New
-            </Button>
-          )}
+    <div className="grid-2">
+      <section className="pnl">
+        <div className="pnl-h">
+          <b>{tx(active, 'Requests', 'الطلبات')}</b>
+          {!isAdmin ? (
+            <button type="button" className="btn-d" onClick={() => setIsCreating(true)}>
+              {tx(active, 'New request', 'طلب جديد')}
+            </button>
+          ) : null}
         </div>
-        <div className="flex-1 overflow-y-auto">
+        {businessName ? <p className="faint">{businessName}</p> : null}
+        <div>
           {tickets.map(ticket => (
             <button
               key={ticket.id}
+              type="button"
               onClick={() => {
                 setSelectedTicketId(ticket.id)
                 setIsCreating(false)
               }}
-              className={`w-full border-b p-4 text-left transition-colors hover:bg-raised ${
-                selectedTicketId === ticket.id ? 'bg-raised' : ''
-              }`}
+              className="it"
+              style={{ width: '100%', background: selectedTicketId === ticket.id ? 'var(--surface-3)' : 'transparent', height: 'auto', padding: '10px', textAlign: 'start' }}
             >
-              <div className="flex justify-between items-start">
-                <span className="font-medium line-clamp-1">{ticket.subject}</span>
-                {((isAdmin && ticket.unread_by_admin) || (!isAdmin && ticket.unread_by_client)) && (
-                  <span className="size-2 rounded-full bg-accent mt-1 shrink-0" />
-                )}
-              </div>
-              <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground">
-                <span>{new Date(ticket.created_at).toLocaleDateString()}</span>
-                <span className={ticket.status === 'open' ? 'text-status-success' : ''}>{ticket.status}</span>
-              </div>
+              <span style={{ flex: 1 }}>
+                {ticket.subject}
+                <small className="faint" style={{ display: 'block' }}>
+                  {new Date(ticket.created_at).toLocaleDateString(active === 'ar' ? 'ar' : 'en')}
+                </small>
+              </span>
+              <StatusChip tone={ticket.status === 'open' ? 'ok' : 'neutral'}>
+                {ticket.status === 'open' ? tx(active, 'Open', 'مفتوح') : tx(active, 'Closed', 'مغلق')}
+              </StatusChip>
             </button>
           ))}
-          {tickets.length === 0 && (
-            <div className="p-8 text-center text-sm text-muted-foreground">
-              No tickets found.
-            </div>
-          )}
+          {tickets.length === 0 ? <EmptyState title={tx(active, 'No open requests.', 'لا توجد طلبات مفتوحة.')} /> : null}
         </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="col-span-2 flex flex-col bg-panel">
+      </section>
+      <section className="pnl">
         {isCreating ? (
-          <div className="flex h-full items-center justify-center p-8">
-            <form onSubmit={handleCreateTicket} className="w-full max-w-md space-y-4 rounded-xl border bg-background p-6">
-              <h3 className="font-display text-h3">New Support Ticket</h3>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">Subject</label>
-                <Input
-                  autoFocus
-                  value={newSubject}
-                  onChange={e => setNewSubject(e.target.value)}
-                  placeholder="E.g., Issue with billing"
-                  className="mt-1"
-                />
-              </div>
-              <div className="flex justify-end gap-2">
-                <Button type="button" variant="ghost" onClick={() => setIsCreating(false)}>
-                  Cancel
-                </Button>
-                <Button type="submit" disabled={!newSubject.trim()}>
-                  Create Ticket
-                </Button>
-              </div>
-            </form>
-          </div>
+          <form onSubmit={handleCreateTicket} className="stack">
+            <b>{tx(active, 'New request', 'طلب جديد')}</b>
+            <FormField label={tx(active, 'Subject', 'الموضوع')} htmlFor="support-subject">
+              <input id="support-subject" className="fld" value={newSubject} onChange={event => setNewSubject(event.target.value)} required />
+            </FormField>
+            <div className="ph-actions">
+              <button type="button" className="btn-o" onClick={() => setIsCreating(false)}>{tx(active, 'Cancel', 'إلغاء')}</button>
+              <button type="submit" className="btn-d" disabled={!newSubject.trim()}>{tx(active, 'Send', 'إرسال')}</button>
+            </div>
+          </form>
         ) : selectedTicket ? (
           <TicketChat
             key={selectedTicket.id}
@@ -130,12 +109,9 @@ export function SupportDashboard({ initialTickets, allMessages, currentUserId, c
             isAdmin={isAdmin}
           />
         ) : (
-          <div className="flex h-full flex-col items-center justify-center text-muted-foreground">
-            <MessageSquare className="mb-4 size-12 opacity-20" />
-            <p>Select a ticket to view messages</p>
-          </div>
+          <EmptyState title={tx(active, 'Choose a request to read it.', 'اختر طلباً لقراءته.')} />
         )}
-      </div>
+      </section>
     </div>
   )
 }

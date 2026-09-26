@@ -8,6 +8,7 @@ export type HelixLang = 'en' | 'ar'
 export async function getPublicPrefs(): Promise<{ theme: HelixTheme; lang: HelixLang }> {
   const jar = await cookies()
   const theme: HelixTheme = jar.get('helix_theme')?.value === 'day' ? 'day' : 'night'
-  const lang: HelixLang = jar.get('helix_lang')?.value === 'ar' ? 'ar' : 'en'
+  const langCookie = jar.get('helix_lang')?.value ?? jar.get('helix-lang')?.value
+  const lang: HelixLang = langCookie === 'ar' ? 'ar' : 'en'
   return { theme, lang }
 }

@@ -10,19 +10,23 @@ import {
   Check,
   Globe,
   Headset,
+  House,
   Inbox,
   KeyRound,
   MessageCircle,
   Mic,
   Moon,
   PhoneMissed,
+  Search,
   ShieldCheck,
   Target,
   Users,
 } from 'lucide-react'
 import { useMarketingPrefs } from '@/components/marketing/public-frame'
 import { HelixMark } from '@/components/marketing/helix-mark'
-import { REGIONAL_PRICING_CONFIGS } from '@/lib/pricing/tiers'
+import { QaAccordion } from '@/components/marketing/qa-accordion'
+import { WhatsAppCta } from '@/components/marketing/whatsapp-cta'
+import { planDisplay, type PricingPlan } from '@/lib/pricing/tiers'
 
 const CHAT = [
   { side: 'in', text: 'مساء الخير، معك عيادة المثال لطب الأسنان. لاحظنا اتصالك قبل قليل ولم نتمكن من الرد. كيف نقدر نخدمك؟', time: '9:41 PM' },
@@ -54,11 +58,9 @@ type FlowStep = {
   pillsAr?: FlowPill[]
 }
 
-export function HomeView() {
+export function HomeView({ plans }: { plans: PricingPlan[] }) {
   const { lang } = useMarketingPrefs()
   const ar = lang === 'ar'
-  const plans = REGIONAL_PRICING_CONFIGS.gcc_enterprise.plans
-  const [openFaq, setOpenFaq] = useState(0)
   const [flow, setFlow] = useState(0)
 
   const faqs = ar
@@ -334,21 +336,110 @@ export function HomeView() {
             <div><ChartColumn size={20} /><div><b>{ar ? 'عرض أسبوعي وشهري' : 'Week and month views'}</b><span>{ar ? 'الحجوزات والردود والمكالمات الفائتة جنباً إلى جنب.' : 'Bookings, replies and missed calls handled, side by side.'}</span></div></div>
           </div>
           <div className="browser">
-            <div className="browser-bar"><i /><i /><i /><span className="url">helix · Example Dental Clinic</span></div>
+            <div className="browser-bar">
+              <i /><i /><i />
+              <span className="url">{ar ? 'helix · عيادة المثال لطب الأسنان' : 'helix · Example Dental Clinic'}</span>
+            </div>
             <div className="dp">
               <div className="dp-side">
-                <div className="it on">Overview</div>
-                <div className="it">Contacts</div>
-                <div className="it">Review queue</div>
-                <div className="it">Lead generation</div>
+                {(ar
+                  ? ['نظرة عامة', 'جهات الاتصال', 'قائمة المراجعة', 'توليد العملاء', 'البحث', 'التقارير']
+                  : ['Overview', 'Contacts', 'Review queue', 'Lead generation', 'Search', 'Reports']
+                ).map((label, index) => {
+                  const Icon = [House, Users, Inbox, Target, Search, ChartColumn][index]
+                  return (
+                    <div className={`it${index === 0 ? ' on' : ''}`} key={label}>
+                      <Icon className="ico" size={14} aria-hidden="true" />
+                      {label}
+                    </div>
+                  )
+                })}
               </div>
               <div className="dp-main">
-                <div className="dp-h"><div><b>Good evening</b><div className="dp-sum">This week your systems replied to 38 enquiries and booked 11 appointments.</div></div><span className="ex-chip">Example data</span></div>
+                <div className="dp-h">
+                  <div>
+                    <b>{ar ? 'مساء الخير' : 'Good evening'}</b>
+                    <div className="dp-sum">
+                      {ar
+                        ? 'هذا الأسبوع ردّت أنظمتك على 38 استفساراً وحجزت 11 موعداً.'
+                        : 'This week your systems replied to 38 enquiries and booked 11 appointments.'}
+                    </div>
+                  </div>
+                  <span className="ex-chip">{ar ? 'بيانات توضيحية' : 'Example data'}</span>
+                </div>
                 <div className="kpis">
-                  <div className="kpi"><small>Appointments booked</small><b>11</b></div>
-                  <div className="kpi"><small>Missed calls answered</small><b>17</b></div>
-                  <div className="kpi"><small>Conversations</small><b>38</b></div>
-                  <div className="kpi"><small>Median first reply</small><b>18s</b></div>
+                  <div className="kpi"><small>{ar ? 'المواعيد المحجوزة' : 'Appointments booked'}</small><b><bdi>11</bdi></b></div>
+                  <div className="kpi"><small>{ar ? 'المكالمات الفائتة التي تم الرد عليها' : 'Missed calls answered'}</small><b><bdi>17</bdi></b></div>
+                  <div className="kpi"><small>{ar ? 'المحادثات' : 'Conversations'}</small><b><bdi>38</bdi></b></div>
+                  <div className="kpi"><small>{ar ? 'متوسط أول رد' : 'Median first reply'}</small><b><bdi>18s</bdi></b></div>
+                </div>
+                <div className="dp-cols">
+                  <div className="panel">
+                    <h6>
+                      {ar ? 'النشاط الأخير' : 'Recent activity'}
+                      <span style={{ color: '#8A8C90', fontWeight: 400 }}>{ar ? 'اليوم' : 'Today'}</span>
+                    </h6>
+                    <div className="feed">
+                      <div>
+                        <span className="d" />
+                        <span><em>{ar ? 'تم الحجز' : 'Booked'}</em> {ar ? 'تنظيف أسنان · الخميس 6:15 م' : 'teeth cleaning · Thu 6:15 PM'}</span>
+                        <span className="tm"><bdi dir="ltr">9:44 PM</bdi></span>
+                      </div>
+                      <div>
+                        <span className="d" />
+                        <span>
+                          <em>{ar ? 'تم الرد' : 'Replied'}</em>{' '}
+                          {ar ? 'على مكالمة فائتة من' : 'to a missed call from'}{' '}
+                          <bdi dir="ltr">+971 50 ••• 4182</bdi>
+                        </span>
+                        <span className="tm"><bdi dir="ltr">9:41 PM</bdi></span>
+                      </div>
+                      <div>
+                        <span className="d a" />
+                        <span><em>{ar ? 'تم التحويل لفريقك:' : 'Handed to your team:'}</em> {ar ? 'سؤال عن التأمين' : 'asked about insurance'}</span>
+                        <span className="tm"><bdi dir="ltr">6:02 PM</bdi></span>
+                      </div>
+                      <div>
+                        <span className="d" />
+                        <span><em>{ar ? 'تم إرسال التذكير' : 'Reminder sent'}</em> {ar ? 'لموعد الغد 10:30 ص' : "for tomorrow's 10:30 AM"}</span>
+                        <span className="tm"><bdi dir="ltr">5:00 PM</bdi></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="panel">
+                    <h6>{ar ? 'حجوزات هذا الأسبوع' : 'Bookings this week'}</h6>
+                    <div className="bars" aria-hidden="true">
+                      <i style={{ height: '30%' }} />
+                      <i style={{ height: '52%' }} />
+                      <i style={{ height: '40%' }} />
+                      <i style={{ height: '70%' }} />
+                      <i className="hi" style={{ height: '88%' }} />
+                      <i style={{ height: '46%' }} />
+                      <i style={{ height: '24%' }} />
+                    </div>
+                    <div className="bar-days">
+                      {(ar ? ['سبت', 'أحد', 'إثن', 'ثلا', 'أربع', 'خميس', 'جمعة'] : ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri']).map(day => (
+                        <span key={day}>{day}</span>
+                      ))}
+                    </div>
+                    <table className="vh">
+                      <caption>{ar ? 'بيانات توضيحية: حجوزات هذا الأسبوع، مجموعها 11.' : 'Example data: bookings this week, totalling 11.'}</caption>
+                      <thead>
+                        <tr>
+                          <th>{ar ? 'اليوم' : 'Day'}</th>
+                          <th>{ar ? 'الحجوزات' : 'Bookings'}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {(ar
+                          ? [['سبت', '1'], ['أحد', '2'], ['إثن', '1'], ['ثلا', '2'], ['أربع', '3'], ['خميس', '1'], ['جمعة', '1']]
+                          : [['Sat', '1'], ['Sun', '2'], ['Mon', '1'], ['Tue', '2'], ['Wed', '3'], ['Thu', '1'], ['Fri', '1']]
+                        ).map(([day, count]) => (
+                          <tr key={day}><td>{day}</td><td><bdi>{count}</bdi></td></tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
@@ -364,9 +455,9 @@ export function HomeView() {
           </div>
           <div className="region">
             <div className="feat"><Globe size={22} /><div><h4>{ar ? 'لهجات عربية والإنجليزية' : 'Arabic dialects and English'}</h4><p>{ar ? 'خليجي ومصري وشامي وإنجليزي، والمزيج الذي يكتبه عملاؤك فعلاً.' : 'Gulf, Egyptian and Levantine Arabic, English, and the mix of both your customers actually write.'}</p><div className="say"><span className="pill ar">أبغى موعد بكرة</span><span className="pill ar">عايز أحجز</span><span className="pill">Can I book for Sunday?</span></div></div></div>
-            <div className="feat"><Headset size={22} /><div><h4>{ar ? 'شخص حقيقي عند الحاجة' : 'A person, whenever it matters'}</h4><p>{ar ? 'إذا طلب العميل بشراً، أو لم يكن النظام متأكداً، تنتقل المحادثة لفريقك مع السياق كاملاً.' : 'If a customer asks for a human, or the system is unsure, the conversation moves to your team with full context.'}</p></div></div>
+            <div className="feat"><Headset size={22} /><div><h4>{ar ? 'شخص حقيقي عند الحاجة' : 'A person, whenever it matters'}</h4><p>{ar ? 'إذا طلب العميل بشراً، أو لم يكن النظام متأكداً، تنتقل المحادثة لفريقك مع السياق كاملاً.' : 'If a customer asks for a human, or the system is unsure, the conversation moves to your team with full context.'}</p><div className="say"><span className="pill ar">بشري</span><span className="pill">agent</span></div></div></div>
             <div className="feat"><Moon size={22} /><div><h4>{ar ? 'محترم افتراضياً' : 'Respectful by default'}</h4><p>{ar ? 'ساعات هدوء، وموافقة مسبقة لرسائل التسويق، واحترام طلب الإيقاف.' : 'Quiet hours, opt-in for marketing messages, and “stop” honoured every time.'}</p><div className="say"><span className="pill ar">إيقاف</span><span className="pill">stop</span></div></div></div>
-            <div className="feat"><KeyRound size={22} /><div><h4>{ar ? 'ما نبنيه ملكك' : 'You own what we build'}</h4><p>{ar ? 'بعد الإطلاق يبقى الإعداد والتكاملات وأدلة التشغيل ملكك.' : 'After go-live you keep the setup, the integrations and the runbooks.'}</p></div></div>
+            <div className="feat"><KeyRound size={22} /><div><h4>{ar ? 'ما نبنيه ملكك' : 'You own what we build'}</h4><p>{ar ? 'بعد الإطلاق يبقى الإعداد والتكاملات وأدلة التشغيل ملكك. بلا ارتباط إجباري.' : 'After go-live you keep the setup, the integrations and the runbooks. No lock-in.'}</p></div></div>
           </div>
         </div>
       </section>
@@ -406,29 +497,44 @@ export function HomeView() {
             <Link className="link d-only" href="/pricing">{ar ? 'قارن كل الباقات' : 'Compare all plans'} <ArrowRight className="arrow" size={14} /></Link>
           </div>
           <div className="plans">
-            {plans.map(plan => (
-              <div key={plan.id} className={`plan${plan.featured ? ' feat-plan' : ''}`}>
-                <div className="plan-name">
-                  {ar ? plan.nameAr : plan.name}
-                  {plan.featured ? <span className="chip">{ar ? 'موصى بها' : 'Recommended'}</span> : null}
+            {plans.map(plan => {
+              const copy = planDisplay(plan, ar ? 'ar' : 'en')
+              const monthly = plan.prices.AED
+              const setup = plan.setupFee.AED
+              return (
+                <div key={plan.id} className={`plan${plan.featured ? ' feat-plan' : ''}`}>
+                  <div className="plan-name">
+                    {ar ? plan.nameAr : plan.name}
+                    {plan.featured ? <span className="chip">{ar ? 'موصى بها' : 'Recommended'}</span> : null}
+                  </div>
+                  <p className="muted small" style={{ marginTop: 6 }}>{copy.taglineShort}</p>
+                  {typeof monthly === 'number' ? (
+                    ar ? (
+                      <div className="price"><b className="num"><bdi>{money(monthly)}</bdi></b><span className="cur">درهم</span><span className="per">/ شهرياً</span></div>
+                    ) : (
+                      <div className="price"><span className="cur">AED</span><b className="num"><bdi>{money(monthly)}</bdi></b><span className="per">/ month</span></div>
+                    )
+                  ) : null}
+                  {typeof setup === 'number' ? (
+                    <div className="faint small">
+                      {ar ? <>+ <bdi>{money(setup)}</bdi> درهم إعداد لمرة واحدة</> : <>+ AED <bdi>{money(setup)}</bdi> one-time setup</>}
+                    </div>
+                  ) : null}
+                  <ul>
+                    {copy.features.slice(0, 3).map(feature => (
+                      <li key={feature}><Check size={16} />{feature}</li>
+                    ))}
+                  </ul>
+                  <Link className={`btn ${plan.featured ? 'btn-primary' : 'btn-ghost'}`} href={plan.featured ? `/contact?plan=${plan.id}` : '/pricing'}>
+                    {plan.featured ? (ar ? 'احجز مكالمة تعريفية' : 'Book a discovery call') : ar ? 'تفاصيل الباقة' : 'See plan details'}
+                  </Link>
                 </div>
-                <p className="muted small" style={{ marginTop: 6 }}>{ar ? plan.taglineAr : plan.tagline}</p>
-                <div className="price"><span className="cur">AED</span><b className="num"><bdi>{money(plan.prices.AED ?? 0)}</bdi></b><span className="per">{ar ? '/ شهرياً' : '/ month'}</span></div>
-                <div className="faint small">+ AED <bdi>{money(plan.setupFee.AED ?? 0)}</bdi> {ar ? 'إعداد لمرة واحدة' : 'one-time setup'}</div>
-                <ul>
-                  {(ar ? plan.featuresAr : plan.features).slice(0, 3).map(f => (
-                    <li key={f}><Check size={16} />{f}</li>
-                  ))}
-                </ul>
-                <Link className={`btn ${plan.featured ? 'btn-primary' : 'btn-ghost'}`} href={`/contact?plan=${plan.id}`}>
-                  {plan.featured ? (ar ? 'احجز مكالمة تعريفية' : 'Book a discovery call') : ar ? 'تفاصيل الباقة' : 'See plan details'}
-                </Link>
-              </div>
-            ))}
+              )
+            })}
           </div>
           <div className="price-foot">
             <Link href="/studio">{ar ? 'تشتري نظاماً واحداً؟ شاهد أسعار كل نظام في الاستوديو' : 'Buying a single system? See per-system prices in Studio →'}</Link>
-            <Link className="link" href="/build">{ar ? 'بناء مخصّص، لنحدد النطاق' : "Custom build, let's scope it →"}</Link>
+            <Link className="link" href="/contact?scope=custom">{ar ? 'بناء مخصّص، لنحدد النطاق' : "Custom build, let's scope it →"}</Link>
           </div>
         </div>
       </section>
@@ -442,16 +548,7 @@ export function HomeView() {
               <Link href="/contact">{ar ? 'سؤال آخر؟ راسلنا من صفحة التواصل.' : 'Anything else? Ask us from the contact page and a person will reply.'}</Link>
             </p>
           </div>
-          <div>
-            {faqs.map(([q, a], i) => (
-              <div className="qa" key={q}>
-                <button type="button" className="q" onClick={() => setOpenFaq(openFaq === i ? -1 : i)} style={{ width: '100%', background: 'none', border: 0, color: 'inherit', textAlign: 'start', cursor: 'pointer' }}>
-                  {q}
-                </button>
-                {openFaq === i ? <div className="a">{a}</div> : null}
-              </div>
-            ))}
-          </div>
+          <QaAccordion idPrefix="home-faq" items={faqs.map(([q, a]) => ({ q, a }))} />
         </div>
       </section>
 
@@ -463,7 +560,9 @@ export function HomeView() {
             <p className="lead">{ar ? 'مكالمة تعريفية قصيرة: نحدد أصغر نظام يحل المشكلة، ثم نعرضه أمامك مباشرة، بالعربي أو الإنجليزي.' : 'A short discovery call. We map the smallest system that fixes it, then demo it live, in Arabic or English.'}</p>
             <div className="cta-row">
               <Link className="btn btn-primary" href="/contact">{ar ? 'احجز مكالمة تعريفية' : 'Book a discovery call'} <ArrowRight className="arrow" size={16} /></Link>
-              <Link className="btn btn-ghost" href="/contact"><MessageCircle size={16} /> {ar ? 'راسلنا' : 'Chat on WhatsApp'}</Link>
+              <WhatsAppCta ar={ar} className="btn btn-ghost" labelEn="Chat on WhatsApp" labelAr="راسلنا على واتساب">
+                <MessageCircle size={16} />
+              </WhatsAppCta>
             </div>
           </div>
         </div>

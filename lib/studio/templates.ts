@@ -308,7 +308,7 @@ export const SYSTEM_TEMPLATES: SystemTemplate[] = [
       badge: 'Add-on',
       metrics: [
         { label: 'Target audience', value: 'Internal staff', trend: 'Not customer-facing' },
-        { label: 'Source ground', value: 'Your verified SOPs', trend: 'Zero hallucination' },
+        { label: 'Source', value: 'Your verified SOPs', trend: 'Example' },
         { label: 'Refresh cadence', value: 'Monthly sync', trend: 'Retainer included' },
       ],
       simulatedViews: ['SOP search', 'Staff answer card', 'Handoff note'],

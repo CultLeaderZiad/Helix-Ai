@@ -1,13 +1,14 @@
+import { tx, type DashLang, type DashTheme } from '@/lib/dashboard/lang'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { createSupabaseServerClient } from '@/lib/supabase'
 import { getVerifiedSession } from '@/lib/auth/session'
 import { ConsoleShell } from '@/components/shell/console-shell'
-import { PageHeader } from '@/components/ui/helix'
-import { buttonVariants } from '@/components/ui/button'
+import { PageHead, Panel } from '@/components/dashboard/ui'
+import { readDashLang, readDashTheme } from '@/lib/dashboard/lang.server'
 
 export const metadata = {
-  title: 'Helix AI — Settings',
+  title: 'Helix — Settings',
   robots: { index: false, follow: false },
 }
 
@@ -20,6 +21,8 @@ export default async function SettingsPage() {
 
   const isAdmin = session.claims.role === 'agency_admin'
   const clientId = session.claims.client_id
+  const lang = await readDashLang()
+  const theme = await readDashTheme()
 
   let clientData: { business_name?: string; vertical?: string | null; status?: string } | null = null
   if (clientId) {
@@ -27,88 +30,59 @@ export default async function SettingsPage() {
     clientData = data
   }
 
+  const workspace = clientData?.business_name || (isAdmin ? 'Helix' : tx(lang, 'This workspace', 'مساحة العمل هذه'))
+
   return (
     <ConsoleShell
       variant={isAdmin ? 'admin' : 'client'}
       email={session.user.email ?? ''}
       businessName={clientData?.business_name ?? null}
+      lang={lang}
+      theme={theme}
     >
-      <div className="w-full">
-        <PageHeader
-          title={isAdmin ? 'Agency settings' : 'Workspace settings'}
-          subtitle="Organization, team, and security. Tenant isolation stays in Postgres RLS."
-        />
-
-        <div className="mt-8 space-y-4">
-          <section className="rounded-[16px] border border-helix-border bg-helix-surface p-5">
-            <h2 className="text-15 font-semibold tracking-[-0.03em]">Identity</h2>
-            <dl className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 text-13">
-              <div>
-                <dt className="text-helix-muted">{isAdmin ? 'Agency' : 'Workspace'}</dt>
-                <dd className="mt-1 text-helix-ink">
-                  {clientData?.business_name ?? (isAdmin ? 'Helix AI' : 'My workspace')}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-helix-muted">Signed-in email</dt>
-                <dd className="mt-1 text-helix-ink">{session.user.email ?? '—'}</dd>
-              </div>
-              <div>
-                <dt className="text-helix-muted">Role</dt>
-                <dd className="mt-1 text-helix-ink">
-                  {isAdmin ? 'Agency admin' : 'Client operator'}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-helix-muted">Status</dt>
-                <dd className="mt-1 text-helix-ink">{clientData?.status ?? (isAdmin ? 'Agency account' : 'Not set')}</dd>
-              </div>
-            </dl>
-          </section>
-
-          {isAdmin ? (
-            <section className="rounded-[16px] border border-helix-border bg-helix-surface p-5">
-              <h2 className="text-15 font-semibold tracking-[-0.03em]">Admin</h2>
-              <p className="mt-1 text-13 text-helix-muted">These pages stay reachable from Settings so the 4-job nav can stay quiet.</p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <Link href="/admin/users" className={buttonVariants({ variant: 'secondary', size: 'sm' })}>
-                  Team & roles
-                </Link>
-                <Link href="/admin/pricing" className={buttonVariants({ variant: 'secondary', size: 'sm' })}>
-                  Pricing
-                </Link>
-                <Link href="/admin/updates" className={buttonVariants({ variant: 'secondary', size: 'sm' })}>
-                  Updates
-                </Link>
-                <Link href="/admin/faq" className={buttonVariants({ variant: 'secondary', size: 'sm' })}>
-                  FAQ
-                </Link>
-              </div>
-            </section>
-          ) : (
-            <section className="rounded-[16px] border border-helix-border bg-helix-surface p-5">
-              <h2 className="text-15 font-semibold tracking-[-0.03em]">Workspace</h2>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <Link href="/dashboard/integrations" className={buttonVariants({ variant: 'secondary', size: 'sm' })}>
-                  Integrations
-                </Link>
-                <Link href="/dashboard/billing" className={buttonVariants({ variant: 'secondary', size: 'sm' })}>
-                  Billing
-                </Link>
-              </div>
-            </section>
-          )}
-
-          <section className="rounded-[16px] border border-helix-border bg-helix-surface p-5">
-            <h2 className="text-15 font-semibold tracking-[-0.03em]">Security</h2>
-            <p className="mt-2 text-13 text-helix-muted leading-relaxed">
-              Workspace data is isolated with PostgreSQL row-level security. Adjacent tenants cannot read your rows.
-            </p>
-            <p className="mt-3 font-mono text-12 text-helix-muted">
-              is_agency_admin() OR requester_client_id() = client_id
-            </p>
-          </section>
-        </div>
+      <PageHead
+        title={isAdmin ? tx(lang, 'Agency settings', 'إعدادات الوكالة') : tx(lang, 'Settings', 'الإعدادات')}
+        lede={tx(lang, 'The name, email, and role on this sign-in.', 'الاسم والبريد والدور في تسجيل الدخول هذا.')}
+      />
+      <div className="stack">
+        <Panel title={tx(lang, 'Account', 'الحساب')}>
+          <dl className="grid-2">
+            <div>
+              <dt className="faint">{isAdmin ? tx(lang, 'Agency', 'الوكالة') : tx(lang, 'Workspace', 'مساحة العمل')}</dt>
+              <dd>{workspace}</dd>
+            </div>
+            <div>
+              <dt className="faint">{tx(lang, 'Email', 'البريد')}</dt>
+              <dd><bdi dir="ltr">{session.user.email ?? '—'}</bdi></dd>
+            </div>
+            <div>
+              <dt className="faint">{tx(lang, 'Role', 'الدور')}</dt>
+              <dd>{isAdmin ? tx(lang, 'Agency', 'الوكالة') : tx(lang, 'Client', 'عميل')}</dd>
+            </div>
+            <div>
+              <dt className="faint">{tx(lang, 'Status', 'الحالة')}</dt>
+              <dd>{clientData?.status ? clientData.status.replaceAll('_', ' ') : tx(lang, 'Not set', 'غير محدد')}</dd>
+            </div>
+          </dl>
+        </Panel>
+        {isAdmin ? (
+          <Panel title={tx(lang, 'Agency pages', 'صفحات الوكالة')}>
+            <div className="ph-actions">
+              <Link className="btn-o" href="/admin/users">{tx(lang, 'Team', 'الفريق')}</Link>
+              <Link className="btn-o" href="/admin/pricing">{tx(lang, 'Pricing', 'الأسعار')}</Link>
+              <Link className="btn-o" href="/admin/updates">{tx(lang, 'Updates', 'التحديثات')}</Link>
+              <Link className="btn-o" href="/admin/faq">{tx(lang, 'Questions', 'الأسئلة')}</Link>
+            </div>
+          </Panel>
+        ) : (
+          <Panel title={tx(lang, 'Workspace', 'مساحة العمل')}>
+            <p className="muted">{tx(lang, 'Hours, connections, and billing live on their own pages.', 'الساعات والاتصالات والفوترة في صفحاتها.')}</p>
+            <div className="ph-actions" style={{ marginTop: 12 }}>
+              <Link className="btn-o" href="/dashboard/integrations">{tx(lang, 'Integrations', 'التكاملات')}</Link>
+              <Link className="btn-o" href="/dashboard/billing">{tx(lang, 'Billing', 'الفوترة')}</Link>
+            </div>
+          </Panel>
+        )}
       </div>
     </ConsoleShell>
   )

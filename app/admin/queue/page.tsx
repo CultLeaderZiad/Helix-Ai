@@ -3,7 +3,7 @@ import { createSupabaseServerClient } from '@/lib/supabase'
 import { getVerifiedSession } from '@/lib/auth/session'
 import { ConsoleShell } from '@/components/shell/console-shell'
 import { FactReviewList, type ReviewableFact } from '@/components/crm/fact-review-list'
-import { ShieldAlert, Sparkles, CheckCircle2 } from 'lucide-react'
+import { AdminFrame, EmptyState, PageHead, Panel } from '@/components/admin/v5'
 
 export const metadata = {
   title: 'Helix AI — Global Agent Queue',
@@ -50,25 +50,26 @@ export default async function AdminQueuePage() {
 
   return (
     <ConsoleShell variant="admin" email={session.user.email ?? ''} businessName={null}>
-      <div className="w-full">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-purple-500/30 bg-purple-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-purple-300">
-              <ShieldAlert className="size-3.5" /> Agency Supervisor Queue
-            </div>
-            <h1 className="mt-2 font-display text-3xl font-bold tracking-tight text-helix-ink sm:text-4xl">
-              Cross-Client Attention Queue
-            </h1>
-            <p className="mt-1 text-sm text-helix-muted">
-              Fleet-wide observation ledger and escalations requiring human supervisor approval.
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-8 rounded-2xl border border-helix-border bg-helix-surface p-6 shadow-xl">
-          <FactReviewList facts={facts} />
-        </div>
-      </div>
+      <AdminFrame>
+        <PageHead
+          title="Agent queue"
+          titleAr="طابور الوكلاء"
+          lede="Pending suggestions waiting for a person to approve or dismiss."
+          ledeAr="اقتراحات معلّقة بانتظار موافقة أو رفض."
+        />
+        <Panel title="Pending review" titleAr="بانتظار المراجعة">
+          {facts.length === 0 ? (
+            <EmptyState
+              title="Queue is clear"
+              titleAr="الطابور فارغ"
+              body="Pending suggestions show up here."
+              bodyAr="تظهر الاقتراحات المعلّقة هنا."
+            />
+          ) : (
+            <FactReviewList facts={facts} />
+          )}
+        </Panel>
+      </AdminFrame>
     </ConsoleShell>
   )
 }

@@ -1,3 +1,5 @@
+import '@/components/admin/admin.css'
+
 export const dynamic = 'force-dynamic'
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

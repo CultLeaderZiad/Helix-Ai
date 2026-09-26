@@ -95,7 +95,7 @@ export function TicketChat({ ticket, initialMessages, currentUserId, isAdmin }: 
   }
 
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-lg border bg-panel">
+    <div className="flex h-full flex-col overflow-hidden rounded-lg border bg-surface-card">
       <div className="flex items-center justify-between border-b p-4">
         <div>
           <h3 className="font-display text-h4">{ticket.subject}</h3>

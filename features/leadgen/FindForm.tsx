@@ -55,7 +55,7 @@ export function FindForm({
         <span>{isArabic ? 'المصادر:' : 'Sources:'}</span>
         <span className="flex items-center gap-1">
           <span className={`inline-block w-2 h-2 rounded-full ${googleAvailable ? 'bg-emerald-500' : 'bg-muted-foreground/40'}`} />
-          Google Maps {!googleAvailable && <span title="GOOGLE_PLACES_API_KEY missing">(غير متاح)</span>}
+          {isArabic ? 'خرائط Google' : 'Google Maps'} {!googleAvailable && <span>{isArabic ? '(غير متاح)' : '(not available)'}</span>}
         </span>
         <span className="flex items-center gap-1">
           <span className={`inline-block w-2 h-2 rounded-full ${osmAvailable ? 'bg-emerald-500' : 'bg-muted-foreground/40'}`} />
@@ -90,7 +90,7 @@ export function FindForm({
             className="rounded border-input text-foreground focus:ring-ring"
           />
           <label htmlFor="hunter-find-opt" className="text-sm text-foreground">
-            {isArabic ? 'بريد Hunter' : 'Hunter emails'}
+            {isArabic ? 'البحث عن البريد (يستهلك رصيداً)' : 'Find emails (uses credits)'}
           </label>
         </div>
       </div>

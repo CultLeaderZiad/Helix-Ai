@@ -120,7 +120,7 @@ export function WholeCrmView({
           <Badge variant="demo" dot className="mb-2">
             CRM INTELLIGENCE & TELEMETRY
           </Badge>
-          <h1 className="font-display text-2xl font-bold tracking-tight text-helix-ink sm:text-3xl">
+          <h1 className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
             Customer Directory
           </h1>
           <p className="mt-1 text-xs text-helix-muted max-w-2xl">
@@ -222,8 +222,8 @@ export function WholeCrmView({
                   className={cn(
                     'rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all whitespace-nowrap',
                     isSelected
-                      ? 'bg-white/[0.1] text-helix-ink border border-white/[0.12] font-semibold shadow-xs'
-                      : 'text-helix-muted hover:text-helix-ink hover:bg-white/[0.04] border border-transparent'
+                      ? 'bg-white/[0.1] text-ink border border-white/[0.12] font-semibold shadow-xs'
+                      : 'text-helix-muted hover:text-ink hover:bg-white/[0.04] border border-transparent'
                   )}
                 >
                   {stage === 'ALL' ? 'All Stages' : STAGE_CONFIG[stage]?.label ?? stage}
@@ -278,11 +278,11 @@ export function WholeCrmView({
                     {/* Name & Avatar */}
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-3">
-                        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-helix-border bg-helix-canvas text-xs font-bold text-helix-ink shadow-xs">
+                        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-helix-border bg-helix-canvas text-xs font-bold text-ink shadow-xs">
                           {initial}
                         </div>
                         <div>
-                          <div className="font-medium text-helix-ink transition-colors">
+                          <div className="font-medium text-ink transition-colors">
                             {contact.full_name ?? 'Anonymous Contact'}
                           </div>
                           <div className="text-[11px] text-helix-muted font-mono">{contact.email ?? 'No email logged'}</div>
@@ -291,7 +291,7 @@ export function WholeCrmView({
                     </TableCell>
 
                     {/* Company */}
-                    <TableCell className="text-helix-ink/80 font-medium">
+                    <TableCell className="text-ink/80 font-medium">
                       {contact.company_name ?? 'Independent'}
                     </TableCell>
 
@@ -321,7 +321,7 @@ export function WholeCrmView({
 
                     {/* Quick Inspect Action */}
                     <TableCell className="text-right">
-                      <Button variant="ghost" size="sm" className="h-7 px-2.5 text-xs text-helix-ink/80 hover:text-helix-ink">
+                      <Button variant="ghost" size="sm" className="h-7 px-2.5 text-xs text-ink/80 hover:text-ink">
                         <span>Inspect</span>
                         <ArrowUpRight className="size-3 text-sky-400 ml-1" />
                       </Button>
@@ -341,11 +341,11 @@ export function WholeCrmView({
             {/* Drawer Header */}
             <div className="flex items-start justify-between border-b border-helix-border pb-5">
               <div className="flex items-center gap-3">
-                <div className="flex size-10 items-center justify-center rounded-lg border border-helix-border bg-helix-canvas text-helix-ink font-bold text-base shadow-xs">
+                <div className="flex size-10 items-center justify-center rounded-lg border border-helix-border bg-helix-canvas text-ink font-bold text-base shadow-xs">
                   {(selectedContact.full_name?.[0] ?? 'C').toUpperCase()}
                 </div>
                 <div>
-                  <h2 className="font-display text-base font-bold text-helix-ink">
+                  <h2 className="font-display text-base font-bold text-ink">
                     {selectedContact.full_name ?? 'Contact Details'}
                   </h2>
                   <p className="text-xs text-helix-muted font-mono">{selectedContact.company_name ?? 'Direct Client'}</p>
@@ -355,7 +355,7 @@ export function WholeCrmView({
                 variant="ghost"
                 size="icon"
                 onClick={() => setDrawerOpen(false)}
-                className="h-8 w-8 text-helix-muted hover:text-helix-ink"
+                className="h-8 w-8 text-helix-muted hover:text-ink"
               >
                 <X className="size-4" />
               </Button>
@@ -365,15 +365,15 @@ export function WholeCrmView({
             <div className="mt-5 space-y-3 rounded-xl border border-helix-border bg-helix-canvas p-4 text-xs">
               <div className="flex items-center justify-between">
                 <span className="text-helix-muted flex items-center gap-2"><Mail className="size-3.5 text-helix-muted" /> Email</span>
-                <span className="text-helix-ink font-medium">{selectedContact.email ?? '—'}</span>
+                <span className="text-ink font-medium">{selectedContact.email ?? '—'}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-helix-muted flex items-center gap-2"><Phone className="size-3.5 text-helix-muted" /> Phone</span>
-                <span className="text-helix-ink font-mono">{selectedContact.phone ?? '—'}</span>
+                <span className="text-ink font-mono">{selectedContact.phone ?? '—'}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-helix-muted flex items-center gap-2"><Building className="size-3.5 text-helix-muted" /> Company</span>
-                <span className="text-helix-ink font-medium">{selectedContact.company_name ?? '—'}</span>
+                <span className="text-ink font-medium">{selectedContact.company_name ?? '—'}</span>
               </div>
             </div>
 
@@ -394,8 +394,8 @@ export function WholeCrmView({
                     .filter(item => item.contact_id === selectedContact.id)
                     .map(item => (
                       <div key={item.id ?? item.occurred_at ?? item.type} className="rounded-xl border border-helix-border bg-helix-canvas p-3.5">
-                        <p className="text-[11px] font-semibold text-helix-ink">{item.type || 'Activity'}</p>
-                        <p className="mt-1 text-xs text-helix-ink">{item.subject || item.body || 'No note stored.'}</p>
+                        <p className="text-[11px] font-semibold text-ink">{item.type || 'Activity'}</p>
+                        <p className="mt-1 text-xs text-ink">{item.subject || item.body || 'No note stored.'}</p>
                         <p className="mt-1 font-mono text-[10px] text-helix-muted">
                           {item.occurred_at ? formatShortDate(item.occurred_at) : '—'}
                         </p>

@@ -3,7 +3,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-[12px] font-medium whitespace-nowrap transition-all duration-150 outline-none select-none active:scale-[0.99] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:ring-2 focus-visible:ring-helix-ink/15",
+  "group/button inline-flex shrink-0 items-center justify-center rounded-[12px] font-medium whitespace-nowrap transition-all duration-150 outline-none select-none active:scale-[0.99] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:ring-2 focus-visible:ring-ink/15",
   {
     variants: {
       variant: {
@@ -12,13 +12,13 @@ const buttonVariants = cva(
         primary:
           'border border-transparent bg-helix-accent text-white hover:bg-helix-accent/90 shadow-2xs',
         secondary:
-          'border border-helix-border bg-helix-surface text-helix-ink hover:bg-helix-surface-2',
+          'border border-helix-border bg-helix-surface text-ink hover:bg-helix-surface-2',
         outline:
-          'border border-helix-border bg-transparent text-helix-ink hover:bg-helix-surface-2',
+          'border border-helix-border bg-transparent text-ink hover:bg-helix-surface-2',
         accent:
           'border border-transparent bg-helix-accent text-white hover:bg-helix-accent/90 shadow-2xs',
         ghost:
-          'text-helix-muted hover:bg-helix-surface-2 hover:text-helix-ink',
+          'text-helix-muted hover:bg-helix-surface-2 hover:text-ink',
         destructive:
           'border border-helix-danger/20 bg-helix-danger/8 text-helix-danger hover:bg-helix-danger/12',
         link: 'text-helix-accent underline-offset-4 hover:underline',

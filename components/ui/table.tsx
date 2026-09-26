@@ -6,7 +6,7 @@ function Table({ className, ...props }: React.HTMLAttributes<HTMLTableElement>) 
     <div className="relative w-full overflow-x-auto rounded-[16px] border border-helix-border bg-helix-surface">
       <table
         data-slot="table"
-        className={cn('w-full caption-bottom text-13 text-helix-ink', className)}
+        className={cn('w-full caption-bottom text-13 text-ink', className)}
         {...props}
       />
     </div>
@@ -40,7 +40,7 @@ function TableFooter({ className, ...props }: React.HTMLAttributes<HTMLTableSect
   return (
     <tfoot
       data-slot="table-footer"
-      className={cn('border-t border-helix-border bg-helix-canvas font-medium text-helix-ink', className)}
+      className={cn('border-t border-helix-border bg-helix-canvas font-medium text-ink', className)}
       {...props}
     />
   )
@@ -76,7 +76,7 @@ function TableCell({ className, ...props }: React.TdHTMLAttributes<HTMLTableCell
   return (
     <td
       data-slot="table-cell"
-      className={cn('py-3.5 px-4 align-middle whitespace-nowrap text-13 text-helix-ink', className)}
+      className={cn('py-3.5 px-4 align-middle whitespace-nowrap text-13 text-ink', className)}
       {...props}
     />
   )

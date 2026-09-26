@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createSupabaseServerClient } from '@/lib/supabase'
 import { getVerifiedSession } from '@/lib/auth/session'
 import { ConsoleShell } from '@/components/shell/console-shell'
+import { AdminFrame, PageHead } from '@/components/admin/v5'
 import { PlaybooksView } from '@/components/admin/playbooks-view'
 
 export const metadata = {
@@ -17,7 +18,15 @@ export default async function AdminPlaybooksPage() {
 
   return (
     <ConsoleShell variant="admin" email={session.user.email ?? ''} businessName={null}>
-      <PlaybooksView />
+      <AdminFrame>
+        <PageHead
+          title="Guides"
+          titleAr="الأدلة"
+          lede="Call scripts, WhatsApp messages, and demo links."
+          ledeAr="نصوص المكالمات ورسائل واتساب وروابط العرض."
+        />
+        <PlaybooksView />
+      </AdminFrame>
     </ConsoleShell>
   )
 }

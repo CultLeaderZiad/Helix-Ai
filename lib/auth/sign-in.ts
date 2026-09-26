@@ -2,29 +2,29 @@
 
 import { createSupabaseServerClient } from '@/lib/supabase'
 import { parseTenantClaims } from '@/lib/auth/claims'
+import { loginRolesFromMetadata, normalizePortalOverride, resolveLoginPath } from '@/lib/auth/portal-route'
 import { SupabaseConfigError } from '@/lib/supabase-env'
 import { redirect } from 'next/navigation'
 
-export type Portal = 'admin' | 'client'
+export type PortalOverride = 'agency' | 'admin' | null
 
 export type SignInState =
   | { status: 'idle' }
   | {
       status: 'field_error'
       errors: Partial<Record<'email' | 'password', string>>
-      values: { email: string; portal: Portal }
+      values: { email: string; portal: PortalOverride }
     }
   | {
       status: 'auth_error'
-      code: 'INVALID_CREDENTIALS' | 'ROLE_MISMATCH' | 'UNAVAILABLE' | 'CLAIMS_MISSING' | 'EMAIL_NOT_CONFIRMED'
+      code: 'INVALID_CREDENTIALS' | 'UNAVAILABLE' | 'CLAIMS_MISSING' | 'EMAIL_NOT_CONFIRMED'
       message: string
-      actual_portal?: Portal
-      values: { email: string; portal: Portal }
+      values: { email: string; portal: PortalOverride }
     }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 
-function unavailable(values: { email: string; portal: Portal }, err: unknown): SignInState {
+function unavailable(values: { email: string; portal: PortalOverride }, err: unknown): SignInState {
   console.error('signIn failed:', err)
   const configMissing = err instanceof SupabaseConfigError
   return {
@@ -40,14 +40,14 @@ function unavailable(values: { email: string; portal: Portal }, err: unknown): S
 export async function signIn(_prev: SignInState, formData: FormData): Promise<SignInState> {
   const email = String(formData.get('email') ?? '').trim().toLowerCase()
   const password = String(formData.get('password') ?? '')
-  const portal: Portal = formData.get('portal') === 'client' ? 'client' : 'admin'
+  const portal = normalizePortalOverride(String(formData.get('portal') ?? ''))
   const values = { email, portal }
   const errors: Partial<Record<'email' | 'password', string>> = {}
   if (!EMAIL_RE.test(email) || email.length > 254) errors.email = 'Enter the email address for your workspace.'
   if (!password || password.length > 4096) errors.password = 'Enter your password.'
   if (errors.email || errors.password) return { status: 'field_error', errors, values }
 
-  let portalPath: string | null = null
+  let portalPath: '/admin' | '/dashboard' | null = null
   try {
     const supabase = await createSupabaseServerClient()
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
@@ -72,6 +72,7 @@ export async function signIn(_prev: SignInState, formData: FormData): Promise<Si
     }
 
     let claims = null
+    let appMetadata: unknown = data.user.app_metadata
     try {
       const { data: verified, error: claimsError } = await supabase.auth.getClaims(data.session.access_token)
       claims = claimsError ? null : parseTenantClaims(verified?.claims.app_metadata)
@@ -91,6 +92,7 @@ export async function signIn(_prev: SignInState, formData: FormData): Promise<Si
             const { data: newVerified } = await supabase.auth.getClaims(refreshed.session.access_token)
             claims = parseTenantClaims(newVerified?.claims.app_metadata)
             current = provisioned
+            if (refreshed.user?.app_metadata) appMetadata = refreshed.user.app_metadata
           }
         }
       } catch (provisionError) {
@@ -108,21 +110,13 @@ export async function signIn(_prev: SignInState, formData: FormData): Promise<Si
       }
     }
 
-    const actualPortal: Portal = claims.role === 'agency_admin' ? 'admin' : 'client'
-    if (portal !== actualPortal) {
-      await supabase.auth.signOut({ scope: 'local' })
-      return {
-        status: 'auth_error',
-        code: 'ROLE_MISMATCH',
-        message: actualPortal === 'admin'
-          ? 'This account is an agency admin. Switch to the Agency console.'
-          : 'This account is a client workspace. Switch to the Client portal.',
-        actual_portal: actualPortal,
-        values,
-      }
-    }
-
-    portalPath = actualPortal === 'admin' ? '/admin' : '/dashboard'
+    // Role never signs the user out. A client who asked for the agency
+    // console is sent to /dashboard; an agency admin goes to /admin.
+    portalPath = resolveLoginPath({
+      role: claims.role,
+      roles: loginRolesFromMetadata(claims.role, appMetadata),
+      portal,
+    })
   } catch (err) {
     return unavailable(values, err)
   }

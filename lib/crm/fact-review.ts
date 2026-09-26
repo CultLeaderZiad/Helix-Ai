@@ -74,6 +74,7 @@ export async function reviewFact(
   }
 
   revalidatePath('/dashboard/facts')
+  revalidatePath('/dashboard/queue')
   revalidatePath('/dashboard')
   return { status: 'done', decision }
 }

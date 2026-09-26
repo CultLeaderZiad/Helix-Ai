@@ -20,17 +20,15 @@ export function ModeTabs({ activeMode, onChange, isArabic }: ModeTabsProps) {
   ]
 
   return (
-    <div className="flex border-b border-border mb-4 overflow-x-auto">
+    <div className="tabs" role="tablist">
       {tabs.map(tab => (
         <button
           key={tab.id}
           type="button"
+          role="tab"
+          aria-selected={activeMode === tab.id}
           onClick={() => onChange(tab.id)}
-          className={`px-3 py-2 text-xs font-medium border-b-2 whitespace-nowrap transition-colors ${
-            activeMode === tab.id
-              ? 'border-foreground text-foreground'
-              : 'border-transparent text-muted-foreground hover:text-foreground'
-          }`}
+          className={activeMode === tab.id ? 'on' : undefined}
         >
           {isArabic ? tab.labelAr : tab.labelEn}
         </button>

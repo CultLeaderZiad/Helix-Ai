@@ -13,6 +13,7 @@ import {
 import { createSupabaseServerClient } from '@/lib/supabase'
 import { getVerifiedSession } from '@/lib/auth/session'
 import { ConsoleShell } from '@/components/shell/console-shell'
+import { AdminFrame, DataTable, EmptyState, PageHead, Panel, Stat } from '@/components/admin/v5'
 import {
   FactReviewList,
   type ReviewableFact,
@@ -28,7 +29,7 @@ export default async function AdminClientDetailPage({
 }) {
   const { id } = await params
   const { tab: tabParam } = await searchParams
-  const tab: Tab = (TABS as readonly string[]).includes(tabParam ?? '') ? (tabParam as Tab) : 'Overview'
+  const tab: Tab = TABS.find(item => item.toLowerCase() === (tabParam ?? '').toLowerCase()) ?? 'Overview'
 
   const supabase = await createSupabaseServerClient()
   const session = await getVerifiedSession(supabase)
@@ -99,80 +100,73 @@ export default async function AdminClientDetailPage({
     .reduce((sum, d) => sum + (d.value_cents ?? 0), 0)
   const overdueCount = invoices.filter(i => i.status === 'overdue').length
 
+  const tabLabel: Record<Tab, { en: string; ar: string }> = {
+    Overview: { en: 'Overview', ar: 'نظرة عامة' },
+    Systems: { en: 'Systems', ar: 'الأنظمة' },
+    Billing: { en: 'Billing', ar: 'الفوترة' },
+    Facts: { en: 'Review', ar: 'المراجعة' },
+    Queue: { en: 'Queue', ar: 'الطابور' },
+  }
+
   return (
     <ConsoleShell variant="admin" email={session.user.email ?? ''} businessName={null}>
-      <div className="w-full">
-        <header className="flex flex-col gap-1">
-          <Link
-            href="/admin"
-            className="self-start text-small text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
-          >
-            ← All clients
-          </Link>
-          <div className="flex flex-wrap items-baseline justify-between gap-3">
-            <h1 className="font-display text-h2">{client.business_name}</h1>
-            <p className="text-small text-muted-foreground">{client.vertical ?? '—'}</p>
-          </div>
-        </header>
+      <AdminFrame>
+        <PageHead
+          title={client.business_name}
+          titleAr={client.vertical ?? 'مساحة عمل'}
+          lede={client.vertical ?? undefined}
+          actions={
+            <Link className="hx-admin-btn" href="/admin">
+              All clients
+            </Link>
+          }
+        />
 
-        <nav aria-label="Client sections" className="mt-6 flex gap-1 border-b">
-          {TABS.map(t => (
+        <nav className="hx-admin-switch" aria-label="Client sections">
+          {TABS.map(item => (
             <Link
-              key={t}
-              href={`/admin/clients/${id}?tab=${t.toLowerCase()}`}
-              aria-current={tab === t ? 'page' : undefined}
-              className={`border-b-2 px-3 py-2 text-small ${
-                tab === t
-                  ? 'border-accent font-medium text-foreground'
-                  : 'border-transparent text-muted-foreground hover:text-foreground'
-              }`}
+              key={item}
+              href={`/admin/clients/${id}?tab=${item.toLowerCase()}`}
+              aria-current={tab === item ? 'page' : undefined}
+              className={tab === item ? 'on' : undefined}
             >
-              {t}
+              {tabLabel[item].en}
+              <span className="hx-admin-ar" lang="ar" dir="rtl" style={{ display: 'block', margin: 0 }}>
+                {tabLabel[item].ar}
+              </span>
             </Link>
           ))}
         </nav>
 
         {tab === 'Overview' ? (
-          <section className="mt-8 flex flex-col gap-4">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="border bg-panel p-4">
-                <p className="text-small text-muted-foreground">Contacts</p>
-                <p className="font-display text-h3 tabular-nums">{contactCount}</p>
-              </div>
-              <div className="border bg-panel p-4">
-                <p className="text-small text-muted-foreground">Open pipeline</p>
-                <p className="font-display text-h3 tabular-nums">{formatCurrency(openPipelineCents)}</p>
-              </div>
-              <div className="border bg-panel p-4">
-                <p className="text-small text-muted-foreground">Closed won value</p>
-                <p className="font-display text-h3 tabular-nums">{formatCurrency(wonValueCents)}</p>
-              </div>
-              <div className="border bg-panel p-4">
-                <p className="text-small text-muted-foreground">Overdue invoices</p>
-                <p className={`font-display text-h3 tabular-nums ${overdueCount > 0 ? 'text-status-danger' : ''}`}>
-                  {overdueCount}
-                </p>
-              </div>
-            </div>
-
-            <div>
-              <h2 className="font-display text-h3">Recent activity</h2>
+          <>
+            <section className="hx-admin-stats">
+              <Stat label="Contacts" labelAr="جهات الاتصال" value={contactCount} />
+              <Stat label="Open pipeline" labelAr="المسار المفتوح" value={formatCurrency(openPipelineCents)} />
+              <Stat label="Closed won value" labelAr="قيمة الصفقات المغلقة" value={formatCurrency(wonValueCents)} />
+              <Stat label="Overdue invoices" labelAr="فواتير متأخرة" value={overdueCount} />
+              <Stat label="Integrations" labelAr="التكاملات" value={integrations.length} />
+            </section>
+            <Panel title="Recent activity" titleAr="النشاط الأخير">
               {activities.length === 0 ? (
-                <p className="mt-3 text-small text-muted-foreground">
-                  No activity recorded yet for this workspace.
-                </p>
+                <EmptyState
+                  title="No activity recorded yet"
+                  titleAr="لا نشاط مسجّل بعد"
+                  body="Activity for this workspace will show up here."
+                  bodyAr="يظهر نشاط هذه المساحة هنا."
+                />
               ) : (
-                <ul className="mt-3 divide-y border">
+                <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
                   {activities.map(activity => {
                     const Icon = ACTIVITY_ICON[activity.type as CrmActivityType] ?? StickyNote
                     const subject = activity.subject ?? 'Untitled activity'
                     const who = activity.contact_id ? (contactNameById.get(activity.contact_id) ?? null) : null
                     return (
-                      <li key={activity.id} className="flex items-center gap-3 px-4 py-3">
-                        <Icon aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
-                        <div className="min-w-0 flex-1">
-                          <p className="truncate text-body">{subject}</p>
-                          <p className="text-small text-muted-foreground">
+                      <li key={activity.id} style={{ display: 'flex', gap: 12, padding: '10px 0', borderBottom: '1px solid rgba(21,23,26,0.08)' }}>
+                        <Icon aria-hidden="true" size={16} />
+                        <div>
+                          <p style={{ margin: 0 }}>{subject}</p>
+                          <p className="hx-admin-lede">
                             {who ? `${who} · ` : ''}
                             {formatDateTime(activity.occurred_at)}
                           </p>
@@ -182,113 +176,95 @@ export default async function AdminClientDetailPage({
                   })}
                 </ul>
               )}
-            </div>
-          </section>
+            </Panel>
+          </>
         ) : null}
 
         {tab === 'Systems' ? (
-          <section className="mt-8">
-            <h2 className="font-display text-h3">Installed systems</h2>
+          <Panel title="Installed systems" titleAr="الأنظمة المثبتة">
             {systems.length === 0 ? (
-              <p className="mt-3 text-small text-muted-foreground">
-                No systems installed yet for this workspace.
-              </p>
+              <EmptyState title="No systems installed yet" titleAr="لا أنظمة مثبتة بعد" />
             ) : (
-              <ul className="mt-3 flex flex-col gap-3">
+              <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {systems.map(system => (
-                  <li key={system.id} className="border bg-panel p-4">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <p className="text-body font-medium">
-                          {SYSTEM_GLOSS[system.system_type as SystemType] ?? system.system_type}
-                        </p>
-                        <span className="rounded-sm border border-border bg-raised px-1.5 py-0.5 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                          {system.provenance}
-                        </span>
-                        {system.active ? null : (
-                          <span className="rounded-sm border border-border bg-raised px-1.5 py-0.5 text-xs font-medium text-muted-foreground">
-                            Inactive
-                          </span>
-                        )}
-                      </div>
-                      <span className="text-small text-muted-foreground">
-                        {system.visible_to_client ? 'Visible to client' : 'Internal only'}
-                      </span>
+                  <li key={system.id} className="hx-admin-panel" style={{ padding: 16 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
+                      <strong>{SYSTEM_GLOSS[system.system_type as SystemType] ?? system.system_type}</strong>
+                      <span>{system.visible_to_client ? 'Visible to client' : 'Internal only'}</span>
                     </div>
-                    <p className="mt-2 text-small tabular-nums text-muted-foreground">
-                      Setup {system.setup_fee_cents != null ? formatCurrency(system.setup_fee_cents) : '—'} ·
-                      Retainer{' '}
-                      {system.monthly_retainer_cents != null
-                        ? `${formatCurrency(system.monthly_retainer_cents)}/mo`
-                        : '—'}
+                    <p className="hx-admin-lede">
+                      {system.provenance}
+                      {system.active ? '' : ' · Inactive'}
+                      {' · '}
+                      Setup {system.setup_fee_cents != null ? formatCurrency(system.setup_fee_cents) : '—'}
+                      {' · '}
+                      Retainer {system.monthly_retainer_cents != null ? `${formatCurrency(system.monthly_retainer_cents)}/mo` : '—'}
                     </p>
                   </li>
                 ))}
               </ul>
             )}
-          </section>
+          </Panel>
         ) : null}
 
         {tab === 'Billing' ? (
-          <section className="mt-8">
-            <h2 className="font-display text-h3">Invoices</h2>
+          <Panel title="Invoices" titleAr="الفواتير">
             {invoices.length === 0 ? (
-              <p className="mt-3 text-small text-muted-foreground">
-                No invoices recorded for this workspace yet.
-              </p>
+              <EmptyState title="No invoices recorded yet" titleAr="لا فواتير مسجّلة بعد" />
             ) : (
-              <table className="mt-3 w-full border-collapse text-left">
-                <thead>
-                  <tr className="border-b text-small text-muted-foreground">
-                    <th scope="col" className="py-2 pr-4 font-medium">Amount</th>
-                    <th scope="col" className="py-2 pr-4 font-medium">Due</th>
-                    <th scope="col" className="py-2 font-medium">Status</th>
+              <DataTable
+                columns={[
+                  { key: 'amount', label: 'Amount' },
+                  { key: 'due', label: 'Due' },
+                  { key: 'status', label: 'Status' },
+                ]}
+              >
+                {invoices.map(invoice => (
+                  <tr key={invoice.id}>
+                    <td>{formatCurrency(invoice.amount_cents)}</td>
+                    <td>{formatDate(invoice.due_date)}</td>
+                    <td style={{ textTransform: 'capitalize' }}>{invoice.status}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {invoices.map(invoice => (
-                    <tr key={invoice.id} className="border-b">
-                      <td className="py-3 pr-4 tabular-nums">{formatCurrency(invoice.amount_cents)}</td>
-                      <td className="py-3 pr-4">{formatDate(invoice.due_date)}</td>
-                      <td className="py-3 capitalize">{invoice.status}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                ))}
+              </DataTable>
             )}
-          </section>
+          </Panel>
         ) : null}
 
         {tab === 'Facts' ? (
-          <section className="mt-8">
-            <h2 className="font-display text-h3">Evidence review</h2>
+          <Panel title="Review queue" titleAr="طابور المراجعة">
             {pendingFacts.length === 0 ? (
-              <p className="mt-3 text-small text-muted-foreground">
-                No pending suggestions — the queue is clear.
-              </p>
+              <EmptyState
+                title="No pending suggestions"
+                titleAr="لا اقتراحات معلّقة"
+                body="The queue is clear."
+                bodyAr="الطابور فارغ."
+              />
             ) : (
               <>
-                <p className="mt-2 text-small text-muted-foreground">
-                  Shown read-only here. Client-portal users approve or dismiss these from their own
-                  workspace.
+                <p className="hx-admin-lede">
+                  Shown read-only here. Client workspace users approve or dismiss these from their own workspace.
+                </p>
+                <p className="hx-admin-ar" lang="ar" dir="rtl">
+                  للعرض فقط هنا. مستخدمو مساحة العميل يوافقون أو يرفضون من مساحتهم.
                 </p>
                 <FactReviewList facts={pendingFacts} />
               </>
             )}
-          </section>
+          </Panel>
         ) : null}
 
         {tab === 'Queue' ? (
-          <section className="mt-8">
-            <h2 className="font-display text-h3">Agent queue</h2>
-            <p className="mt-3 max-w-2xl text-small text-muted-foreground">
-              Verified facts apply automatically through a leased work queue drained by the
-              scheduled runner. Run summaries are written to service logs; the console does not
-              expose queue state.
+          <Panel title="Agent queue" titleAr="طابور الوكيل">
+            <p className="hx-admin-lede">
+              Verified facts apply automatically through a leased work queue drained by the scheduled runner. Run summaries are written to service logs; the console does not expose queue state.
             </p>
-          </section>
+            <p className="hx-admin-ar" lang="ar" dir="rtl">
+              الحقائق المؤكدة تُطبَّق تلقائياً عبر طابور عمل. ملخصات التشغيل تُكتب في سجلات الخدمة، واللوحة لا تعرض حالة الطابور.
+            </p>
+          </Panel>
         ) : null}
-      </div>
+      </AdminFrame>
     </ConsoleShell>
   )
 }

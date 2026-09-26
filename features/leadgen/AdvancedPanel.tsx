@@ -32,17 +32,17 @@ export function AdvancedPanel({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-medium text-muted-foreground mb-1">
-              {isArabic ? 'محرك الجلب الافتراضي' : 'Default Fetch Engine'}
+              {isArabic ? 'طريقة فتح الصفحات' : 'How pages are opened'}
             </label>
             <select
               value={engine}
               onChange={(e) => onChangeEngine(e.target.value)}
-              className="w-full rounded border border-input bg-background px-2 py-1 text-xs"
+              className="fld"
             >
-              <option value="auto">Auto (HTTP first, fallback to browser)</option>
-              <option value="http">HTTP (Fast & lightweight)</option>
-              <option value="dynamic">Cloudflare Dynamic (Render JS)</option>
-              <option value="stealth">Bright Data Stealth (Anti-block)</option>
+              <option value="auto">{isArabic ? 'تلقائي' : 'Automatic'}</option>
+              <option value="http">{isArabic ? 'صفحة بسيطة' : 'Simple page'}</option>
+              <option value="dynamic">{isArabic ? 'صفحة تحتاج متصفحاً' : 'Page that needs a browser'}</option>
+              <option value="stealth">{isArabic ? 'صفحة صعبة الفتح' : 'Hard-to-open page'}</option>
             </select>
           </div>
 

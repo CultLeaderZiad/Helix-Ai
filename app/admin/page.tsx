@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { createSupabaseServerClient } from '@/lib/supabase'
 import { getVerifiedSession } from '@/lib/auth/session'
 import { ConsoleShell } from '@/components/shell/console-shell'
-import { AdminTabs } from '@/components/admin/admin-tabs'
+import { AdminFrame, EmptyState, PageHead } from '@/components/admin/v5'
 import { ClientsRosterView, type ClientRosterItem } from '@/components/admin/clients-roster-view'
 import type { IntegrationStatus, ClientStatus, RegionTier } from '@/lib/schema'
 
@@ -105,26 +105,32 @@ export default async function AdminPage() {
 
   return (
     <ConsoleShell variant="admin" email={session.user.email ?? ''} businessName={null}>
-      <div className="w-full">
-        <AdminTabs />
+      <AdminFrame>
+        <PageHead
+          title="Clients"
+          titleAr="العملاء"
+          lede="Workspaces provisioned for this agency."
+          ledeAr="مساحات العمل المجهزة لهذه الوكالة."
+        />
 
         {queryError ? (
-          <p role="alert" className="mb-6 rounded-xl border border-status-danger/40 bg-status-danger/10 px-4 py-3 text-xs">
+          <p role="alert" className="hx-admin-alert">
             Client roster could not be loaded. {queryError}
+            <span className="hx-admin-ar" dir="rtl" lang="ar">تعذّر تحميل قائمة العملاء.</span>
           </p>
         ) : null}
 
         {dbRows.length === 0 && !queryError ? (
-          <p className="mb-6 rounded-xl border border-[#D9D4CB] bg-[#FFFEFA] px-4 py-3 text-xs text-[#6E6B65]">
-            No client workspaces yet. A workspace appears here after a confirmed signup is provisioned.
-            <span className="mt-1 block" dir="rtl" lang="ar">
-              لا توجد مساحات عمل بعد. تظهر المساحة هنا بعد تأكيد التسجيل وتجهيز الحساب.
-            </span>
-          </p>
-        ) : null}
-
-        <ClientsRosterView clients={dbRows} />
-      </div>
+          <EmptyState
+            title="No client workspaces yet"
+            titleAr="لا توجد مساحات عمل بعد"
+            body="A workspace appears here after a confirmed signup is provisioned."
+            bodyAr="تظهر المساحة هنا بعد تأكيد التسجيل وتجهيز الحساب."
+          />
+        ) : (
+          <ClientsRosterView clients={dbRows} />
+        )}
+      </AdminFrame>
     </ConsoleShell>
   )
 }

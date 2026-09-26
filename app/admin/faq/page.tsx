@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { createSupabaseServerClient } from '@/lib/supabase'
 import { getVerifiedSession } from '@/lib/auth/session'
 import { ConsoleShell } from '@/components/shell/console-shell'
-import { AdminTabs } from '@/components/admin/admin-tabs'
+import { AdminFrame, PageHead } from '@/components/admin/v5'
 import { FaqManagerView } from '@/components/admin/faq-manager-view'
 import { getAllAdminFaqs } from '@/lib/faq/actions'
 
@@ -21,10 +21,15 @@ export default async function AdminFaqPage() {
 
   return (
     <ConsoleShell variant="admin" email={session.user.email ?? ''} businessName={null}>
-      <div className="w-full">
-        <AdminTabs />
+      <AdminFrame>
+        <PageHead
+          title="FAQ"
+          titleAr="الأسئلة"
+          lede="Questions and answers shown publicly."
+          ledeAr="الأسئلة والأجوبة المعروضة للعامة."
+        />
         <FaqManagerView initialFaqs={faqs} />
-      </div>
+      </AdminFrame>
     </ConsoleShell>
   )
 }

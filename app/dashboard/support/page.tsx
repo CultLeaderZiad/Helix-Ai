@@ -1,8 +1,11 @@
+import { tx, type DashLang, type DashTheme } from '@/lib/dashboard/lang'
 import { redirect } from 'next/navigation'
 import { createSupabaseServerClient } from '@/lib/supabase'
 import { getVerifiedSession } from '@/lib/auth/session'
 import { ConsoleShell } from '@/components/shell/console-shell'
 import { SupportDashboard } from '@/components/support/support-dashboard'
+import { PageHead } from '@/components/dashboard/ui'
+import { readDashLang, readDashTheme } from '@/lib/dashboard/lang.server'
 
 export const metadata = {
   title: 'Support — Helix AI Dashboard',
@@ -20,7 +23,10 @@ export default async function ClientSupportPage() {
     redirect('/login')
   }
 
-  const [{ data: tickets }, { data: messages }] = await Promise.all([
+  const lang = await readDashLang()
+  const theme = await readDashTheme()
+  const [{ data: client }, { data: tickets }, { data: messages }] = await Promise.all([
+    supabase.from('clients').select('business_name').eq('id', clientId).maybeSingle(),
     supabase
       .from('support_tickets')
       .select('*')
@@ -38,20 +44,20 @@ export default async function ClientSupportPage() {
   }))
 
   return (
-    <ConsoleShell variant="client" email={session.user.email ?? ''} businessName="Your Workspace">
-      <div className="w-full">
-        <header className="mb-8">
-          <h1 className="font-display text-h2">Support</h1>
-          <p className="mt-1 text-small text-muted-foreground">
-            Get help from the Helix AI team.
-          </p>
-        </header>
+    <ConsoleShell variant="client" email={session.user.email ?? ''} businessName={client?.business_name ?? null} lang={lang} theme={theme}>
+      <PageHead
+        title={tx(lang, 'Support', 'الدعم')}
+        lede={tx(lang, 'Write to Helix about this workspace.', 'راسل Helix بخصوص مساحة العمل هذه.')}
+      />
+      <div className="stack">
         <SupportDashboard
           initialTickets={tickets ?? []}
           allMessages={formattedMessages}
           currentUserId={session.user.id}
           clientId={clientId}
           isAdmin={false}
+          lang={lang}
+          businessName={client?.business_name ?? null}
         />
       </div>
     </ConsoleShell>

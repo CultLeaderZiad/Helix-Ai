@@ -112,8 +112,8 @@ export function summarizeMonthlyReport(input: ReportMetricInput): ReportMetricRe
         unitAr: 'محاولة',
       },
       {
-        system: 'Evidence ledger',
-        systemAr: 'سجل الأدلة',
+        system: 'Saved details',
+        systemAr: 'التفاصيل المحفوظة',
         metric: 'Facts on file',
         metricAr: 'حقائق مسجّلة',
         count: input.totalFacts,

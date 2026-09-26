@@ -56,12 +56,12 @@ export function buildBespokeProposal({
 }): ProposalDocument {
   const items: ProposalItem[] = [
     {
-      name: `Core Architecture Provisioning: ${systemName}`,
-      nameAr: `تأسيس وبرمجة البنية المعمارية الأساسية: ${systemNameAr}`,
+      name: `Setup: ${systemName}`,
+      nameAr: `التجهيز: ${systemNameAr}`,
       description:
         'WhatsApp Business connection, calendar sync, and calibration of replies to your services and hours.',
       descriptionAr:
-        'تهيئة خطوط الاتصال الهاتفية SIP، توثيق حساب الواتساب التجاري مع Meta، تفعيل عزل قاعدة البيانات، وضبط النماذج الذكية.',
+        'ربط واتساب للأعمال، ومزامنة التقويم، وضبط الردود على خدماتك وساعات عملك.',
       type: 'setup',
       amountCents: setupFeeCents,
     },
@@ -87,14 +87,14 @@ export function buildBespokeProposal({
 
   const slaTerms = [
     'Monitoring on voice and WhatsApp connections, with issues escalated to your team.',
-    'Cryptographic RLS Guarantee: zero cross-tenant database access across profiles and contacts.',
-    'Human Attention Queue: any observation with confidence < 85% is routed to supervisory review prior to state modification.',
+    'Your workspace data stays separate from other businesses.',
+    'Anything uncertain is reviewed by a person before it is saved.',
     'Compliant Data Residence: all customer transcripts processed via paid enterprise APIs with zero model training.',
   ]
 
   const slaTermsAr = [
     'متابعة اتصالات الصوت وواتساب، مع تصعيد الأعطال إلى فريقك.',
-    'عزل تام لبيانات المؤسسة على مستوى قاعدة البيانات PostgreSQL RLS دون أي تداخل مع أي عميل آخر.',
+    'بيانات مساحة عملك تبقى منفصلة عن أعمال الآخرين.',
     'إشراف بشري إلزامي: أي معلومة تقل نسبة الثقة فيها عن 85% تُحوّل للإدارة قبل تحديث أي سجل.',
     'حماية الخصوصية: جميع البيانات تُعالج عبر خوادم مؤسسية مدفوعة لا تستخدم بياناتكم في تدريب النماذج.',
   ]

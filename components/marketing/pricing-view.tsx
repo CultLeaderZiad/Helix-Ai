@@ -1,70 +1,19 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
-import { ArrowRight, Check, Globe, Headset, KeyRound, MessageCircle, Users } from 'lucide-react'
+import { ArrowRight, Check, Globe, Headset, KeyRound, LayoutGrid, MessageCircle, Users } from 'lucide-react'
 import { useMarketingPrefs } from '@/components/marketing/public-frame'
-import { REGIONAL_PRICING_CONFIGS } from '@/lib/pricing/tiers'
+import { QaAccordion } from '@/components/marketing/qa-accordion'
+import { WhatsAppCta } from '@/components/marketing/whatsapp-cta'
+import { planDisplay, type PricingPlan } from '@/lib/pricing/tiers'
 
 function money(n: number) {
   return new Intl.NumberFormat('en-US').format(n)
 }
 
-const DISPLAY: Record<string, { en: string[]; ar: string[] }> = {
-  'starter-gcc': {
-    en: [
-      'Up to 1,500 customer conversations a month',
-      'Bilingual voice agent, Gulf Arabic and English',
-      'Official WhatsApp Business connection',
-      'Cal.com and Google Calendar sync',
-      'Human review before anything uncertain is saved',
-      'UAE and KSA VAT-compliant invoices',
-    ],
-    ar: [
-      'حتى 1,500 محادثة مع العملاء شهرياً',
-      'وكيل صوتي ثنائي اللغة: خليجي وإنجليزي',
-      'ربط رسمي مع واتساب للأعمال',
-      'مزامنة مع Cal.com وتقويم Google',
-      'مراجعة بشرية قبل حفظ أي معلومة غير مؤكدة',
-      'فواتير متوافقة مع ضريبة القيمة المضافة في الإمارات والسعودية',
-    ],
-  },
-  'growth-gcc': {
-    en: [
-      'Up to 10,000 customer conversations a month',
-      'Voice, WhatsApp and email automation',
-      'Missed-call WhatsApp text-back and triage, in seconds',
-      'B2B payment reminders with Mada and Apple Pay links',
-    ],
-    ar: [
-      'حتى 10,000 محادثة مع العملاء شهرياً',
-      'أتمتة الصوت وواتساب والبريد الإلكتروني',
-      'رد على المكالمات الفائتة عبر واتساب وفرزها، خلال ثوانٍ',
-      'تذكيرات دفع للشركات مع روابط مدى وApple Pay',
-    ],
-  },
-  'scale-gcc': {
-    en: [
-      'Unlimited workspaces across branches and brands',
-      'Dialect tuning: Emirati, Najdi, Hijazi, Qatari',
-      'B2B collections and dispute handling',
-      'Cross-branch CRM governance and exports',
-      'Priority escalation support',
-    ],
-    ar: [
-      'مساحات عمل غير محدودة لكل الفروع والعلامات',
-      'ضبط اللهجات: الإماراتية والنجدية والحجازية والقطرية',
-      'تحصيل مستحقات الشركات ومعالجة الاعتراضات',
-      'حوكمة بيانات العملاء وتصديرها عبر الفروع',
-      'دعم تصعيد ذو أولوية',
-    ],
-  },
-}
-
-export function PricingView() {
+export function PricingView({ plans }: { plans: PricingPlan[] }) {
   const { lang } = useMarketingPrefs()
   const ar = lang === 'ar'
-  const [openFaq, setOpenFaq] = useState(0)
   const faqs = ar
     ? [
         ['ماذا تشمل رسوم الإعداد؟', 'تصميم النظام حول خدماتك وساعاتك، وربط الهاتف وواتساب والتقويم، وكتابة الردود بالعربية والإنجليزية معك، والاختبار قبل الإطلاق.'],
@@ -76,7 +25,6 @@ export function PricingView() {
         ['Can I start with just one system?', 'Yes. Studio prices each system on its own, as a one-time setup plus a monthly fee, so you can start small and add more later.'],
         ['What happens if I go over my conversation limit?', 'We confirm that with you on the discovery call. Nothing extra is charged before we tell you.'],
       ]
-  const plans = REGIONAL_PRICING_CONFIGS.gcc_enterprise.plans
   return (
     <>
       <section className="container hdr">
@@ -91,18 +39,28 @@ export function PricingView() {
         </div>
         <div className="plans">
           {plans.map(plan => {
-            const features = DISPLAY[plan.id]?.[ar ? 'ar' : 'en'] ?? (ar ? plan.featuresAr : plan.features)
+            const copy = planDisplay(plan, ar ? 'ar' : 'en')
+            const monthly = plan.prices.AED
+            const setup = plan.setupFee.AED
             return (
               <div key={plan.id} className={`plan${plan.featured ? ' f' : ''}`}>
                 <div className="pn">
                   {ar ? plan.nameAr : plan.name}
                   {plan.featured ? <span className="rec">{ar ? 'موصى بها' : 'Recommended'}</span> : null}
                 </div>
-                <p className="tg">{ar ? plan.taglineAr : plan.tagline}</p>
-                <div className="price"><span className="cur">AED</span><b className="num"><bdi>{money(plan.prices.AED ?? 0)}</bdi></b><span className="per">{ar ? '/ شهرياً' : '/ month'}</span></div>
-                <div className="setup">+ AED <bdi>{money(plan.setupFee.AED ?? 0)}</bdi> {ar ? 'إعداد لمرة واحدة' : 'one-time setup'}</div>
+                <p className="tg">{copy.tagline}</p>
+                {typeof monthly === 'number' ? (
+                  ar ? (
+                    <div className="price"><b className="num"><bdi>{money(monthly)}</bdi></b><span className="cur">درهم</span><span className="per">/ شهرياً</span></div>
+                  ) : (
+                    <div className="price"><span className="cur">AED</span><b className="num"><bdi>{money(monthly)}</bdi></b><span className="per">/ month</span></div>
+                  )
+                ) : null}
+                {typeof setup === 'number' ? (
+                  <div className="setup">{ar ? <>+ <bdi>{money(setup)}</bdi> درهم إعداد لمرة واحدة</> : <>+ AED <bdi>{money(setup)}</bdi> one-time setup</>}</div>
+                ) : null}
                 <ul>
-                  {features.map(f => <li key={f}><Check size={16} />{f}</li>)}
+                  {copy.features.map(feature => <li key={feature}><Check size={16} />{feature}</li>)}
                 </ul>
                 <Link className="btn btn-primary" href={`/contact?plan=${plan.id}`} style={{ marginTop: 'auto' }}>
                   {ar ? 'احجز مكالمة تعريفية' : 'Book a discovery call'} {plan.featured ? <ArrowRight className="arrow" size={16} /> : null}
@@ -113,7 +71,7 @@ export function PricingView() {
         </div>
         <div className="below">
           <span>{ar ? 'تحتاج شيئاً مخصّصاً، أو أكثر من علامة تجارية بقواعد مختلفة؟' : 'Need something bespoke, or more than one brand with different rules?'}</span>
-          <Link className="link" href="/build">{ar ? 'بناء مخصّص، لنحدد النطاق' : "Custom build, let's scope it"} <ArrowRight className="arrow" size={14} /></Link>
+          <Link className="link" href="/contact?scope=custom">{ar ? 'بناء مخصّص، لنحدد النطاق' : "Custom build, let's scope it"} <ArrowRight className="arrow" size={14} /></Link>
         </div>
       </section>
       <section className="container inc">
@@ -126,7 +84,7 @@ export function PricingView() {
           <div><Globe size={20} /><div><b>{ar ? 'العربية والإنجليزية' : 'Arabic and English'}</b><span>{ar ? 'ردود تراعي اللهجة، بما فيها الرسائل المختلطة.' : 'Dialect-aware replies, including mixed-language messages.'}</span></div></div>
           <div><Headset size={20} /><div><b>{ar ? 'تحويل لموظف بشري' : 'Human hand-off'}</b><span>{ar ? 'يمكن لفريقك تولي أي محادثة مع السياق كاملاً.' : 'Your team can take over any conversation, with full context.'}</span></div></div>
           <div><MessageCircle size={20} /><div><b>{ar ? 'رقم واتساب الخاص بك' : 'Your own WhatsApp number'}</b><span>{ar ? 'العملاء يتحدثون مع نشاطك، لا معنا.' : 'Customers talk to your business, not to us.'}</span></div></div>
-          <div><Users size={20} /><div><b>{ar ? 'لوحة متابعة للعميل' : 'Client dashboard'}</b><span>{ar ? 'كل رد وحجز وتحويل بلغة واضحة.' : 'Every reply, booking and hand-off, in plain language.'}</span></div></div>
+          <div><LayoutGrid size={20} /><div><b>{ar ? 'لوحة متابعة للعميل' : 'Client dashboard'}</b><span>{ar ? 'كل رد وحجز وتحويل بلغة واضحة.' : 'Every reply, booking and hand-off, in plain language.'}</span></div></div>
           <div><KeyRound size={20} /><div><b>{ar ? 'الملكية لك' : 'You keep ownership'}</b><span>{ar ? 'بعد الإطلاق، الإعداد والتكاملات وأدلة التشغيل ملكك.' : 'After go-live, the setup, integrations and runbooks are yours.'}</span></div></div>
         </div>
       </section>
@@ -151,16 +109,7 @@ export function PricingView() {
           <span className="kicker">{ar ? 'أسئلة الأسعار' : 'Pricing questions'}</span>
           <h2 className="display h2" style={{ marginTop: 18 }}>{ar ? 'إجابات مباشرة.' : 'Straight answers.'}</h2>
         </div>
-        <div>
-          {faqs.map(([q, a], i) => (
-            <div className="qa" key={q}>
-              <button type="button" className="q" onClick={() => setOpenFaq(openFaq === i ? -1 : i)} style={{ width: '100%', background: 'none', border: 0, color: 'inherit', cursor: 'pointer', textAlign: 'start' }}>
-                {q}
-              </button>
-              {openFaq === i ? <div className="a">{a}</div> : null}
-            </div>
-          ))}
-        </div>
+        <QaAccordion idPrefix="pricing-faq" items={faqs.map(([q, a]) => ({ q, a }))} />
       </section>
       <section className="container">
         <div className="cta">
@@ -170,9 +119,12 @@ export function PricingView() {
           </div>
           <div className="row gap-12">
             <Link className="btn btn-primary" href="/contact">{ar ? 'احجز مكالمة تعريفية' : 'Book a discovery call'} <ArrowRight className="arrow" size={16} /></Link>
-            <Link className="btn btn-ghost" href="/contact"><MessageCircle size={16} /> WhatsApp</Link>
+            <WhatsAppCta ar={ar} className="btn btn-ghost" labelEn="WhatsApp" labelAr="واتساب">
+              <MessageCircle size={16} />
+            </WhatsAppCta>
           </div>
         </div>
+        <p className="faint small price-note">{ar ? 'الأسعار بالدرهم، من دليل أسعار Helix الحالي.' : 'Prices in AED, from the current Helix pricing catalogue.'}</p>
       </section>
     </>
   )

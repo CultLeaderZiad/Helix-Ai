@@ -73,7 +73,7 @@ export function NotificationBell({ isAdmin, clientId }: { isAdmin: boolean; clie
   return (
     <Link
       href={href}
-      className="relative flex size-8 items-center justify-center rounded-[10px] text-helix-muted hover:bg-helix-canvas hover:text-helix-ink transition-colors"
+      className="relative flex size-8 items-center justify-center rounded-[10px] text-helix-muted hover:bg-helix-canvas hover:text-ink transition-colors"
     >
       <Bell className="size-4" />
       {hasUnread && (

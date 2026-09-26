@@ -5,9 +5,8 @@ import { getVerifiedSession } from '@/lib/auth/session'
 import { ConsoleShell } from '@/components/shell/console-shell'
 import { CORE_SYSTEM_COUNT, PREVIEW_SYSTEM_COUNT } from '@/lib/studio/templates'
 import { StudioRequestsView } from '@/components/admin/studio-requests-view'
+import { AdminFrame, PageHead, Panel } from '@/components/admin/v5'
 import { SystemCatalogGrid } from '@/components/studio/system-card'
-import { PageHeader } from '@/components/ui/helix'
-import { buttonVariants } from '@/components/ui/button'
 
 export const metadata = {
   title: 'Helix AI — System catalog',
@@ -33,41 +32,33 @@ export default async function AdminStudioPage() {
 
   return (
     <ConsoleShell variant="admin" email={session.user.email ?? ''} businessName={null}>
-      <div className="w-full space-y-8">
-        <PageHeader
-          title="System catalog"
-          subtitle={`Core production packs + preview add-ons. Demo is not live. ${CORE_SYSTEM_COUNT} core · ${PREVIEW_SYSTEM_COUNT} preview.`}
+      <AdminFrame>
+        <PageHead
+          title="Systems"
+          titleAr="الأنظمة"
+          lede={`Catalog of production packs and preview add-ons. The demo is not live. ${CORE_SYSTEM_COUNT} core · ${PREVIEW_SYSTEM_COUNT} preview.`}
+          ledeAr="فهرس حزم الإنتاج والإضافات. العرض ليس مباشراً."
           actions={
-            <Link href="/dashboard/studio" className={buttonVariants({ size: 'sm' })}>
-              Launch studio demo →
+            <Link className="hx-admin-btn" href="/dashboard/studio">
+              Open studio
             </Link>
           }
         />
-
-        <section className="rounded-[16px] border border-helix-border bg-helix-surface p-5">
-          <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <h2 className="text-15 font-semibold tracking-[-0.03em] text-helix-ink">Inbound build requests</h2>
-              <p className="mt-1 text-13 text-helix-muted">When a client hits Request build, it lands here.</p>
-            </div>
-            <ShareStudioFallback />
-          </div>
+        <Panel
+          title="Build requests"
+          titleAr="طلبات البناء"
+          actions={
+            <Link className="hx-admin-btn" href="/dashboard/studio">
+              Share studio link
+            </Link>
+          }
+        >
+          <p className="hx-admin-lede">When a client requests a build, it lands here.</p>
+          <p className="hx-admin-ar" lang="ar" dir="rtl">عندما يطلب عميل بناء نظام، يظهر الطلب هنا.</p>
           <StudioRequestsView deals={deals} clientMap={clientMap} />
-        </section>
-
+        </Panel>
         <SystemCatalogGrid />
-      </div>
+      </AdminFrame>
     </ConsoleShell>
-  )
-}
-
-function ShareStudioFallback() {
-  return (
-    <Link
-      href="/dashboard/studio"
-      className={buttonVariants({ variant: 'secondary', size: 'sm' })}
-    >
-      Share studio link
-    </Link>
   )
 }

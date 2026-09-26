@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { createSupabaseServerClient } from '@/lib/supabase'
 import { getVerifiedSession } from '@/lib/auth/session'
 import { ConsoleShell } from '@/components/shell/console-shell'
-import type { IntegrationStatus } from '@/lib/schema'
+import { AdminFrame, DataTable, EmptyState, PageHead, Panel, Stat } from '@/components/admin/v5'
 
 export const metadata = {
   title: 'HELIX AI — Analytics',
@@ -178,73 +178,56 @@ export default async function AnalyticsPage({
 
   return (
     <ConsoleShell variant="admin" email={session.user.email ?? ''} businessName={null}>
-      <div className="w-full">
-        <header className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h1 className="font-display text-h2">Analytics</h1>
-            <p className="mt-1 text-small text-muted-foreground">
-              Performance across every workspace
-            </p>
-          </div>
-          <nav aria-label="Period" className="flex border">
-            {PERIODS.map(p => (
-              <Link
-                key={p}
-                href={
-                  p === 'Custom'
-                    ? '/admin/analytics?period=Custom&from=2026-08-01&to=2026-09-01'
-                    : `/admin/analytics?period=${encodeURIComponent(p)}`
-                }
-                aria-current={period === p ? 'page' : undefined}
-                className={`px-3 py-2 text-small ${
-                  period === p ? 'bg-raised font-medium text-foreground' : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                {p}
-                {p === 'Custom' ? '…' : ''}
-              </Link>
-            ))}
-          </nav>
-        </header>
+      <AdminFrame>
+        <PageHead
+          title="Analytics"
+          titleAr="التحليلات"
+          lede={`Performance across every workspace · ${label}`}
+          ledeAr="الأداء عبر كل مساحات العمل"
+          actions={
+            <nav className="hx-admin-switch" aria-label="Period">
+              {PERIODS.map(p => (
+                <Link
+                  key={p}
+                  href={
+                    p === 'Custom'
+                      ? '/admin/analytics?period=Custom&from=2026-08-01&to=2026-09-01'
+                      : `/admin/analytics?period=${encodeURIComponent(p)}`
+                  }
+                  aria-current={period === p ? 'page' : undefined}
+                  className={period === p ? 'on' : undefined}
+                >
+                  {p}
+                  {p === 'Custom' ? '…' : ''}
+                </Link>
+              ))}
+            </nav>
+          }
+        />
 
         {queryError ? (
-          <div role="alert" className="mt-8 border border-status-danger/40 bg-status-danger/10 p-4">
-            <p className="text-small text-foreground">
-              Analytics data could not be loaded. Retry shortly.
-            </p>
-          </div>
+          <p role="alert" className="hx-admin-alert">
+            Analytics data could not be loaded. Retry shortly.
+            <span className="hx-admin-ar" lang="ar" dir="rtl">تعذّر تحميل التحليلات. أعد المحاولة قريباً.</span>
+          </p>
         ) : zeroActivity ? (
-          <div className="mt-16 flex flex-col items-center gap-2 text-center">
-            <h2 className="font-display text-h3">No activity in this period.</h2>
-            <p className="max-w-md text-small text-muted-foreground">
-              Events and bookings appear here once workspaces capture them. Widen the period to see
-              earlier activity.
-            </p>
-          </div>
+          <EmptyState
+            title="No activity in this period."
+            titleAr="لا نشاط في هذه الفترة."
+            body="Events and bookings appear here once workspaces capture them. Widen the period to see earlier activity."
+            bodyAr="تظهر الأحداث والحجوزات هنا بعد أن تسجّلها مساحات العمل."
+          />
         ) : (
           <>
-            <section aria-label="Key figures" className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <div className="border bg-panel p-4">
-                <p className="text-small text-muted-foreground">Closed-won revenue</p>
-                <p className="font-display text-h3 tabular-nums">{currency(wonRevenueCents)}</p>
-              </div>
-              <div className="border bg-panel p-4">
-                <p className="text-small text-muted-foreground">Bookings</p>
-                <p className="font-display text-h3 tabular-nums">{bookings.length - cancelledCount}</p>
-              </div>
-              <div className="border bg-panel p-4">
-                <p className="text-small text-muted-foreground">No-shows</p>
-                <p className="font-display text-h3 tabular-nums">{noShowCount}</p>
-              </div>
-              <div className="border bg-panel p-4">
-                <p className="text-small text-muted-foreground">Pending review</p>
-                <p className="font-display text-h3 tabular-nums">{pendingFacts.length}</p>
-              </div>
+            <section className="hx-admin-stats" aria-label="Key figures">
+              <Stat label="Closed-won revenue" labelAr="إيراد الصفقات المغلقة" value={currency(wonRevenueCents)} />
+              <Stat label="Bookings" labelAr="الحجوزات" value={bookings.length - cancelledCount} />
+              <Stat label="No-shows" labelAr="غياب" value={noShowCount} />
+              <Stat label="Pending review" labelAr="بانتظار المراجعة" value={pendingFacts.length} />
             </section>
 
-            <section aria-label="Lead funnel" className="mt-8">
-              <h2 className="font-display text-h3">Lead funnel</h2>
-              <ul className="mt-3 flex flex-col gap-2">
+            <Panel title="Lead funnel" titleAr="مسار العملاء">
+              <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {(['lead_captured', 'qualified', 'booked', 'closed_won'] as const).map(stage => {
                   const count = eventCounts.get(stage) ?? 0
                   const max = Math.max(
@@ -254,134 +237,94 @@ export default async function AnalyticsPage({
                     ),
                   )
                   return (
-                    <li key={stage} className="flex items-center gap-3">
-                      <span className="w-32 shrink-0 text-small capitalize">{stage.replace(/_/g, ' ')}</span>
-                      <span className="h-6 flex-1 bg-raised">
-                        <span
-                          className="block h-6 bg-accent"
-                          style={{ width: `${Math.round((count / max) * 100)}%` }}
-                        />
+                    <li key={stage} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <span style={{ width: 120 }}>{stage.replace(/_/g, ' ')}</span>
+                      <span className="hx-admin-bar">
+                        <span style={{ width: `${Math.round((count / max) * 100)}%` }} />
                       </span>
-                      <span className="w-10 shrink-0 text-right text-small tabular-nums">{count}</span>
+                      <span style={{ width: 32, textAlign: 'end' }}>{count}</span>
                     </li>
                   )
                 })}
               </ul>
-            </section>
+            </Panel>
 
-            <section aria-label="Bookings trend" className="mt-8">
-              <h2 className="font-display text-h3">Bookings by day</h2>
-              <div className="mt-3 flex h-24 items-end gap-1" aria-hidden="true">
+            <Panel title="Bookings by day" titleAr="الحجوزات حسب اليوم">
+              <div className="hx-admin-trend" aria-hidden="true">
                 {trend.map(day => (
-                  <span
-                    key={day.date}
-                    className="flex-1 bg-accent/80"
-                    style={{ height: `${Math.max(4, Math.round((day.booked / trendMax) * 100))}%` }}
-                  />
+                  <span key={day.date} style={{ height: `${Math.max(4, Math.round((day.booked / trendMax) * 100))}%` }} />
                 ))}
               </div>
-              <p className="mt-2 text-small text-muted-foreground">
-                {trend[0]?.date} → {trend[trend.length - 1]?.date} · peak day{' '}
-                <span className="tabular-nums">{trendMax}</span>
+              <p className="hx-admin-lede">
+                {trend[0]?.date} → {trend[trend.length - 1]?.date} · peak day {trendMax}
               </p>
+            </Panel>
+
+            <section className="hx-admin-stats" aria-label="Attention">
+              <Stat label="Pending review" labelAr="بانتظار المراجعة" value={pendingFacts.length} hint="Open the client roster to review." hintAr="راجعها من قائمة العملاء." />
+              <Stat label="Degraded integrations" labelAr="تكاملات متدهورة" value={degradedCount} hint="Per-workspace status on the roster." hintAr="الحالة لكل مساحة في القائمة." />
+              <Stat label="Overdue invoices" labelAr="فواتير متأخرة" value={overdueCount} hint="Shown on each workspace billing tab." hintAr="تظهر في تبويب الفوترة لكل مساحة." />
             </section>
 
-            <section aria-label="Attention" className="mt-8">
-              <h2 className="font-display text-h3">Needs attention</h2>
-              <ul className="mt-3 grid gap-4 sm:grid-cols-3">
-                <li className="border bg-panel p-4">
-                  <p className="text-small text-muted-foreground">Pending evidence</p>
-                  <p className="font-display text-h3 tabular-nums">{pendingFacts.length}</p>
-                  <Link href="/admin" className="mt-2 inline-block text-small text-accent underline-offset-4 hover:underline">
-                    Review →
-                  </Link>
-                </li>
-                <li className="border bg-panel p-4">
-                  <p className="text-small text-muted-foreground">Degraded integrations</p>
-                  <p className="font-display text-h3 tabular-nums">{degradedCount}</p>
-                  <p className="mt-2 text-small text-muted-foreground">Per-workspace status on the roster.</p>
-                </li>
-                <li className="border bg-panel p-4">
-                  <p className="text-small text-muted-foreground">Overdue invoices</p>
-                  <p className="font-display text-h3 tabular-nums">{overdueCount}</p>
-                  <p className="mt-2 text-small text-muted-foreground">Per-workspace detail under Billing.</p>
-                </li>
-              </ul>
-            </section>
-
-            <section aria-label="Platform attribution" className="mt-8">
-              <h2 className="font-display text-h3">Attribution by platform</h2>
+            <Panel title="Attribution by platform" titleAr="الإسناد حسب المنصة">
               {platformRows.length === 0 ? (
-                <p className="mt-3 text-small text-muted-foreground">
-                  No closed outcomes recorded in this period yet.
-                </p>
+                <EmptyState
+                  title="No closed outcomes in this period"
+                  titleAr="لا نتائج مغلقة في هذه الفترة"
+                />
               ) : (
-                <table className="mt-3 w-full border-collapse text-left">
-                  <thead>
-                    <tr className="border-b text-small text-muted-foreground">
-                      <th scope="col" className="py-2 pr-4 font-medium">Platform</th>
-                      <th scope="col" className="py-2 pr-4 text-right font-medium">Won</th>
-                      <th scope="col" className="py-2 pr-4 text-right font-medium">Lost</th>
-                      <th scope="col" className="py-2 pr-4 text-right font-medium">Win rate</th>
-                      <th scope="col" className="py-2 text-right font-medium">Revenue</th>
+                <DataTable
+                  columns={[
+                    { key: 'platform', label: 'Platform' },
+                    { key: 'won', label: 'Won', align: 'end' },
+                    { key: 'lost', label: 'Lost', align: 'end' },
+                    { key: 'rate', label: 'Win rate', align: 'end' },
+                    { key: 'revenue', label: 'Revenue', align: 'end' },
+                  ]}
+                >
+                  {platformRows.map(row => (
+                    <tr key={row.platform}>
+                      <td>{row.platform}</td>
+                      <td style={{ textAlign: 'end' }}>{row.won}</td>
+                      <td style={{ textAlign: 'end' }}>{row.lost}</td>
+                      <td style={{ textAlign: 'end' }}>{row.winRate == null ? '—' : `${row.winRate}%`}</td>
+                      <td style={{ textAlign: 'end' }}>{currency(row.revenueCents)}</td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {platformRows.map(row => (
-                      <tr key={row.platform} className="border-b">
-                        <td className="py-3 pr-4">{row.platform}</td>
-                        <td className="py-3 pr-4 text-right tabular-nums">{row.won}</td>
-                        <td className="py-3 pr-4 text-right tabular-nums">{row.lost}</td>
-                        <td className="py-3 pr-4 text-right tabular-nums">
-                          {row.winRate == null ? '—' : `${row.winRate}%`}
-                        </td>
-                        <td className="py-3 text-right tabular-nums">{currency(row.revenueCents)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                  ))}
+                </DataTable>
               )}
-            </section>
+            </Panel>
 
-            <section aria-label="Workspace comparison" className="mt-8 pb-4">
-              <h2 className="font-display text-h3">Workspaces</h2>
+            <Panel title="Workspaces" titleAr="مساحات العمل">
               {clientRows.length === 0 ? (
-                <p className="mt-3 text-small text-muted-foreground">No workspaces provisioned yet.</p>
+                <EmptyState title="No workspaces provisioned yet" titleAr="لا مساحات مجهزة بعد" />
               ) : (
-                <table className="mt-3 w-full border-collapse text-left">
-                  <thead>
-                    <tr className="border-b text-small text-muted-foreground">
-                      <th scope="col" className="py-2 pr-4 font-medium">Workspace</th>
-                      <th scope="col" className="py-2 pr-4 text-right font-medium">Bookings</th>
-                      <th scope="col" className="py-2 pr-4 text-right font-medium">Won</th>
-                      <th scope="col" className="py-2 pr-4 text-right font-medium">Lost</th>
-                      <th scope="col" className="py-2 text-right font-medium">Revenue</th>
+                <DataTable
+                  columns={[
+                    { key: 'name', label: 'Workspace' },
+                    { key: 'bookings', label: 'Bookings', align: 'end' },
+                    { key: 'won', label: 'Won', align: 'end' },
+                    { key: 'lost', label: 'Lost', align: 'end' },
+                    { key: 'revenue', label: 'Revenue', align: 'end' },
+                  ]}
+                >
+                  {clientRows.map(row => (
+                    <tr key={row.id}>
+                      <td>
+                        <Link href={`/admin/clients/${row.id}`}>{row.name}</Link>
+                      </td>
+                      <td style={{ textAlign: 'end' }}>{row.bookings}</td>
+                      <td style={{ textAlign: 'end' }}>{row.won}</td>
+                      <td style={{ textAlign: 'end' }}>{row.lost}</td>
+                      <td style={{ textAlign: 'end' }}>{currency(row.revenueCents)}</td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {clientRows.map(row => (
-                      <tr key={row.id} className="border-b">
-                        <td className="py-3 pr-4">
-                          <Link
-                            href={`/admin/clients/${row.id}`}
-                            className="text-accent underline-offset-4 hover:underline"
-                          >
-                            {row.name}
-                          </Link>
-                        </td>
-                        <td className="py-3 pr-4 text-right tabular-nums">{row.bookings}</td>
-                        <td className="py-3 pr-4 text-right tabular-nums">{row.won}</td>
-                        <td className="py-3 pr-4 text-right tabular-nums">{row.lost}</td>
-                        <td className="py-3 text-right tabular-nums">{currency(row.revenueCents)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                  ))}
+                </DataTable>
               )}
-            </section>
+            </Panel>
           </>
         )}
-      </div>
+      </AdminFrame>
     </ConsoleShell>
   )
 }

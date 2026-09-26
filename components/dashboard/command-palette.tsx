@@ -24,20 +24,19 @@ const ICONS = {
 
 export const DASHBOARD_COMMANDS: PaletteCommand[] = [
   { group: 'Pages', label: 'Overview', href: '/dashboard', hint: 'G O', icon: 'radar' },
-  { group: 'Pages', label: 'Lead Generation', href: '/dashboard/lead-generation', hint: 'G L', icon: 'radar' },
-  { group: 'Pages', label: 'Search', href: '/dashboard/search', hint: 'G S', icon: 'search' },
+  { group: 'Pages', label: 'Review queue', href: '/dashboard/queue', icon: 'search' },
+  { group: 'Pages', label: 'Conversations', href: '/dashboard/conversations', icon: 'search' },
   { group: 'Pages', label: 'Contacts', href: '/dashboard/contacts', hint: 'G C', icon: 'search' },
-  { group: 'Pages', label: 'CRM', href: '/dashboard/crm', hint: 'G R', icon: 'search' },
-  { group: 'Pages', label: 'Studio', href: '/dashboard/studio', hint: 'G T', icon: 'search' },
-  { group: 'Pages', label: 'Attention queue', href: '/dashboard/queue', icon: 'search' },
-  { group: 'Pages', label: 'Integrations', href: '/dashboard/integrations', icon: 'globe' },
+  { group: 'Pages', label: 'Bookings', href: '/dashboard/bookings', icon: 'search' },
+  { group: 'Pages', label: 'Lead generation', href: '/dashboard/lead-generation', hint: 'G L', icon: 'radar' },
+  { group: 'Pages', label: 'Search', href: '/dashboard/search', hint: 'G S', icon: 'search' },
   { group: 'Pages', label: 'Reports', href: '/dashboard/reports', icon: 'download' },
+  { group: 'Pages', label: 'Systems', href: '/dashboard/systems', icon: 'search' },
+  { group: 'Pages', label: 'Integrations', href: '/dashboard/integrations', icon: 'globe' },
   { group: 'Pages', label: 'Billing', href: '/dashboard/billing', icon: 'search' },
   { group: 'Pages', label: 'Support', href: '/dashboard/support', icon: 'search' },
   { group: 'Pages', label: 'Settings', href: '/settings', icon: 'search' },
-  { group: 'Actions', label: 'New “Find leads” job', href: '/dashboard/lead-generation', icon: 'plus' },
-  { group: 'Actions', label: 'Enrich a website…', href: '/dashboard/lead-generation', icon: 'globe' },
-  { group: 'Actions', label: 'Export last job (.xlsx)', href: '/dashboard/lead-generation', icon: 'download' },
+  { group: 'Actions', label: 'New search', href: '/dashboard/lead-generation', icon: 'plus' },
 ]
 
 export function CommandPalette({

@@ -3,7 +3,7 @@ import { createSupabaseServerClient } from '@/lib/supabase'
 import { createSupabaseAdminClient } from '@/lib/supabase-admin'
 import { getVerifiedSession } from '@/lib/auth/session'
 import { ConsoleShell } from '@/components/shell/console-shell'
-import { AdminTabs } from '@/components/admin/admin-tabs'
+import { AdminFrame, PageHead } from '@/components/admin/v5'
 import { UsersManager } from '@/components/admin/users-manager'
 import type { Profile } from '@/lib/schema'
 
@@ -49,14 +49,19 @@ export default async function AdminUsersPage() {
 
   return (
     <ConsoleShell variant="admin" email={session.user.email ?? ''} businessName={null}>
-      <div className="w-full">
-        <AdminTabs />
+      <AdminFrame>
+        <PageHead
+          title="Team"
+          titleAr="الفريق"
+          lede="Accounts, roles, and the workspace each person can open."
+          ledeAr="الحسابات والأدوار ومساحة العمل التي يفتحها كل شخص."
+        />
         <UsersManager
           initialUsers={usersWithClients}
           clients={clients}
           currentUserId={session.user.id}
         />
-      </div>
+      </AdminFrame>
     </ConsoleShell>
   )
 }

@@ -12,28 +12,12 @@ interface ModeTabsProps {
 
 export function ModeTabs({ activeTab, onChange, isArabic }: ModeTabsProps) {
   return (
-    <div className="flex border-b border-border mb-6">
-      <button
-        type="button"
-        onClick={() => onChange('enrich')}
-        className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
-          activeTab === 'enrich'
-            ? 'border-foreground text-foreground'
-            : 'border-transparent text-muted-foreground hover:text-foreground'
-        }`}
-      >
-        {isArabic ? 'إثراء رابط' : 'Enrich a URL'}
-      </button>
-      <button
-        type="button"
-        onClick={() => onChange('find')}
-        className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
-          activeTab === 'find'
-            ? 'border-foreground text-foreground'
-            : 'border-transparent text-muted-foreground hover:text-foreground'
-        }`}
-      >
+    <div className="tabs" role="tablist">
+      <button type="button" role="tab" aria-selected={activeTab === 'find'} className={activeTab === 'find' ? 'on' : undefined} onClick={() => onChange('find')}>
         {isArabic ? 'البحث عن عملاء' : 'Find leads'}
+      </button>
+      <button type="button" role="tab" aria-selected={activeTab === 'enrich'} className={activeTab === 'enrich' ? 'on' : undefined} onClick={() => onChange('enrich')}>
+        {isArabic ? 'إثراء المواقع' : 'Enrich websites'}
       </button>
     </div>
   )

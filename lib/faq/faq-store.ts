@@ -5,7 +5,10 @@ export interface FAQItem {
   id: string
   question: string
   answer: string
+  question_ar?: string
+  answer_ar?: string
   category: string
+  category_ar?: string
   display_order: number
   is_active: boolean
   updated_at: string

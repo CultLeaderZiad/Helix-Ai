@@ -1,6 +1,9 @@
 'use client'
 
 import React, { useState } from 'react'
+import { useDashLang } from '@/components/dashboard/use-lang'
+import { InlineError, PageHead } from '@/components/dashboard/ui'
+import { tx, type DashLang } from '@/lib/dashboard/lang'
 import { useLeadGenJob } from '@/hooks/useLeadGenJob'
 import { SettingsStrip } from './SettingsStrip'
 import { EmptyState } from './EmptyStates'
@@ -19,10 +22,12 @@ import type { LeadGenEngine } from '@/lib/leadgen/types'
 interface LeadGenPageProps {
   businessName?: string | null
   initialJobId?: string
+  lang?: DashLang
 }
 
-export function LeadGenPage({ businessName, initialJobId }: LeadGenPageProps) {
-  const [isArabic, setIsArabic] = useState(false)
+export function LeadGenPage({ businessName, initialJobId, lang: langProp }: LeadGenPageProps) {
+  const lang = useDashLang(langProp ?? 'en')
+  const isArabic = lang === 'ar'
   const [activeTab, setActiveTab] = useState<LeadGenModeTab>('enrich')
 
   // Form states
@@ -141,50 +146,25 @@ export function LeadGenPage({ businessName, initialJobId }: LeadGenPageProps) {
   }
 
   return (
-    <div
-      dir={isArabic ? 'rtl' : 'ltr'}
-      className="mx-auto max-w-7xl space-y-6 p-4 sm:p-6 lg:p-8 font-sans transition-all text-[#0f141b] dark:text-[#e8ecf2]"
-    >
-      {/* Top Header Strip */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#d9dee6] dark:border-white/10 pb-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-[11px] font-medium uppercase tracking-wider text-[#0e8da6] dark:text-[#38c6e0]">
-              {isArabic ? 'محرك الاستحواذ B2B' : 'B2B Acquisition Console'}
-            </span>
-            {businessName && (
-              <span className="font-mono text-[11px] text-[#5b6577] dark:text-[#8b95a7]">
-                · {businessName}
-              </span>
-            )}
-          </div>
-          <h1 className="font-display text-2xl font-bold tracking-tight text-[#0f141b] dark:text-[#e8ecf2]">
-            {isArabic ? 'توليد العملاء' : 'Lead Generation'}
-          </h1>
-          <p className="mt-1 text-xs text-[#5b6577] dark:text-[#8b95a7]">
-            {isArabic
-              ? 'إثراء مواقع الشركات واكتشاف العملاء المحتملين عبر الخرائط ومحركات البحث.'
-              : 'Enrich business websites or find leads using Places and Web search with verified provenance.'}
-          </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => setIsArabic(!isArabic)}
-            className="rounded border border-[#cfd6df] dark:border-white/15 bg-white dark:bg-[#11151c] px-2.5 py-1 text-xs font-mono font-medium text-[#5b6577] dark:text-[#8b95a7] hover:text-[#0f141b] dark:hover:text-[#e8ecf2] transition-colors"
-          >
-            {isArabic ? 'English (EN)' : 'العربية (AR)'}
-          </button>
-
-          {jobs.length > 0 && (
+    <div className="stack">
+      <PageHead
+        title={tx(lang, 'Lead generation', 'توليد العملاء')}
+        lede={tx(
+          lang,
+          'Find new businesses to contact, or enrich a list you already have. Every field shows where it came from.',
+          'ابحث عن أنشطة تجارية جديدة للتواصل معها، أو أثرِ قائمة لديك. كل حقل يوضح مصدره.',
+        )}
+        actions={
+          <div className="ph-actions">
+            {businessName ? <span className="faint">{businessName}</span> : null}
+            {jobs.length > 0 && (
             <select
               value={activeJob?.id ?? ''}
               onChange={e => {
                 const j = jobs.find(x => x.id === e.target.value)
                 if (j) selectJob(j)
               }}
-              className="max-w-[200px] truncate rounded border border-[#cfd6df] dark:border-white/15 bg-white dark:bg-[#11151c] px-2.5 py-1 text-xs font-mono text-[#0f141b] dark:text-[#e8ecf2]"
+              className="fld"
             >
               {jobs.map(j => (
                 <option key={j.id} value={j.id}>
@@ -195,30 +175,22 @@ export function LeadGenPage({ businessName, initialJobId }: LeadGenPageProps) {
           )}
 
           {activeJob && (
-            <button
-              type="button"
-              onClick={reset}
-              className="rounded-md border border-[#cfd6df] dark:border-white/15 px-3 py-1.5 text-xs font-medium text-[#5b6577] dark:text-[#8b95a7] hover:text-[#0f141b] dark:hover:text-[#e8ecf2]"
-            >
-              {isArabic ? '+ مهمة جديدة' : '+ New Task'}
+            <button type="button" onClick={reset} className="btn-o">
+              {tx(lang, 'New job', 'مهمة جديدة')}
             </button>
           )}
-        </div>
-      </div>
+          </div>
+        }
+      />
 
       {/* Settings / Engine Strip */}
       <SettingsStrip health={health} isArabic={isArabic} />
 
       {/* Error Banner */}
-      {error && (
-        <div className="rounded-lg border border-[#c62f2a]/20 dark:border-[#f85149]/30 bg-[#c62f2a]/5 dark:bg-[#f85149]/10 p-3 text-xs text-[#c62f2a] dark:text-[#f85149]">
-          <span className="font-semibold">{isArabic ? 'خطأ:' : 'Error:'}</span> {error}
-        </div>
-      )}
+      {error ? <InlineError>{error}</InlineError> : null}
 
-      {/* 2-Mode Creation Form (Active when no job or user clicked + New Task) */}
       {!activeJob && (
-        <div className="rounded-xl border border-[#d9dee6] dark:border-white/10 bg-white dark:bg-[#11151c] p-6 space-y-6">
+        <div className="pnl">
           <ModeTabs activeTab={activeTab} onChange={setActiveTab} isArabic={isArabic} />
 
           {activeTab === 'enrich' ? (

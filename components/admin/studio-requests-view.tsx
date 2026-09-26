@@ -76,14 +76,14 @@ export function StudioRequestsView({ deals, clientMap, studioUrl = '/dashboard/s
         {deals.map(deal => (
           <div key={deal.id} className="flex flex-wrap items-center justify-between gap-4 py-4">
             <div>
-              <p className="font-medium text-helix-ink">{deal.name}</p>
+              <p className="font-medium text-ink">{deal.name}</p>
               <p className="text-12 text-helix-muted">
                 {clientMap[deal.client_id] ?? 'Client workspace'} · {deal.stage.replaceAll('_', ' ')}
               </p>
             </div>
             <div className="flex items-center gap-3">
               {typeof deal.value_cents === 'number' ? (
-                <span className="text-14 font-medium tabular-nums text-helix-ink">
+                <span className="text-14 font-medium tabular-nums text-ink">
                   {formatCurrency(deal.value_cents)}
                 </span>
               ) : null}

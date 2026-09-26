@@ -2,7 +2,6 @@
 
 import { useState, useTransition } from 'react'
 import {
-  DollarSign,
   Plus,
   Trash2,
   Save,
@@ -190,18 +189,8 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
       {/* Top Banner & Quick Links */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-helix-border pb-6">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-xs font-semibold text-emerald-400">
-              <DollarSign className="size-3.5" />
-              LIVE PRICING ENGINE
-            </span>
-            <span className="text-xs text-helix-muted font-mono">// Instant sync with /pricing</span>
-          </div>
-          <h1 className="mt-2 text-2xl font-bold tracking-tight text-helix-ink sm:text-3xl font-display">
-            Pricing & Commercial Tier Control
-          </h1>
-          <p className="mt-1 text-sm text-helix-muted">
-            Control retainers, setup fees, feature bullets, and bilingual currencies across GCC and MENA markets.
+          <p className="text-sm text-helix-muted">
+            Edit the plan that is live for the selected region.
           </p>
         </div>
 
@@ -209,7 +198,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
           <Link
             href="/pricing"
             target="_blank"
-            className="inline-flex items-center gap-1.5 rounded-xl border border-helix-border bg-helix-canvas px-3.5 py-2 text-xs font-semibold text-helix-ink hover:bg-helix-border/40 transition-all shadow-xs"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-helix-border bg-helix-canvas px-3.5 py-2 text-xs font-semibold text-ink hover:bg-helix-border/40 transition-all shadow-xs"
           >
             <span>Preview /pricing</span>
             <ExternalLink className="size-3.5" />
@@ -251,8 +240,8 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
             }}
             className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-all ${
               selectedTier === 'gcc_enterprise'
-                ? 'bg-helix-ink text-helix-surface'
-                : 'text-helix-muted hover:bg-helix-canvas hover:text-helix-ink'
+                ? 'bg-ink text-helix-surface'
+                : 'text-helix-muted hover:bg-helix-canvas hover:text-ink'
             }`}
           >
             <Building2 className="size-4" />
@@ -268,7 +257,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
             className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-all ${
               selectedTier === 'mena_sme'
                 ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-[0_0_15px_rgba(245,158,11,0.35)]'
-                : 'text-helix-muted hover:bg-helix-canvas hover:text-helix-ink'
+                : 'text-helix-muted hover:bg-helix-canvas hover:text-ink'
             }`}
           >
             <Globe2 className="size-4" />
@@ -293,7 +282,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
             })
             setShowAddPlanModal(true)
           }}
-          className="inline-flex items-center gap-1.5 rounded-xl bg-helix-ink px-3.5 py-2 text-xs font-bold text-white hover:bg-helix-ink/90 transition-all shadow-md"
+          className="inline-flex items-center gap-1.5 rounded-xl bg-ink px-3.5 py-2 text-xs font-bold text-white hover:bg-ink/90 transition-all shadow-md"
         >
           <Plus className="size-3.5" />
           <span>Add New Plan</span>
@@ -302,7 +291,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
 
       {/* Tier Header Config Box */}
       <div className="rounded-2xl border border-helix-border bg-helix-canvas/70 p-5">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-helix-ink/80 mb-3 flex items-center gap-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-ink/80 mb-3 flex items-center gap-2">
           <Tag className="size-4 text-helix-accent" />
           Regional Tier Description & Badge
         </h3>
@@ -312,7 +301,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
             <input
               name="badge"
               defaultValue={currentTierConfig.badge}
-              className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs font-medium text-helix-ink focus:border-helix-ink focus:outline-none"
+              className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs font-medium text-ink focus:border-ink focus:outline-none"
             />
           </div>
           <div>
@@ -321,7 +310,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
               name="badgeAr"
               dir="rtl"
               defaultValue={currentTierConfig.badgeAr}
-              className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs font-medium text-helix-ink focus:border-helix-ink focus:outline-none"
+              className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs font-medium text-ink focus:border-ink focus:outline-none"
             />
           </div>
           <div>
@@ -330,7 +319,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
               name="description"
               rows={2}
               defaultValue={currentTierConfig.description}
-              className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs text-helix-ink focus:border-helix-ink focus:outline-none"
+              className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs text-ink focus:border-ink focus:outline-none"
             />
           </div>
           <div>
@@ -340,14 +329,14 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
               rows={2}
               dir="rtl"
               defaultValue={currentTierConfig.descriptionAr}
-              className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs text-helix-ink focus:border-helix-ink focus:outline-none"
+              className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs text-ink focus:border-ink focus:outline-none"
             />
           </div>
           <div className="md:col-span-2 flex justify-end">
             <button
               type="submit"
               disabled={isPending}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-helix-border bg-helix-canvas px-4 py-1.5 text-xs font-semibold text-helix-ink hover:bg-helix-border/40 transition-all"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-helix-border bg-helix-canvas px-4 py-1.5 text-xs font-semibold text-ink hover:bg-helix-border/40 transition-all"
             >
               <Save className="size-3.5" />
               <span>Update Tier Header</span>
@@ -372,12 +361,12 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                 onClick={() => setActivePlanId(p.id)}
                 className={`w-full text-left rounded-xl p-3 border transition-all ${
                   isSelected
-                    ? 'border-helix-ink bg-helix-accent-soft text-helix-ink shadow-sm'
-                    : 'border-helix-border bg-helix-surface/80 text-helix-muted hover:border-helix-border hover:text-helix-ink'
+                    ? 'border-ink bg-helix-accent-soft text-ink shadow-sm'
+                    : 'border-helix-border bg-helix-surface/80 text-helix-muted hover:border-helix-border hover:text-ink'
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-sm text-helix-ink">{p.name}</span>
+                  <span className="font-bold text-sm text-ink">{p.name}</span>
                   {p.featured && (
                     <span className="rounded-full bg-helix-accent-soft px-2 py-0.5 text-[10px] font-bold text-helix-accent">
                       Popular
@@ -401,7 +390,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
             <div className="flex flex-wrap items-center justify-between gap-4 border-b border-helix-border pb-4">
               <div>
                 <span className="text-xs font-mono text-helix-accent">ID: {currentPlan.id}</span>
-                <h2 className="text-xl font-bold text-helix-ink mt-0.5">{currentPlan.name}</h2>
+                <h2 className="text-xl font-bold text-ink mt-0.5">{currentPlan.name}</h2>
               </div>
               <div className="flex items-center gap-2">
                 <button
@@ -417,7 +406,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                   type="button"
                   onClick={() => handleSavePlan(currentPlan)}
                   disabled={isPending}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-helix-ink px-4 py-1.5 text-xs font-bold text-helix-surface hover:bg-helix-ink/90 transition-all"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-ink px-4 py-1.5 text-xs font-bold text-helix-surface hover:bg-ink/90 transition-all"
                 >
                   <Save className="size-3.5" />
                   <span>Save Plan Changes</span>
@@ -443,7 +432,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                       },
                     }))
                   }}
-                  className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs font-semibold text-helix-ink focus:border-helix-ink focus:outline-none"
+                  className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs font-semibold text-ink focus:border-ink focus:outline-none"
                 />
               </div>
 
@@ -464,7 +453,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                       },
                     }))
                   }}
-                  className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs font-semibold text-helix-ink focus:border-helix-ink focus:outline-none"
+                  className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs font-semibold text-ink focus:border-ink focus:outline-none"
                 />
               </div>
 
@@ -485,7 +474,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                       },
                     }))
                   }}
-                  className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs text-helix-ink focus:border-helix-ink focus:outline-none"
+                  className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs text-ink focus:border-ink focus:outline-none"
                 />
               </div>
 
@@ -507,7 +496,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                       },
                     }))
                   }}
-                  className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs text-helix-ink focus:border-helix-ink focus:outline-none"
+                  className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs text-ink focus:border-ink focus:outline-none"
                 />
               </div>
 
@@ -529,16 +518,16 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                       },
                     }))
                   }}
-                  className="h-4 w-4 rounded border-helix-border bg-helix-surface text-helix-accent focus:ring-helix-ink"
+                  className="h-4 w-4 rounded border-helix-border bg-helix-surface text-helix-accent focus:ring-ink"
                 />
-                <label htmlFor="featuredToggle" className="text-xs font-bold text-helix-ink cursor-pointer">
-                  Mark as &quot;Featured / Most Popular&quot; tier (highlights card with glowing border on /pricing)
+                <label htmlFor="featuredToggle" className="text-xs font-bold text-ink cursor-pointer">
+                  Mark as the featured plan (highlights the card on /pricing)
                 </label>
               </div>
 
               {/* Pricing in Currencies */}
               <div className="md:col-span-2 space-y-3">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-helix-ink/80">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-ink/80">
                   Monthly Retainer Prices
                 </h4>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -559,7 +548,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                           },
                         }))
                       }}
-                      className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-helix-ink font-mono"
+                      className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-ink font-mono"
                     />
                   </div>
                   {selectedTier === 'gcc_enterprise' ? (
@@ -581,7 +570,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                               },
                             }))
                           }}
-                          className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-helix-ink font-mono"
+                          className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-ink font-mono"
                         />
                       </div>
                       <div>
@@ -601,7 +590,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                               },
                             }))
                           }}
-                          className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-helix-ink font-mono"
+                          className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-ink font-mono"
                         />
                       </div>
                     </>
@@ -624,7 +613,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                               },
                             }))
                           }}
-                          className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-helix-ink font-mono"
+                          className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-ink font-mono"
                         />
                       </div>
                       <div>
@@ -644,7 +633,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                               },
                             }))
                           }}
-                          className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-helix-ink font-mono"
+                          className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-ink font-mono"
                         />
                       </div>
                     </>
@@ -654,7 +643,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
 
               {/* Setup Fees */}
               <div className="md:col-span-2 space-y-3">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-helix-ink/80">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-ink/80">
                   One-Time Setup & Calibration Fees
                 </h4>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -675,7 +664,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                           },
                         }))
                       }}
-                      className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-helix-ink font-mono"
+                      className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-ink font-mono"
                     />
                   </div>
                   {selectedTier === 'gcc_enterprise' ? (
@@ -697,7 +686,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                               },
                             }))
                           }}
-                          className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-helix-ink font-mono"
+                          className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-ink font-mono"
                         />
                       </div>
                       <div>
@@ -717,7 +706,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                               },
                             }))
                           }}
-                          className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-helix-ink font-mono"
+                          className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-ink font-mono"
                         />
                       </div>
                     </>
@@ -740,7 +729,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                               },
                             }))
                           }}
-                          className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-helix-ink font-mono"
+                          className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-ink font-mono"
                         />
                       </div>
                       <div>
@@ -760,7 +749,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                               },
                             }))
                           }}
-                          className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-helix-ink font-mono"
+                          className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-ink font-mono"
                         />
                       </div>
                     </>
@@ -771,7 +760,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
               {/* Feature Bullets Editor */}
               <div className="md:col-span-2 space-y-3">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-helix-ink/80">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-ink/80">
                     Feature Inclusions (Bilingual EN / AR)
                   </h4>
                   <button
@@ -823,7 +812,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                             },
                           }))
                         }}
-                        className="flex-1 rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-helix-ink"
+                        className="flex-1 rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-ink"
                       />
                       <input
                         dir="rtl"
@@ -846,7 +835,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                             },
                           }))
                         }}
-                        className="flex-1 rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-helix-ink"
+                        className="flex-1 rounded-xl border border-helix-border bg-helix-surface px-3 py-1.5 text-xs text-ink"
                       />
                       <button
                         type="button"
@@ -883,7 +872,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                 type="button"
                 onClick={() => handleSavePlan(currentPlan)}
                 disabled={isPending}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-helix-ink px-5 py-2 text-xs font-bold text-white hover:bg-helix-ink/90 transition-all shadow-md"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-ink px-5 py-2 text-xs font-bold text-white hover:bg-ink/90 transition-all shadow-md"
               >
                 <Save className="size-4" />
                 <span>Save All Changes for &quot;{currentPlan.name}&quot;</span>
@@ -901,7 +890,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
       {showAddPlanModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
           <div className="w-full max-w-lg rounded-2xl border border-helix-border bg-helix-surface p-6 shadow-2xl space-y-4">
-            <h3 className="text-lg font-bold text-helix-ink flex items-center gap-2">
+            <h3 className="text-lg font-bold text-ink flex items-center gap-2">
               <Sparkles className="size-4 text-helix-accent" />
               Create New Pricing Plan
             </h3>
@@ -913,7 +902,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                   required
                   value={newPlan.id}
                   onChange={(e) => setNewPlan({ ...newPlan, id: e.target.value.toLowerCase().replace(/\s+/g, '-') })}
-                  className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs text-helix-ink font-mono"
+                  className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs text-ink font-mono"
                 />
               </div>
 
@@ -924,7 +913,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                     required
                     value={newPlan.name}
                     onChange={(e) => setNewPlan({ ...newPlan, name: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs text-helix-ink"
+                    className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs text-ink"
                   />
                 </div>
                 <div>
@@ -933,7 +922,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                     dir="rtl"
                     value={newPlan.nameAr}
                     onChange={(e) => setNewPlan({ ...newPlan, nameAr: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs text-helix-ink"
+                    className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs text-ink"
                   />
                 </div>
               </div>
@@ -943,7 +932,7 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                 <input
                   value={newPlan.tagline}
                   onChange={(e) => setNewPlan({ ...newPlan, tagline: e.target.value })}
-                  className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs text-helix-ink"
+                  className="mt-1 w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2 text-xs text-ink"
                 />
               </div>
 
@@ -951,14 +940,14 @@ export function PricingManagerView({ initialConfigs }: PricingManagerViewProps) 
                 <button
                   type="button"
                   onClick={() => setShowAddPlanModal(false)}
-                  className="rounded-xl border border-helix-border bg-helix-canvas px-4 py-2 text-xs font-semibold text-helix-ink hover:bg-helix-border/40 transition-colors"
+                  className="rounded-xl border border-helix-border bg-helix-canvas px-4 py-2 text-xs font-semibold text-ink hover:bg-helix-border/40 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="rounded-xl bg-helix-ink px-4 py-2 text-xs font-bold text-white hover:bg-helix-ink/90"
+                  className="rounded-xl bg-ink px-4 py-2 text-xs font-bold text-white hover:bg-ink/90"
                 >
                   Create Plan
                 </button>

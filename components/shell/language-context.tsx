@@ -16,6 +16,19 @@ export interface LanguageContextValue {
 
 const LanguageContext = createContext<LanguageContextValue | null>(null)
 
+const COOKIE_BASE = 'path=/; max-age=31536000; SameSite=Lax'
+
+function readCookie(name: string): string | null {
+  if (typeof document === 'undefined') return null
+  const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`))
+  return match ? decodeURIComponent(match[1]) : null
+}
+
+function writeLangCookies(lang: Language) {
+  document.cookie = `helix_lang=${lang}; ${COOKIE_BASE}`
+  document.cookie = `helix-lang=${lang}; ${COOKIE_BASE}`
+}
+
 export function LanguageProvider({
   children,
   initialLanguage = 'en',
@@ -28,22 +41,33 @@ export function LanguageProvider({
   const [, startTransition] = useTransition()
 
   useEffect(() => {
-    // Sync with localStorage on client mount if available
-    const saved = localStorage.getItem('helix.lang')
+    let stored: string | null = null
+    try {
+      stored = localStorage.getItem('helix.lang')
+    } catch {
+      stored = null
+    }
+    const saved = readCookie('helix_lang') ?? readCookie('helix-lang') ?? stored
     if (saved === 'en' || saved === 'ar') {
-      if (saved !== language) {
+      try {
+        writeLangCookies(saved)
+        localStorage.setItem('helix.lang', saved)
+      } catch {
+        // ignore storage errors
+      }
+      if (saved !== initialLanguage) {
         setLanguageState(saved)
         document.documentElement.lang = saved
         document.documentElement.dir = saved === 'ar' ? 'rtl' : 'ltr'
       }
     }
-  }, [])
+  }, [initialLanguage])
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang)
     try {
       localStorage.setItem('helix.lang', lang)
-      document.cookie = `helix-lang=${lang}; path=/; max-age=31536000; SameSite=Lax`
+      writeLangCookies(lang)
       document.documentElement.lang = lang
       document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr'
     } catch {

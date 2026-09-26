@@ -3,112 +3,124 @@
 import React, { useState } from 'react'
 import { useSearch } from './hooks/useSearch'
 import { ModeTabs } from './ModeTabs'
-import { ProviderStatus } from './ProviderStatus'
 import { ResultCard } from './ResultCard'
 import { SEARCH_COPY } from './copy'
 import { Search as SearchIcon } from 'lucide-react'
+import { useDashLang } from '@/components/dashboard/use-lang'
+import { EmptyState, FormField, InlineError, PageHead } from '@/components/dashboard/ui'
+import { tx, type DashLang } from '@/lib/dashboard/lang'
 
-export function SearchPage() {
-  const [isArabic, setIsArabic] = useState(false)
+const EXAMPLES = {
+  en: ['Dental clinics in Jumeirah with online booking', 'Physiotherapy centres in Riyadh', 'Salons in Doha with WhatsApp'],
+  ar: ['عيادات أسنان في جميرا تتيح الحجز الإلكتروني', 'مراكز علاج طبيعي في الرياض', 'صالونات في الدوحة مع واتساب'],
+}
+
+export function SearchPage({ lang: langProp }: { lang?: DashLang }) {
+  const lang = useDashLang(langProp ?? 'en')
+  const isArabic = lang === 'ar'
+  const [language, setLanguage] = useState<'any' | 'ar' | 'en'>('any')
+  const [region, setRegion] = useState('any')
   const {
     query,
     setQuery,
     mode,
     setMode,
     results,
-    providers,
     isLoading,
     error,
     savedFingerprints,
     enrichingUrl,
     performSearch,
     enrichUrl,
-    saveResult
+    saveResult,
   } = useSearch()
 
   const copy = isArabic ? SEARCH_COPY.ar : SEARCH_COPY.en
 
-  const handleFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    performSearch(query, mode)
+  const handleFormSubmit = (event: React.FormEvent) => {
+    event.preventDefault()
+    const extras = [
+      region === 'any' ? '' : region,
+      language === 'ar' ? (isArabic ? 'بالعربية' : 'in Arabic') : language === 'en' ? (isArabic ? 'بالإنجليزية' : 'in English') : '',
+    ].filter(Boolean)
+    const full = [query.trim(), ...extras].join(' ')
+    performSearch(full, mode)
   }
 
+  const unavailable = error && /unavailable|timeout|fetch|network|5\d\d/i.test(error)
+  const limited = error && /limit|429|rate/i.test(error)
+
   return (
-    <div
-      dir={isArabic ? 'rtl' : 'ltr'}
-      className="mx-auto max-w-7xl space-y-6 p-4 sm:p-6 lg:p-8 font-sans transition-all text-foreground"
-    >
-      {/* Top Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4">
-        <div>
-          <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">
-            {copy.title}
-          </h1>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {copy.subtitle}
-          </p>
+    <div className="stack">
+      <PageHead
+        title={tx(lang, 'Search', 'البحث')}
+        lede={tx(lang, 'Research a business or topic across the web. Results show their source.', 'ابحث عن نشاط تجاري أو موضوع عبر الإنترنت. تظهر النتائج مع مصدرها.')}
+      />
+      <form onSubmit={handleFormSubmit} className="pnl">
+        <FormField label={tx(lang, 'Search', 'البحث')} htmlFor="helix-search">
+          <div className="search-xl">
+            <SearchIcon size={18} />
+            <input
+              id="helix-search"
+              type="text"
+              value={query}
+              onChange={event => setQuery(event.target.value)}
+              placeholder={tx(lang, 'e.g. dental clinics in Jumeirah with online booking', 'مثال: عيادات أسنان في جميرا تتيح الحجز الإلكتروني')}
+            />
+          </div>
+        </FormField>
+        <div className="filters">
+          <label className="faint">
+            {tx(lang, 'Language', 'اللغة')}
+            <select className="fld" value={language} onChange={event => setLanguage(event.target.value as 'any' | 'ar' | 'en')} style={{ marginInlineStart: 8 }}>
+              <option value="any">{tx(lang, 'Any', 'أي لغة')}</option>
+              <option value="ar">{tx(lang, 'Arabic', 'العربية')}</option>
+              <option value="en">{tx(lang, 'English', 'الإنجليزية')}</option>
+            </select>
+          </label>
+          <label className="faint">
+            {tx(lang, 'Region', 'المنطقة')}
+            <select className="fld" value={region} onChange={event => setRegion(event.target.value)} style={{ marginInlineStart: 8 }}>
+              <option value="any">{tx(lang, 'Any', 'أي منطقة')}</option>
+              <option value="United Arab Emirates">{tx(lang, 'UAE', 'الإمارات')}</option>
+              <option value="Saudi Arabia">{tx(lang, 'KSA', 'السعودية')}</option>
+              <option value="Qatar">{tx(lang, 'Qatar', 'قطر')}</option>
+              <option value="Egypt">{tx(lang, 'Egypt', 'مصر')}</option>
+              <option value="Jordan">{tx(lang, 'Jordan', 'الأردن')}</option>
+            </select>
+          </label>
+          <button type="submit" className="btn-d" disabled={isLoading || !query.trim()}>
+            {isLoading ? copy.searching : copy.btnSearch}
+          </button>
         </div>
-
-        <button
-          type="button"
-          onClick={() => setIsArabic(!isArabic)}
-          className="rounded border border-input bg-background px-2.5 py-1 text-xs font-mono font-medium text-muted-foreground hover:text-foreground transition-colors"
-        >
-          {isArabic ? 'English (EN)' : 'العربية (AR)'}
-        </button>
-      </div>
-
-      {/* Search Input Bar */}
-      <form onSubmit={handleFormSubmit} className="flex gap-2">
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder={copy.placeholder}
-          className="flex-1 rounded-md border border-input bg-background px-3.5 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-        />
-        <button
-          type="submit"
-          disabled={isLoading || !query.trim()}
-          className="inline-flex items-center justify-center rounded-md bg-foreground px-5 py-2 text-sm font-medium text-background hover:bg-foreground/90 disabled:opacity-50 transition-colors"
-        >
-          {isLoading ? copy.searching : copy.btnSearch}
-        </button>
       </form>
 
-      {/* Mode Tabs */}
       <ModeTabs
         activeMode={mode}
-        onChange={(m) => {
-          setMode(m)
-          if (query.trim()) performSearch(query, m)
+        onChange={next => {
+          setMode(next)
+          if (query.trim()) performSearch(query, next)
         }}
         isArabic={isArabic}
       />
 
-      {/* Provider Health Row */}
-      <ProviderStatus providers={providers} isArabic={isArabic} />
+      {error ? (
+        <InlineError>
+          {limited
+            ? tx(lang, "You've reached today's search limit. It resets at midnight (Dubai time).", 'وصلت إلى حد البحث اليومي، ويتجدد عند منتصف الليل بتوقيت دبي.')
+            : unavailable
+              ? tx(lang, 'Search is temporarily unavailable. Try again in a few minutes.', 'البحث غير متاح مؤقتاً. حاول بعد دقائق.')
+              : tx(lang, 'Search could not be completed. Try again.', 'تعذر إكمال البحث. أعد المحاولة.')}
+        </InlineError>
+      ) : null}
 
-      {/* Error readout */}
-      {error && (
-        <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-xs text-destructive">
-          {error}
-        </div>
-      )}
-
-      {/* Results or Empty State */}
       {results.length > 0 ? (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>
-              {copy.resultsSummary.replace('{count}', String(results.length)).replace('{latency}', '1.8')}
-            </span>
-          </div>
-
-          <div className="space-y-3">
-            {results.map((item, idx) => (
+        <div>
+          <p className="faint">{tx(lang, `${results.length} results`, `${results.length} نتائج`)}</p>
+          <div className="stack">
+            {results.map((item, index) => (
               <ResultCard
-                key={`${item.fingerprint}-${idx}`}
+                key={`${item.fingerprint}-${index}`}
                 result={item}
                 onEnrich={enrichUrl}
                 onSave={saveResult}
@@ -120,16 +132,20 @@ export function SearchPage() {
           </div>
         </div>
       ) : !isLoading ? (
-        <div className="rounded-xl border border-dashed border-border p-12 text-center space-y-3">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
-            <SearchIcon className="h-6 w-6" />
-          </div>
-          <h3 className="text-sm font-semibold text-foreground">
-            {copy.emptyTitle}
-          </h3>
-          <p className="mx-auto max-w-sm text-xs text-muted-foreground">
-            {copy.emptySubtitle}
-          </p>
+        <div className="pnl">
+          <EmptyState
+            title={results.length === 0 && query ? tx(lang, 'Nothing found. Try fewer words or a different language.', 'لا توجد نتائج. جرّب كلمات أقل أو لغة مختلفة.') : tx(lang, 'Search the web for a business or topic.', 'ابحث في الإنترنت عن نشاط أو موضوع.')}
+            body={tx(lang, 'Searches you save appear with the result.', 'ما تحفظه يظهر مع النتيجة.')}
+          />
+          {!query ? (
+            <div className="ph-actions" style={{ marginTop: 12 }}>
+              {EXAMPLES[lang].map(example => (
+                <button key={example} type="button" className="btn-o" onClick={() => setQuery(example)}>
+                  {example}
+                </button>
+              ))}
+            </div>
+          ) : null}
         </div>
       ) : null}
     </div>

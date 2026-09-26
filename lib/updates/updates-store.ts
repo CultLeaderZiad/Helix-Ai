@@ -6,9 +6,12 @@ export interface PlatformUpdate {
   version: string
   date: string
   title: string
+  title_ar?: string
   category: string
+  category_ar?: string
   is_published: boolean
   highlights: string[]
+  highlights_ar?: string[]
 }
 
 const UPDATES_FILE_PATH = path.join(process.cwd(), 'data', 'updates.json')
@@ -18,39 +21,54 @@ const DEFAULT_UPDATES: PlatformUpdate[] = [
     id: 'rel-2-4-0',
     version: 'v2.4.0',
     date: 'September 2026',
-    title: 'Dual-workspace authentication & cross-tenant RLS isolation',
-    category: 'Core Architecture',
+    title: 'A clearer sign-in for your team',
+    title_ar: 'دخول أوضح لفريقك',
+    category: 'Workspace',
+    category_ar: 'مساحة العمل',
     is_published: true,
     highlights: [
-      'Segmented authentication supporting Agency Operator and Client Portal routing.',
-      'Hardware-level PostgreSQL RLS enforcement with tenant-scoped cryptographic tokens.',
-      'Public navigation redesign with high-contrast framing and mobile-first touch targets.',
+      'You sign in and land in the right workspace.',
+      'The public site is easier to read on a phone.',
+    ],
+    highlights_ar: [
+      'تسجّل الدخول وتصل إلى مساحة العمل المناسبة.',
+      'الموقع العام أسهل قراءة على الهاتف.',
     ],
   },
   {
     id: 'rel-2-3-1',
     version: 'v2.3.1',
     date: 'August 2026',
-    title: 'Realtime telemetry ingest and webhook integrity validation',
-    category: 'Integrations',
+    title: 'Missed-call replies you can see',
+    title_ar: 'ردود المكالمات الفائتة ظاهرة لك',
+    category: 'Inbox',
+    category_ar: 'الوارد',
     is_published: true,
     highlights: [
-      'Sub-50ms ingestion pipeline for Retell AI, Vapi, and Bland AI voice sessions.',
-      'Automated HMAC-SHA256 signature verification on incoming webhooks.',
-      'Real-time confidence scoring matrix for extracted caller intentions.',
+      'WhatsApp replies after a missed call show in your dashboard.',
+      'Bookings from your real calendar appear in the activity feed.',
+    ],
+    highlights_ar: [
+      'ردود واتساب بعد المكالمة الفائتة تظهر في لوحتك.',
+      'الحجوزات من تقويمك الحقيقي تظهر في سجل النشاط.',
     ],
   },
   {
     id: 'rel-2-2-0',
     version: 'v2.2.0',
     date: 'July 2026',
-    title: 'Operational truth engine & human-in-the-loop review queues',
-    category: 'Security Hardening',
+    title: 'A review queue for anything uncertain',
+    title_ar: 'قائمة مراجعة لما هو غير مؤكد',
+    category: 'Review',
+    category_ar: 'المراجعة',
     is_published: true,
     highlights: [
-      'Tri-state evidence tagging: verified, probable, and possible assertions.',
-      'One-click dispute resolution for agency administrators with audit trails.',
-      'Automated CSV & JSON log exports for enterprise compliance audits.',
+      'If the system is unsure, it waits for someone on your team.',
+      'You can export a plain summary of conversations and bookings.',
+    ],
+    highlights_ar: [
+      'إذا لم يكن النظام متأكداً، ينتظر أحداً من فريقك.',
+      'يمكنك تصدير ملخص واضح للمحادثات والحجوزات.',
     ],
   },
 ]

@@ -16,6 +16,7 @@ const nextConfig = {
       { source: '/missed-call', destination: '/systems/missed-call-responder', permanent: true },
       { source: '/lead-reactivation', destination: '/systems/lead-reactivation', permanent: true },
       { source: '/ar-collections', destination: '/systems/ar-invoicing', permanent: true },
+      { source: '/build', destination: '/contact?scope=custom', permanent: false },
     ]
   },
 }

@@ -5,7 +5,7 @@ export type Direction = 'ltr' | 'rtl'
 
 export async function getLang(): Promise<Language> {
   const cookieStore = await cookies()
-  const langCookie = cookieStore.get('helix-lang')?.value
+  const langCookie = cookieStore.get('helix_lang')?.value ?? cookieStore.get('helix-lang')?.value
   return langCookie === 'ar' ? 'ar' : 'en'
 }
 

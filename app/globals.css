@@ -28,9 +28,9 @@
   --text-h1: 1.75rem;
   --text-h1--line-height: 1.15;
   --text-h1--letter-spacing: -0.03em;
-  --text-h2: 1.375rem;
-  --text-h2--line-height: 1.25;
-  --text-h2--letter-spacing: -0.03em;
+  --text-page: 1.375rem;
+  --text-page--line-height: 1.25;
+  --text-page--letter-spacing: -0.03em;
   --text-h3: 0.9375rem;
   --text-h3--line-height: 1.35;
   --text-body: 0.9375rem;
@@ -40,7 +40,7 @@
 
   --color-helix-canvas: var(--helix-canvas);
   --color-helix-surface: var(--helix-surface);
-  --color-helix-ink: var(--helix-ink);
+  --color-ink: var(--ink);
   --color-helix-muted: var(--helix-muted);
   --color-helix-border: var(--helix-border);
   --color-helix-accent: var(--helix-accent);
@@ -50,7 +50,7 @@
   --color-helix-danger: var(--helix-danger);
 
   --color-background: var(--helix-canvas);
-  --color-foreground: var(--helix-ink);
+  --color-foreground: var(--ink);
   --color-canvas: var(--helix-canvas);
   --color-panel: var(--helix-surface);
   --color-panel-hover: var(--helix-canvas);
@@ -60,13 +60,13 @@
   --color-deep-foreground: #f8fafc;
   --color-deep-muted: #94a3b8;
   --color-card: var(--helix-surface);
-  --color-card-foreground: var(--helix-ink);
+  --color-card-foreground: var(--ink);
   --color-popover: var(--helix-surface);
-  --color-popover-foreground: var(--helix-ink);
-  --color-primary: var(--helix-ink);
+  --color-popover-foreground: var(--ink);
+  --color-primary: var(--ink);
   --color-primary-foreground: var(--helix-surface);
   --color-secondary: var(--helix-canvas);
-  --color-secondary-foreground: var(--helix-ink);
+  --color-secondary-foreground: var(--ink);
   --color-muted: var(--helix-canvas);
   --color-muted-foreground: var(--helix-muted);
   --color-accent: var(--helix-accent);
@@ -75,28 +75,28 @@
   --color-border: var(--helix-border);
   --color-border-subtle: var(--helix-border);
   --color-border-default: var(--helix-border);
-  --color-border-active: var(--helix-ink);
+  --color-border-active: var(--ink);
   --color-input: var(--helix-border);
-  --color-ring: var(--helix-ink);
+  --color-ring: var(--ink);
 
   --color-status-success: var(--helix-ok);
   --color-status-warning: var(--helix-warn);
   --color-status-danger: var(--helix-danger);
 
   --color-chart-1: var(--helix-accent);
-  --color-chart-2: var(--helix-ink);
+  --color-chart-2: var(--ink);
   --color-chart-3: var(--helix-muted);
   --color-chart-4: var(--helix-border);
   --color-chart-5: var(--helix-canvas);
 
   --color-sidebar: var(--helix-surface);
-  --color-sidebar-foreground: var(--helix-ink);
-  --color-sidebar-primary: var(--helix-ink);
+  --color-sidebar-foreground: var(--ink);
+  --color-sidebar-primary: var(--ink);
   --color-sidebar-primary-foreground: var(--helix-surface);
   --color-sidebar-accent: var(--helix-canvas);
-  --color-sidebar-accent-foreground: var(--helix-ink);
+  --color-sidebar-accent-foreground: var(--ink);
   --color-sidebar-border: var(--helix-border);
-  --color-sidebar-ring: var(--helix-ink);
+  --color-sidebar-ring: var(--ink);
 
   --radius-sm: 8px;
   --radius-md: 10px;
@@ -130,7 +130,7 @@
   --helix-surface-hover: #F8F6F0;
   --helix-border: #D9D4CB;
   --helix-border-subtle: #E6E2D9;
-  --helix-ink: #141414;
+  --ink: #141414;
   --helix-muted: #6E6A63;
   --helix-accent: #0B6E4F;
   --helix-accent-soft: #E6F3EE;
@@ -142,24 +142,24 @@
   --helix-radius-shell: 0px;
 
   --bg-canvas: var(--helix-canvas);
-  --bg-panel: var(--helix-surface);
-  --bg-panel-hover: var(--helix-surface-hover);
+  --bg-surface-card: var(--helix-surface);
+  --bg-surface-card-hover: var(--helix-surface-hover);
   --bg-elevated: #FFFFFF;
   --border-subtle: var(--helix-border-subtle);
   --border-default: var(--helix-border);
-  --border-active: var(--helix-ink);
+  --border-active: var(--ink);
   --background: var(--helix-canvas);
   --panel: var(--helix-surface);
   --raised: #EBE7DF;
-  --foreground: var(--helix-ink);
+  --foreground: var(--ink);
   --card: var(--helix-surface);
-  --card-foreground: var(--helix-ink);
+  --card-foreground: var(--ink);
   --popover: var(--helix-surface);
-  --popover-foreground: var(--helix-ink);
+  --popover-foreground: var(--ink);
   --primary: #141414;
   --primary-foreground: #FFFFFF;
   --secondary: #EBE7DF;
-  --secondary-foreground: var(--helix-ink);
+  --secondary-foreground: var(--ink);
   --muted: #EBE7DF;
   --muted-foreground: var(--helix-muted);
   --accent: var(--helix-accent);
@@ -167,12 +167,12 @@
   --destructive: var(--helix-danger);
   --border: var(--helix-border);
   --input: var(--helix-border);
-  --ring: var(--helix-ink);
+  --ring: var(--ink);
   --status-success: var(--helix-ok);
   --status-warning: var(--helix-warn);
   --status-danger: var(--helix-danger);
   --chart-1: var(--helix-accent);
-  --chart-2: var(--helix-ink);
+  --chart-2: var(--ink);
   --chart-3: var(--helix-muted);
   --chart-4: var(--helix-border);
   --chart-5: #C4BFB5;
@@ -193,7 +193,7 @@
   --helix-canvas: #F3F1EC;
   --helix-surface: #FFFEFA;
   --helix-border: #D9D4CB;
-  --helix-ink: #141414;
+  --ink: #141414;
   --helix-muted: #6E6A63;
   --helix-accent: #0B6E4F;
   --helix-accent-soft: #E6F3EE;
@@ -244,7 +244,7 @@
   .helix-title {
     font-weight: 600;
     letter-spacing: -0.03em;
-    color: var(--helix-ink);
+    color: var(--ink);
   }
 
   .helix-field {
@@ -255,13 +255,13 @@
     background: var(--helix-surface);
     padding: 0 12px;
     font-size: 14px;
-    color: var(--helix-ink);
+    color: var(--ink);
     transition: border-color 150ms ease, box-shadow 150ms ease;
   }
 
   .helix-field:focus {
     outline: none;
-    border-color: var(--helix-ink);
+    border-color: var(--ink);
     box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.06);
   }
 
@@ -270,6 +270,6 @@
     margin-bottom: 6px;
     font-size: 13px;
     font-weight: 500;
-    color: var(--helix-ink);
+    color: var(--ink);
   }
 }

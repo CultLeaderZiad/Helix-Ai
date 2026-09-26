@@ -7,12 +7,10 @@ import {
   Edit2,
   Check,
   X,
-  HelpCircle,
   Eye,
   EyeOff,
   MoveUp,
   MoveDown,
-  Sparkles,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { FAQItem } from '@/lib/faq/faq-store'
@@ -144,22 +142,15 @@ export function FaqManagerView({ initialFaqs }: FaqManagerViewProps) {
       {/* Header Bar */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-helix-border bg-helix-accent-soft px-3 py-1 text-xs font-semibold uppercase tracking-wider text-helix-accent">
-            <HelpCircle className="size-3.5" />
-            Agency FAQ Command
-          </div>
-          <h1 className="mt-2 font-display text-2xl font-bold text-helix-ink sm:text-3xl">
-            FAQ Content Management
-          </h1>
-          <p className="mt-1 text-sm text-helix-muted">
-            Control the questions, answers, and visibility shown on the public // FAQ page.
+          <p className="text-sm text-helix-muted">
+            Questions saved here are the ones shown publicly.
           </p>
         </div>
 
         <button
           type="button"
           onClick={openCreateModal}
-          className="flex items-center gap-2 rounded-xl bg-helix-ink px-4 py-2.5 text-xs font-semibold text-white  hover:bg-helix-ink/90 transition-all"
+          className="flex items-center gap-2 rounded-xl bg-ink px-4 py-2.5 text-xs font-semibold text-white  hover:bg-ink/90 transition-all"
         >
           <Plus className="size-4" />
           Add FAQ Question
@@ -180,7 +171,7 @@ export function FaqManagerView({ initialFaqs }: FaqManagerViewProps) {
           <button
             type="button"
             onClick={() => setFeedback(null)}
-            className="text-helix-muted hover:text-helix-ink"
+            className="text-helix-muted hover:text-ink"
           >
             <X className="size-4" />
           </button>
@@ -190,7 +181,7 @@ export function FaqManagerView({ initialFaqs }: FaqManagerViewProps) {
       {/* FAQs List Table */}
       <div className="rounded-2xl border border-helix-border bg-helix-canvas overflow-hidden shadow-xl">
         <div className="p-4 border-b border-helix-border/80 flex items-center justify-between bg-helix-surface">
-          <span className="text-xs font-semibold uppercase tracking-wider text-helix-ink">
+          <span className="text-xs font-semibold uppercase tracking-wider text-ink">
             Current Questions ({faqs.length})
           </span>
           <span className="text-[11px] text-helix-muted font-mono">
@@ -217,7 +208,7 @@ export function FaqManagerView({ initialFaqs }: FaqManagerViewProps) {
                     <span className="text-xs font-mono font-bold text-helix-muted">
                       #{idx + 1}
                     </span>
-                    <span className="rounded-md border border-helix-border bg-helix-canvas px-2 py-0.5 text-[10px] font-mono uppercase text-helix-ink">
+                    <span className="rounded-md border border-helix-border bg-helix-canvas px-2 py-0.5 text-[10px] font-mono uppercase text-ink">
                       {item.category || 'General'}
                     </span>
                     <span
@@ -231,10 +222,10 @@ export function FaqManagerView({ initialFaqs }: FaqManagerViewProps) {
                       {item.is_active ? 'Active' : 'Hidden'}
                     </span>
                   </div>
-                  <h3 className="font-display text-sm sm:text-base font-semibold text-helix-ink">
+                  <h3 className="font-display text-sm sm:text-base font-semibold text-ink">
                     {item.question}
                   </h3>
-                  <p className="text-xs text-helix-ink/80 leading-relaxed line-clamp-2">
+                  <p className="text-xs text-ink/80 leading-relaxed line-clamp-2">
                     {item.answer}
                   </p>
                 </div>
@@ -245,7 +236,7 @@ export function FaqManagerView({ initialFaqs }: FaqManagerViewProps) {
                     type="button"
                     onClick={() => handleToggleActive(item)}
                     disabled={isPending}
-                    className="flex items-center gap-1 rounded-lg border border-helix-border bg-slate-800/80 px-2.5 py-1.5 text-xs text-helix-ink/80 hover:text-helix-ink transition-colors"
+                    className="flex items-center gap-1 rounded-lg border border-helix-border bg-slate-800/80 px-2.5 py-1.5 text-xs text-ink/80 hover:text-ink transition-colors"
                     title={item.is_active ? 'Hide from public site' : 'Publish to public site'}
                   >
                     {item.is_active ? (
@@ -264,7 +255,7 @@ export function FaqManagerView({ initialFaqs }: FaqManagerViewProps) {
                   <button
                     type="button"
                     onClick={() => openEditModal(item)}
-                    className="flex items-center gap-1 rounded-lg border border-helix-border bg-slate-800/80 px-2.5 py-1.5 text-xs text-helix-ink/80 hover:text-helix-ink hover:border-helix-border transition-colors"
+                    className="flex items-center gap-1 rounded-lg border border-helix-border bg-slate-800/80 px-2.5 py-1.5 text-xs text-ink/80 hover:text-ink hover:border-helix-border transition-colors"
                   >
                     <Edit2 className="size-3.5 text-helix-accent" />
                     <span className="hidden sm:inline text-[11px]">Edit</span>
@@ -291,13 +282,13 @@ export function FaqManagerView({ initialFaqs }: FaqManagerViewProps) {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm animate-in fade-in">
           <div className="w-full max-w-xl rounded-2xl border border-helix-border bg-helix-canvas p-6 shadow-2xl space-y-4">
             <div className="flex items-center justify-between border-b border-helix-border pb-3">
-              <h3 className="font-display text-lg font-bold text-helix-ink">
+              <h3 className="font-display text-lg font-bold text-ink">
                 {editingItem ? 'Edit FAQ Question' : 'Add New FAQ Question'}
               </h3>
               <button
                 type="button"
                 onClick={() => setModalOpen(false)}
-                className="text-helix-muted hover:text-helix-ink"
+                className="text-helix-muted hover:text-ink"
               >
                 <X className="size-5" />
               </button>
@@ -305,7 +296,7 @@ export function FaqManagerView({ initialFaqs }: FaqManagerViewProps) {
 
             <div className="space-y-3.5 text-xs">
               <div>
-                <label className="block text-helix-ink/80 font-semibold mb-1">
+                <label className="block text-ink/80 font-semibold mb-1">
                   Question *
                 </label>
                 <input
@@ -313,12 +304,12 @@ export function FaqManagerView({ initialFaqs }: FaqManagerViewProps) {
                   value={formQuestion}
                   onChange={(e) => setFormQuestion(e.target.value)}
                   placeholder="e.g. Can I migrate from Salesforce/HubSpot?"
-                  className="w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2.5 text-xs text-helix-ink placeholder:text-helix-muted focus:border-helix-ink focus:outline-hidden"
+                  className="w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2.5 text-xs text-ink placeholder:text-helix-muted focus:border-ink focus:outline-hidden"
                 />
               </div>
 
               <div>
-                <label className="block text-helix-ink/80 font-semibold mb-1">
+                <label className="block text-ink/80 font-semibold mb-1">
                   Answer *
                 </label>
                 <textarea
@@ -326,13 +317,13 @@ export function FaqManagerView({ initialFaqs }: FaqManagerViewProps) {
                   value={formAnswer}
                   onChange={(e) => setFormAnswer(e.target.value)}
                   placeholder="Provide clear, authoritative answer..."
-                  className="w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2.5 text-xs text-helix-ink placeholder:text-helix-muted focus:border-helix-ink focus:outline-hidden leading-relaxed"
+                  className="w-full rounded-xl border border-helix-border bg-helix-surface px-3.5 py-2.5 text-xs text-ink placeholder:text-helix-muted focus:border-ink focus:outline-hidden leading-relaxed"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-helix-ink/80 font-semibold mb-1">
+                  <label className="block text-ink/80 font-semibold mb-1">
                     Category
                   </label>
                   <input
@@ -340,12 +331,12 @@ export function FaqManagerView({ initialFaqs }: FaqManagerViewProps) {
                     value={formCategory}
                     onChange={(e) => setFormCategory(e.target.value)}
                     placeholder="Platform, Security, Billing, Integrations"
-                    className="w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-2 text-xs text-helix-ink placeholder:text-helix-muted focus:border-helix-ink focus:outline-hidden"
+                    className="w-full rounded-xl border border-helix-border bg-helix-surface px-3 py-2 text-xs text-ink placeholder:text-helix-muted focus:border-ink focus:outline-hidden"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-helix-ink/80 font-semibold mb-1">
+                  <label className="block text-ink/80 font-semibold mb-1">
                     Visibility
                   </label>
                   <button
@@ -369,7 +360,7 @@ export function FaqManagerView({ initialFaqs }: FaqManagerViewProps) {
               <button
                 type="button"
                 onClick={() => setModalOpen(false)}
-                className="rounded-xl border border-helix-border bg-helix-canvas px-4 py-2 text-xs font-semibold text-helix-ink hover:bg-helix-border/40 transition-colors"
+                className="rounded-xl border border-helix-border bg-helix-canvas px-4 py-2 text-xs font-semibold text-ink hover:bg-helix-border/40 transition-colors"
               >
                 Cancel
               </button>
@@ -377,7 +368,7 @@ export function FaqManagerView({ initialFaqs }: FaqManagerViewProps) {
                 type="button"
                 onClick={handleSave}
                 disabled={isPending}
-                className="flex items-center gap-1.5 rounded-xl bg-helix-ink px-5 py-2 text-xs font-semibold text-white hover:bg-helix-ink/90 transition-all shadow-md"
+                className="flex items-center gap-1.5 rounded-xl bg-ink px-5 py-2 text-xs font-semibold text-white hover:bg-ink/90 transition-all shadow-md"
               >
                 {isPending ? 'Saving...' : 'Save Question'}
               </button>

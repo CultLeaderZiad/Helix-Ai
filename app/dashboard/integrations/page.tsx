@@ -1,3 +1,4 @@
+import { type DashLang, type DashTheme } from '@/lib/dashboard/lang'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { createSupabaseServerClient } from '@/lib/supabase'
@@ -5,6 +6,7 @@ import { getVerifiedSession } from '@/lib/auth/session'
 import { ConsoleShell } from '@/components/shell/console-shell'
 import { IntegrationsHealthView } from '@/components/integrations/integrations-health-view'
 import type { ClientIntegration } from '@/lib/schema'
+import { readDashLang, readDashTheme } from '@/lib/dashboard/lang.server'
 
 export const metadata = {
   title: 'Helix AI — Integrations Health',
@@ -19,6 +21,8 @@ export default async function IntegrationsHealthPage() {
   if (!session) redirect('/login')
   if (session.claims.role === 'agency_admin') redirect('/admin')
 
+  const lang = await readDashLang()
+  const theme = await readDashTheme()
   const clientId = session.claims.client_id!
   const [clientRes, integrationsRes] = await Promise.all([
     supabase.from('clients').select('business_name').eq('id', clientId).maybeSingle(),
@@ -44,10 +48,10 @@ export default async function IntegrationsHealthPage() {
       .eq('enabled', true)
 
     if (hookError) {
-      return { error: `Webhook lookup failed: ${hookError.message}` }
+      return { error: 'We could not check the connection. Try again.' }
     }
     if (!hooks || hooks.length === 0) {
-      return { error: 'Not connected. No enabled webhook URL is saved for this workspace.' }
+      return { error: 'Not connected.' }
     }
 
     const now = new Date().toISOString()
@@ -72,19 +76,18 @@ export default async function IntegrationsHealthPage() {
 
     revalidatePath('/dashboard/integrations')
     if (reachable === 0) {
-      return { error: 'No webhook URL responded. Status left as degraded.' }
+      return { error: 'Still not connected.' }
     }
-    return { success: true, message: `${reachable} of ${hooks.length} webhook URLs responded.` }
+    return { success: true, message: `${reachable} of ${hooks.length} connected.` }
   }
 
   return (
-    <ConsoleShell variant="client" email={session.user.email ?? ''} businessName={client?.business_name ?? null}>
-      <div className="w-full">
-        <IntegrationsHealthView
-          initialIntegrations={integrations}
-          pingAction={pingAction}
-        />
-      </div>
+    <ConsoleShell variant="client" email={session.user.email ?? ''} businessName={client?.business_name ?? null} lang={lang} theme={theme}>
+      <IntegrationsHealthView
+        initialIntegrations={integrations}
+        pingAction={pingAction}
+        lang={lang}
+      />
     </ConsoleShell>
   )
 }

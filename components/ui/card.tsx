@@ -6,7 +6,7 @@ function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
     <div
       data-slot="card"
       className={cn(
-        'relative rounded-[16px] border border-helix-border bg-helix-surface p-6 text-helix-ink shadow-helix',
+        'relative rounded-[16px] border border-helix-border bg-helix-surface p-6 text-ink shadow-helix',
         className
       )}
       {...props}

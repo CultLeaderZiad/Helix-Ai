@@ -32,9 +32,9 @@ export function SignUpForm({ lang }: { lang: HelixLang }) {
       <div className="auth-success">
         <span className="tick"><Check size={18} aria-hidden="true" /></span>
         <h1 className="auth-title">{copy.checkTitle}</h1>
-        <p className="auth-lead">
-          {copy.checkBody} <span style={{ color: 'var(--text)', fontWeight: 600 }}>{state.email}</span>. {copy.checkRest}
-        </p>
+        {state.email ? (
+          <p className="auth-lead" dir="ltr">{state.email}</p>
+        ) : null}
         <ResendConfirmation email={state.email ?? ''} />
         <Link href="/login" className="btn btn-primary auth-submit" style={{ marginTop: 12 }}>
           {copy.goSignIn}

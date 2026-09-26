@@ -10,7 +10,19 @@ import type { HelixLang } from '@/lib/public-prefs'
 
 const initialState: SignInState = { status: 'idle' }
 
-export function LoginForm({ lang, verifyFailed = false }: { lang: HelixLang; verifyFailed?: boolean }) {
+export function LoginForm({
+  lang,
+  verifyFailed = false,
+  portal = null,
+  supportHref = '/contact',
+  supportLabel,
+}: {
+  lang: HelixLang
+  verifyFailed?: boolean
+  portal?: 'agency' | 'admin' | null
+  supportHref?: string
+  supportLabel?: string
+}) {
   const ar = lang === 'ar'
   const [state, formAction, pending] = useActionState(signIn, initialState)
   const [showPassword, setShowPassword] = useState(false)
@@ -18,13 +30,15 @@ export function LoginForm({ lang, verifyFailed = false }: { lang: HelixLang; ver
   const ids = { email: useId(), password: useId(), emailErr: useId(), passwordErr: useId(), banner: useId() }
   const fieldErrors = state.status === 'field_error' ? state.errors : {}
   const authError = state.status === 'auth_error' ? state : null
+  const helpLabel = supportLabel ?? (ar ? 'تواصل' : 'Contact')
+  const externalSupport = supportHref.startsWith('http')
 
   return (
     <>
       <h1>{ar ? 'أهلاً بعودتك' : 'Welcome back'}</h1>
       <p className="sub">{ar ? 'سجّل الدخول إلى مساحة عمل Helix.' : 'Sign in to your Helix workspace.'}</p>
       <form action={formAction} noValidate aria-busy={pending}>
-        <input type="hidden" name="portal" value="client" />
+        {portal ? <input type="hidden" name="portal" value={portal} /> : null}
         {verifyFailed ? <p role="alert" className="auth-error">{ar ? 'تعذّر تأكيد البريد. اطلب رابطاً جديداً.' : 'Email confirmation could not be completed. Request a new link.'}</p> : null}
         {authError ? (
           <p id={ids.banner} role="alert" className="auth-error">{localizeAuthError(lang, authError.message)}</p>
@@ -70,7 +84,7 @@ export function LoginForm({ lang, verifyFailed = false }: { lang: HelixLang; ver
           {pending ? <><Loader2 size={16} className="spin" /> {ar ? 'جارٍ تسجيل الدخول…' : 'Signing in…'}</> : <>{ar ? 'تسجيل الدخول' : 'Sign in'} <ArrowRight size={16} className="arrow" /></>}
         </button>
         <div className="alt">
-          <span>{ar ? 'تواجه مشكلة؟' : 'Trouble signing in?'} <Link href="/contact">{ar ? 'راسل دعم Helix' : 'Message Helix support on WhatsApp'}</Link></span>
+          <span>{ar ? 'تواجه مشكلة؟' : 'Trouble signing in?'} <Link href={supportHref} {...(externalSupport ? { target: '_blank', rel: 'noreferrer' } : {})}>{helpLabel}</Link></span>
           <span>{ar ? 'من فريق Helix؟' : 'Helix team member?'} <Link href="/login?portal=agency">{ar ? 'دخول الوكالة' : 'Agency sign-in'}</Link></span>
         </div>
       </form>

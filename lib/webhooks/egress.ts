@@ -31,7 +31,7 @@ export interface EgressResult {
 }
 
 /**
- * Generate HMAC SHA-256 signature for the webhook payload.
+ * Generate an HMAC signature for the webhook payload.
  */
 export function signHelixPayload(secret: string, rawBody: string, timestamp: number): string {
   const signaturePayload = `${timestamp}.${rawBody}`
