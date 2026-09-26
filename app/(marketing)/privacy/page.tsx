@@ -91,6 +91,17 @@ const SECTIONS: LegalSection[] = [
     ],
     review: 'Counsel should confirm which protection statements we can make. Do not name a specific encryption product here until that review.',
   },
+  {
+    id: 'cookies',
+    titleEn: 'Cookies',
+    titleAr: 'الكوكيز',
+    paragraphsEn: [
+      'The public site stores two cookies in your browser: one for language (English or Arabic) and one for light or dark. Each lasts a year. We use them so the site opens the way you left it. We do not sell this information, and we do not use advertising cookies.',
+    ],
+    paragraphsAr: [
+      'يخزّن الموقع العام كوكيز في متصفحك: واحدة للغة (العربية أو الإنجليزية) وواحدة للوضع الفاتح أو الداكن. تدوم كل منهما سنة. نستخدمهما ليفتح الموقع كما تركته. لا نبيع هذه المعلومة، ولا نستخدم كوكيز إعلانية.',
+    ],
+  },
 ]
 
 export default function PrivacyPage() {

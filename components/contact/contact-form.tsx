@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useActionState, useMemo, useState } from 'react'
 import { useMarketingPrefs } from '@/components/marketing/public-frame'
 import { WhatsAppCta } from '@/components/marketing/whatsapp-cta'
+import { HELIX_ADMIN_EMAIL } from '@/lib/auth/admin-email'
 import { submitContactInquiry, type ContactInquiryState } from '@/lib/contact/inquiry'
 import { REGIONAL_PRICING_CONFIGS } from '@/lib/pricing/tiers'
 import { getSystemTemplate } from '@/lib/studio/templates'
@@ -164,6 +165,14 @@ function Aside({ ar }: { ar: boolean }) {
         ))}
       </ol>
       <WhatsAppCta ar={ar} className="btn btn-ghost" labelEn="Prefer WhatsApp?" labelAr="تفضّل واتساب؟" />
+      <p className="muted small">
+        {ar ? 'راسل الإدارة' : 'Email the admin'}{' '}
+        <a className="link" href={`mailto:${HELIX_ADMIN_EMAIL}`}>{HELIX_ADMIN_EMAIL}</a>
+      </p>
+      <p className="muted small">
+        {ar ? 'جديد على Helix؟' : 'New to Helix?'}{' '}
+        <Link className="link" href="/signup">{ar ? 'أنشئ حسابك' : 'Create your account'}</Link>
+      </p>
       <p className="muted small">
         {ar ? 'عميل حالياً؟' : 'Already a client?'}{' '}
         <Link className="link" href="/login">{ar ? 'تسجيل الدخول' : 'Sign in'}</Link>

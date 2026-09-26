@@ -1,4 +1,5 @@
 import { createSupabaseAdminClient } from '@/lib/supabase-admin'
+import { isAgencyAdminEmail } from '@/lib/auth/admin-email'
 import { parseTenantClaims, type TenantClaims } from '@/lib/auth/claims'
 
 /**
@@ -13,12 +14,10 @@ export async function ensureUserProvisioned(userId: string): Promise<TenantClaim
   if (userError || !userData.user) return null
 
   const user = userData.user
-  const allowlist = [process.env.SUPABASE_TEST_EMAIL_ADMIN, process.env.AGENCY_ADMIN_EMAILS]
-    .flatMap(value => (value || '').split(','))
-    .map(value => value.trim().toLowerCase())
-    .filter(Boolean)
   const userEmail = (user.email || '').trim().toLowerCase()
-  const isTargetAdmin = allowlist.includes(userEmail) || user.app_metadata?.role === 'agency_admin'
+  const isTargetAdmin =
+    isAgencyAdminEmail(userEmail, [process.env.SUPABASE_TEST_EMAIL_ADMIN, process.env.AGENCY_ADMIN_EMAILS]) ||
+    user.app_metadata?.role === 'agency_admin'
 
   if (isTargetAdmin) {
     const claims: TenantClaims = { role: 'agency_admin', client_id: null }
