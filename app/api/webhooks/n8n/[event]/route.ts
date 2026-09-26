@@ -8,8 +8,8 @@ async function verifyTenantAuth(
   rawBody: string,
   tenantId?: string
 ): Promise<boolean> {
-  const globalSecret = process.env.HELIX_WEBHOOK_SECRET || 'helix_default_secret'
-  const allowedSecrets = [globalSecret]
+  const globalSecret = process.env.HELIX_WEBHOOK_SECRET?.trim()
+  const allowedSecrets = globalSecret ? [globalSecret] : []
 
   // If tenant ID is known, lookup tenant's ingress webhook secret
   if (tenantId) {
@@ -96,16 +96,27 @@ export async function POST(
       case 'contact':
       case 'contact.upsert': {
         if (tenantId && data.phone) {
-          await supabase.from('contacts').upsert(
-            {
-              client_id: tenantId,
-              phone: data.phone,
-              name: data.name || null,
-              status: data.status || 'lead',
-              updated_at: new Date().toISOString(),
-            },
-            { onConflict: 'client_id,phone' }
-          )
+          const existing = await supabase
+            .from('contacts')
+            .select('id')
+            .eq('client_id', tenantId)
+            .eq('phone', data.phone)
+            .maybeSingle()
+          const row = {
+            client_id: tenantId,
+            phone: data.phone,
+            full_name: data.full_name || data.name || null,
+            email: data.email || null,
+            lead_status: 'warm',
+            source: 'n8n',
+            updated_at: new Date().toISOString(),
+          }
+          const write = existing.data
+            ? await supabase.from('contacts').update(row).eq('id', existing.data.id)
+            : await supabase.from('contacts').insert(row)
+          if (write.error) {
+            return NextResponse.json({ error: write.error.message }, { status: 500 })
+          }
         }
         break
       }
@@ -156,7 +167,7 @@ export async function POST(
             evidence_band: band,
             source_tool: data.source_tool || 'n8n_webhook',
             status: 'pending',
-            score: typeof data.score === 'number' ? data.score : 85,
+            score: typeof data.score === 'number' ? data.score : null,
             method: data.method || 'webhook_assertion',
             evidence: Array.isArray(data.evidence) ? data.evidence : [{ raw: data }],
             observed_at: new Date().toISOString(),
@@ -199,7 +210,7 @@ export async function POST(
             .from('system_webhooks')
             .update({
               last_ping_at: new Date().toISOString(),
-              last_status: data.status === 'ok' ? 'ok' : 'healthy',
+              last_status: data.status === 'ok' ? 'ok' : 'failed',
               last_error: data.error || null,
               updated_at: new Date().toISOString(),
             })

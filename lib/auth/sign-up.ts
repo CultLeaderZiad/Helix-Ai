@@ -2,6 +2,8 @@
 
 import { createSupabaseServerClient } from '@/lib/supabase'
 import { parseTenantClaims } from '@/lib/auth/claims'
+import { authCallbackUrl } from '@/lib/auth/site-url'
+import { interpretSignUp } from '@/lib/auth/signup-outcome'
 import { SupabaseConfigError } from '@/lib/supabase-env'
 import { redirect } from 'next/navigation'
 
@@ -49,12 +51,11 @@ export async function signUpUser(_prev: SignUpState, formData: FormData): Promis
   let destination: string | null = null
   try {
     const supabase = await createSupabaseServerClient()
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: `${siteUrl}/auth/callback?next=/dashboard`,
+        emailRedirectTo: authCallbackUrl('/dashboard'),
         data: {
           full_name: fullName,
           company_name: companyName,
@@ -62,17 +63,20 @@ export async function signUpUser(_prev: SignUpState, formData: FormData): Promis
       },
     })
 
-    if (error) {
-      if (error.message.toLowerCase().includes('already registered') || error.status === 422) {
-        return {
-          status: 'auth_error',
-          message: 'An account with this email already exists.',
-        }
-      }
+    const outcome = interpretSignUp({
+      error: error ? { message: error.message, status: error.status } : null,
+      user: data.user,
+      session: data.session,
+    })
+
+    if (outcome.kind === 'already_registered') {
       return {
         status: 'auth_error',
-        message: error.message || 'Account creation could not be completed. Try again.',
+        message: 'An account with this email already exists. Sign in, or use Forgot password if you never confirmed it.',
       }
+    }
+    if (outcome.kind === 'error') {
+      return { status: 'auth_error', message: outcome.message }
     }
 
     if (data.user) {
@@ -84,7 +88,7 @@ export async function signUpUser(_prev: SignUpState, formData: FormData): Promis
       }
     }
 
-    if (!data.session) {
+    if (outcome.kind === 'confirm_email') {
       return { status: 'success', email }
     }
 

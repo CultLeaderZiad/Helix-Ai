@@ -25,6 +25,16 @@ export interface ReviewableFact {
 const initialState: FactReviewState = { status: 'idle' }
 
 export function FactReviewList({ facts }: { facts: ReviewableFact[] }) {
+  if (facts.length === 0) {
+    return (
+      <p className="mt-4 text-sm text-helix-muted">
+        No pending facts. Nothing is waiting for review.
+        <span className="mt-1 block" dir="rtl" lang="ar">
+          لا توجد حقائق معلّقة. لا شيء بانتظار المراجعة.
+        </span>
+      </p>
+    )
+  }
   return (
     <ul className="mt-4 space-y-3">
       {facts.map(fact => (

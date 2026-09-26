@@ -74,7 +74,7 @@ export async function evaluateProspectAndSaveDeal(
         email: input.email,
         phone: input.phone,
         company_name: input.businessName,
-        lead_status: 'lead',
+        lead_status: 'warm',
         custom_fields: {
           vertical: input.vertical,
           monthly_call_volume: input.monthlyCallVolume,
@@ -95,7 +95,7 @@ export async function evaluateProspectAndSaveDeal(
         name: `AI Engine: ${recommendation.systemName} (${input.businessName})`,
         value_cents: totalCents,
         currency: recommendation.currency,
-        stage: 'studio_completed',
+        stage: 'QUALIFIED_TO_BUY',
         source: 'ai_engine_assessment',
         custom_fields: {
           system_id: recommendation.systemId,
@@ -109,8 +109,12 @@ export async function evaluateProspectAndSaveDeal(
       .select('id')
       .single()
 
-    if (dealError) {
-      console.warn('Deal record insert notice:', dealError)
+    if (dealError || !deal) {
+      return {
+        success: false,
+        message: `The recommendation was calculated, but the deal was not saved. ${dealError?.message || 'No deal id was returned.'}`,
+        recommendation,
+      }
     }
 
     // 4. Log activity record
@@ -124,7 +128,9 @@ export async function evaluateProspectAndSaveDeal(
 
     return {
       success: true,
-      message: 'Assessment completed and saved to CRM.',
+      message: contact
+        ? 'Assessment saved as a contact and a deal. The match score is not a measured probability.'
+        : 'Deal saved. The contact row was not created. The match score is not a measured probability.',
       recommendation,
       dealId: deal?.id,
     }

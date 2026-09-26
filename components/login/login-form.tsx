@@ -5,6 +5,7 @@ import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { AlertCircle, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { signIn, type Portal, type SignInState } from '@/lib/auth/sign-in'
+import { ResendConfirmation } from '@/components/auth/resend-confirmation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -224,6 +225,12 @@ export function LoginForm() {
           </p>
         </div>
       </form>
+
+      {authError?.code === 'EMAIL_NOT_CONFIRMED' ? (
+        <div className="mt-4">
+          <ResendConfirmation email={authError.values.email || email} />
+        </div>
+      ) : null}
 
       <PasswordResetModal
         initialEmail={email}

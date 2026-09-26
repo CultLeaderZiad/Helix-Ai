@@ -4,9 +4,29 @@ import { revalidatePath } from 'next/cache'
 import { createSupabaseServerClient } from '@/lib/supabase'
 import { getVerifiedSession } from '@/lib/auth/session'
 import { readAllFaqs, writeAllFaqs, type FAQItem } from './faq-store'
+import { loadSiteDocument, persistSiteDocument } from '@/lib/content/site-documents'
+
+async function loadFaqs(): Promise<FAQItem[]> {
+  const remote = await loadSiteDocument<FAQItem[]>('faqs')
+  if (Array.isArray(remote)) return remote
+  return readAllFaqs()
+}
+
+async function saveFaqs(faqs: FAQItem[]): Promise<{ ok: boolean; error?: string }> {
+  const remote = await persistSiteDocument('faqs', faqs)
+  if (!remote.ok) {
+    try {
+      writeAllFaqs(faqs)
+    } catch {
+      return remote
+    }
+    if (process.env.VERCEL) return remote
+  }
+  return { ok: true }
+}
 
 export async function getPublicFaqs(): Promise<FAQItem[]> {
-  const faqs = readAllFaqs()
+  const faqs = await loadFaqs()
   return faqs.filter((f) => f.is_active)
 }
 
@@ -16,7 +36,7 @@ export async function getAllAdminFaqs(): Promise<FAQItem[]> {
   if (!session || session.claims.role !== 'agency_admin') {
     throw new Error('Unauthorized. Agency Admin role required.')
   }
-  return readAllFaqs()
+  return loadFaqs()
 }
 
 export async function createFaqAction(data: {
@@ -37,7 +57,7 @@ export async function createFaqAction(data: {
       return { success: false, message: 'Question and answer are required.' }
     }
 
-    const currentFaqs = readAllFaqs()
+    const currentFaqs = await loadFaqs()
     const newItem: FAQItem = {
       id: `faq-${Date.now()}`,
       question: data.question.trim(),
@@ -49,7 +69,8 @@ export async function createFaqAction(data: {
     }
 
     currentFaqs.push(newItem)
-    writeAllFaqs(currentFaqs)
+    const saved = await saveFaqs(currentFaqs)
+    if (!saved.ok) return { success: false, message: saved.error || 'Failed to create FAQ.' }
 
     revalidatePath('/faq')
     revalidatePath('/admin/faq')
@@ -70,7 +91,7 @@ export async function updateFaqAction(
       return { success: false, message: 'Unauthorized. Agency Admin role required.' }
     }
 
-    const currentFaqs = readAllFaqs()
+    const currentFaqs = await loadFaqs()
     const index = currentFaqs.findIndex((f) => f.id === id)
     if (index === -1) {
       return { success: false, message: 'FAQ not found.' }
@@ -82,7 +103,8 @@ export async function updateFaqAction(
       updated_at: new Date().toISOString(),
     }
 
-    writeAllFaqs(currentFaqs)
+    const saved = await saveFaqs(currentFaqs)
+    if (!saved.ok) return { success: false, message: saved.error || 'Failed to update FAQ.' }
 
     revalidatePath('/faq')
     revalidatePath('/admin/faq')
@@ -100,13 +122,14 @@ export async function deleteFaqAction(id: string): Promise<{ success: boolean; m
       return { success: false, message: 'Unauthorized. Agency Admin role required.' }
     }
 
-    const currentFaqs = readAllFaqs()
+    const currentFaqs = await loadFaqs()
     const filtered = currentFaqs.filter((f) => f.id !== id)
     if (filtered.length === currentFaqs.length) {
       return { success: false, message: 'FAQ item not found.' }
     }
 
-    writeAllFaqs(filtered)
+    const saved = await saveFaqs(filtered)
+    if (!saved.ok) return { success: false, message: saved.error || 'Failed to delete FAQ.' }
 
     revalidatePath('/faq')
     revalidatePath('/admin/faq')

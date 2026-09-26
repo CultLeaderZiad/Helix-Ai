@@ -3,7 +3,7 @@ import { PillNav } from '@/components/navigation/pill-nav'
 import { LightfallCanvas } from '@/components/lightfall-canvas'
 import { PricingView } from '@/components/pricing/pricing-view'
 import { HelixFooter } from '@/components/footer/helix-footer'
-import { getPricingConfigs } from '@/lib/pricing/pricing-store'
+import { getPricingAction } from '@/lib/pricing/actions'
 import { getNavAuth } from '@/lib/auth/nav-auth'
 
 export const metadata: Metadata = {
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 }
 
 export default async function PricingPage() {
-  const [configs, navAuth] = await Promise.all([Promise.resolve(getPricingConfigs()), getNavAuth()])
+  const [configs, navAuth] = await Promise.all([getPricingAction(), getNavAuth()])
 
   return (
     <div className="relative min-h-screen bg-[#0B0F19] text-[#F8FAFC]">

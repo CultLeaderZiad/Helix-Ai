@@ -239,7 +239,7 @@ export function ConsoleShell({
             {variant === 'admin' ? 'DIRECTION 2 · WARM COMMAND' : title}
           </span>
           <span className="mt-0.5 block text-[10px] font-mono tracking-widest text-[#9E9B95] uppercase">
-            {variant === 'admin' ? 'AGENCY · LIVE' : 'CLIENT WORKSPACE'}
+            {variant === 'admin' ? 'AGENCY' : 'CLIENT WORKSPACE'}
           </span>
         </div>
 
@@ -314,7 +314,7 @@ export function ConsoleShell({
         <div>
           <span className="font-display text-13 font-bold uppercase">{title}</span>
           <span className="ml-2 text-[10px] font-mono text-[#9E9B95] uppercase">
-            {variant === 'admin' ? 'AGENCY · LIVE' : 'CLIENT'}
+            {variant === 'admin' ? 'AGENCY' : 'CLIENT'}
           </span>
         </div>
         <button

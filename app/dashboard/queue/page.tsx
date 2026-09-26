@@ -10,48 +10,6 @@ export const metadata = {
   robots: { index: false, follow: false },
 }
 
-const SAMPLE_PENDING_FACTS: ReviewableFact[] = [
-  {
-    id: 'f-1',
-    field_name: 'budget_confirmed',
-    field_value: '$50,000 annual deployment budget approved by CFO',
-    evidence_band: 'verified',
-    source_tool: 'Retell Voice Agent (call_id: 8f4b..32a1)',
-    status: 'pending',
-    score: 0.98,
-    method: 'audio_intent_classifier',
-    observed_at: new Date(Date.now() - 40 * 60000).toISOString(),
-    contact_id: 'c-1',
-    contact: { full_name: 'Anna Hamer', company_name: 'Cianua Systems' },
-  },
-  {
-    id: 'f-2',
-    field_name: 'decision_maker_bought_in',
-    field_value: 'CTO confirmed technical readiness for automated WhatsApp responder',
-    evidence_band: 'probable',
-    source_tool: 'Inbound WhatsApp Webhook (wamid: 91fa..81bc)',
-    status: 'pending',
-    score: 0.86,
-    method: 'nlp_sentiment_extractor',
-    observed_at: new Date(Date.now() - 95 * 60000).toISOString(),
-    contact_id: 'c-2',
-    contact: { full_name: 'Johan Shart', company_name: 'Acme Health Labs' },
-  },
-  {
-    id: 'f-3',
-    field_name: 'competitor_displacement',
-    field_value: 'Replacing legacy Zendesk system by end of Q4',
-    evidence_band: 'possible',
-    source_tool: 'Bland AI Voice Call (call_id: 72ee..44a2)',
-    status: 'pending',
-    score: 0.72,
-    method: 'audio_transcript_ner',
-    observed_at: new Date(Date.now() - 180 * 60000).toISOString(),
-    contact_id: 'c-3',
-    contact: { full_name: 'Diane Smith', company_name: 'Vortex Holdings' },
-  },
-]
-
 export default async function AttentionQueuePage() {
   const supabase = await createSupabaseServerClient()
   const session = await getVerifiedSession(supabase)
@@ -64,7 +22,7 @@ export default async function AttentionQueuePage() {
     supabase.from('clients').select('business_name').eq('id', clientId).maybeSingle(),
     supabase
       .from('contact_facts')
-      .select('id, fact_key, fact_value, evidence_band, source_tool, status, score, method, observed_at, contact_id')
+      .select('id, field_name, field_value, evidence_band, source_tool, status, score, method, observed_at, contact_id')
       .eq('client_id', clientId)
       .eq('status', 'pending'),
     supabase.from('client_integrations').select('id, system_type, status').eq('client_id', clientId),
@@ -72,25 +30,33 @@ export default async function AttentionQueuePage() {
 
   const client = clientRes.data
   const rawFacts = factsRes.data ?? []
+  const contactIds = [...new Set(rawFacts.map(fact => fact.contact_id).filter(Boolean))]
+  const contactsRes = contactIds.length
+    ? await supabase.from('contacts').select('id, full_name, company_name').in('id', contactIds)
+    : { data: [] as Array<{ id: string; full_name: string | null; company_name: string | null }> }
+  const contactById = new Map((contactsRes.data ?? []).map(contact => [contact.id, contact]))
   const degradedIntegrations = (integrationsRes.data ?? []).filter(
     i => i.status === 'degraded' || i.status === 'disconnected'
   )
 
-  const facts: ReviewableFact[] = rawFacts.length > 0
-    ? rawFacts.map(f => ({
-        id: f.id,
-        field_name: f.fact_key,
-        field_value: f.fact_value,
-        evidence_band: f.evidence_band as 'verified' | 'probable' | 'possible',
-        source_tool: f.source_tool,
-        status: f.status as any,
-        score: f.score,
-        method: f.method,
-        observed_at: f.observed_at,
-        contact_id: f.contact_id,
-        contact: { full_name: 'Workspace Lead', company_name: client?.business_name ?? null },
-      }))
-    : SAMPLE_PENDING_FACTS
+  const facts: ReviewableFact[] = rawFacts.map(f => {
+    const contact = contactById.get(f.contact_id)
+    return {
+      id: f.id,
+      field_name: f.field_name,
+      field_value: f.field_value,
+      evidence_band: f.evidence_band as 'verified' | 'probable' | 'possible',
+      source_tool: f.source_tool,
+      status: f.status as ReviewableFact['status'],
+      score: f.score,
+      method: f.method,
+      observed_at: f.observed_at,
+      contact_id: f.contact_id,
+      contact: contact
+        ? { full_name: contact.full_name, company_name: contact.company_name }
+        : { full_name: null, company_name: client?.business_name ?? null },
+    }
+  })
 
   return (
     <ConsoleShell variant="client" email={session.user.email ?? ''} businessName={client?.business_name ?? null}>
@@ -124,7 +90,7 @@ export default async function AttentionQueuePage() {
               <AlertCircle className="size-5 text-amber-400 shrink-0" />
               <div>
                 <p className="font-semibold">{degradedIntegrations.length} integration requiring reconnection</p>
-                <p className="text-xs text-amber-300/80">Webhook latency or authentication token expired.</p>
+                <p className="text-xs text-amber-300/80">These channels are marked disconnected or degraded. Nothing is probed from this page.</p>
               </div>
             </div>
             <a

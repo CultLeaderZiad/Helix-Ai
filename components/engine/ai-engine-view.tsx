@@ -26,8 +26,8 @@ const PAIN = [
     matchScore: 96,
     setupFee: 1500,
     monthlyRetainer: 450,
-    headline: 'Live recommendation from engine — not a hard-coded demo card. Wire to real workspace when roster loads.',
-    headlineAr: 'توصية مباشرة من المحرك — وليست بطاقة تجريبية ثابتة. يتم الربط بمساحة العمل الحقيقية عند تحميل السجل.',
+    headline: 'Rules-based recommendation for the selected pain point. Not a live model score.',
+    headlineAr: 'توصية مبنية على نقطة الألم المختارة. ليست درجة من نموذج حي.',
   },
   {
     id: 'missed_calls',

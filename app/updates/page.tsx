@@ -3,7 +3,7 @@ import { PillNav } from '@/components/navigation/pill-nav'
 import { Sparkles, ArrowUpRight } from 'lucide-react'
 import Link from 'next/link'
 import { HelixFooter } from '@/components/footer/helix-footer'
-import { getUpdates } from '@/lib/updates/updates-store'
+import { getUpdatesAction } from '@/lib/updates/actions'
 import { getNavAuth } from '@/lib/auth/nav-auth'
 
 export const metadata: Metadata = {
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 }
 
 export default async function UpdatesPage() {
-  const [releases, navAuth] = await Promise.all([Promise.resolve(getUpdates(false)), getNavAuth()])
+  const [releases, navAuth] = await Promise.all([getUpdatesAction(false), getNavAuth()])
 
   return (
     <div className="min-h-screen bg-background text-foreground">

@@ -1,23 +1,16 @@
 'use client'
 
-import { useState } from 'react'
+import { useActionState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Mail, Check, Loader2 } from 'lucide-react'
+import { Mail, Check, Loader2, AlertCircle } from 'lucide-react'
+import { submitContactInquiry, type ContactInquiryState } from '@/lib/contact/inquiry'
+
+const initialState: ContactInquiryState = { status: 'idle' }
 
 export function ContactForm() {
-  const [submitted, setSubmitted] = useState(false)
-  const [pending, setPending] = useState(false)
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setPending(true)
-    setTimeout(() => {
-      setPending(false)
-      setSubmitted(true)
-    }, 600)
-  }
+  const [state, formAction, pending] = useActionState(submitContactInquiry, initialState)
 
   return (
     <div className="grid grid-cols-1 gap-12 lg:grid-cols-[400px_1fr]">
@@ -34,36 +27,45 @@ export function ContactForm() {
         <div className="mt-8 space-y-4 text-small">
           <div className="flex items-center gap-3 text-muted-foreground">
             <Mail className="size-4 text-accent" />
-            <span>operations@helix-ai.com</span>
+            <a href="mailto:operations@helix-ai.com">operations@helix-ai.com</a>
           </div>
           <div className="flex items-center gap-3 text-muted-foreground">
             <Mail className="size-4 text-accent" />
-            <span>security@helix-ai.com</span>
+            <a href="mailto:security@helix-ai.com">security@helix-ai.com</a>
           </div>
         </div>
       </div>
 
       <div className="rounded-xl border border-border bg-panel p-6 shadow-sm sm:p-8">
-        {submitted ? (
+        {state.status === 'saved' ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <div className="flex size-12 items-center justify-center rounded-full bg-status-success/10 text-status-success">
               <Check className="size-6" />
             </div>
-            <h3 className="mt-4 font-display text-h3 font-semibold">Inquiry received</h3>
-            <p className="mt-2 max-w-sm text-small text-muted-foreground">
-              An operations lead will review your requirements and respond within one business day.
-            </p>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setSubmitted(false)}
-              className="mt-6 h-10"
-            >
-              Send another inquiry
-            </Button>
+            <h3 className="mt-4 font-display text-h3 font-semibold">Inquiry saved</h3>
+            <p className="mt-2 max-w-sm text-small text-muted-foreground">{state.message}</p>
+            {state.messageAr ? (
+              <p className="mt-2 max-w-sm text-small text-muted-foreground" dir="rtl" lang="ar">
+                {state.messageAr}
+              </p>
+            ) : null}
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form action={formAction} className="space-y-5">
+            {state.status === 'error' && state.message ? (
+              <div role="alert" className="flex items-start gap-3 rounded-md border border-status-danger/40 bg-status-danger/10 p-3.5 text-small">
+                <AlertCircle className="mt-0.5 size-4 shrink-0 text-status-danger" />
+                <div>
+                  <p>{state.message}</p>
+                  {state.messageAr ? (
+                    <p className="mt-1" dir="rtl" lang="ar">
+                      {state.messageAr}
+                    </p>
+                  ) : null}
+                </div>
+              </div>
+            ) : null}
+
             <div className="space-y-2">
               <Label htmlFor="contact-name">Full name</Label>
               <Input id="contact-name" name="name" required placeholder="Jane Doe" className="h-10" />

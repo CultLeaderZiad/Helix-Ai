@@ -4,6 +4,7 @@ import { useActionState, useId, useState } from 'react'
 import Link from 'next/link'
 import { AlertCircle, Check, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { signUpUser, type SignUpState } from '@/lib/auth/sign-up'
+import { ResendConfirmation } from '@/components/auth/resend-confirmation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -33,10 +34,19 @@ export function SignUpForm() {
           <Check className="size-7" />
         </div>
         <h3 className="mt-4 font-display text-2xl font-bold">Check your email</h3>
-        <p className="mt-2 text-small text-muted-foreground leading-relaxed">
-          We sent a verification link to <span className="font-medium text-foreground">{state.email}</span>. Click
-          the link in the message to activate your 7-day trial and launch your workspace.
+        <p className="mt-1 text-small text-muted-foreground" dir="rtl" lang="ar">
+          راجع بريدك
         </p>
+        <p className="mt-2 text-small text-muted-foreground leading-relaxed">
+          Supabase accepted the signup for <span className="font-medium text-foreground">{state.email}</span>. Open
+          the confirmation link to activate the workspace. If nothing arrives, the project SMTP provider has not
+          delivered it — resend below, and check spam.
+        </p>
+        <p className="mt-2 text-small text-muted-foreground leading-relaxed" dir="rtl" lang="ar">
+          قبل Supabase التسجيل. افتح رابط التأكيد لتفعيل مساحة العمل. إذا لم تصل الرسالة، فالمزود لم يسلّمها — أعد
+          الإرسال وتحقق من البريد غير الهام.
+        </p>
+        <ResendConfirmation email={state.email ?? ''} />
         <div className="mt-8 flex flex-col gap-3 w-full">
           <Link
             href="/login"

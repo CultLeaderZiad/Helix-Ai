@@ -8,7 +8,9 @@
     "start": "next start",
     "verify:tenants": "node scripts/verify-tenant-isolation.mjs --confirm-development",
     "verify:crm": "node scripts/verify-crm-intelligence.mjs --confirm-development",
-    "verify:crm:e2e": "node scripts/verify-crm-intelligence.mjs --confirm-development --with-cron"
+    "verify:crm:e2e": "node scripts/verify-crm-intelligence.mjs --confirm-development --with-cron",
+    "test": "node --experimental-strip-types --test tests/functional-audit.test.ts",
+    "verify:crm:contact": "node scripts/verify-crm-contact-roundtrip.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.6",

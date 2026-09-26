@@ -7,24 +7,24 @@ import { createSupabaseBrowserClient } from '@/lib/supabase-browser'
 
 interface IntegrationsHealthViewProps {
   initialIntegrations: ClientIntegration[]
-  pingAction: () => Promise<{ success?: boolean; error?: string }>
+  pingAction: () => Promise<{ success?: boolean; error?: string; message?: string }>
 }
 
 const SYSTEM_METADATA: Record<string, { name: string; icon: typeof MessageSquare; details: string }> = {
   missed_call_response: {
-    name: 'WhatsApp Business Cloud API',
+    name: 'Missed-call channel',
     icon: MessageSquare,
-    details: 'Meta Cloud API v20.0 • Webhook verified & active',
+    details: 'Not connected until a webhook URL is saved and answers a ping.',
   },
   booking_receptionist: {
-    name: 'Retell AI Voice Pipeline',
+    name: 'Booking channel',
     icon: PhoneCall,
-    details: 'Bidirectional WebSocket audio streaming active',
+    details: 'Voice provider is not connected from this screen.',
   },
   lead_attribution: {
-    name: 'n8n Workflow Automation Engine',
+    name: 'Workflow webhook',
     icon: Webhook,
-    details: 'Inbound dispatch webhook healthy',
+    details: 'Shows connected only after an enabled webhook URL responds.',
   },
 }
 
@@ -32,6 +32,7 @@ export function IntegrationsHealthView({ initialIntegrations, pingAction }: Inte
   const [integrations, setIntegrations] = useState<ClientIntegration[]>(initialIntegrations)
   const [isPending, startTransition] = useTransition()
   const [pingMessage, setPingMessage] = useState<string | null>(null)
+  const [pingOk, setPingOk] = useState(false)
 
   // Realtime subscription using .channel() on client_integrations
   useEffect(() => {
@@ -63,19 +64,17 @@ export function IntegrationsHealthView({ initialIntegrations, pingAction }: Inte
     startTransition(async () => {
       const res = await pingAction()
       if (res.success) {
-        setPingMessage('All integration endpoints responded within SLA limits.')
-        const now = new Date().toISOString()
-        setIntegrations(prev =>
-          prev.map(i => ({ ...i, last_ping_at: now, status: 'connected' }))
-        )
+        setPingOk(true)
+        setPingMessage(res.message || 'Webhook URLs that responded were marked connected.')
       } else {
+        setPingOk(false)
         setPingMessage(res.error || 'Failed to ping endpoints.')
       }
     })
   }
 
   const formatLastPing = (lastPing: string | null) => {
-    if (!lastPing) return 'Just now'
+    if (!lastPing) return 'Never'
     const diff = Math.floor((Date.now() - new Date(lastPing).getTime()) / 1000)
     if (diff < 60) return `${diff}s ago`
     if (diff < 3600) return `${Math.floor(diff / 60)}m ago`
@@ -116,18 +115,31 @@ export function IntegrationsHealthView({ initialIntegrations, pingAction }: Inte
       </div>
 
       {pingMessage && (
-        <div className="mt-4 flex items-center gap-2 rounded-xl border border-helix-border bg-helix-accent-soft p-3 text-xs text-helix-accent">
-          <CheckCircle2 className="size-4 shrink-0 text-helix-accent" />
+        <div
+          className={`mt-4 flex items-center gap-2 rounded-xl border p-3 text-xs ${
+            pingOk
+              ? 'border-helix-border bg-helix-accent-soft text-helix-accent'
+              : 'border-status-danger/40 bg-status-danger/10 text-foreground'
+          }`}
+        >
+          {pingOk ? <CheckCircle2 className="size-4 shrink-0" /> : <AlertCircle className="size-4 shrink-0" />}
           <span>{pingMessage}</span>
         </div>
       )}
+
+      {integrations.length === 0 ? (
+        <p className="mt-8 text-sm text-helix-muted">
+          No integration rows yet. Not connected.
+          <span className="mt-1 block" dir="rtl" lang="ar">لا توجد قنوات بعد. غير موصول.</span>
+        </p>
+      ) : null}
 
       <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {integrations.map(int => {
           const meta = SYSTEM_METADATA[int.system_type] || {
             name: int.system_type.replace(/_/g, ' ').toUpperCase(),
             icon: Webhook,
-            details: 'Active system integration endpoint',
+            details: 'No provider is connected for this row.',
           }
           const Icon = meta.icon
           const isConnected = int.status === 'connected'
@@ -154,7 +166,7 @@ export function IntegrationsHealthView({ initialIntegrations, pingAction }: Inte
               <p className="mt-1 text-xs text-helix-muted leading-relaxed">{meta.details}</p>
 
               <div className="mt-4 border-t border-helix-border/80 pt-3 flex items-center justify-between text-xs text-helix-muted">
-                <span>Latency: <strong className="text-helix-ink font-mono">{int.status === 'connected' ? '42ms' : 'Timeout'}</strong></span>
+                <span>Latency: <strong className="text-helix-ink font-mono">Not measured</strong></span>
                 <span>Ping: {formatLastPing(int.last_ping_at)}</span>
               </div>
             </div>

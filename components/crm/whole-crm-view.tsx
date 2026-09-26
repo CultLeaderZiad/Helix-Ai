@@ -1,6 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useActionState, useState } from 'react'
+import { createContact, type CreateContactState } from '@/lib/crm/contacts'
+import type { DirectoryActivity, DirectoryContactRow } from '@/lib/crm/directory'
 import {
   Users,
   Search,
@@ -34,21 +36,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
-export interface CrmContactRow {
-  id: string
-  full_name: string | null
-  email: string | null
-  phone: string | null
-  company_name: string | null
-  lead_status: string
-  created_at: string
-  deal_stage?: string | null
-  deal_value_cents?: number | null
-  last_activity?: string | null
-  last_activity_type?: string | null
-  fact_status?: 'verified' | 'probable' | 'possible' | null
-  notes_count?: number
-}
+export type CrmContactRow = DirectoryContactRow
 
 interface WholeCrmViewProps {
   contacts: CrmContactRow[]
@@ -56,6 +44,8 @@ interface WholeCrmViewProps {
   pipelineValueCents: number
   verifiedFactCount: number
   totalFactCount: number
+  activities?: DirectoryActivity[]
+  allowCreate?: boolean
 }
 
 const STAGE_CONFIG: Record<string, { label: string; variant: 'verified' | 'probable' | 'possible' | 'demo' | 'default' }> = {
@@ -90,19 +80,25 @@ function formatShortDate(dateStr: string): string {
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
+const idleContact: CreateContactState = { status: 'idle' }
+
 export function WholeCrmView({
   contacts,
   totalContacts,
   pipelineValueCents,
   verifiedFactCount,
   totalFactCount,
+  activities = [],
+  allowCreate = false,
 }: WholeCrmViewProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [stageFilter, setStageFilter] = useState<string>('ALL')
   const [selectedContact, setSelectedContact] = useState<CrmContactRow | null>(contacts[0] ?? null)
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [showCreate, setShowCreate] = useState(false)
+  const [createState, createAction, createPending] = useActionState(createContact, idleContact)
 
-  const verificationRate = totalFactCount > 0 ? Math.round((verifiedFactCount / totalFactCount) * 100) : 94
+  const verificationRate = totalFactCount > 0 ? Math.round((verifiedFactCount / totalFactCount) * 100) : null
 
   const filteredContacts = contacts.filter(contact => {
     const matchesSearch =
@@ -132,43 +128,71 @@ export function WholeCrmView({
           </p>
         </div>
 
-        <Button
-          type="button"
-          size="sm"
-          onClick={() => {
-            alert('Add contact modal: Creates a new verified contact profile.')
-          }}
-          className="gap-1.5"
-        >
-          <Plus className="size-3.5" />
-          <span>Add Contact</span>
-        </Button>
+        {allowCreate ? (
+          <Button type="button" size="sm" onClick={() => setShowCreate(value => !value)} className="gap-1.5">
+            <Plus className="size-3.5" />
+            <span>Add Contact</span>
+          </Button>
+        ) : (
+          <p className="max-w-xs text-xs text-helix-muted">
+            Add contacts from a client workspace. This agency view is read-only.
+            <span className="mt-1 block" dir="rtl" lang="ar">
+              أضف جهات الاتصال من مساحة عمل العميل. عرض الوكالة للقراءة فقط.
+            </span>
+          </p>
+        )}
       </div>
+
+      {showCreate && allowCreate ? (
+        <Card className="p-4">
+          <form action={createAction} className="grid gap-3 sm:grid-cols-2">
+            <Input name="full_name" required placeholder="Full name" className="h-9 text-xs" />
+            <Input name="email" type="email" placeholder="Email" className="h-9 text-xs" />
+            <Input name="phone" placeholder="Phone" className="h-9 text-xs" />
+            <Input name="company_name" placeholder="Company" className="h-9 text-xs" />
+            <div className="sm:col-span-2 flex items-center justify-between gap-3">
+              <Button type="submit" size="sm" disabled={createPending}>
+                {createPending ? 'Saving…' : 'Save contact'}
+              </Button>
+              <p className="text-xs text-helix-muted" dir="rtl" lang="ar">
+                حفظ جهة اتصال
+              </p>
+            </div>
+            {createState.status !== 'idle' && createState.message ? (
+              <p
+                role="status"
+                className={`sm:col-span-2 text-xs ${createState.status === 'error' ? 'text-status-danger' : 'text-helix-muted'}`}
+              >
+                {createState.message}
+                {createState.messageAr ? (
+                  <span className="mt-1 block" dir="rtl" lang="ar">
+                    {createState.messageAr}
+                  </span>
+                ) : null}
+              </p>
+            ) : null}
+          </form>
+        </Card>
+      ) : null}
 
       {/* KPI Metric Strip */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <KpiCard
           title="Total Contacts"
-          value={totalContacts > 0 ? totalContacts : 142}
-          change="+12% MoM"
-          changeType="positive"
-          hint="Autonomous voice, web, & WhatsApp acquisitions"
+          value={totalContacts}
+          hint="Rows stored for this workspace"
           icon={<Users className="size-4" />}
         />
         <KpiCard
           title="Pipeline Value"
-          value={pipelineValueCents > 0 ? formatCurrency(pipelineValueCents) : '$84,500'}
-          change="+15%"
-          changeType="positive"
-          hint="Across active deals & captured bookings"
+          value={formatCurrency(pipelineValueCents)}
+          hint="Sum of deal values on file"
           icon={<DollarSign className="size-4" />}
         />
         <KpiCard
           title="AI Fact Verification"
-          value={`${verificationRate}%`}
-          change="98% Ground Truth"
-          changeType="positive"
-          hint="Cryptographically signed observation ledger"
+          value={verificationRate == null ? '—' : `${verificationRate}%`}
+          hint={verificationRate == null ? 'No facts recorded' : 'Verified facts divided by facts on file'}
           icon={<ShieldCheck className="size-4" />}
         />
       </div>
@@ -229,12 +253,14 @@ export function WholeCrmView({
               <TableRow>
                 <TableCell colSpan={7} className="py-12 text-center text-helix-muted">
                   <Users className="mx-auto size-8 text-slate-600 mb-2" />
-                  No contacts found matching your criteria.
+                  {contacts.length === 0
+                    ? 'No contacts yet. Add one when you have a real lead.'
+                    : 'No contacts found matching your criteria.'}
                 </TableCell>
               </TableRow>
             ) : (
               filteredContacts.map(contact => {
-                const stage = contact.deal_stage ? STAGE_CONFIG[contact.deal_stage] : STAGE_CONFIG.new_lead
+                const stage = contact.deal_stage ? STAGE_CONFIG[contact.deal_stage] : null
                 const isSelected = selectedContact?.id === contact.id
                 const initial = (contact.full_name?.[0] ?? 'C').toUpperCase()
                 return (
@@ -277,19 +303,19 @@ export function WholeCrmView({
                     {/* Deal Stage */}
                     <TableCell>
                       <Badge variant={stage?.variant ?? 'default'}>
-                        {stage?.label ?? contact.deal_stage}
+                        {stage?.label ?? 'No deal'}
                       </Badge>
                     </TableCell>
 
                     {/* Last Activity */}
                     <TableCell className="text-xs text-helix-muted font-mono">
-                      {contact.last_activity ? formatShortDate(contact.last_activity) : 'Recent inbound'}
+                      {contact.last_activity ? formatShortDate(contact.last_activity) : '—'}
                     </TableCell>
 
                     {/* AI Observation Status */}
                     <TableCell>
-                      <Badge variant="verified" dot>
-                        Verified
+                      <Badge variant={contact.fact_status ?? 'default'} dot={contact.fact_status === 'verified'}>
+                        {contact.fact_status ?? 'No facts'}
                       </Badge>
                     </TableCell>
 
@@ -351,69 +377,57 @@ export function WholeCrmView({
               </div>
             </div>
 
-            {/* Conversation Telemetry Log */}
             <div className="mt-5 flex-1 overflow-y-auto">
-              <div className="flex items-center justify-between">
-                <h3 className="text-[11px] font-mono font-semibold uppercase tracking-wider text-helix-muted">
-                  Recent Telemetry & Audit Trace
-                </h3>
-                <Badge variant="demo" dot>
-                  Live Synced
-                </Badge>
-              </div>
-
+              <h3 className="text-[11px] font-mono font-semibold uppercase tracking-wider text-helix-muted">
+                Recorded activity
+              </h3>
               <div className="mt-3 space-y-3">
-                <div className="rounded-xl border border-helix-border bg-helix-canvas p-3.5">
-                  <div className="flex items-center justify-between text-[11px] text-helix-muted">
-                    <span className="font-semibold text-helix-accent flex items-center gap-1.5">
-                      <MessageSquare className="size-3" /> Inbound Voice Call
+                {activities.filter(item => item.contact_id === selectedContact.id).length === 0 ? (
+                  <p className="text-xs text-helix-muted">
+                    No activity recorded yet.
+                    <span className="mt-1 block" dir="rtl" lang="ar">
+                      لا يوجد نشاط مسجّل بعد.
                     </span>
-                    <span className="font-mono text-[10px]">1h ago</span>
-                  </div>
-                  <p className="mt-2 text-xs leading-relaxed text-helix-ink">
-                    Autonomous voice agent handled query regarding appointment reschedule. Customer requested Tuesday 10:00 AM slot.
                   </p>
-                  <div className="mt-2 flex items-center gap-2 text-[10px] text-helix-muted font-mono">
-                    <span>HASH: 8f4b..32a1</span>
-                    <span>•</span>
-                    <span className="text-[#0B6E4F] font-semibold">Audio Persisted</span>
-                  </div>
-                </div>
-
-                <div className="rounded-xl border border-helix-border bg-helix-canvas p-3.5">
-                  <div className="flex items-center justify-between text-[11px] text-helix-muted">
-                    <span className="font-semibold text-purple-600 flex items-center gap-1.5">
-                      <Sparkles className="size-3" /> Verified Fact Extracted
-                    </span>
-                    <span className="font-mono text-[10px]">3h ago</span>
-                  </div>
-                  <p className="mt-2 text-xs leading-relaxed text-helix-ink">
-                    Extracted confirmed intent: Customer authorized payment for preliminary invoice #204.
-                  </p>
-                  <div className="mt-2">
-                    <Badge variant="verified" dot>
-                      100% Ground Truth
-                    </Badge>
-                  </div>
-                </div>
+                ) : (
+                  activities
+                    .filter(item => item.contact_id === selectedContact.id)
+                    .map(item => (
+                      <div key={item.id ?? item.occurred_at ?? item.type} className="rounded-xl border border-helix-border bg-helix-canvas p-3.5">
+                        <p className="text-[11px] font-semibold text-helix-ink">{item.type || 'Activity'}</p>
+                        <p className="mt-1 text-xs text-helix-ink">{item.subject || item.body || 'No note stored.'}</p>
+                        <p className="mt-1 font-mono text-[10px] text-helix-muted">
+                          {item.occurred_at ? formatShortDate(item.occurred_at) : '—'}
+                        </p>
+                      </div>
+                    ))
+                )}
               </div>
             </div>
 
-            {/* Quick Actions Drawer Footer */}
             <div className="mt-5 border-t border-helix-border pt-4 flex gap-2.5">
-              <Button
-                variant="outline"
-                onClick={() => alert(`Initiating voice callback to ${selectedContact.phone}...`)}
-                className="flex-1 gap-1.5"
-              >
-                <Phone className="size-3.5" /> Call
-              </Button>
-              <Button
-                onClick={() => alert(`Opening email composer for ${selectedContact.email}...`)}
-                className="flex-1 gap-1.5"
-              >
-                <Mail className="size-3.5" /> Message
-              </Button>
+              {selectedContact.phone ? (
+                <a href={`tel:${selectedContact.phone}`} className="flex-1">
+                  <Button variant="outline" className="w-full gap-1.5">
+                    <Phone className="size-3.5" /> Call
+                  </Button>
+                </a>
+              ) : (
+                <Button variant="outline" disabled className="flex-1 gap-1.5" title="No phone on file. Voice calling is not connected.">
+                  <Phone className="size-3.5" /> Call
+                </Button>
+              )}
+              {selectedContact.email ? (
+                <a href={`mailto:${selectedContact.email}`} className="flex-1">
+                  <Button className="w-full gap-1.5">
+                    <Mail className="size-3.5" /> Email
+                  </Button>
+                </a>
+              ) : (
+                <Button disabled className="flex-1 gap-1.5" title="No email on file.">
+                  <Mail className="size-3.5" /> Email
+                </Button>
+              )}
             </div>
           </div>
         </div>

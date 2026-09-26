@@ -17,38 +17,31 @@ export default async function BillingPage() {
   if (session.claims.role === 'agency_admin') redirect('/admin')
 
   const clientId = session.claims.client_id!
-  const clientRes = await supabase
-    .from('clients')
-    .select('business_name, monthly_fee, created_at')
-    .eq('id', clientId)
-    .maybeSingle()
+  const [clientRes, invoicesRes, billingRes] = await Promise.all([
+    supabase.from('clients').select('business_name').eq('id', clientId).maybeSingle(),
+    supabase
+      .from('invoices')
+      .select('id, amount_cents, due_date, status, created_at')
+      .eq('client_id', clientId)
+      .order('created_at', { ascending: false }),
+    supabase.from('billing_accounts').select('*').eq('client_id', clientId).maybeSingle(),
+  ])
 
   const client = clientRes.data
-  const monthlyFee = client?.monthly_fee ?? 2450
-
-  const invoices = [
-    {
-      id: 'INV-2026-003',
-      date: 'Sep 1, 2026',
-      amount: `$${monthlyFee.toLocaleString()}`,
-      status: 'Paid',
-      plan: 'Growth AI Enterprise Retainer',
-    },
-    {
-      id: 'INV-2026-002',
-      date: 'Aug 1, 2026',
-      amount: `$${monthlyFee.toLocaleString()}`,
-      status: 'Paid',
-      plan: 'Growth AI Enterprise Retainer',
-    },
-    {
-      id: 'INV-2026-001',
-      date: 'Jul 1, 2026',
-      amount: '$1,500',
-      status: 'Paid',
-      plan: 'System Onboarding & Setup Fee',
-    },
-  ]
+  const billing = (billingRes.data ?? null) as Record<string, unknown> | null
+  const retainerRaw = billing?.monthly_retainer_cents ?? billing?.retainer_cents
+  const retainerCents = typeof retainerRaw === 'number' ? retainerRaw : null
+  const invoices = (invoicesRes.data ?? []).map(invoice => ({
+    id: invoice.id.slice(0, 8).toUpperCase(),
+    date: new Date(invoice.created_at || invoice.due_date).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    }),
+    amount: new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format((invoice.amount_cents ?? 0) / 100),
+    status: invoice.status,
+    plan: 'Invoice on file',
+  }))
 
   return (
     <ConsoleShell variant="client" email={session.user.email ?? ''} businessName={client?.business_name ?? null}>
@@ -73,12 +66,10 @@ export default async function BillingPage() {
             >
               <FileText className="size-3.5" /> View Performance Report →
             </Link>
-            <button
-              type="button"
-              className="flex items-center gap-2 rounded-xl bg-helix-ink px-4 py-2 text-xs font-bold text-helix-surface hover:bg-helix-ink/90 transition-opacity"
-            >
-              <Sparkles className="size-3.5" /> Upgrade Plan
-            </button>
+            <p className="max-w-xs text-xs text-helix-muted">
+              Payments are not connected. There is no upgrade checkout.
+              <span className="mt-1 block" dir="rtl" lang="ar">المدفوعات غير موصولة. لا توجد صفحة ترقية.</span>
+            </p>
           </div>
         </div>
 
@@ -87,31 +78,29 @@ export default async function BillingPage() {
           <div className="rounded-2xl border border-helix-border bg-helix-surface p-5">
             <p className="text-xs font-semibold uppercase tracking-wider text-helix-muted">Active Retainer</p>
             <div className="mt-2 flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-helix-ink">${monthlyFee.toLocaleString()}</span>
-              <span className="text-xs text-helix-muted">/ month</span>
+              <span className="text-2xl font-bold text-helix-ink">
+                {retainerCents == null
+                  ? 'Not on file'
+                  : new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(retainerCents / 100)}
+              </span>
             </div>
-            <p className="mt-2 text-xs text-emerald-400 flex items-center gap-1">
-              <CheckCircle2 className="size-3.5" /> Auto-renews on Oct 1, 2026
-            </p>
+            <p className="mt-2 text-xs text-helix-muted">Taken from billing_accounts when a retainer column exists.</p>
           </div>
 
           <div className="rounded-2xl border border-helix-border bg-helix-surface p-5">
-            <p className="text-xs font-semibold uppercase tracking-wider text-helix-muted">AI Compute Capacity</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-helix-muted">Invoices on file</p>
             <div className="mt-2 flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-helix-ink">98.4%</span>
-              <span className="text-xs text-helix-muted">available</span>
+              <span className="text-2xl font-bold text-helix-ink">{invoices.length}</span>
             </div>
-            <p className="mt-2 text-xs text-helix-muted">Unlimited Voice & WhatsApp throughput</p>
+            <p className="mt-2 text-xs text-helix-muted">No payment provider is connected.</p>
           </div>
 
           <div className="rounded-2xl border border-helix-border bg-helix-surface p-5">
-            <p className="text-xs font-semibold uppercase tracking-wider text-helix-muted">SLA & Response Time</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-helix-muted">SLA</p>
             <div className="mt-2 flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-helix-ink">&lt; 15 mins</span>
+              <span className="text-2xl font-bold text-helix-ink">Not measured</span>
             </div>
-            <p className="mt-2 text-xs text-helix-accent flex items-center gap-1">
-              <ShieldCheck className="size-3.5" /> Priority 24/7 Agent Oversight
-            </p>
+            <p className="mt-2 text-xs text-helix-muted" dir="rtl" lang="ar">غير مقيس</p>
           </div>
         </div>
 
@@ -135,6 +124,14 @@ export default async function BillingPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800/60 text-helix-ink/80">
+                {invoices.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="px-6 py-8 text-center text-helix-muted">
+                      No invoices yet.
+                      <span className="mt-1 block" dir="rtl" lang="ar">لا توجد فواتير بعد.</span>
+                    </td>
+                  </tr>
+                ) : null}
                 {invoices.map(inv => (
                   <tr key={inv.id} className="hover:bg-slate-800/30 transition-colors">
                     <td className="px-6 py-3.5 font-mono text-helix-ink font-medium">{inv.id}</td>
@@ -146,14 +143,7 @@ export default async function BillingPage() {
                         <CheckCircle2 className="size-3" /> {inv.status}
                       </span>
                     </td>
-                    <td className="px-6 py-3.5 text-right">
-                      <button
-                        type="button"
-                        className="inline-flex items-center gap-1 text-helix-accent hover:text-helix-accent font-medium"
-                      >
-                        <Download className="size-3.5" /> PDF
-                      </button>
-                    </td>
+                    <td className="px-6 py-3.5 text-right text-helix-muted">No receipt file</td>
                   </tr>
                 ))}
               </tbody>
