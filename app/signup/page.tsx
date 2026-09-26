@@ -4,8 +4,8 @@ import { SignUpForm } from '@/components/auth/signup-form'
 import { getPublicPrefs } from '@/lib/public-prefs'
 
 export const metadata: Metadata = {
-  title: 'Start your free trial — Helix AI',
-  description: 'Create your workspace and start your 7-day unrestricted trial.',
+  title: 'Create your workspace — Helix',
+  description: 'Create your Helix workspace.',
   robots: { index: false, follow: false },
 }
 

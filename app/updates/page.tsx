@@ -44,7 +44,7 @@ export default function UpdatesPage() {
                   href="/signup"
                   className="inline-flex items-center gap-1 text-small font-medium text-accent hover:underline"
                 >
-                  Start free trial <ArrowUpRight className="size-3.5" />
+                  Book a call <ArrowUpRight className="size-3.5" />
                 </Link>
               </div>
 

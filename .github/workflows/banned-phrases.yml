@@ -1,0 +1,11 @@
+name: Banned phrases
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  grep:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: node scripts/check-banned-phrases.mjs

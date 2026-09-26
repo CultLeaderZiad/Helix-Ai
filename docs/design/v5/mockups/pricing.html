@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Helix — Pricing (AED monthly plans) · v5 mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+/* ===================== HELIX v5 "Quiet Authority" — tokens ===================== */
+:root{
+  --f-display:"Instrument Serif","Newsreader",Georgia,serif;
+  --f-sans:"Geist","Inter",system-ui,sans-serif;
+  --f-mono:"Geist Mono",ui-monospace,monospace;
+  --f-ar:"IBM Plex Sans Arabic","Noto Sans Arabic",sans-serif;
+  --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:24px; --r-2xl:32px;
+  --container:1200px;
+}
+[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0A0B0D; --bg-2:#0E1012; --surface:#131518; --surface-2:#191C20; --surface-3:#20242A;
+  --line:rgba(255,255,255,.075); --line-2:rgba(255,255,255,.13);
+  --text:#F2F0EB; --text-2:#B4B1A9; --text-3:#7F7C75;
+  --accent:#5FD4A4; --accent-text:#8EDFBF; --accent-soft:rgba(95,212,164,.10); --accent-line:rgba(95,212,164,.28);
+  --btn-bg:#F2F0EB; --btn-text:#0A0B0D; --btn-hover:#FFFFFF;
+  --shadow-card:0 1px 0 rgba(255,255,255,.04) inset, 0 24px 48px -24px rgba(0,0,0,.6);
+  --shadow-float:0 1px 0 rgba(255,255,255,.06) inset, 0 30px 60px -20px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.06);
+}
+[data-theme="light"]{
+  color-scheme:light;
+  --bg:#F7F5F0; --bg-2:#F1EEE7; --surface:#FFFFFF; --surface-2:#FAF9F6; --surface-3:#F1EEE7;
+  --line:rgba(22,24,20,.08); --line-2:rgba(22,24,20,.14);
+  --text:#15171A; --text-2:#51545A; --text-3:#8A8C90;
+  --accent:#0E6E4F; --accent-text:#0E6E4F; --accent-soft:#E4F1EA; --accent-line:rgba(14,110,79,.25);
+  --btn-bg:#15171A; --btn-text:#FFFFFF; --btn-hover:#000;
+  --shadow-card:0 1px 2px rgba(20,22,18,.04), 0 12px 32px -16px rgba(20,22,18,.14);
+  --shadow-float:0 1px 2px rgba(20,22,18,.05), 0 24px 56px -20px rgba(20,22,18,.22), 0 0 0 1px rgba(20,22,18,.05);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text)}
+body{font-family:var(--f-sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+[dir="rtl"] body, body[dir="rtl"], [lang="ar"]{font-family:var(--f-ar)}
+a{color:inherit;text-decoration:none}
+.container{max-width:var(--container);margin:0 auto;padding:0 32px}
+.ar{font-family:var(--f-ar);letter-spacing:0}
+.ltr{direction:ltr;unicode-bidi:isolate}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- type ---------- */
+.kicker{font-size:12.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3)}
+[dir="rtl"] .kicker{letter-spacing:0;text-transform:none;font-size:14px;font-weight:500}
+.display{font-family:var(--f-display);font-weight:400;letter-spacing:-.015em;line-height:1.0}
+.display em{font-style:italic;color:var(--accent-text)}
+.h1{font-size:84px}
+.h2{font-size:54px;line-height:1.04}
+.h3{font-size:32px;line-height:1.15}
+[dir="rtl"] .display{font-family:var(--f-ar);font-weight:600;letter-spacing:0;line-height:1.3}
+[dir="rtl"] .display em{font-style:normal}
+[dir="rtl"] .h1{font-size:60px;line-height:1.25}
+[dir="rtl"] .h2{font-size:42px;line-height:1.35}
+.lead{font-size:19px;line-height:1.6;color:var(--text-2)}
+[dir="rtl"] .lead{font-size:19px;line-height:1.85}
+.muted{color:var(--text-2)} .faint{color:var(--text-3)}
+.small{font-size:14px} .xs{font-size:12.5px}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 22px;border-radius:999px;font-size:15px;font-weight:500;white-space:nowrap;border:1px solid transparent;transition:.2s}
+.btn-primary{background:var(--btn-bg);color:var(--btn-text)}
+.btn-ghost{border-color:var(--line-2);color:var(--text)}
+.btn-accent{background:var(--accent);color:#fff}
+.btn-sm{height:38px;padding:0 16px;font-size:14px}
+.btn svg{width:16px;height:16px}
+[dir="rtl"] .arrow{transform:scaleX(-1)}
+.link{color:var(--accent-text);font-weight:500;display:inline-flex;gap:6px;align-items:center}
+
+/* ---------- chips ---------- */
+.chip{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:999px;font-size:12.5px;font-weight:500;border:1px solid var(--line-2);color:var(--text-2);white-space:nowrap}
+.chip-example{border-style:dashed;border-color:var(--line-2);color:var(--text-3);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;height:22px;padding:0 8px}
+[dir="rtl"] .chip-example{letter-spacing:0;text-transform:none;font-size:12.5px}
+.chip-ok{background:var(--accent-soft);border-color:var(--accent-line);color:var(--accent-text)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+
+/* ---------- nav ---------- */
+.nav{height:76px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:12px}
+.brand svg{height:24px;width:auto}
+.brand .word{font-weight:600;font-size:14px;letter-spacing:.3em;padding-top:1px}
+[dir="rtl"] .brand .word{letter-spacing:.3em;font-family:var(--f-sans)}
+.nav-links{display:flex;gap:34px;font-size:14.5px;color:var(--text-2)}
+.nav-right{display:flex;align-items:center;gap:22px;font-size:14.5px;color:var(--text-2)}
+.lang{display:flex;gap:2px;border:1px solid var(--line);border-radius:999px;padding:3px;font-size:12.5px}
+.lang span{padding:3px 9px;border-radius:999px}
+.lang .on{background:var(--surface-3);color:var(--text)}
+
+/* ---------- surfaces ---------- */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);box-shadow:var(--shadow-card)}
+.hair{border-top:1px solid var(--line)}
+section{position:relative}
+.sec{padding:128px 0}
+.sec-head{max-width:720px;margin-bottom:56px}
+.sec-head .kicker{margin-bottom:18px;display:block}
+.sec-head .lead{margin-top:20px}
+
+/* ---------- phone ---------- */
+.phone{width:300px;height:620px;border-radius:48px;background:#0c0d0f;padding:10px;box-shadow:0 0 0 1px rgba(255,255,255,.12),0 0 0 7px #1b1d21,0 0 0 8px rgba(255,255,255,.08),0 50px 100px -30px rgba(0,0,0,.8);position:relative}
+.phone .screen{width:100%;height:100%;border-radius:38px;overflow:hidden;background:#EFEAE2;display:flex;flex-direction:column;position:relative}
+.phone .island{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:92px;height:26px;border-radius:20px;background:#000;z-index:3}
+.status{height:44px;display:flex;justify-content:space-between;align-items:flex-end;padding:0 26px 6px;font:600 13px var(--f-sans);color:#111;direction:ltr}
+.wa-head{background:#F7F5F2;display:flex;align-items:center;gap:10px;padding:8px 14px 10px;border-bottom:1px solid rgba(0,0,0,.06);direction:rtl}
+.wa-av{width:34px;height:34px;border-radius:50%;background:#0E6E4F;color:#fff;display:grid;place-items:center;font:600 13px var(--f-sans)}
+.wa-name{font:600 13.5px/1.25 var(--f-ar);color:#111}
+.wa-sub{font:400 11px/1.3 var(--f-ar);color:#667}
+.wa-body{flex:1;padding:12px 10px;display:flex;flex-direction:column;gap:7px;direction:rtl;background-color:#EFEAE2;background-image:radial-gradient(rgba(0,0,0,.035) 1px,transparent 1px);background-size:14px 14px}
+.wa-day{align-self:center;background:#fff;color:#556;font:500 10.5px var(--f-ar);padding:3px 10px;border-radius:8px;box-shadow:0 1px 0 rgba(0,0,0,.05)}
+.wa-sys{align-self:center;background:#FDF3D6;color:#6b5a26;font:500 11px/1.4 var(--f-ar);padding:5px 10px;border-radius:8px;display:flex;gap:6px;align-items:center}
+.bub{max-width:82%;padding:7px 10px 5px;border-radius:10px;font:400 13px/1.65 var(--f-ar);color:#111;box-shadow:0 1px 0 rgba(0,0,0,.06);position:relative}
+.bub .t{display:block;text-align:left;font:400 10px var(--f-sans);color:#7a8288;margin-top:1px;direction:ltr}
+.bub.in{align-self:flex-start;background:#fff;border-top-right-radius:3px}
+.bub.out{align-self:flex-end;background:#D9FDD3;border-top-left-radius:3px}
+.bub.out .t::after{content:" ✓✓";color:#34B7F1}
+.wa-input{height:52px;background:#F7F5F2;display:flex;align-items:center;gap:8px;padding:0 10px;direction:rtl}
+.wa-input .f{flex:1;height:34px;border-radius:18px;background:#fff;font:400 12px var(--f-ar);color:#99a;display:flex;align-items:center;padding:0 14px}
+
+/* ---------- float cards ---------- */
+.float{position:absolute;background:var(--surface);border:1px solid var(--line-2);border-radius:18px;box-shadow:var(--shadow-float);padding:16px 18px}
+.float .lbl{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);font-weight:500}
+
+/* ---------- icons ---------- */
+.ico{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ico-lg{width:24px;height:24px}
+
+/* ---------- utility ---------- */
+.row{display:flex;align-items:center} .gap-8{gap:8px}.gap-12{gap:12px}.gap-16{gap:16px}.gap-24{gap:24px}
+.grid{display:grid}
+
+</style>
+<style>
+.hdr{padding:88px 0 56px;text-align:center}
+.hdr .display{font-size:72px;max-width:880px;margin:18px auto 0}
+.hdr .lead{max-width:640px;margin:22px auto 0}
+.cap{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;font-size:14px;color:var(--text-2)}
+.cap .chip{background:var(--surface);height:30px;padding:0 12px;font-size:13px}
+.plans{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.plan{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:36px 32px;display:flex;flex-direction:column;box-shadow:var(--shadow-card)}
+.plan.f{background:#15171A;color:#F2F0EB;border-color:#15171A;box-shadow:0 30px 60px -30px rgba(20,22,18,.5)}
+.pn{display:flex;justify-content:space-between;align-items:center;font-size:17px;font-weight:600}
+.tg{font-size:14.5px;color:var(--text-2);margin-top:8px;min-height:44px}
+.f .tg,.f .per,.f .setup,.f li{color:#B4B1A9}
+.price{display:flex;align-items:baseline;gap:8px;margin-top:28px}
+.price .cur{font-size:16px;font-weight:500;color:var(--text-2)}
+.f .price .cur{color:#B4B1A9}
+.price b{font-size:52px;font-weight:500;letter-spacing:-.035em;line-height:1}
+.per{font-size:15px;color:var(--text-3)}
+.setup{font-size:14px;color:var(--text-3);margin-top:8px;padding-bottom:26px;border-bottom:1px solid var(--line)}
+.f .setup{border-color:rgba(255,255,255,.1)}
+.plan .btn{justify-content:center;margin-top:26px;height:50px}
+.f .btn-primary{background:#F2F0EB;color:#15171A}
+.plan ul{margin:26px 0 34px;display:grid;gap:13px;font-size:14.5px;color:var(--text-2)}
+.plan li{list-style:none;display:flex;gap:12px;line-height:1.5}
+.plan li .ico{width:17px;height:17px;margin-top:2px;color:var(--accent)}
+.f li .ico{color:#8EDFBF}
+.rec{height:26px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:500;background:rgba(142,223,191,.14);color:#8EDFBF;display:inline-flex;align-items:center}
+.below{display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding:20px 24px;border:1px dashed var(--line-2);border-radius:18px;font-size:15px;color:var(--text-2)}
+.inc{margin-top:120px}
+.inc-grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line)}
+.inc-grid>div{padding:30px 32px 30px 0;display:flex;gap:16px;border-bottom:1px solid var(--line)}
+.inc-grid>div:not(:nth-child(3n+1)){padding-left:32px;border-left:1px solid var(--line)}
+.inc-grid .ico{color:var(--accent);width:22px;height:22px;margin-top:2px}
+.inc-grid b{font-weight:500;font-size:16.5px;display:block}
+.inc-grid span{color:var(--text-2);font-size:14.5px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:8px}
+.st{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:26px;box-shadow:var(--shadow-card)}
+.st .n{font-family:var(--f-display);font-size:40px;line-height:1;color:var(--accent)}
+.st b{display:block;font-weight:500;font-size:17px;margin-top:18px}
+.st span{color:var(--text-2);font-size:14.5px;display:block;margin-top:6px}
+.faq{display:grid;grid-template-columns:380px 1fr;gap:64px}
+.qa{border-top:1px solid var(--line);padding:24px 0}
+.qa:last-child{border-bottom:1px solid var(--line)}
+.qa .q{display:flex;justify-content:space-between;font-size:18px;font-weight:500}
+.qa .q .ico{color:var(--text-3)}
+.qa .a{color:var(--text-2);margin-top:10px;font-size:15.5px;max-width:640px}
+.cta{margin-top:120px;border-radius:28px;background:#15171A;color:#F2F0EB;padding:64px;display:flex;justify-content:space-between;align-items:center}
+.cta .display{font-size:46px;max-width:620px}
+.cta p{color:#B4B1A9;margin-top:12px}
+.cta .btn-primary{background:#F2F0EB;color:#15171A}
+.cta .btn-ghost{border-color:rgba(255,255,255,.2);color:#F2F0EB}
+footer{padding:40px 0 40px;margin-top:24px;display:flex;justify-content:space-between;font-size:13.5px;color:var(--text-3)}
+</style>
+</head>
+<body data-theme="light">
+<header class="container nav">
+  <a class="brand"><svg viewBox="0 0 200 210" aria-label="Helix" role="img" fill="currentColor"><path d="M52 4 L52 86 L42 94 L42 168 L4 198 L4 32 Z"/><path d="M196 28 L196 178 L158 208 L158 92 L148 84 L148 4 Z"/><path d="M58 98 L138 48 L138 78 L58 128 Z"/></svg><span class="word">HELIX</span></a>
+  <nav class="nav-links"><a>Systems</a><a>How it works</a><a style="color:var(--text)">Pricing</a><a>Studio</a><a>About</a></nav>
+  <div class="nav-right"><div class="lang"><span class="on">EN</span><span class="ar">ع</span></div><a>Sign in</a><a class="btn btn-primary btn-sm">Book a call</a></div>
+</header>
+
+<section class="container hdr">
+  <span class="kicker">Pricing</span>
+  <h1 class="display">Simple monthly plans. Built and run for you.</h1>
+  <p class="lead">A one-time setup fee to build the system around your business, then a monthly fee for us to run, monitor and improve it.</p>
+</section>
+
+<section class="container">
+  <div class="cap"><span class="chip">Monthly plans · AED</span><a class="link">Buying a single system? See per-system prices in Studio <svg class="ico arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+  <div class="plans">
+    <div class="plan">
+      <div class="pn">Enterprise Starter</div>
+      <p class="tg">For a single location automating its phone and WhatsApp.</p>
+      <div class="price"><span class="cur">AED</span><b class="num">1,800</b><span class="per">/ month</span></div>
+      <div class="setup">+ AED 4,500 one-time setup</div>
+      <ul>
+        <li><svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Up to 1,500 customer conversations a month</li>
+        <li><svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Bilingual voice agent, Gulf Arabic and English</li>
+        <li><svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Official WhatsApp Business connection</li>
+        <li><svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Cal.com and Google Calendar sync</li>
+        <li><svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Human review before anything uncertain is saved</li>
+        <li><svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>UAE and KSA VAT-compliant invoices</li>
+      </ul>
+      <a class="btn btn-ghost" style="margin-top:auto">Book a discovery call</a>
+    </div>
+    <div class="plan f">
+      <div class="pn">Growth Enterprise <span class="rec">Recommended</span></div>
+      <p class="tg">Missed-call triage, voice and WhatsApp working together.</p>
+      <div class="price"><span class="cur">AED</span><b class="num">4,600</b><span class="per">/ month</span></div>
+      <div class="setup">+ AED 7,500 one-time setup</div>
+      <ul>
+        <li><svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Up to 10,000 customer conversations a month</li>
+        <li><svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Voice, WhatsApp and email automation</li>
+        <li><svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Missed-call WhatsApp text-back and triage, in seconds</li>
+        <li><svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>B2B payment reminders with Mada and Apple Pay links</li>
+      </ul>
+      <a class="btn btn-primary" style="margin-top:auto">Book a discovery call <svg class="ico arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+    <div class="plan">
+      <div class="pn">Sovereign Scale</div>
+      <p class="tg">For groups running multiple branches and brands.</p>
+      <div class="price"><span class="cur">AED</span><b class="num">10,200</b><span class="per">/ month</span></div>
+      <div class="setup">+ AED 15,000 one-time setup</div>
+      <ul>
+        <li><svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Unlimited workspaces across branches and brands</li>
+        <li><svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Dialect tuning: Emirati, Najdi, Hijazi, Qatari</li>
+        <li><svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>B2B collections and dispute handling</li>
+        <li><svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Cross-branch CRM governance and exports</li>
+        <li><svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Priority escalation support</li>
+      </ul>
+      <a class="btn btn-ghost" style="margin-top:auto">Book a discovery call</a>
+    </div>
+  </div>
+  <div class="below"><span>Need something bespoke, or more than one brand with different rules?</span><a class="link">Custom build, let's scope it <svg class="ico arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+</section>
+
+<section class="container inc">
+  <div class="sec-head"><span class="kicker">Every plan includes</span><h2 class="display h2">What you get, whichever plan you choose.</h2></div>
+  <div class="inc-grid">
+    <div><svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0"/><path d="M16 3.1a4 4 0 0 1 0 7.8M22 21a7 7 0 0 0-4-6.3"/></svg><div><b>Done-for-you setup</b><span>We build, connect and test it. Your team doesn't configure anything.</span></div></div>
+    <div><svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><div><b>Arabic and English</b><span>Dialect-aware replies, including mixed-language messages.</span></div></div>
+    <div><svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/></svg><div><b>Human hand-off</b><span>Your team can take over any conversation, with full context.</span></div></div>
+    <div><svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.9L3 21l1.9-5.2A8.4 8.4 0 0 1 12 3a8.5 8.5 0 0 1 9 8.5z"/></svg><div><b>Your own WhatsApp number</b><span>Customers talk to your business, not to us.</span></div></div>
+    <div><svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg><div><b>Client dashboard</b><span>Every reply, booking and hand-off, in plain language.</span></div></div>
+    <div><svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/></svg><div><b>You keep ownership</b><span>After go-live, the setup, integrations and runbooks are yours.</span></div></div>
+  </div>
+</section>
+
+<section class="container inc">
+  <div class="sec-head"><span class="kicker">What happens after you book</span><h2 class="display h2">From first call to live system.</h2></div>
+  <div class="steps">
+    <div class="st"><span class="n">1</span><b>Discovery call</b><span>We map where enquiries slip through and agree the one metric that matters.</span></div>
+    <div class="st"><span class="n">2</span><b>Blueprint and quote</b><span>A written plan with milestones, in Arabic or English, before any build starts.</span></div>
+    <div class="st"><span class="n">3</span><b>Build and test</b><span>We connect your phone, WhatsApp, calendar and CRM, then test with your team.</span></div>
+    <div class="st"><span class="n">4</span><b>Go live and operate</b><span>We monitor, tune and report. You watch it work from your dashboard.</span></div>
+  </div>
+</section>
+
+<section class="container inc faq">
+  <div><span class="kicker">Pricing questions</span><h2 class="display h2" style="margin-top:18px">Straight answers.</h2></div>
+  <div>
+    <div class="qa"><div class="q">What does the setup fee cover? <svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></div><div class="a">Designing the system around your services and hours, connecting your phone, WhatsApp, calendar and CRM, writing the Arabic and English replies with you, and testing before go-live.</div></div>
+    <div class="qa"><div class="q">Can I start with just one system? <svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></div><div class="a">Yes. Studio prices each system on its own, as a one-time setup plus a monthly fee, so you can start small and add more later.</div></div>
+    <div class="qa"><div class="q">What happens if I go over my conversation limit? <svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></div></div>
+  </div>
+</section>
+
+<section class="container">
+  <div class="cta">
+    <div><h2 class="display">Not sure which plan fits?</h2><p>Tell us how enquiries reach you today. We'll recommend the smallest setup that works.</p></div>
+    <div class="row gap-12"><a class="btn btn-primary">Book a discovery call <svg class="ico arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="btn btn-ghost"><svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.9L3 21l1.9-5.2A8.4 8.4 0 0 1 12 3a8.5 8.5 0 0 1 9 8.5z"/></svg> WhatsApp</a></div>
+  </div>
+</section>
+<footer class="container"><span>© 2026 Helix</span><span>Prices in AED, from the current Helix pricing catalogue.</span></footer>
+</body></html>

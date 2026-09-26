@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Helix AI — Missed calls answered. Appointments booked. (v5 mockup)</title>
+<!--FONTS-->
+<!--CSS-->
+<style>
+/* ---------- page: home ---------- */
+.hero{padding:40px 0 0;overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1fr 500px;gap:40px;align-items:center;min-height:700px}
+.hero .h1{font-size:76px;line-height:1.0}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;height:32px;padding:0 14px 0 12px;border:1px solid var(--line-2);border-radius:999px;font-size:13.5px;color:var(--text-2);margin-bottom:34px}
+.hero h1{margin-bottom:28px}
+.hero .lead{max-width:520px}
+.cta-row{display:flex;gap:12px;margin-top:40px}
+.trust-row{display:flex;gap:20px;white-space:nowrap;margin-top:40px;font-size:14px;color:var(--text-2)}
+.trust-row span{display:flex;gap:8px;align-items:center}
+.trust-row .ico{width:16px;height:16px;color:var(--accent)}
+.visual{position:relative;height:680px}
+.glow{position:absolute;width:560px;height:560px;left:70px;top:40px;border-radius:50%;background:radial-gradient(closest-side,rgba(95,212,164,.16),rgba(95,212,164,.04) 60%,transparent);filter:blur(10px)}
+.visual .phone{position:absolute;left:196px;top:24px}
+.c-missed{left:-8px;top:92px;width:236px}
+.c-booked{left:-36px;top:486px;width:248px}
+.c-row{display:flex;gap:12px;align-items:flex-start}
+.c-ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;flex:none}
+.c-ic.amber{background:rgba(232,163,61,.12);color:#E8A33D}
+.c-ic.green{background:var(--accent-soft);color:var(--accent)}
+.c-title{font-size:14.5px;font-weight:600;line-height:1.3}
+.c-sub{font-size:13px;color:var(--text-2);line-height:1.45;margin-top:3px}
+.cal{display:flex;gap:14px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.cal-day{width:52px;border-radius:10px;border:1px solid var(--line-2);text-align:center;overflow:hidden;flex:none}
+.cal-day b{display:block;font-size:10.5px;letter-spacing:.08em;background:var(--accent-soft);color:var(--accent-text);padding:3px 0;font-weight:600}
+.cal-day span{display:block;font-size:19px;font-weight:600;padding:5px 0 6px}
+.caption{position:absolute;bottom:0;left:196px;width:300px;text-align:center;font-size:12px;color:var(--text-3)}
+/* scenario strip */
+.scenario{margin-top:24px;display:grid;grid-template-columns:190px 1fr 1fr 1fr 1.25fr;align-items:center;border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg,var(--surface),var(--bg-2));overflow:hidden}
+.scenario>div{padding:22px 24px;border-left:1px solid var(--line);min-height:92px;display:flex;flex-direction:column;justify-content:center}
+.scenario>div:first-child{border-left:0}
+.sc-time{font-family:var(--f-mono);font-size:12.5px;color:var(--text-3)}
+.sc-what{font-size:15px;font-weight:500;margin-top:4px}
+.sc-what .ico{width:16px;height:16px;vertical-align:-3px;margin-right:6px;color:var(--accent)}
+.sc-out{font-family:var(--f-display);font-size:22px;line-height:1.2;color:var(--text)}
+/* problem */
+.problem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--line)}
+.problem-grid>div{padding:36px 36px 0 0}
+.problem-grid>div+div{padding-left:36px;border-left:1px solid var(--line)}
+.p-num{font-family:var(--f-mono);font-size:12.5px;color:var(--text-3)}
+.p-title{font-size:22px;font-weight:500;margin:16px 0 10px;letter-spacing:-.01em}
+.p-body{color:var(--text-2);font-size:16px}
+/* how a missed call becomes a booking */
+.flow-panel{border:1px solid var(--line);border-radius:28px;background:var(--bg-2);padding:28px}
+.tabs{display:flex;gap:6px;padding:4px;border:1px solid var(--line);border-radius:999px;width:max-content}
+.tab{height:36px;padding:0 16px;border-radius:999px;font-size:14px;color:var(--text-2);display:flex;align-items:center}
+.tab.on{background:var(--surface-3);color:var(--text)}
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:28px;position:relative}
+.flow::before{content:"";position:absolute;left:8%;right:8%;top:47px;height:1px;background:repeating-linear-gradient(90deg,var(--line-2) 0 6px,transparent 6px 12px)}
+.step{position:relative;display:flex;flex-direction:column}
+.step-card{flex:1}
+.step-dot{width:94px;height:94px;border-radius:50%;margin:0 auto 22px;display:grid;place-items:center;background:var(--bg-2);border:1px solid var(--line-2);position:relative;z-index:1}
+.step-dot .inner{width:62px;height:62px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;color:var(--text)}
+.step.done .inner{background:var(--accent-soft);color:var(--accent)}
+.step-card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;min-height:176px}
+.step-k{font-family:var(--f-mono);font-size:12px;color:var(--text-3);display:flex;justify-content:space-between}
+.step-t{font-size:17px;font-weight:600;margin:8px 0 6px}
+.step-b{font-size:14px;color:var(--text-2);line-height:1.55}
+.mini-bub{margin-top:12px;background:#fff;color:#111;border-radius:10px 3px 10px 10px;padding:8px 10px;font:400 12.5px/1.6 var(--f-ar);direction:rtl;text-align:right}
+.tagline{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.flow-foot{display:flex;justify-content:space-between;align-items:center;margin-top:24px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--text-2)}
+/* systems */
+.sys-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:16px}
+.sys{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:28px;display:flex;flex-direction:column;min-height:340px}
+.sys.big{grid-column:span 3;min-height:400px}
+.sys.sm{grid-column:span 2}
+.sys-vis{flex:1;border-radius:16px;background:var(--bg-2);border:1px solid var(--line);margin-bottom:24px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:18px}
+.sys h3{font-size:22px;font-weight:500;letter-spacing:-.01em}
+.sys p{color:var(--text-2);font-size:15px;margin-top:6px}
+.sys .meta{display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font-size:13.5px;color:var(--text-3)}
+.pill{white-space:nowrap;display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 11px;font-size:12.5px;background:var(--surface-2);border:1px solid var(--line);color:var(--text-2)}
+.pill.g{background:var(--accent-soft);border-color:var(--accent-line);color:var(--accent-text)}
+.pill.a{background:rgba(232,163,61,.10);border-color:rgba(232,163,61,.25);color:#E8B25F}
+.vrow{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13px;width:100%}
+.vrow+.vrow{margin-top:8px}
+.vstack{width:100%}
+.wave{display:flex;gap:3px;align-items:center;height:36px}
+.wave i{display:block;width:3px;border-radius:2px;background:var(--text-3)}
+/* dashboard preview */
+.split{display:block}
+.split-head{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:end;margin-bottom:48px}
+.split .bullets{grid-template-columns:repeat(3,1fr);margin:0 0 40px;gap:32px}
+.dp{grid-template-columns:200px 1fr!important;min-height:520px!important}
+.dp-main{padding:28px 32px!important}
+.dp-h b{font-size:22px!important}.dp-sum{font-size:14px!important}
+.kpi{padding:16px!important}.kpi small{font-size:12px!important}.kpi b{font-size:30px!important}
+.dp-side{font-size:13.5px!important;padding:20px 14px!important}
+.feed{font-size:13px!important}.panel{padding:16px 18px!important}.panel h6{font-size:13.5px!important}.bars{height:150px!important}
+.bullets{margin-top:32px;display:grid;gap:20px}
+.bullets>div{display:flex;gap:14px}
+.bullets .ico{color:var(--accent);margin-top:3px}
+.bullets b{display:block;font-weight:500;font-size:16px}
+.bullets span{color:var(--text-2);font-size:15px}
+.browser{border-radius:18px;border:1px solid var(--line-2);background:#F7F5F0;overflow:hidden;box-shadow:0 40px 80px -30px rgba(0,0,0,.7)}
+.browser-bar{height:38px;background:#ECE9E2;display:flex;align-items:center;gap:7px;padding:0 14px}
+.browser-bar i{width:10px;height:10px;border-radius:50%;background:#D5D1C8}
+.browser-bar .url{margin-left:14px;height:22px;border-radius:6px;background:#F7F5F0;flex:0 0 280px;font-size:11.5px;color:#8A8C90;display:flex;align-items:center;padding:0 10px}
+.dp{display:grid;grid-template-columns:150px 1fr;min-height:430px;color:#15171A}
+.dp-side{background:#F1EEE7;padding:16px 12px;font-size:12px;color:#51545A;display:flex;flex-direction:column;gap:3px}
+.dp-side .it{padding:7px 9px;border-radius:7px;display:flex;gap:8px;align-items:center}
+.dp-side .it .ico{width:14px;height:14px}
+.dp-side .on{background:#fff;color:#15171A;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.dp-main{padding:20px 22px}
+.dp-h{display:flex;justify-content:space-between;align-items:center}
+.dp-h b{font-size:17px;font-weight:600}
+.dp-sum{font-size:12.5px;color:#51545A;margin-top:3px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+.kpi{background:#fff;border:1px solid rgba(22,24,20,.08);border-radius:12px;padding:12px}
+.kpi small{font-size:10.5px;color:#8A8C90;display:block}
+.kpi b{font-size:22px;font-weight:600;letter-spacing:-.02em;display:block;margin-top:2px}
+.dp-cols{display:grid;grid-template-columns:1.25fr 1fr;gap:10px;margin-top:10px}
+.panel{background:#fff;border:1px solid rgba(22,24,20,.08);border-radius:12px;padding:12px 14px}
+.panel h6{font-size:12px;font-weight:600;margin-bottom:8px;display:flex;justify-content:space-between}
+.feed{font-size:11.5px;color:#51545A}
+.feed div{display:flex;gap:8px;padding:6px 0;border-top:1px solid rgba(22,24,20,.06)}
+.feed div:first-child{border-top:0}
+.feed .d{width:6px;height:6px;border-radius:50%;background:#0E6E4F;margin-top:6px;flex:none}
+.feed .d.a{background:#D08A1E}
+.feed em{font-style:normal;color:#15171A;font-weight:500}
+.feed .tm{margin-left:auto;color:#8A8C90;white-space:nowrap}
+.bars{display:flex;align-items:flex-end;gap:7px;height:96px;padding-top:6px}
+.bars i{flex:1;border-radius:4px 4px 1px 1px;background:#CFE5D9}
+.bars i.hi{background:#0E6E4F}
+.ex-chip{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#8A8C90;border:1px dashed rgba(22,24,20,.2);border-radius:999px;padding:2px 7px;font-weight:500}
+/* region */
+.region{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.feat{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:30px;display:flex;gap:20px}
+.feat .ico{color:var(--accent);width:24px;height:24px;margin-top:2px}
+.feat h4{font-size:19px;font-weight:500;letter-spacing:-.01em}
+.feat p{color:var(--text-2);font-size:15px;margin-top:6px}
+.feat .say{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
+/* founder */
+.founder{display:grid;grid-template-columns:1.35fr 1fr;gap:0;border:1px solid var(--line);border-radius:28px;overflow:hidden;background:var(--surface)}
+.founder-q{padding:56px}
+.founder-q blockquote{font-family:var(--f-display);font-size:34px;line-height:1.22;letter-spacing:-.01em}
+.sig{display:flex;align-items:center;gap:14px;margin-top:36px}
+.mono{width:48px;height:48px;border-radius:50%;background:var(--surface-3);border:1px solid var(--line-2);display:grid;place-items:center;font-weight:600;font-size:15px}
+.commit{padding:56px;border-left:1px solid var(--line);background:var(--bg-2)}
+.commit li{list-style:none;display:flex;gap:14px;padding:16px 0;border-top:1px solid var(--line)}
+.commit li:first-of-type{border-top:0}
+.commit .ico{color:var(--accent);margin-top:2px}
+.commit b{font-weight:500;display:block}
+.commit span{color:var(--text-2);font-size:14.5px}
+/* pricing teaser */
+.plans{display:grid;grid-template-columns:1fr 1.06fr 1fr;gap:16px;align-items:stretch}
+.plan{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:32px;display:flex;flex-direction:column}
+.plan.feat-plan{background:#F2F0EB;color:#0A0B0D;border-color:transparent}
+.plan.feat-plan .muted,.plan.feat-plan li{color:#51545A}
+.plan-name{font-size:15px;font-weight:500;display:flex;justify-content:space-between;align-items:center}
+.price{display:flex;align-items:baseline;gap:8px;margin:22px 0 4px}
+.price .cur{font-size:15px;font-weight:500;color:var(--text-2)}
+.feat-plan .price .cur{color:#51545A}
+.price b{font-size:46px;font-weight:500;letter-spacing:-.03em;line-height:1}
+.price .per{font-size:15px;color:var(--text-3)}
+.plan ul{margin:22px 0 28px;display:grid;gap:10px;font-size:14.5px;color:var(--text-2)}
+.plan li{list-style:none;display:flex;gap:10px}
+.plan li .ico{width:16px;height:16px;margin-top:4px;color:var(--accent)}
+.feat-plan li .ico{color:#0E6E4F}
+.plan .btn{margin-top:auto;justify-content:center}
+.feat-plan .btn-primary{background:#0A0B0D;color:#F2F0EB}
+.price-foot{display:flex;justify-content:space-between;margin-top:22px;font-size:14px;color:var(--text-2)}
+/* faq */
+.faq{display:grid;grid-template-columns:420px 1fr;gap:64px}
+.qa{border-top:1px solid var(--line);padding:24px 0}
+.qa:last-child{border-bottom:1px solid var(--line)}
+.qa .q{display:flex;justify-content:space-between;font-size:18px;font-weight:500;gap:24px}
+.qa .q .ico{color:var(--text-3)}
+.qa .a{color:var(--text-2);margin-top:12px;max-width:620px;font-size:15.5px}
+/* final cta */
+.final{border-radius:32px;border:1px solid var(--line);padding:88px 64px;text-align:center;position:relative;overflow:hidden;background:radial-gradient(800px 320px at 50% 0%,rgba(95,212,164,.10),transparent 70%),var(--bg-2)}
+.final .display{font-size:60px;max-width:820px;margin:0 auto}
+.final .lead{max-width:560px;margin:22px auto 0}
+.final .cta-row{justify-content:center}
+.watermark{position:absolute;right:-40px;bottom:-60px;width:300px;color:rgba(255,255,255,.025)}
+/* footer */
+footer{padding:72px 0 48px}
+.foot{display:grid;grid-template-columns:1.6fr repeat(3,1fr);gap:40px}
+.foot h6{font-size:13px;font-weight:500;color:var(--text-3);margin-bottom:14px}
+.foot .brand{display:flex}
+.foot a{display:block;font-size:14.5px;color:var(--text-2);padding:4px 0}
+.foot-bottom{display:flex;justify-content:space-between;margin-top:56px;padding-top:24px;border-top:1px solid var(--line);font-size:13px;color:var(--text-3)}
+
+/* ================= mobile ================= */
+.m-only{display:none}
+@media (max-width:640px){
+  .m-only{display:initial}
+  .d-only{display:none!important}
+  .container{padding:0 20px}
+  .nav{height:64px}
+  .hero{padding-top:20px}
+  .hero-grid{grid-template-columns:1fr;gap:28px;min-height:0}
+  .eyebrow{font-size:12.5px;height:30px;margin-bottom:24px}
+  .h1{font-size:46px;line-height:1.02}
+  .h2{font-size:36px;line-height:1.08}
+  .lead{font-size:17px}
+  .cta-row{flex-direction:column;margin-top:28px}
+  .cta-row .btn{justify-content:center;height:52px}
+  .trust-row{flex-direction:column;gap:10px;margin-top:24px}
+  .visual{height:560px;margin:0 -20px}
+  .glow{left:-40px;top:20px;width:470px;height:470px}
+  .visual .phone{left:50%;top:10px;transform:translateX(-50%) scale(.8);transform-origin:top center}
+  .visual{height:600px!important}
+  .c-missed{display:none}
+  .c-missed{left:14px;top:40px;width:210px;padding:12px 14px}
+  .c-booked{left:50%;transform:translateX(-50%);top:450px;width:300px;padding:14px 16px}
+  .caption{left:0;width:100%;bottom:0}
+  .scenario>div:nth-child(2){display:none}
+  .scenario{grid-template-columns:1fr;margin-top:16px}
+  .scenario>div{border-left:0;border-top:1px solid var(--line);min-height:0;padding:16px 18px}
+  .scenario>div:first-child{border-top:0}
+  .sc-out{font-size:20px}
+  .sec{padding:80px 0}
+  .sec-head{margin-bottom:36px}
+  .problem-grid{grid-template-columns:1fr}
+  .problem-grid>div,.problem-grid>div+div{padding:26px 0;border-left:0;border-bottom:1px solid var(--line)}
+  .flow-panel{padding:18px;border-radius:22px}
+  .tabs{width:100%;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,#000 80%,transparent)}
+  .tab{padding:0 12px;font-size:13px;white-space:nowrap}
+  .flow{grid-template-columns:1fr;gap:12px}
+  .flow::before{display:none}
+  .step{display:grid;grid-template-columns:52px 1fr;gap:12px}
+  .step-dot{width:52px;height:52px;margin:0}
+  .step-dot .inner{width:36px;height:36px}
+  .step-dot .ico{width:18px;height:18px}
+  .step-card{min-height:0}
+  .flow-foot{flex-direction:column;align-items:flex-start;gap:10px}
+  .sys-grid{grid-template-columns:1fr}
+  .sys.big,.sys.sm{grid-column:auto;min-height:0}
+  .sys-vis{min-height:170px;flex:none}
+  .split,.faq{grid-template-columns:1fr;gap:36px}
+  .dp{grid-template-columns:1fr}
+  .dp-side{display:none}
+  .kpis{grid-template-columns:1fr 1fr}
+  .dp-cols{grid-template-columns:1fr}
+  .region{grid-template-columns:1fr}
+  .feat{padding:22px;flex-direction:column;gap:12px}
+  .founder{grid-template-columns:1fr}
+  .founder-q,.commit{padding:30px 24px}
+  .founder-q blockquote{font-size:26px}
+  .commit{border-left:0;border-top:1px solid var(--line)}
+  .plans{grid-template-columns:1fr}
+  .feat-plan{order:-1}
+  .hero .h1{font-size:46px}
+  .split-head{grid-template-columns:1fr;gap:20px;margin-bottom:28px}
+  .split .bullets{grid-template-columns:1fr;gap:18px;margin-bottom:28px}
+  .dp{grid-template-columns:1fr!important;min-height:0!important}
+  .dp-main{padding:16px!important}
+  .kpi b{font-size:22px!important}
+  .bars{height:90px!important}
+  .price-foot{flex-direction:column;gap:10px}
+  .final{padding:56px 22px;border-radius:24px}
+  .final .display{font-size:38px}
+  .foot{grid-template-columns:1fr 1fr}
+  .foot>div:first-child{grid-column:span 2}
+  .foot-bottom{flex-direction:column;gap:8px}
+}
+</style>
+</head>
+<body data-theme="dark">
+
+<!-- NAV -->
+<header class="container nav">
+  <a class="brand" href="#">{{logo}}<span class="word">HELIX</span></a>
+  <nav class="nav-links d-only"><a>Systems</a><a>How it works</a><a>Pricing</a><a>Studio</a><a>About</a></nav>
+  <div class="nav-right">
+    <div class="lang d-only"><span class="on">EN</span><span class="ar">ع</span></div>
+    <a class="d-only">Sign in</a>
+    <a class="btn btn-primary btn-sm d-only">Book a call</a>
+    <span class="m-only" style="color:var(--text)">{{i:menu}}</span>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow"><span class="dot"></span><span class="d-only">Done-for-you AI systems for GCC &amp; MENA businesses</span><span class="m-only">Done-for-you AI systems · GCC &amp; MENA</span></span>
+        <h1 class="display h1">Missed calls answered.<br><em>Appointments booked.</em></h1>
+        <p class="lead">Helix builds and runs AI systems for clinics, real-estate and service businesses. Every missed call gets a WhatsApp reply within seconds, a real conversation in Arabic or English, and a confirmed booking in your calendar. Set up and monitored by our team.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary">Book a discovery call {{i:arrow arrow}}</a>
+          <a class="btn btn-ghost">See how it works</a>
+        </div>
+        <div class="trust-row">
+          <span>{{i:check}}Arabic &amp; English</span>
+          <span>{{i:check}}Your own WhatsApp number</span>
+          <span>{{i:check}}You keep ownership after go-live</span>
+        </div>
+      </div>
+      <div class="visual">
+        <div class="glow"></div>
+        <div class="phone"><div class="island"></div><div class="screen">
+          <div class="status"><span>9:44</span><span style="letter-spacing:2px">●●● ▮</span></div>
+          <div class="wa-head"><div class="wa-av">ع</div><div><div class="wa-name">عيادة المثال لطب الأسنان</div><div class="wa-sub">حساب أعمال · نشط الآن</div></div></div>
+          <div class="wa-body">
+            <span class="wa-day">اليوم</span>
+            <div class="bub in">مساء الخير، معك عيادة المثال لطب الأسنان. لاحظنا اتصالك قبل قليل ولم نتمكن من الرد. كيف نقدر نخدمك؟<span class="t">9:41 PM</span></div>
+            <div class="bub out">أبغى أحجز تنظيف أسنان هالأسبوع<span class="t">9:42 PM</span></div>
+            <div class="bub in">أكيد. هل هذه أول زيارة لك عندنا؟<span class="t">9:42 PM</span></div>
+            <div class="bub out">إيه، أول مرة<span class="t">9:42 PM</span></div>
+            <div class="bub in">حيّاك الله. المتاح: الأربعاء ٤:٣٠ م أو الخميس ٦:١٥ م. أي وقت يناسبك؟<span class="t">9:43 PM</span></div>
+            <div class="bub out">الخميس ٦:١٥<span class="t">9:43 PM</span></div>
+            <div class="bub in">تم تأكيد موعدك الخميس ٦:١٥ م. بنرسل لك تذكير قبلها بيوم.<span class="t">9:44 PM</span></div>
+          </div>
+          <div class="wa-input"><div class="f">اكتب رسالة</div></div>
+        </div></div>
+        <div class="float c-missed">
+          <div class="c-row"><div class="c-ic amber">{{i:phone-missed}}</div>
+            <div><div class="c-title">Missed call · 9:41 PM</div><div class="c-sub"><span class="ltr">+971 50 ••• 4182</span><br>After hours. Nobody at the desk.</div></div></div>
+        </div>
+        <div class="float c-booked">
+          <div class="c-row"><div class="c-ic green">{{i:calendar-check}}</div>
+            <div><div class="c-title">Appointment booked</div><div class="c-sub">Added to your calendar</div></div></div>
+          <div class="cal"><div class="cal-day"><b>THU</b><span>6:15</span></div>
+            <div><div style="font-size:14px;font-weight:500">Teeth cleaning · PM</div><div class="c-sub">New patient · via WhatsApp<br>Reminder set for Wednesday</div></div></div>
+        </div>
+        <div class="caption">Illustrative example · fictional clinic, names and times</div>
+      </div>
+    </div>
+    <div class="scenario">
+      <div><span class="chip chip-example" style="width:max-content">Example scenario</span><div class="faint small" style="margin-top:8px">One missed call, start to finish</div></div>
+      <div><span class="sc-time">9:41 PM</span><span class="sc-what">{{i:phone-missed}}Call missed after hours</span></div>
+      <div><span class="sc-time">9:41 PM</span><span class="sc-what">{{i:message}}WhatsApp reply sent</span></div>
+      <div><span class="sc-time">9:44 PM</span><span class="sc-what">{{i:calendar-check}}Booked for Thursday</span></div>
+      <div><span class="sc-out">Nobody on your team had to pick up the phone.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="sec">
+  <div class="container">
+    <div class="sec-head"><span class="kicker">Why it matters</span><h2 class="display h2">The enquiries you miss are revenue that goes to someone else.</h2></div>
+    <div class="problem-grid">
+      <div><span class="p-num">01</span><div class="p-title">After hours</div><p class="p-body">Calls after closing go unanswered, and the caller moves on to the next clinic on the list.</p></div>
+      <div><span class="p-num">02</span><div class="p-title">A busy front desk</div><p class="p-body">Your team is with the customer in front of them. The phone rings out, and nobody calls back.</p></div>
+      <div><span class="p-num">03</span><div class="p-title">Slow follow-up</div><p class="p-body">Leads from ads and Instagram wait hours for a reply, long after their interest has cooled.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW A MISSED CALL BECOMES A BOOKING (replaces the CLI demo) -->
+<section class="sec" style="padding-top:0" id="how">
+  <div class="container">
+    <div class="sec-head"><span class="kicker">How it works</span><h2 class="display h2">From missed call to booked appointment, in four quiet steps.</h2><p class="lead">No new app for your team. The system works inside the tools you already use and only asks for a person when it should.</p></div>
+    <div class="flow-panel">
+      <div class="row" style="justify-content:space-between">
+        <div class="tabs"><span class="tab on">Missed-call triage</span><span class="tab">Booking receptionist</span><span class="tab">Lead qualification</span></div>
+        <span class="chip chip-example d-only">Example scenario</span>
+      </div>
+      <div class="flow">
+        <div class="step done"><div class="step-dot"><div class="inner">{{i:phone-missed ico-lg}}</div></div>
+          <div class="step-card"><div class="step-k"><span>STEP 1</span><span>9:41 PM</span></div><div class="step-t">A call is missed</div><div class="step-b">Your phone system tells Helix the moment a call goes unanswered, day or night.</div></div></div>
+        <div class="step done"><div class="step-dot"><div class="inner">{{i:message ico-lg}}</div></div>
+          <div class="step-card"><div class="step-k"><span>STEP 2</span><span>seconds later</span></div><div class="step-t">WhatsApp reply, in their language</div><div class="mini-bub">لاحظنا اتصالك قبل قليل. كيف نقدر نخدمك؟</div></div></div>
+        <div class="step done"><div class="step-dot"><div class="inner">{{i:target ico-lg}}</div></div>
+          <div class="step-card"><div class="step-k"><span>STEP 3</span><span>2 messages</span></div><div class="step-t">It asks the right questions</div><div class="step-b">Which service, how soon, new or returning.</div><div class="tagline"><span class="pill">Teeth cleaning</span><span class="pill">This week</span><span class="pill">New patient</span></div></div></div>
+        <div class="step done"><div class="step-dot"><div class="inner">{{i:calendar-check ico-lg}}</div></div>
+          <div class="step-card"><div class="step-k"><span>STEP 4</span><span>9:44 PM</span></div><div class="step-t">Booked and confirmed</div><div class="step-b">Slot taken from your real calendar. Reminder the day before.</div><div class="tagline"><span class="pill g">{{i:check}} Thu · 6:15 PM</span></div></div></div>
+      </div>
+      <div class="flow-foot"><span>{{i:headset}}&nbsp; If the customer asks for a person, or the answer is unclear, your team takes over with the full conversation.</span><a class="link">Explore missed-call triage {{i:arrow arrow}}</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- SYSTEMS -->
+<section class="sec" style="padding-top:0" id="systems">
+  <div class="container">
+    <div class="sec-head"><span class="kicker">Systems</span><h2 class="display h2">Five systems. Each one does a single job, properly.</h2><p class="lead">Start with the one that fixes your biggest leak. Add the next when the first has earned its place.</p></div>
+    <div class="sys-grid">
+      <article class="sys big">
+        <div class="sys-vis"><div class="vstack" style="max-width:340px">
+          <div class="vrow"><span class="c-ic amber" style="width:28px;height:28px">{{i:phone-missed}}</span><span>Missed call</span><span class="faint" style="margin-left:auto">9:41 PM</span></div>
+          <div class="vrow"><span class="c-ic green" style="width:28px;height:28px">{{i:message}}</span><span>WhatsApp reply sent</span><span class="faint" style="margin-left:auto">9:41 PM</span></div>
+          <div class="vrow"><span class="c-ic green" style="width:28px;height:28px">{{i:users}}</span><span>Routed to bookings</span><span class="pill g" style="margin-left:auto">Qualified</span></div>
+        </div></div>
+        <h3>Missed-call triage</h3><p>A WhatsApp reply seconds after a missed call. Qualifies the enquiry and routes it to the right person.</p>
+        <div class="meta"><span>Best for clinics, contractors, home services</span><a class="link">Explore {{i:arrow arrow}}</a></div>
+      </article>
+      <article class="sys big">
+        <div class="sys-vis"><div class="vstack" style="max-width:340px">
+          <div class="vrow"><span class="c-ic green" style="width:28px;height:28px">{{i:mic}}</span><span>Inbound call · Arabic</span><span class="wave" style="margin-left:auto"><i style="height:10px"></i><i style="height:22px"></i><i style="height:14px"></i><i style="height:28px"></i><i style="height:18px"></i><i style="height:9px"></i><i style="height:20px"></i><i style="height:12px"></i></span></div>
+          <div class="vrow"><span class="c-ic green" style="width:28px;height:28px">{{i:calendar}}</span><span>Consultation · Sun 11:00 AM</span><span class="pill g" style="margin-left:auto">Booked</span></div>
+          <div class="vrow"><span class="c-ic green" style="width:28px;height:28px">{{i:message}}</span><span>Confirmation + location on WhatsApp</span></div>
+        </div></div>
+        <h3>Booking receptionist</h3><p>Answers calls in Gulf Arabic and English, books from your real availability, and confirms on WhatsApp.</p>
+        <div class="meta"><span>Best for clinics, salons, real estate</span><a class="link">Explore {{i:arrow arrow}}</a></div>
+      </article>
+      <article class="sys sm">
+        <div class="sys-vis"><div class="vstack">
+          <div class="vrow"><span>Instagram ad</span><span class="pill g" style="margin-left:auto">Hot</span></div>
+          <div class="vrow"><span>Google search</span><span class="pill a" style="margin-left:auto">Warm</span></div>
+          <div class="vrow"><span>Website form</span><span class="pill" style="margin-left:auto">Nurture</span></div>
+        </div></div>
+        <h3>Lead qualification &amp; attribution</h3><p>Scores every new lead and shows which ad actually produced bookings.</p>
+        <div class="meta"><span>Paid social, clinics, real estate</span><a class="link">{{i:arrow arrow}}</a></div>
+      </article>
+      <article class="sys sm">
+        <div class="sys-vis"><div class="vstack">
+          <div class="vrow"><span class="faint">Last contact</span><span style="margin-left:auto">8 months ago</span></div>
+          <div class="vrow"><span>Friendly WhatsApp check-in</span></div>
+          <div class="vrow"><span>Replied: “Yes, next week”</span><span class="pill g" style="margin-left:auto">Re-engaged</span></div>
+        </div></div>
+        <h3>Lead reactivation</h3><p>Wakes up past enquiries and customers who opted in, with messages that respect “stop”.</p>
+        <div class="meta"><span>Real estate, clinics, B2B</span><a class="link">{{i:arrow arrow}}</a></div>
+      </article>
+      <article class="sys sm">
+        <div class="sys-vis"><div class="vstack">
+          <div class="vrow"><span>Invoice · 14 days overdue</span></div>
+          <div class="vrow"><span>Polite reminder + payment link</span></div>
+          <div class="vrow"><span>Payment received</span><span class="pill g" style="margin-left:auto">Paid</span></div>
+        </div></div>
+        <h3>B2B collections</h3><p>Courteous WhatsApp follow-ups on overdue commercial invoices. Business clients only.</p>
+        <div class="meta"><span>B2B services, distributors</span><a class="link">{{i:arrow arrow}}</a></div>
+      </article>
+    </div>
+    <div class="price-foot"><span>Buying a single system? Configure it and see its price in Studio.</span><a class="link">Open Studio {{i:arrow arrow}}</a></div>
+  </div>
+</section>
+
+<!-- DASHBOARD PREVIEW -->
+<section class="sec" style="padding-top:24px">
+  <div class="container split">
+    <div class="split-head">
+      <div><span class="kicker">Your dashboard</span><h2 class="display h2" style="margin-top:18px">See exactly what your systems did.</h2></div>
+      <p class="lead">Every reply, booking and hand-off in plain language. No guesswork, no jargon. Open it on your phone or your desk, in Arabic or English.</p>
+    </div>
+    <div class="bullets">
+        <div>{{i:inbox}}<div><b>A daily activity feed</b><span>What happened, when, and for which customer.</span></div></div>
+        <div>{{i:shield}}<div><b>A review queue for anything uncertain</b><span>Nothing unclear is saved as fact until someone checks it.</span></div></div>
+        <div>{{i:chart}}<div><b>Week and month views</b><span>Bookings, replies and missed calls handled, side by side.</span></div></div>
+    </div>
+    <div class="browser">
+      <div class="browser-bar"><i></i><i></i><i></i><span class="url">helix · Example Dental Clinic</span></div>
+      <div class="dp">
+        <div class="dp-side">
+          <div class="it on">{{i:home}}Overview</div><div class="it">{{i:contacts}}Contacts</div><div class="it">{{i:inbox}}Review queue</div><div class="it">{{i:target}}Lead generation</div><div class="it">{{i:search}}Search</div><div class="it">{{i:chart}}Reports</div>
+        </div>
+        <div class="dp-main">
+          <div class="dp-h"><div><b>Good evening</b><div class="dp-sum">This week your systems replied to 38 enquiries and booked 11 appointments.</div></div><span class="ex-chip">Example data</span></div>
+          <div class="kpis">
+            <div class="kpi"><small>Appointments booked</small><b>11</b></div>
+            <div class="kpi"><small>Missed calls answered</small><b>17</b></div>
+            <div class="kpi"><small>Conversations</small><b>38</b></div>
+            <div class="kpi"><small>Median first reply</small><b>18s</b></div>
+          </div>
+          <div class="dp-cols">
+            <div class="panel"><h6>Recent activity <span style="color:#8A8C90;font-weight:400">Today</span></h6>
+              <div class="feed">
+                <div><span class="d"></span><span><em>Booked</em> teeth cleaning · Thu 6:15 PM</span><span class="tm">9:44 PM</span></div>
+                <div><span class="d"></span><span><em>Replied</em> to a missed call from +971 50 ••• 4182</span><span class="tm">9:41 PM</span></div>
+                <div><span class="d a"></span><span><em>Handed to your team:</em> asked about insurance</span><span class="tm">6:02 PM</span></div>
+                <div><span class="d"></span><span><em>Reminder sent</em> for tomorrow's 10:30 AM</span><span class="tm">5:00 PM</span></div>
+              </div></div>
+            <div class="panel"><h6>Bookings this week</h6>
+              <div class="bars"><i style="height:30%"></i><i style="height:52%"></i><i style="height:40%"></i><i style="height:70%"></i><i class="hi" style="height:88%"></i><i style="height:46%"></i><i style="height:24%"></i></div>
+              <div style="display:flex;justify-content:space-between;font-size:10px;color:#8A8C90;margin-top:6px"><span>Sat</span><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REGION -->
+<section class="sec" style="padding-top:80px">
+  <div class="container">
+    <div class="sec-head"><span class="kicker">Built for the region</span><h2 class="display h2">Speaks like your front desk. Follows your rules.</h2></div>
+    <div class="region">
+      <div class="feat">{{i:globe}}<div><h4>Arabic dialects and English</h4><p>Gulf, Egyptian and Levantine Arabic, English, and the mix of both your customers actually write.</p><div class="say"><span class="pill ar">أبغى موعد بكرة</span><span class="pill ar">عايز أحجز</span><span class="pill">Can I book for Sunday?</span></div></div></div>
+      <div class="feat">{{i:headset}}<div><h4>A person, whenever it matters</h4><p>If a customer asks for a human, or the system is unsure, the conversation moves to your team with full context.</p><div class="say"><span class="pill ar">بشري</span><span class="pill">agent</span></div></div></div>
+      <div class="feat">{{i:moon}}<div><h4>Respectful by default</h4><p>Quiet hours, opt-in for marketing messages, and “stop” honoured every time.</p><div class="say"><span class="pill ar">إيقاف</span><span class="pill">stop</span></div></div></div>
+      <div class="feat">{{i:key}}<div><h4>You own what we build</h4><p>After go-live you keep the setup, the integrations and the runbooks. No lock-in.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOUNDER NOTE (honest alternative to testimonials) -->
+<section class="sec" style="padding-top:48px">
+  <div class="container">
+    <div class="founder">
+      <div class="founder-q">
+        <span class="kicker">A note from the founder</span>
+        <blockquote style="margin-top:22px">“We won't show you inflated numbers or borrowed logos. Before you commit, we'll walk you through a live demo built around a scenario from your own business, and every system we run reports exactly what it did.”</blockquote>
+        <div class="sig"><div class="mono">ZS</div><div><b style="font-weight:500">Ziad Sabry</b><div class="faint small">Founder, Helix</div></div></div>
+      </div>
+      <div class="commit">
+        <span class="kicker">Our commitments</span>
+        <ul style="margin-top:14px">
+          <li>{{i:check}}<div><b>Live demo before scope</b><span>You see it working on your use case first.</span></div></li>
+          <li>{{i:check}}<div><b>Honest reporting</b><span>No invented metrics, in sales or in your dashboard.</span></div></li>
+          <li>{{i:check}}<div><b>Bilingual milestones</b><span>Plans and updates in Arabic or English.</span></div></li>
+          <li>{{i:check}}<div><b>Clear ownership</b><span>You keep the system after go-live.</span></div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING TEASER (AED only) -->
+<section class="sec" style="padding-top:80px">
+  <div class="container">
+    <div class="sec-head" style="display:flex;justify-content:space-between;align-items:flex-end;max-width:none"><div style="max-width:640px"><span class="kicker">Monthly plans · AED</span><h2 class="display h2">Clear monthly plans. One-time setup.</h2></div><a class="link d-only">Compare all plans {{i:arrow arrow}}</a></div>
+    <div class="plans">
+      <div class="plan"><div class="plan-name">Enterprise Starter</div><p class="muted small" style="margin-top:6px">Single location, phone and WhatsApp.</p>
+        <div class="price"><span class="cur">AED</span><b class="num">1,800</b><span class="per">/ month</span></div><div class="faint small">+ AED 4,500 one-time setup</div>
+        <ul><li>{{i:check}}Up to 1,500 conversations a month</li><li>{{i:check}}Voice agent in Gulf Arabic &amp; English</li><li>{{i:check}}Calendar sync and WhatsApp confirmations</li></ul>
+        <a class="btn btn-ghost">See plan details</a></div>
+      <div class="plan feat-plan"><div class="plan-name">Growth Enterprise <span class="chip" style="border-color:rgba(0,0,0,.15);color:#0E6E4F">Recommended</span></div><p class="muted small" style="margin-top:6px">Missed-call triage, voice and WhatsApp together.</p>
+        <div class="price"><span class="cur">AED</span><b class="num">4,600</b><span class="per" style="color:#8A8C90">/ month</span></div><div class="small" style="color:#8A8C90">+ AED 7,500 one-time setup</div>
+        <ul><li>{{i:check}}Up to 10,000 conversations a month</li><li>{{i:check}}Voice, WhatsApp and email automation</li><li>{{i:check}}Missed-call WhatsApp text-back and triage</li></ul>
+        <a class="btn btn-primary">Book a discovery call</a></div>
+      <div class="plan"><div class="plan-name">Sovereign Scale</div><p class="muted small" style="margin-top:6px">Multiple branches and brands.</p>
+        <div class="price"><span class="cur">AED</span><b class="num">10,200</b><span class="per">/ month</span></div><div class="faint small">+ AED 15,000 one-time setup</div>
+        <ul><li>{{i:check}}Unlimited workspaces across branches</li><li>{{i:check}}Custom dialect tuning</li><li>{{i:check}}Priority escalation support</li></ul>
+        <a class="btn btn-ghost">See plan details</a></div>
+    </div>
+    <div class="price-foot"><span>Buying a single system? See per-system prices in Studio →</span><span>Need something bespoke? <a class="link">Custom build, let's scope it →</a></span></div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec" style="padding-top:80px">
+  <div class="container faq">
+    <div><span class="kicker">Questions</span><h2 class="display h2" style="margin-top:18px">What owners ask us first.</h2><p class="lead" style="margin-top:18px">Anything else? Ask us on WhatsApp and a person will reply.</p></div>
+    <div>
+      <div class="qa"><div class="q">Do I need to change my phone number? {{i:minus}}</div><div class="a">In most setups, no. We connect to your existing phone system and reply from your WhatsApp Business number. We confirm what's possible with your setup on the discovery call.</div></div>
+      <div class="qa"><div class="q">What happens when the AI can't answer? {{i:plus}}</div></div>
+      <div class="qa"><div class="q">Which languages and dialects does it handle? {{i:plus}}</div></div>
+      <div class="qa"><div class="q">How long does setup take? {{i:plus}}</div></div>
+      <div class="qa"><div class="q">Who owns the system and the data? {{i:plus}}</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="sec" style="padding-top:48px;padding-bottom:0">
+  <div class="container">
+    <div class="final">
+      <span class="watermark">{{logo}}</span>
+      <h2 class="display">Tell us where enquiries slip through. We'll show you the system that catches them.</h2>
+      <p class="lead">A short discovery call. We map the smallest system that fixes it, then demo it live, in Arabic or English.</p>
+      <div class="cta-row"><a class="btn btn-primary">Book a discovery call {{i:arrow arrow}}</a><a class="btn btn-ghost">{{i:message}} Chat on WhatsApp</a></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="foot">
+      <div><a class="brand">{{logo}}<span class="word">HELIX</span></a><p class="muted small" style="margin-top:16px;max-width:300px">AI systems that answer, qualify and book, in Arabic and English. For businesses across the GCC and MENA.</p></div>
+      <div><h6>Product</h6><a>Systems</a><a>Studio</a><a>Pricing</a><a>Client sign in</a></div>
+      <div><h6>Company</h6><a>About</a><a>Contact</a><a>Updates</a></div>
+      <div><h6>Legal</h6><a>Privacy</a><a>Terms</a></div>
+    </div>
+    <div class="foot-bottom"><span>© 2026 Helix</span><span>English · <span class="ar">العربية</span></span></div>
+  </div>
+</footer>
+</body></html>

@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Helix — Client dashboard · Overview · v5 mockup</title>
+<!--FONTS-->
+<!--CSS-->
+<style>
+body{font-size:14px}
+.app{display:grid;grid-template-columns:256px 1fr;min-height:100vh}
+.side{border-right:1px solid var(--line);padding:18px 14px;display:flex;flex-direction:column;gap:4px;background:var(--bg-2)}
+.ws{display:flex;align-items:center;gap:10px;padding:8px 8px 16px;border-bottom:1px solid var(--line);margin-bottom:12px}
+.ws-logo{width:34px;height:34px;border-radius:10px;background:#15171A;color:#F2F0EB;display:grid;place-items:center}
+.ws-logo svg{width:16px;height:16px}
+.ws b{font-size:13.5px;font-weight:600;display:block;line-height:1.25;white-space:nowrap}
+.ws small{font-size:12px;color:var(--text-3)}
+.ws .ico{margin-left:auto;width:16px;height:16px;color:var(--text-3)}
+.grp{font-size:11.5px;color:var(--text-3);letter-spacing:.06em;text-transform:uppercase;padding:14px 10px 6px;font-weight:500}
+.it{display:flex;align-items:center;gap:11px;height:36px;padding:0 10px;border-radius:9px;color:var(--text-2);font-size:14px}
+.it .ico{width:17px;height:17px}
+.it.on{background:var(--surface);color:var(--text);box-shadow:0 1px 2px rgba(20,22,18,.06),0 0 0 1px var(--line)}
+.it .badge{margin-left:auto;min-width:20px;height:20px;border-radius:999px;background:#15171A;color:#fff;font-size:11.5px;display:grid;place-items:center;padding:0 6px}
+.it .new{margin-left:auto;font-size:11px;color:var(--accent);font-weight:500}
+.me{margin-top:auto;display:flex;align-items:center;gap:10px;padding:12px 8px 4px;border-top:1px solid var(--line)}
+.av{width:32px;height:32px;border-radius:50%;background:#E4F1EA;color:#0E6E4F;display:grid;place-items:center;font-weight:600;font-size:12.5px}
+.main{min-width:0}
+.top{height:64px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 32px}
+.search{width:420px;height:38px;border-radius:10px;background:var(--surface);border:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:0 12px;color:var(--text-3)}
+.search .ico{width:16px;height:16px}
+.kbd{margin-left:auto;font-family:var(--f-mono);font-size:11.5px;border:1px solid var(--line-2);border-radius:6px;padding:1px 6px}
+.top-r{display:flex;align-items:center;gap:14px}
+.iconbtn{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;color:var(--text-2)}
+.iconbtn .ico{width:17px;height:17px}
+.banner{margin:20px 32px 0;height:40px;border-radius:10px;border:1px dashed var(--line-2);display:flex;align-items:center;gap:10px;padding:0 14px;font-size:13px;color:var(--text-2);background:var(--surface-2)}
+.banner .ico{width:16px;height:16px;color:var(--text-3)}
+.content{padding:28px 32px 48px}
+.ph{display:flex;justify-content:space-between;align-items:flex-end}
+.ph h1{font-size:28px;font-weight:600;letter-spacing:-.02em}
+.ph p{color:var(--text-2);margin-top:4px;font-size:15px}
+.seg{display:flex;padding:3px;border-radius:10px;background:var(--surface-3);gap:2px}
+.seg span{height:32px;padding:0 14px;border-radius:8px;display:flex;align-items:center;font-size:13.5px;color:var(--text-2)}
+.seg .on{background:var(--surface);color:var(--text);box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.btn-o{height:38px;padding:0 14px;border-radius:10px;border:1px solid var(--line-2);background:var(--surface);display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:500}
+.btn-o .ico{width:16px;height:16px}
+.btn-d{height:38px;padding:0 16px;border-radius:10px;background:#15171A;color:#fff;display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:500}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:24px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:0 1px 2px rgba(20,22,18,.04)}
+.kpi-l{display:flex;justify-content:space-between;align-items:center;color:var(--text-2);font-size:13.5px}
+.kpi-l .ico{width:16px;height:16px;color:var(--text-3)}
+.kpi-v{display:flex;align-items:flex-end;justify-content:space-between;margin-top:14px}
+.kpi-v b{font-size:36px;font-weight:600;letter-spacing:-.03em;line-height:1}
+.kpi-v b small{font-size:15px;color:var(--text-3);font-weight:500;letter-spacing:0;margin-left:4px}
+.delta{font-size:12.5px;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:2px 8px;font-weight:500}
+.kpi .foot{font-size:12.5px;color:var(--text-3);margin-top:10px}
+.spark{width:92px;height:30px}
+.row2{display:grid;grid-template-columns:1.7fr 1fr;gap:14px;margin-top:14px}
+.row3{display:grid;grid-template-columns:1.35fr 1fr;gap:14px;margin-top:14px}
+.pnl{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px 22px;box-shadow:0 1px 2px rgba(20,22,18,.04)}
+.pnl-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.pnl-h b{font-size:15px;font-weight:600}
+.pnl-h small{font-size:12.5px;color:var(--text-3);font-weight:400;margin-left:8px}
+.legend{display:flex;gap:14px;font-size:12.5px;color:var(--text-2)}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px}
+.chart{display:grid;grid-template-columns:28px 1fr;gap:8px;height:230px}
+.yax{display:flex;flex-direction:column;justify-content:space-between;font-size:11px;color:var(--text-3);padding-bottom:22px;text-align:right}
+.plot{position:relative;display:flex;align-items:flex-end;gap:14px;padding-bottom:22px;border-bottom:1px solid var(--line)}
+.plot::before{content:"";position:absolute;inset:0 0 22px 0;background:repeating-linear-gradient(0deg,var(--line) 0 1px,transparent 1px 25%)}
+.col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;position:relative;height:100%}
+.col i{display:block;border-radius:5px 5px 0 0}
+.col .wa{background:#0E6E4F}
+.col .vo{background:#9FD1B9;border-radius:5px 5px 0 0}
+.col .wa+.vo{border-radius:0}
+.col span{position:absolute;bottom:-22px;left:0;right:0;text-align:center;font-size:11.5px;color:var(--text-3)}
+.att li{list-style:none;display:flex;gap:12px;padding:14px 0;border-top:1px solid var(--line);align-items:flex-start}
+.att li:first-child{border-top:0;padding-top:0}
+.att .ic{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;flex:none}
+.att .ic .ico{width:16px;height:16px}
+.att .ic.a{background:#FBEFD9;color:#B7791F}
+.att .ic.g{background:var(--accent-soft);color:var(--accent)}
+.att b{font-weight:500;font-size:14px;display:block}
+.att span{font-size:13px;color:var(--text-2)}
+.att .act{margin-left:auto;height:30px;padding:0 12px;border-radius:8px;border:1px solid var(--line-2);font-size:12.5px;font-weight:500;display:flex;align-items:center;white-space:nowrap}
+.allgood{margin-top:6px;padding:12px 14px;border-radius:10px;background:var(--surface-2);font-size:13px;color:var(--text-2);display:flex;gap:8px;align-items:center}
+.allgood .ico{width:16px;height:16px;color:var(--accent)}
+.feed li{list-style:none;display:grid;grid-template-columns:32px 1fr auto;gap:12px;padding:11px 0;border-top:1px solid var(--line);align-items:center}
+.feed li:first-child{border-top:0;padding-top:0}
+.feed .ic{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--surface-3);color:var(--text-2)}
+.feed .ic .ico{width:15px;height:15px}
+.feed .ic.g{background:var(--accent-soft);color:var(--accent)}
+.feed .t{font-size:14px}
+.feed .t em{font-style:normal;font-weight:500}
+.feed .t small{display:block;font-size:12.5px;color:var(--text-3)}
+.feed time{font-size:12.5px;color:var(--text-3)}
+.sys li{list-style:none;display:flex;align-items:center;gap:12px;padding:13px 0;border-top:1px solid var(--line)}
+.sys li:first-child{border-top:0;padding-top:0}
+.sys .ic{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);display:grid;place-items:center;color:var(--text-2)}
+.sys .ic .ico{width:16px;height:16px}
+.sys b{font-weight:500;font-size:14px;display:block}
+.sys span{font-size:12.5px;color:var(--text-3)}
+.st{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:500;border-radius:999px;padding:3px 10px}
+.st.run{background:var(--accent-soft);color:var(--accent)}
+.st.run::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.st.pause{background:var(--surface-3);color:var(--text-2)}
+.add .link{white-space:nowrap}
+.add{margin-top:10px;display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border:1px dashed var(--line-2);border-radius:10px;font-size:13.5px;color:var(--text-2)}
+.lg{margin-top:14px}
+.jobs{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.job{border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.job b{font-weight:500;font-size:14px}
+.job small{display:block;font-size:12.5px;color:var(--text-3);margin-top:2px}
+.bar{height:6px;border-radius:999px;background:var(--surface-3);margin-top:14px;overflow:hidden}
+.bar i{display:block;height:100%;background:#0E6E4F;border-radius:999px}
+.job .meta{display:flex;justify-content:space-between;font-size:12px;color:var(--text-3);margin-top:8px}
+</style>
+</head>
+<body data-theme="light">
+<div class="app">
+  <aside class="side">
+    <div class="ws"><div class="ws-logo">{{logo}}</div><div><b>Example Dental Clinic</b><small>Client workspace</small></div>{{i:chev}}</div>
+    <a class="it on">{{i:home}}Overview</a>
+    <a class="it">{{i:inbox}}Review queue<span class="badge">2</span></a>
+    <a class="it">{{i:message}}Conversations</a>
+    <a class="it">{{i:contacts}}Contacts</a>
+    <a class="it">{{i:calendar}}Bookings</a>
+    <div class="grp">Growth</div>
+    <a class="it">{{i:target}}Lead generation</a>
+    <a class="it">{{i:search}}Search<span class="new">New</span></a>
+    <a class="it">{{i:chart}}Reports</a>
+    <div class="grp">Workspace</div>
+    <a class="it">{{i:sliders}}Systems</a>
+    <a class="it">{{i:plug}}Integrations</a>
+    <a class="it">{{i:card}}Billing</a>
+    <a class="it">{{i:help}}Support</a>
+    <div class="me"><div class="av">NK</div><div><b style="font-size:13.5px;font-weight:500;display:block">Nadia K.</b><small style="font-size:12px;color:var(--text-3)">Clinic manager</small></div></div>
+  </aside>
+  <main class="main">
+    <div class="top">
+      <div class="search">{{i:search}}Search contacts, bookings, conversations<span class="kbd">⌘K</span></div>
+      <div class="top-r"><div class="lang"><span class="on">EN</span><span class="ar">ع</span></div><span class="iconbtn">{{i:bell}}</span><span class="iconbtn">{{i:help}}</span></div>
+    </div>
+    <div class="banner">{{i:eye}}You're viewing&nbsp;<b style="font-weight:600">example data</b>. Numbers, names and times on this screen are illustrative.</div>
+    <div class="content">
+      <div class="ph">
+        <div><h1>Good morning, Nadia</h1><p>This week your systems replied to 38 enquiries and booked 11 appointments. 2 things need your decision.</p></div>
+        <div class="row gap-12"><div class="seg"><span class="on">7 days</span><span>30 days</span><span>90 days</span></div><a class="btn-o">{{i:download}}Report</a></div>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><div class="kpi-l">Appointments booked {{i:calendar-check}}</div><div class="kpi-v"><b class="num">11</b><svg class="spark" viewBox="0 0 92 30"><path d="M0 24 L15 20 L30 22 L45 14 L60 16 L75 8 L92 5" fill="none" stroke="#0E6E4F" stroke-width="1.8" stroke-linecap="round"/></svg></div><div class="foot"><span class="delta">+3</span>&nbsp; vs previous 7 days</div></div>
+        <div class="kpi"><div class="kpi-l">Missed calls answered {{i:phone-missed}}</div><div class="kpi-v"><b class="num">17<small>of 18</small></b><svg class="spark" viewBox="0 0 92 30"><path d="M0 18 L15 22 L30 14 L45 18 L60 10 L75 12 L92 8" fill="none" stroke="#0E6E4F" stroke-width="1.8" stroke-linecap="round"/></svg></div><div class="foot">1 caller isn't on WhatsApp</div></div>
+        <div class="kpi"><div class="kpi-l">Conversations handled {{i:message}}</div><div class="kpi-v"><b class="num">38</b><svg class="spark" viewBox="0 0 92 30"><path d="M0 20 L15 16 L30 18 L45 10 L60 14 L75 9 L92 11" fill="none" stroke="#0E6E4F" stroke-width="1.8" stroke-linecap="round"/></svg></div><div class="foot"><span class="delta">+6</span>&nbsp; vs previous 7 days</div></div>
+        <div class="kpi"><div class="kpi-l">Median first reply {{i:clock}}</div><div class="kpi-v"><b class="num">18<small>sec</small></b><svg class="spark" viewBox="0 0 92 30"><path d="M0 8 L15 12 L30 10 L45 16 L60 14 L75 18 L92 20" fill="none" stroke="#0E6E4F" stroke-width="1.8" stroke-linecap="round"/></svg></div><div class="foot">Day and night, including weekends</div></div>
+      </div>
+      <div class="row2">
+        <div class="pnl">
+          <div class="pnl-h"><b>Appointments booked <small>last 7 days</small></b><div class="legend"><span><i style="background:#0E6E4F"></i>Via WhatsApp</span><span><i style="background:#9FD1B9"></i>Via phone</span></div></div>
+          <div class="chart">
+            <div class="yax"><span>4</span><span>3</span><span>2</span><span>1</span><span>0</span></div>
+            <div class="plot">
+              <div class="col"><i class="vo" style="height:25%"></i><i class="wa" style="height:0"></i><span>Sat</span></div>
+              <div class="col"><i class="vo" style="height:25%"></i><i class="wa" style="height:25%"></i><span>Sun</span></div>
+              <div class="col"><i class="vo" style="height:0"></i><i class="wa" style="height:25%"></i><span>Mon</span></div>
+              <div class="col"><i class="vo" style="height:25%"></i><i class="wa" style="height:25%"></i><span>Tue</span></div>
+              <div class="col"><i class="vo" style="height:25%"></i><i class="wa" style="height:50%"></i><span>Wed</span></div>
+              <div class="col"><i class="vo" style="height:0"></i><i class="wa" style="height:25%"></i><span>Thu</span></div>
+              <div class="col"><i class="vo" style="height:25%"></i><i class="wa" style="height:0"></i><span>Fri</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="pnl">
+          <div class="pnl-h"><b>Needs your decision</b><a class="link" style="font-size:13px">Open queue</a></div>
+          <ul class="att">
+            <li><span class="ic a">{{i:alert}}</span><div><b>Confirm a detail</b><span>Caller's name was unclear in a voice call. Nothing is saved until you check.</span></div><a class="act">Review</a></li>
+            <li><span class="ic a">{{i:headset}}</span><div><b>Customer asked for a person</b><span>Question about insurance coverage, waiting since 6:02 PM.</span></div><a class="act">Reply</a></li>
+          </ul>
+          <div class="allgood">{{i:check}}Everything else this week was handled automatically.</div>
+        </div>
+      </div>
+      <div class="row3">
+        <div class="pnl">
+          <div class="pnl-h"><b>Recent activity</b><a class="link" style="font-size:13px">View all</a></div>
+          <ul class="feed">
+            <li><span class="ic g">{{i:calendar-check}}</span><span class="t"><em>Booked</em> teeth cleaning for Thursday, 6:15 PM<small>New patient · via WhatsApp · Missed-call triage</small></span><time>9:44 PM</time></li>
+            <li><span class="ic g">{{i:message}}</span><span class="t"><em>Replied</em> to a missed call from <bdi class="ltr">+971 50 ••• 4182</bdi><small>In Arabic · 20 seconds after the call</small></span><time>9:41 PM</time></li>
+            <li><span class="ic">{{i:headset}}</span><span class="t"><em>Handed to your team:</em> insurance question<small>Customer typed “agent”</small></span><time>6:02 PM</time></li>
+            <li><span class="ic">{{i:bell}}</span><span class="t"><em>Reminder sent</em> for tomorrow's 10:30 AM check-up<small>Confirmed by the patient</small></span><time>5:00 PM</time></li>
+            <li><span class="ic g">{{i:calendar-check}}</span><span class="t"><em>Booked</em> consultation for Sunday, 11:00 AM<small>Returning patient · via phone · Booking receptionist</small></span><time>2:18 PM</time></li>
+          </ul>
+        </div>
+        <div class="pnl">
+          <div class="pnl-h"><b>Your systems</b><a class="link" style="font-size:13px">Manage</a></div>
+          <ul class="sys">
+            <li><span class="ic">{{i:phone-missed}}</span><div><b>Missed-call triage</b><span>Last activity 9:41 PM</span></div><span class="st run">Running</span></li>
+            <li><span class="ic">{{i:mic}}</span><div><b>Booking receptionist</b><span>Last activity 2:18 PM</span></div><span class="st run">Running</span></li>
+            <li><span class="ic">{{i:refresh}}</span><div><b>Lead reactivation</b><span>Paused by you on Sep 21</span></div><span class="st pause">Paused</span></li>
+          </ul>
+          <div class="add"><span>Add lead qualification, collections and more</span><a class="link">Browse systems {{i:arrow arrow}}</a></div>
+        </div>
+      </div>
+      <div class="pnl lg">
+        <div class="pnl-h"><b>Lead generation <small>your latest jobs</small></b><a class="btn-d">{{i:plus}}New search</a></div>
+        <div class="jobs">
+          <div class="job"><b>Dental clinics in Dubai</b><small>Find leads · started 10:12 AM</small><div class="bar"><i style="width:70%"></i></div><div class="meta"><span>14 of 20 enriched</span><span>Running</span></div></div>
+          <div class="job"><b>Clinic websites list (12 URLs)</b><small>Enrich websites · yesterday</small><div class="bar"><i style="width:100%"></i></div><div class="meta"><span>12 of 12 checked</span><span>Done · CSV ready</span></div></div>
+          <div class="job"><b>Physiotherapy centres, Riyadh</b><small>Find leads · queued</small><div class="bar"><i style="width:0"></i></div><div class="meta"><span>Waiting to start</span><span>Queued</span></div></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</body></html>

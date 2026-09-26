@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Helix — Sign in · v5 mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+/* ===================== HELIX v5 "Quiet Authority" — tokens ===================== */
+:root{
+  --f-display:"Instrument Serif","Newsreader",Georgia,serif;
+  --f-sans:"Geist","Inter",system-ui,sans-serif;
+  --f-mono:"Geist Mono",ui-monospace,monospace;
+  --f-ar:"IBM Plex Sans Arabic","Noto Sans Arabic",sans-serif;
+  --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:24px; --r-2xl:32px;
+  --container:1200px;
+}
+[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0A0B0D; --bg-2:#0E1012; --surface:#131518; --surface-2:#191C20; --surface-3:#20242A;
+  --line:rgba(255,255,255,.075); --line-2:rgba(255,255,255,.13);
+  --text:#F2F0EB; --text-2:#B4B1A9; --text-3:#7F7C75;
+  --accent:#5FD4A4; --accent-text:#8EDFBF; --accent-soft:rgba(95,212,164,.10); --accent-line:rgba(95,212,164,.28);
+  --btn-bg:#F2F0EB; --btn-text:#0A0B0D; --btn-hover:#FFFFFF;
+  --shadow-card:0 1px 0 rgba(255,255,255,.04) inset, 0 24px 48px -24px rgba(0,0,0,.6);
+  --shadow-float:0 1px 0 rgba(255,255,255,.06) inset, 0 30px 60px -20px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.06);
+}
+[data-theme="light"]{
+  color-scheme:light;
+  --bg:#F7F5F0; --bg-2:#F1EEE7; --surface:#FFFFFF; --surface-2:#FAF9F6; --surface-3:#F1EEE7;
+  --line:rgba(22,24,20,.08); --line-2:rgba(22,24,20,.14);
+  --text:#15171A; --text-2:#51545A; --text-3:#8A8C90;
+  --accent:#0E6E4F; --accent-text:#0E6E4F; --accent-soft:#E4F1EA; --accent-line:rgba(14,110,79,.25);
+  --btn-bg:#15171A; --btn-text:#FFFFFF; --btn-hover:#000;
+  --shadow-card:0 1px 2px rgba(20,22,18,.04), 0 12px 32px -16px rgba(20,22,18,.14);
+  --shadow-float:0 1px 2px rgba(20,22,18,.05), 0 24px 56px -20px rgba(20,22,18,.22), 0 0 0 1px rgba(20,22,18,.05);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text)}
+body{font-family:var(--f-sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+[dir="rtl"] body, body[dir="rtl"], [lang="ar"]{font-family:var(--f-ar)}
+a{color:inherit;text-decoration:none}
+.container{max-width:var(--container);margin:0 auto;padding:0 32px}
+.ar{font-family:var(--f-ar);letter-spacing:0}
+.ltr{direction:ltr;unicode-bidi:isolate}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- type ---------- */
+.kicker{font-size:12.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3)}
+[dir="rtl"] .kicker{letter-spacing:0;text-transform:none;font-size:14px;font-weight:500}
+.display{font-family:var(--f-display);font-weight:400;letter-spacing:-.015em;line-height:1.0}
+.display em{font-style:italic;color:var(--accent-text)}
+.h1{font-size:84px}
+.h2{font-size:54px;line-height:1.04}
+.h3{font-size:32px;line-height:1.15}
+[dir="rtl"] .display{font-family:var(--f-ar);font-weight:600;letter-spacing:0;line-height:1.3}
+[dir="rtl"] .display em{font-style:normal}
+[dir="rtl"] .h1{font-size:60px;line-height:1.25}
+[dir="rtl"] .h2{font-size:42px;line-height:1.35}
+.lead{font-size:19px;line-height:1.6;color:var(--text-2)}
+[dir="rtl"] .lead{font-size:19px;line-height:1.85}
+.muted{color:var(--text-2)} .faint{color:var(--text-3)}
+.small{font-size:14px} .xs{font-size:12.5px}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 22px;border-radius:999px;font-size:15px;font-weight:500;white-space:nowrap;border:1px solid transparent;transition:.2s}
+.btn-primary{background:var(--btn-bg);color:var(--btn-text)}
+.btn-ghost{border-color:var(--line-2);color:var(--text)}
+.btn-accent{background:var(--accent);color:#fff}
+.btn-sm{height:38px;padding:0 16px;font-size:14px}
+.btn svg{width:16px;height:16px}
+[dir="rtl"] .arrow{transform:scaleX(-1)}
+.link{color:var(--accent-text);font-weight:500;display:inline-flex;gap:6px;align-items:center}
+
+/* ---------- chips ---------- */
+.chip{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:999px;font-size:12.5px;font-weight:500;border:1px solid var(--line-2);color:var(--text-2);white-space:nowrap}
+.chip-example{border-style:dashed;border-color:var(--line-2);color:var(--text-3);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;height:22px;padding:0 8px}
+[dir="rtl"] .chip-example{letter-spacing:0;text-transform:none;font-size:12.5px}
+.chip-ok{background:var(--accent-soft);border-color:var(--accent-line);color:var(--accent-text)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+
+/* ---------- nav ---------- */
+.nav{height:76px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:12px}
+.brand svg{height:24px;width:auto}
+.brand .word{font-weight:600;font-size:14px;letter-spacing:.3em;padding-top:1px}
+[dir="rtl"] .brand .word{letter-spacing:.3em;font-family:var(--f-sans)}
+.nav-links{display:flex;gap:34px;font-size:14.5px;color:var(--text-2)}
+.nav-right{display:flex;align-items:center;gap:22px;font-size:14.5px;color:var(--text-2)}
+.lang{display:flex;gap:2px;border:1px solid var(--line);border-radius:999px;padding:3px;font-size:12.5px}
+.lang span{padding:3px 9px;border-radius:999px}
+.lang .on{background:var(--surface-3);color:var(--text)}
+
+/* ---------- surfaces ---------- */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);box-shadow:var(--shadow-card)}
+.hair{border-top:1px solid var(--line)}
+section{position:relative}
+.sec{padding:128px 0}
+.sec-head{max-width:720px;margin-bottom:56px}
+.sec-head .kicker{margin-bottom:18px;display:block}
+.sec-head .lead{margin-top:20px}
+
+/* ---------- phone ---------- */
+.phone{width:300px;height:620px;border-radius:48px;background:#0c0d0f;padding:10px;box-shadow:0 0 0 1px rgba(255,255,255,.12),0 0 0 7px #1b1d21,0 0 0 8px rgba(255,255,255,.08),0 50px 100px -30px rgba(0,0,0,.8);position:relative}
+.phone .screen{width:100%;height:100%;border-radius:38px;overflow:hidden;background:#EFEAE2;display:flex;flex-direction:column;position:relative}
+.phone .island{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:92px;height:26px;border-radius:20px;background:#000;z-index:3}
+.status{height:44px;display:flex;justify-content:space-between;align-items:flex-end;padding:0 26px 6px;font:600 13px var(--f-sans);color:#111;direction:ltr}
+.wa-head{background:#F7F5F2;display:flex;align-items:center;gap:10px;padding:8px 14px 10px;border-bottom:1px solid rgba(0,0,0,.06);direction:rtl}
+.wa-av{width:34px;height:34px;border-radius:50%;background:#0E6E4F;color:#fff;display:grid;place-items:center;font:600 13px var(--f-sans)}
+.wa-name{font:600 13.5px/1.25 var(--f-ar);color:#111}
+.wa-sub{font:400 11px/1.3 var(--f-ar);color:#667}
+.wa-body{flex:1;padding:12px 10px;display:flex;flex-direction:column;gap:7px;direction:rtl;background-color:#EFEAE2;background-image:radial-gradient(rgba(0,0,0,.035) 1px,transparent 1px);background-size:14px 14px}
+.wa-day{align-self:center;background:#fff;color:#556;font:500 10.5px var(--f-ar);padding:3px 10px;border-radius:8px;box-shadow:0 1px 0 rgba(0,0,0,.05)}
+.wa-sys{align-self:center;background:#FDF3D6;color:#6b5a26;font:500 11px/1.4 var(--f-ar);padding:5px 10px;border-radius:8px;display:flex;gap:6px;align-items:center}
+.bub{max-width:82%;padding:7px 10px 5px;border-radius:10px;font:400 13px/1.65 var(--f-ar);color:#111;box-shadow:0 1px 0 rgba(0,0,0,.06);position:relative}
+.bub .t{display:block;text-align:left;font:400 10px var(--f-sans);color:#7a8288;margin-top:1px;direction:ltr}
+.bub.in{align-self:flex-start;background:#fff;border-top-right-radius:3px}
+.bub.out{align-self:flex-end;background:#D9FDD3;border-top-left-radius:3px}
+.bub.out .t::after{content:" ✓✓";color:#34B7F1}
+.wa-input{height:52px;background:#F7F5F2;display:flex;align-items:center;gap:8px;padding:0 10px;direction:rtl}
+.wa-input .f{flex:1;height:34px;border-radius:18px;background:#fff;font:400 12px var(--f-ar);color:#99a;display:flex;align-items:center;padding:0 14px}
+
+/* ---------- float cards ---------- */
+.float{position:absolute;background:var(--surface);border:1px solid var(--line-2);border-radius:18px;box-shadow:var(--shadow-float);padding:16px 18px}
+.float .lbl{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);font-weight:500}
+
+/* ---------- icons ---------- */
+.ico{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ico-lg{width:24px;height:24px}
+
+/* ---------- utility ---------- */
+.row{display:flex;align-items:center} .gap-8{gap:8px}.gap-12{gap:12px}.gap-16{gap:16px}.gap-24{gap:24px}
+.grid{display:grid}
+
+</style>
+<style>
+html,body{height:100%}
+.wrap{display:grid;grid-template-columns:1.12fr 1fr;min-height:100vh}
+/* brand panel */
+.bp{background:#0A0B0D;color:#F2F0EB;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:40px 56px 48px}
+.bp .brand .word{color:#F2F0EB}
+.bp-glow{position:absolute;width:640px;height:640px;left:50%;top:44%;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(95,212,164,.13),transparent);pointer-events:none}
+.bp-mark{position:absolute;right:-90px;bottom:-110px;width:420px;color:rgba(255,255,255,.028)}
+.stage{position:relative;height:430px;width:500px;margin:0 auto}
+.sum{position:absolute;left:40px;top:70px;width:400px;background:#131518;border:1px solid rgba(255,255,255,.1);border-radius:22px;padding:24px;box-shadow:0 40px 80px -30px rgba(0,0,0,.8);z-index:2}
+.sum-h{display:flex;justify-content:space-between;align-items:center}
+.sum-h b{font-size:16px;font-weight:600}
+.sum-h small{font-size:12.5px;color:#7F7C75;display:block;margin-top:2px;font-weight:400}
+.ex{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:#7F7C75;border:1px dashed rgba(255,255,255,.2);border-radius:999px;padding:3px 8px;font-weight:500}
+.sum-row{display:flex;align-items:center;gap:14px;padding:14px 0;border-top:1px solid rgba(255,255,255,.07)}
+.sum-row:first-of-type{margin-top:18px}
+.sum-row .n{font-size:26px;font-weight:500;letter-spacing:-.02em;width:34px}
+.sum-row span{font-size:14.5px;color:#B4B1A9}
+.sum-row .ic{margin-left:auto;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:rgba(95,212,164,.1);color:#5FD4A4}
+.sum-row .ic.a{background:rgba(232,163,61,.12);color:#E8A33D}
+.sum-row .ic .ico{width:16px;height:16px}
+.back1{position:absolute;left:0;top:0;width:250px;background:#fff;color:#111;border-radius:14px 14px 14px 4px;padding:12px 14px;font:400 13.5px/1.7 var(--f-ar);direction:rtl;text-align:right;transform:rotate(-2deg);opacity:.9;box-shadow:0 20px 40px -20px rgba(0,0,0,.7)}
+.back2{position:absolute;right:-10px;bottom:6px;width:220px;background:#191C20;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:14px 16px;z-index:3;box-shadow:0 30px 60px -20px rgba(0,0,0,.8)}
+.back2 b{font-size:13.5px;font-weight:600;display:flex;gap:8px;align-items:center}
+.back2 b .ico{width:16px;height:16px;color:#5FD4A4}
+.back2 span{font-size:12.5px;color:#B4B1A9;display:block;margin-top:3px}
+.bp-foot h2{font-family:var(--f-display);font-weight:400;font-size:44px;line-height:1.08;letter-spacing:-.015em;max-width:480px}
+.bp-foot p{color:#7F7C75;font-size:13px;margin-top:14px}
+/* form side */
+.fs{background:var(--bg);display:flex;flex-direction:column;padding:36px 56px}
+.fs-top{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--text-2)}
+.fs-top .link{color:var(--text)}
+.form{width:100%;max-width:400px;margin:auto}
+.form h1{font-family:var(--f-display);font-weight:400;font-size:52px;letter-spacing:-.02em;line-height:1}
+.form .sub{color:var(--text-2);margin-top:12px;font-size:16px}
+.field{margin-top:22px}
+.field label{display:flex;justify-content:space-between;font-size:14px;font-weight:500;margin-bottom:8px}
+.field label a{color:var(--accent);font-weight:500}
+.input{height:52px;border-radius:12px;background:#fff;border:1px solid var(--line-2);display:flex;align-items:center;padding:0 16px;font-size:15.5px;color:var(--text);justify-content:space-between;box-shadow:0 1px 2px rgba(20,22,18,.04)}
+.input.focus{border-color:#15171A;box-shadow:0 0 0 4px rgba(21,23,26,.08)}
+.input .ph{color:var(--text-3)}
+.input .ico{color:var(--text-3);width:18px;height:18px}
+.submit{margin-top:28px;height:54px;width:100%;border-radius:12px;background:#15171A;color:#fff;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:10px}
+.submit .ico{width:17px;height:17px}
+.alt{margin-top:28px;padding-top:24px;border-top:1px solid var(--line);font-size:14.5px;color:var(--text-2);display:grid;gap:10px}
+.alt a{color:var(--text);font-weight:500}
+.fs-foot{margin-top:auto;display:flex;justify-content:space-between;font-size:13px;color:var(--text-3)}
+.m-only{display:none}
+@media (max-width:640px){
+  .wrap{grid-template-columns:1fr}
+  .bp{display:none}
+  .m-only{display:flex}
+  .fs{padding:20px 22px 28px;min-height:100vh}
+  .form{margin:48px 0 40px}
+  .form h1{font-size:44px}
+  .fs-top .d-only{display:none}
+}
+</style>
+</head>
+<body data-theme="light">
+<div class="wrap">
+  <aside class="bp">
+    <div class="bp-glow"></div><span class="bp-mark"><svg viewBox="0 0 200 210" aria-label="Helix" role="img" fill="currentColor"><path d="M52 4 L52 86 L42 94 L42 168 L4 198 L4 32 Z"/><path d="M196 28 L196 178 L158 208 L158 92 L148 84 L148 4 Z"/><path d="M58 98 L138 48 L138 78 L58 128 Z"/></svg></span>
+    <a class="brand"><svg viewBox="0 0 200 210" aria-label="Helix" role="img" fill="currentColor"><path d="M52 4 L52 86 L42 94 L42 168 L4 198 L4 32 Z"/><path d="M196 28 L196 178 L158 208 L158 92 L148 84 L148 4 Z"/><path d="M58 98 L138 48 L138 78 L58 128 Z"/></svg><span class="word">HELIX</span></a>
+    <div class="stage">
+      <div class="back1">مرحباً، لاحظنا اتصالك قبل قليل. كيف نقدر نخدمك؟</div>
+      <div class="sum">
+        <div class="sum-h"><div><b>While you were closed</b><small>Last night, 8:00 PM – 8:00 AM</small></div><span class="ex">Example</span></div>
+        <div class="sum-row"><span class="n num">6</span><span>missed calls answered on WhatsApp</span><span class="ic"><svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.9L3 21l1.9-5.2A8.4 8.4 0 0 1 12 3a8.5 8.5 0 0 1 9 8.5z"/></svg></span></div>
+        <div class="sum-row"><span class="n num">3</span><span>appointments booked</span><span class="ic"><svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="m9 16 2 2 4-4"/></svg></span></div>
+        <div class="sum-row"><span class="n num">1</span><span>conversation waiting for your team</span><span class="ic a"><svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/></svg></span></div>
+      </div>
+      <div class="back2"><b><svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg> Booked · Thu 6:15 PM</b><span>Teeth cleaning · new patient</span></div>
+    </div>
+    <div class="bp-foot"><h2>Your front desk keeps working after you close.</h2><p>Illustrative example. Your dashboard shows your real activity after sign-in.</p></div>
+  </aside>
+  <main class="fs">
+    <div class="fs-top">
+      <a class="brand m-only"><svg viewBox="0 0 200 210" aria-label="Helix" role="img" fill="currentColor"><path d="M52 4 L52 86 L42 94 L42 168 L4 198 L4 32 Z"/><path d="M196 28 L196 178 L158 208 L158 92 L148 84 L148 4 Z"/><path d="M58 98 L138 48 L138 78 L58 128 Z"/></svg><span class="word">HELIX</span></a>
+      <span class="d-only"><a style="color:var(--text-2)">← Back to site</a></span>
+      <span>New to Helix? <a class="link">Book a call</a></span>
+    </div>
+    <div class="form">
+      <h1>Welcome back</h1>
+      <p class="sub">Sign in to your Helix workspace.</p>
+      <div class="field"><label>Work email</label><div class="input focus"><span>nadia@example.com</span></div></div>
+      <div class="field"><label>Password <a>Forgot password?</a></label><div class="input"><span style="letter-spacing:3px">••••••••••</span><svg class="ico " viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></div></div>
+      <a class="submit">Sign in <svg class="ico arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <div class="alt">
+        <span>Trouble signing in? <a>Message Helix support on WhatsApp</a></span>
+        <span>Helix team member? <a>Agency sign-in</a></span>
+      </div>
+    </div>
+    <div class="fs-foot"><div class="lang"><span class="on">EN</span><span class="ar">ع</span></div><span>Privacy · Terms</span></div>
+  </main>
+</div>
+</body></html>

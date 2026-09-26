@@ -1,9 +1,16 @@
-export function HelixMark({ size = 18, light = false }: { size?: number; light?: boolean }) {
+export function HelixMark({ size = 24, className }: { size?: number; light?: boolean; className?: string }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" aria-hidden>
-      <path d="M7 3c0 6 10 6 10 12s-10 3-10 6" stroke="#34E0A1" />
-      <path d="M17 3c0 6-10 6-10 12s10 3 10 6" stroke={light ? '#fff' : '#38C6E0'} />
-      {size > 16 ? <path d="M9 7.5h6M9 16.5h6" stroke="#9AA3B2" strokeWidth="1.5" /> : null}
+    <svg
+      className={className}
+      width={size}
+      height={size}
+      viewBox="0 0 200 210"
+      fill="currentColor"
+      aria-hidden
+    >
+      <path d="M52 4 L52 86 L42 94 L42 168 L4 198 L4 32 Z" />
+      <path d="M196 28 L196 178 L158 208 L158 92 L148 84 L148 4 Z" />
+      <path d="M58 98 L138 48 L138 78 L58 128 Z" />
     </svg>
   )
 }

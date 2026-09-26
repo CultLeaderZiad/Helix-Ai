@@ -297,16 +297,6 @@ function CatalogCard({
         >
           {template.lane === 'core' ? (isAr ? 'أساسي' : 'Core') : isAr ? 'معاينة' : 'Preview'}
         </span>
-        {template.highlight === 'most_booked' && (
-          <span className="rounded-full bg-helix-accent-soft px-2 py-0.5 text-11 text-helix-ok">
-            {isAr ? 'الأكثر حجزاً' : 'Most booked'}
-          </span>
-        )}
-        {template.highlight === 'highest_roi' && (
-          <span className="rounded-full bg-helix-accent-soft px-2 py-0.5 text-11 text-helix-ok">
-            {isAr ? 'أعلى عائد' : 'Highest ROI'}
-          </span>
-        )}
         {template.highlight === 'b2b_only' && (
           <span className="rounded-full bg-[#f8eedd] px-2 py-0.5 text-11 text-helix-warn">
             {isAr ? 'شركات فقط' : 'B2B only'}

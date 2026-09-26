@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Helix — Pricing (AED monthly plans) · v5 mockup</title>
+<!--FONTS-->
+<!--CSS-->
+<style>
+.hdr{padding:88px 0 56px;text-align:center}
+.hdr .display{font-size:72px;max-width:880px;margin:18px auto 0}
+.hdr .lead{max-width:640px;margin:22px auto 0}
+.cap{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;font-size:14px;color:var(--text-2)}
+.cap .chip{background:var(--surface);height:30px;padding:0 12px;font-size:13px}
+.plans{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.plan{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:36px 32px;display:flex;flex-direction:column;box-shadow:var(--shadow-card)}
+.plan.f{background:#15171A;color:#F2F0EB;border-color:#15171A;box-shadow:0 30px 60px -30px rgba(20,22,18,.5)}
+.pn{display:flex;justify-content:space-between;align-items:center;font-size:17px;font-weight:600}
+.tg{font-size:14.5px;color:var(--text-2);margin-top:8px;min-height:44px}
+.f .tg,.f .per,.f .setup,.f li{color:#B4B1A9}
+.price{display:flex;align-items:baseline;gap:8px;margin-top:28px}
+.price .cur{font-size:16px;font-weight:500;color:var(--text-2)}
+.f .price .cur{color:#B4B1A9}
+.price b{font-size:52px;font-weight:500;letter-spacing:-.035em;line-height:1}
+.per{font-size:15px;color:var(--text-3)}
+.setup{font-size:14px;color:var(--text-3);margin-top:8px;padding-bottom:26px;border-bottom:1px solid var(--line)}
+.f .setup{border-color:rgba(255,255,255,.1)}
+.plan .btn{justify-content:center;margin-top:26px;height:50px}
+.f .btn-primary{background:#F2F0EB;color:#15171A}
+.plan ul{margin:26px 0 34px;display:grid;gap:13px;font-size:14.5px;color:var(--text-2)}
+.plan li{list-style:none;display:flex;gap:12px;line-height:1.5}
+.plan li .ico{width:17px;height:17px;margin-top:2px;color:var(--accent)}
+.f li .ico{color:#8EDFBF}
+.rec{height:26px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:500;background:rgba(142,223,191,.14);color:#8EDFBF;display:inline-flex;align-items:center}
+.below{display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding:20px 24px;border:1px dashed var(--line-2);border-radius:18px;font-size:15px;color:var(--text-2)}
+.inc{margin-top:120px}
+.inc-grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line)}
+.inc-grid>div{padding:30px 32px 30px 0;display:flex;gap:16px;border-bottom:1px solid var(--line)}
+.inc-grid>div:not(:nth-child(3n+1)){padding-left:32px;border-left:1px solid var(--line)}
+.inc-grid .ico{color:var(--accent);width:22px;height:22px;margin-top:2px}
+.inc-grid b{font-weight:500;font-size:16.5px;display:block}
+.inc-grid span{color:var(--text-2);font-size:14.5px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:8px}
+.st{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:26px;box-shadow:var(--shadow-card)}
+.st .n{font-family:var(--f-display);font-size:40px;line-height:1;color:var(--accent)}
+.st b{display:block;font-weight:500;font-size:17px;margin-top:18px}
+.st span{color:var(--text-2);font-size:14.5px;display:block;margin-top:6px}
+.faq{display:grid;grid-template-columns:380px 1fr;gap:64px}
+.qa{border-top:1px solid var(--line);padding:24px 0}
+.qa:last-child{border-bottom:1px solid var(--line)}
+.qa .q{display:flex;justify-content:space-between;font-size:18px;font-weight:500}
+.qa .q .ico{color:var(--text-3)}
+.qa .a{color:var(--text-2);margin-top:10px;font-size:15.5px;max-width:640px}
+.cta{margin-top:120px;border-radius:28px;background:#15171A;color:#F2F0EB;padding:64px;display:flex;justify-content:space-between;align-items:center}
+.cta .display{font-size:46px;max-width:620px}
+.cta p{color:#B4B1A9;margin-top:12px}
+.cta .btn-primary{background:#F2F0EB;color:#15171A}
+.cta .btn-ghost{border-color:rgba(255,255,255,.2);color:#F2F0EB}
+footer{padding:40px 0 40px;margin-top:24px;display:flex;justify-content:space-between;font-size:13.5px;color:var(--text-3)}
+</style>
+</head>
+<body data-theme="light">
+<header class="container nav">
+  <a class="brand">{{logo}}<span class="word">HELIX</span></a>
+  <nav class="nav-links"><a>Systems</a><a>How it works</a><a style="color:var(--text)">Pricing</a><a>Studio</a><a>About</a></nav>
+  <div class="nav-right"><div class="lang"><span class="on">EN</span><span class="ar">ع</span></div><a>Sign in</a><a class="btn btn-primary btn-sm">Book a call</a></div>
+</header>
+
+<section class="container hdr">
+  <span class="kicker">Pricing</span>
+  <h1 class="display">Simple monthly plans. Built and run for you.</h1>
+  <p class="lead">A one-time setup fee to build the system around your business, then a monthly fee for us to run, monitor and improve it.</p>
+</section>
+
+<section class="container">
+  <div class="cap"><span class="chip">Monthly plans · AED</span><a class="link">Buying a single system? See per-system prices in Studio {{i:arrow arrow}}</a></div>
+  <div class="plans">
+    <div class="plan">
+      <div class="pn">Enterprise Starter</div>
+      <p class="tg">For a single location automating its phone and WhatsApp.</p>
+      <div class="price"><span class="cur">AED</span><b class="num">1,800</b><span class="per">/ month</span></div>
+      <div class="setup">+ AED 4,500 one-time setup</div>
+      <ul>
+        <li>{{i:check}}Up to 1,500 customer conversations a month</li>
+        <li>{{i:check}}Bilingual voice agent, Gulf Arabic and English</li>
+        <li>{{i:check}}Official WhatsApp Business connection</li>
+        <li>{{i:check}}Cal.com and Google Calendar sync</li>
+        <li>{{i:check}}Human review before anything uncertain is saved</li>
+        <li>{{i:check}}UAE and KSA VAT-compliant invoices</li>
+      </ul>
+      <a class="btn btn-ghost" style="margin-top:auto">Book a discovery call</a>
+    </div>
+    <div class="plan f">
+      <div class="pn">Growth Enterprise <span class="rec">Recommended</span></div>
+      <p class="tg">Missed-call triage, voice and WhatsApp working together.</p>
+      <div class="price"><span class="cur">AED</span><b class="num">4,600</b><span class="per">/ month</span></div>
+      <div class="setup">+ AED 7,500 one-time setup</div>
+      <ul>
+        <li>{{i:check}}Up to 10,000 customer conversations a month</li>
+        <li>{{i:check}}Voice, WhatsApp and email automation</li>
+        <li>{{i:check}}Missed-call WhatsApp text-back and triage, in seconds</li>
+        <li>{{i:check}}B2B payment reminders with Mada and Apple Pay links</li>
+      </ul>
+      <a class="btn btn-primary" style="margin-top:auto">Book a discovery call {{i:arrow arrow}}</a>
+    </div>
+    <div class="plan">
+      <div class="pn">Sovereign Scale</div>
+      <p class="tg">For groups running multiple branches and brands.</p>
+      <div class="price"><span class="cur">AED</span><b class="num">10,200</b><span class="per">/ month</span></div>
+      <div class="setup">+ AED 15,000 one-time setup</div>
+      <ul>
+        <li>{{i:check}}Unlimited workspaces across branches and brands</li>
+        <li>{{i:check}}Dialect tuning: Emirati, Najdi, Hijazi, Qatari</li>
+        <li>{{i:check}}B2B collections and dispute handling</li>
+        <li>{{i:check}}Cross-branch CRM governance and exports</li>
+        <li>{{i:check}}Priority escalation support</li>
+      </ul>
+      <a class="btn btn-ghost" style="margin-top:auto">Book a discovery call</a>
+    </div>
+  </div>
+  <div class="below"><span>Need something bespoke, or more than one brand with different rules?</span><a class="link">Custom build, let's scope it {{i:arrow arrow}}</a></div>
+</section>
+
+<section class="container inc">
+  <div class="sec-head"><span class="kicker">Every plan includes</span><h2 class="display h2">What you get, whichever plan you choose.</h2></div>
+  <div class="inc-grid">
+    <div>{{i:users}}<div><b>Done-for-you setup</b><span>We build, connect and test it. Your team doesn't configure anything.</span></div></div>
+    <div>{{i:globe}}<div><b>Arabic and English</b><span>Dialect-aware replies, including mixed-language messages.</span></div></div>
+    <div>{{i:headset}}<div><b>Human hand-off</b><span>Your team can take over any conversation, with full context.</span></div></div>
+    <div>{{i:message}}<div><b>Your own WhatsApp number</b><span>Customers talk to your business, not to us.</span></div></div>
+    <div>{{i:grid}}<div><b>Client dashboard</b><span>Every reply, booking and hand-off, in plain language.</span></div></div>
+    <div>{{i:key}}<div><b>You keep ownership</b><span>After go-live, the setup, integrations and runbooks are yours.</span></div></div>
+  </div>
+</section>
+
+<section class="container inc">
+  <div class="sec-head"><span class="kicker">What happens after you book</span><h2 class="display h2">From first call to live system.</h2></div>
+  <div class="steps">
+    <div class="st"><span class="n">1</span><b>Discovery call</b><span>We map where enquiries slip through and agree the one metric that matters.</span></div>
+    <div class="st"><span class="n">2</span><b>Blueprint and quote</b><span>A written plan with milestones, in Arabic or English, before any build starts.</span></div>
+    <div class="st"><span class="n">3</span><b>Build and test</b><span>We connect your phone, WhatsApp, calendar and CRM, then test with your team.</span></div>
+    <div class="st"><span class="n">4</span><b>Go live and operate</b><span>We monitor, tune and report. You watch it work from your dashboard.</span></div>
+  </div>
+</section>
+
+<section class="container inc faq">
+  <div><span class="kicker">Pricing questions</span><h2 class="display h2" style="margin-top:18px">Straight answers.</h2></div>
+  <div>
+    <div class="qa"><div class="q">What does the setup fee cover? {{i:minus}}</div><div class="a">Designing the system around your services and hours, connecting your phone, WhatsApp, calendar and CRM, writing the Arabic and English replies with you, and testing before go-live.</div></div>
+    <div class="qa"><div class="q">Can I start with just one system? {{i:minus}}</div><div class="a">Yes. Studio prices each system on its own, as a one-time setup plus a monthly fee, so you can start small and add more later.</div></div>
+    <div class="qa"><div class="q">What happens if I go over my conversation limit? {{i:plus}}</div></div>
+  </div>
+</section>
+
+<section class="container">
+  <div class="cta">
+    <div><h2 class="display">Not sure which plan fits?</h2><p>Tell us how enquiries reach you today. We'll recommend the smallest setup that works.</p></div>
+    <div class="row gap-12"><a class="btn btn-primary">Book a discovery call {{i:arrow arrow}}</a><a class="btn btn-ghost">{{i:message}} WhatsApp</a></div>
+  </div>
+</section>
+<footer class="container"><span>© 2026 Helix</span><span>Prices in AED, from the current Helix pricing catalogue.</span></footer>
+</body></html>

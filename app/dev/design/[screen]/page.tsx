@@ -1,18 +1,22 @@
 import { notFound } from 'next/navigation'
 import { SampleFrame } from '@/components/dashboard/sample-frame'
-import { SampleLeadgen, SampleOverview, SampleSearch } from '@/components/dashboard/sample-views'
+import { ExampleOverview } from '@/components/dashboard/example-overview'
+import { SampleLeadgen, SampleSearch } from '@/components/dashboard/sample-views'
 
-const SCREENS = ['overview', 'leadgen', 'search', 'cmdk'] as const
+const SCREENS = ['overview', 'leadgen', 'search', 'cmdk', 'empty'] as const
 
 export default async function DesignPreviewPage({ params }: { params: Promise<{ screen: string }> }) {
   if (process.env.NODE_ENV === 'production') notFound()
   const { screen } = await params
   if (!SCREENS.includes(screen as (typeof SCREENS)[number])) notFound()
 
-  if (screen === 'overview' || screen === 'cmdk') {
+  if (screen === 'overview' || screen === 'empty') {
+    return screen === 'empty' ? <ExampleOverview mode="empty" /> : <ExampleOverview />
+  }
+  if (screen === 'cmdk') {
     return (
-      <SampleFrame active="overview" crumb="Overview" palette={screen === 'cmdk'} toast={screen === 'overview'}>
-        <SampleOverview />
+      <SampleFrame active="overview" crumb="Overview" palette>
+        <ExampleOverview />
       </SampleFrame>
     )
   }

@@ -4,10 +4,11 @@ import { getPublicPrefs } from '@/lib/public-prefs'
 
 export async function SitePage({
   children,
-  bare = false,
+  forceTheme,
 }: {
   children: React.ReactNode
   bare?: boolean
+  forceTheme?: 'light' | 'dark' | 'site'
 }) {
   const [prefs, auth] = await Promise.all([getPublicPrefs(), getNavAuth()])
   return (
@@ -16,8 +17,9 @@ export async function SitePage({
       initialLang={prefs.lang}
       isAuthenticated={auth.isAuthenticated}
       consoleHref={auth.consoleHref}
+      themeMode={forceTheme ?? 'site'}
     >
-      {bare ? children : <main className="page-main"><div className="wrap">{children}</div></main>}
+      {children}
     </PublicFrame>
   )
 }

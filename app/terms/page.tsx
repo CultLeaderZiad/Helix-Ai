@@ -40,7 +40,7 @@ export default function TermsPage() {
             <section id="acceptance">
               <h2 className="font-display text-h3 font-semibold text-foreground">1. Acceptance of Terms</h2>
               <p className="text-muted-foreground">
-                By accessing Helix AI, registering a workspace, or initiating a trial, you agree to be bound by
+                By accessing Helix AI, registering a workspace, or creating a workspace, you agree to be bound by
                 these Terms of Service. If you represent an agency or enterprise, you confirm authority to bind that
                 legal entity.
               </p>
@@ -74,7 +74,7 @@ export default function TermsPage() {
             <section id="trials">
               <h2 className="font-display text-h3 font-semibold text-foreground">5. Free Trials & Billing</h2>
               <p className="text-muted-foreground">
-                The standard self-serve trial provides 7 days of unrestricted access. Following the trial period,
+                The standard self-serve trial provides workspace access agreed on your discovery call. Following the trial period,
                 continued usage requires an active billing arrangement.
               </p>
             </section>

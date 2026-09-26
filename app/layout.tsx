@@ -1,10 +1,10 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
-import { Geist, Geist_Mono, IBM_Plex_Sans_Arabic } from 'next/font/google'
+import { Geist, Geist_Mono, IBM_Plex_Sans_Arabic, Instrument_Serif } from 'next/font/google'
 import { AuthHashHandler } from '@/components/auth/auth-hash-handler'
 import { getPublicPrefs } from '@/lib/public-prefs'
 import './globals.css'
-import './overhaul.css'
+import './v5.css'
 
 const geist = Geist({
   subsets: ['latin'],
@@ -18,6 +18,14 @@ const geistMono = Geist_Mono({
   display: 'swap',
 })
 
+const instrument = Instrument_Serif({
+  subsets: ['latin'],
+  weight: '400',
+  style: ['normal', 'italic'],
+  variable: '--font-instrument',
+  display: 'swap',
+})
+
 const plexArabic = IBM_Plex_Sans_Arabic({
   subsets: ['arabic'],
   weight: ['400', '500', '600', '700'],
@@ -27,9 +35,9 @@ const plexArabic = IBM_Plex_Sans_Arabic({
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
-  title: 'Helix AI — Autonomous CRM & Revenue AI Systems',
+  title: 'Helix — Missed calls answered. Appointments booked.',
   description:
-    'Enterprise-grade autonomous AI receptionists, missed-call triage, and CRM revenue intelligence for high-growth businesses across the GCC and MENA.',
+    'Helix builds and runs AI systems for clinics, real-estate and service businesses across the GCC and MENA. Missed calls get a WhatsApp reply, a real conversation, and a confirmed booking.',
   keywords: [
     'Helix AI',
     'AI Receptionist',
@@ -78,7 +86,7 @@ export const viewport: Viewport = {
   colorScheme: 'dark light',
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#F7F5F0' },
-    { media: '(prefers-color-scheme: dark)', color: '#07090C' },
+    { media: '(prefers-color-scheme: dark)', color: '#0A0B0D' },
   ],
 }
 
@@ -94,7 +102,7 @@ export default async function RootLayout({
       lang={lang}
       dir={prefs.lang === 'ar' ? 'rtl' : 'ltr'}
       data-theme={prefs.theme}
-      className={`${geist.variable} ${geistMono.variable} ${plexArabic.variable}`}
+      className={`${geist.variable} ${geistMono.variable} ${plexArabic.variable} ${instrument.variable}`}
       suppressHydrationWarning
     >
       <head>

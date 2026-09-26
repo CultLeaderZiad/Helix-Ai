@@ -59,19 +59,19 @@ export function buildBespokeProposal({
       name: `Core Architecture Provisioning: ${systemName}`,
       nameAr: `تأسيس وبرمجة البنية المعمارية الأساسية: ${systemNameAr}`,
       description:
-        'Dedicated Retell telephony SIP trunking, WhatsApp Cloud API WABA verification, database RLS tenant isolation, and custom prompt calibration.',
+        'WhatsApp Business connection, calendar sync, and calibration of replies to your services and hours.',
       descriptionAr:
         'تهيئة خطوط الاتصال الهاتفية SIP، توثيق حساب الواتساب التجاري مع Meta، تفعيل عزل قاعدة البيانات، وضبط النماذج الذكية.',
       type: 'setup',
       amountCents: setupFeeCents,
     },
     {
-      name: 'Autonomous Operations & Ground-Truth Supervisory Retainer',
+      name: 'Monthly operations retainer',
       nameAr: 'الاشتراك الشهري للإشراف التشغيلي وتدقيق الأدلة الحية',
       description:
-        'Continuous human-in-the-loop attention queue review, paid-tier LLM tokens, 24/7 SLA uptime monitoring, and weekly activity logging.',
+        'Human review of anything uncertain, and a weekly activity log.',
       descriptionAr:
-        'إشراف بشري مستمر على جودة المحادثات، رخص نماذج الذكاء الاصطناعي المدفوعة، التزام بمستوى خدمة 99.9%، وتقارير أداء أسبوعية.',
+        'مراجعة بشرية لأي معلومة غير مؤكدة، وتقرير نشاط أسبوعي.',
       type: 'retainer',
       amountCents: monthlyRetainerCents,
     },
@@ -86,14 +86,14 @@ export function buildBespokeProposal({
   const paymentLink = `/checkout?proposal=${proposalId}&deal=${dealId}&amount=${totalFirstMonthCents}&currency=${currency}`
 
   const slaTerms = [
-    '99.9% Uptime Guarantee on all Voice SIP & WhatsApp Webhook endpoints.',
+    'Monitoring on voice and WhatsApp connections, with issues escalated to your team.',
     'Cryptographic RLS Guarantee: zero cross-tenant database access across profiles and contacts.',
     'Human Attention Queue: any observation with confidence < 85% is routed to supervisory review prior to state modification.',
     'Compliant Data Residence: all customer transcripts processed via paid enterprise APIs with zero model training.',
   ]
 
   const slaTermsAr = [
-    'ضمان تشغيل بنسبة 99.9% لجميع خوادم الصوت وخطوط الواتساب كلاود.',
+    'متابعة اتصالات الصوت وواتساب، مع تصعيد الأعطال إلى فريقك.',
     'عزل تام لبيانات المؤسسة على مستوى قاعدة البيانات PostgreSQL RLS دون أي تداخل مع أي عميل آخر.',
     'إشراف بشري إلزامي: أي معلومة تقل نسبة الثقة فيها عن 85% تُحوّل للإدارة قبل تحديث أي سجل.',
     'حماية الخصوصية: جميع البيانات تُعالج عبر خوادم مؤسسية مدفوعة لا تستخدم بياناتكم في تدريب النماذج.',

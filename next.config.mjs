@@ -10,28 +10,12 @@ const nextConfig = {
     optimizePackageImports: ['lucide-react'],
     cpus: 4,
   },
-  async rewrites() {
+  async redirects() {
     return [
-      {
-        source: '/receptionist',
-        destination: '/?system=booking_receptionist',
-      },
-      {
-        source: '/missed-call',
-        destination: '/?system=missed_call_response',
-      },
-      {
-        source: '/lead-reactivation',
-        destination: '/?system=lead_reactivation',
-      },
-      {
-        source: '/ar-collections',
-        destination: '/?system=ar_collections',
-      },
-      {
-        source: '/omni-care',
-        destination: '/?system=customer_care',
-      },
+      { source: '/receptionist', destination: '/systems/booking-receptionist', permanent: true },
+      { source: '/missed-call', destination: '/systems/missed-call-responder', permanent: true },
+      { source: '/lead-reactivation', destination: '/systems/lead-reactivation', permanent: true },
+      { source: '/ar-collections', destination: '/systems/ar-invoicing', permanent: true },
     ]
   },
 }

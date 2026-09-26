@@ -70,14 +70,14 @@ export const SYSTEM_TEMPLATES: SystemTemplate[] = [
     highlight: 'most_booked',
     setupFeeCents: 150000,
     monthlyRetainerCents: 45000,
-    badge: 'Most booked',
+    badge: undefined,
     en: {
       name: 'Booking receptionist',
       category: 'Voice & WhatsApp',
       vertical: 'Clinics, salons, high-ticket services, real estate',
       tagline: 'Answers in Gulf Arabic & English, books Cal.com, sends WhatsApp confirmation.',
       description: 'Answers in Gulf Arabic & English, books Cal.com, sends WhatsApp confirmation.',
-      badge: 'Most booked',
+      badge: undefined,
       metrics: [
         { label: 'Bookings confirmed', value: 'Sample demo', trend: 'Demo script' },
         { label: 'WhatsApp itineraries', value: 'Sent on confirm', trend: 'Live when connected' },
@@ -91,7 +91,7 @@ export const SYSTEM_TEMPLATES: SystemTemplate[] = [
       vertical: 'العيادات، مراكز التجميل، العقارات، والخدمات الراقية',
       tagline: 'يجيب بالخليجية والإنجليزية، يحجز عبر Cal.com، ويرسل تأكيد واتساب.',
       description: 'يجيب بالخليجية والإنجليزية، يحجز عبر Cal.com، ويرسل تأكيد واتساب.',
-      badge: 'الأكثر طلباً',
+      badge: undefined,
       metrics: [
         { label: 'حجوزات مؤكدة', value: 'عرض تجريبي', trend: 'سيناريو توضيحي' },
         { label: 'تأكيدات الواتساب', value: 'عند التثبيت', trend: 'حي بعد الربط' },
@@ -144,14 +144,14 @@ export const SYSTEM_TEMPLATES: SystemTemplate[] = [
     highlight: 'highest_roi',
     setupFeeCents: 200000,
     monthlyRetainerCents: 60000,
-    badge: 'Highest ROI',
+    badge: undefined,
     en: {
       name: 'Lead reactivation',
       category: 'Pipeline',
       vertical: 'Real estate, B2B services, clinics, high-value retail',
       tagline: 'Wake dormant CRM contacts with contextual WhatsApp sequences.',
       description: 'Wake dormant CRM contacts with contextual WhatsApp sequences.',
-      badge: 'Highest ROI',
+      badge: undefined,
       metrics: [
         { label: 'Dormant contacts', value: 'Your CRM', trend: 'Opt-in only' },
         { label: 'Replies rescued', value: 'Sample demo', trend: 'Demo script' },

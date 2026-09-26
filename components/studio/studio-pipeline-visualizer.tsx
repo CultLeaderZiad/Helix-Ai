@@ -47,7 +47,7 @@ export function StudioPipelineVisualizer({
       specs: [
         { label: isAr ? 'بروتوكول البث' : 'Streaming Protocol', value: 'WebSocket Dual-Channel' },
         { label: isAr ? 'العزل' : 'Isolation', value: 'Postgres RLS' },
-        { label: isAr ? 'ضمان التوافر' : 'Uptime SLA', value: '99.99% Dedicated Gateway' },
+        { label: isAr ? 'المتابعة' : 'Monitoring', value: isAr ? 'تصعيد عند الحاجة' : 'Escalation when needed' },
       ],
     },
     {
@@ -68,7 +68,7 @@ export function StudioPipelineVisualizer({
     },
     {
       id: 2,
-      title: isAr ? 'سجل تدقيق الحقائق والأمان' : 'Ground-Truth Evidence Ledger',
+      title: isAr ? 'سجل المراجعة' : 'Review history',
       icon: ShieldCheck,
       protocol: 'SHA-256 Cryptographic Audit',
       latency: '< 15ms',

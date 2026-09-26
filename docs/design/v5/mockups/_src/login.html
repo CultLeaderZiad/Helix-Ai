@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Helix — Sign in · v5 mockup</title>
+<!--FONTS-->
+<!--CSS-->
+<style>
+html,body{height:100%}
+.wrap{display:grid;grid-template-columns:1.12fr 1fr;min-height:100vh}
+/* brand panel */
+.bp{background:#0A0B0D;color:#F2F0EB;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:40px 56px 48px}
+.bp .brand .word{color:#F2F0EB}
+.bp-glow{position:absolute;width:640px;height:640px;left:50%;top:44%;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(95,212,164,.13),transparent);pointer-events:none}
+.bp-mark{position:absolute;right:-90px;bottom:-110px;width:420px;color:rgba(255,255,255,.028)}
+.stage{position:relative;height:430px;width:500px;margin:0 auto}
+.sum{position:absolute;left:40px;top:70px;width:400px;background:#131518;border:1px solid rgba(255,255,255,.1);border-radius:22px;padding:24px;box-shadow:0 40px 80px -30px rgba(0,0,0,.8);z-index:2}
+.sum-h{display:flex;justify-content:space-between;align-items:center}
+.sum-h b{font-size:16px;font-weight:600}
+.sum-h small{font-size:12.5px;color:#7F7C75;display:block;margin-top:2px;font-weight:400}
+.ex{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:#7F7C75;border:1px dashed rgba(255,255,255,.2);border-radius:999px;padding:3px 8px;font-weight:500}
+.sum-row{display:flex;align-items:center;gap:14px;padding:14px 0;border-top:1px solid rgba(255,255,255,.07)}
+.sum-row:first-of-type{margin-top:18px}
+.sum-row .n{font-size:26px;font-weight:500;letter-spacing:-.02em;width:34px}
+.sum-row span{font-size:14.5px;color:#B4B1A9}
+.sum-row .ic{margin-left:auto;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:rgba(95,212,164,.1);color:#5FD4A4}
+.sum-row .ic.a{background:rgba(232,163,61,.12);color:#E8A33D}
+.sum-row .ic .ico{width:16px;height:16px}
+.back1{position:absolute;left:0;top:0;width:250px;background:#fff;color:#111;border-radius:14px 14px 14px 4px;padding:12px 14px;font:400 13.5px/1.7 var(--f-ar);direction:rtl;text-align:right;transform:rotate(-2deg);opacity:.9;box-shadow:0 20px 40px -20px rgba(0,0,0,.7)}
+.back2{position:absolute;right:-10px;bottom:6px;width:220px;background:#191C20;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:14px 16px;z-index:3;box-shadow:0 30px 60px -20px rgba(0,0,0,.8)}
+.back2 b{font-size:13.5px;font-weight:600;display:flex;gap:8px;align-items:center}
+.back2 b .ico{width:16px;height:16px;color:#5FD4A4}
+.back2 span{font-size:12.5px;color:#B4B1A9;display:block;margin-top:3px}
+.bp-foot h2{font-family:var(--f-display);font-weight:400;font-size:44px;line-height:1.08;letter-spacing:-.015em;max-width:480px}
+.bp-foot p{color:#7F7C75;font-size:13px;margin-top:14px}
+/* form side */
+.fs{background:var(--bg);display:flex;flex-direction:column;padding:36px 56px}
+.fs-top{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--text-2)}
+.fs-top .link{color:var(--text)}
+.form{width:100%;max-width:400px;margin:auto}
+.form h1{font-family:var(--f-display);font-weight:400;font-size:52px;letter-spacing:-.02em;line-height:1}
+.form .sub{color:var(--text-2);margin-top:12px;font-size:16px}
+.field{margin-top:22px}
+.field label{display:flex;justify-content:space-between;font-size:14px;font-weight:500;margin-bottom:8px}
+.field label a{color:var(--accent);font-weight:500}
+.input{height:52px;border-radius:12px;background:#fff;border:1px solid var(--line-2);display:flex;align-items:center;padding:0 16px;font-size:15.5px;color:var(--text);justify-content:space-between;box-shadow:0 1px 2px rgba(20,22,18,.04)}
+.input.focus{border-color:#15171A;box-shadow:0 0 0 4px rgba(21,23,26,.08)}
+.input .ph{color:var(--text-3)}
+.input .ico{color:var(--text-3);width:18px;height:18px}
+.submit{margin-top:28px;height:54px;width:100%;border-radius:12px;background:#15171A;color:#fff;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:10px}
+.submit .ico{width:17px;height:17px}
+.alt{margin-top:28px;padding-top:24px;border-top:1px solid var(--line);font-size:14.5px;color:var(--text-2);display:grid;gap:10px}
+.alt a{color:var(--text);font-weight:500}
+.fs-foot{margin-top:auto;display:flex;justify-content:space-between;font-size:13px;color:var(--text-3)}
+.m-only{display:none}
+@media (max-width:640px){
+  .wrap{grid-template-columns:1fr}
+  .bp{display:none}
+  .m-only{display:flex}
+  .fs{padding:20px 22px 28px;min-height:100vh}
+  .form{margin:48px 0 40px}
+  .form h1{font-size:44px}
+  .fs-top .d-only{display:none}
+}
+</style>
+</head>
+<body data-theme="light">
+<div class="wrap">
+  <aside class="bp">
+    <div class="bp-glow"></div><span class="bp-mark">{{logo}}</span>
+    <a class="brand">{{logo}}<span class="word">HELIX</span></a>
+    <div class="stage">
+      <div class="back1">مرحباً، لاحظنا اتصالك قبل قليل. كيف نقدر نخدمك؟</div>
+      <div class="sum">
+        <div class="sum-h"><div><b>While you were closed</b><small>Last night, 8:00 PM – 8:00 AM</small></div><span class="ex">Example</span></div>
+        <div class="sum-row"><span class="n num">6</span><span>missed calls answered on WhatsApp</span><span class="ic">{{i:message}}</span></div>
+        <div class="sum-row"><span class="n num">3</span><span>appointments booked</span><span class="ic">{{i:calendar-check}}</span></div>
+        <div class="sum-row"><span class="n num">1</span><span>conversation waiting for your team</span><span class="ic a">{{i:headset}}</span></div>
+      </div>
+      <div class="back2"><b>{{i:check}} Booked · Thu 6:15 PM</b><span>Teeth cleaning · new patient</span></div>
+    </div>
+    <div class="bp-foot"><h2>Your front desk keeps working after you close.</h2><p>Illustrative example. Your dashboard shows your real activity after sign-in.</p></div>
+  </aside>
+  <main class="fs">
+    <div class="fs-top">
+      <a class="brand m-only">{{logo}}<span class="word">HELIX</span></a>
+      <span class="d-only"><a style="color:var(--text-2)">← Back to site</a></span>
+      <span>New to Helix? <a class="link">Book a call</a></span>
+    </div>
+    <div class="form">
+      <h1>Welcome back</h1>
+      <p class="sub">Sign in to your Helix workspace.</p>
+      <div class="field"><label>Work email</label><div class="input focus"><span>nadia@example.com</span></div></div>
+      <div class="field"><label>Password <a>Forgot password?</a></label><div class="input"><span style="letter-spacing:3px">••••••••••</span>{{i:eye}}</div></div>
+      <a class="submit">Sign in {{i:arrow arrow}}</a>
+      <div class="alt">
+        <span>Trouble signing in? <a>Message Helix support on WhatsApp</a></span>
+        <span>Helix team member? <a>Agency sign-in</a></span>
+      </div>
+    </div>
+    <div class="fs-foot"><div class="lang"><span class="on">EN</span><span class="ar">ع</span></div><span>Privacy · Terms</span></div>
+  </main>
+</div>
+</body></html>

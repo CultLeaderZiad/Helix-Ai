@@ -10,8 +10,7 @@ import { cn } from '@/lib/utils'
 import { PlugZap, ArrowUpRight } from 'lucide-react'
 
 function highlightLabel(template: SystemTemplate, isAr: boolean) {
-  if (template.highlight === 'most_booked') return isAr ? 'الأكثر حجزاً' : 'Most booked'
-  if (template.highlight === 'highest_roi') return isAr ? 'أعلى عائد' : 'Highest ROI'
+  if (template.highlight === 'most_booked' || template.highlight === 'highest_roi') return null
   if (template.highlight === 'b2b_only') return isAr ? 'شركات فقط' : 'B2B only'
   return null
 }

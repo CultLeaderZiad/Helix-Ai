@@ -1,54 +1,53 @@
 import Link from 'next/link'
+import { CalendarCheck, Check, Headset, MessageCircle } from 'lucide-react'
 import { HelixMark } from '@/components/marketing/helix-mark'
-import { authCopy } from '@/components/auth/auth-copy'
 import { getPublicPrefs } from '@/lib/public-prefs'
 
 export async function AuthShell({ children }: { children: React.ReactNode }) {
   const prefs = await getPublicPrefs()
-  const copy = authCopy[prefs.lang]
-  const day = prefs.theme === 'day'
-
+  const ar = prefs.lang === 'ar'
   return (
-    <div className={`mk auth${day ? ' day' : ''}`}>
-      <div className="auth-grid">
-        <aside className="auth-brand">
-          <div className="auth-brand-inner">
-            <Link href="/" className="brand" aria-label="Helix AI">
-              <span className="mark">
-                <HelixMark size={18} light={day} />
-              </span>
-              <span>
-                <span className="auth-brand-name">{copy.brand}</span>
-                <span className="auth-brand-kicker">{copy.kicker}</span>
-              </span>
-            </Link>
-            <div className="auth-story">
-              <h2 className="auth-h">{copy.headline}</h2>
-              <ul className="auth-points">
-                {copy.points.map(point => (
-                  <li key={point}>
-                    <span className="dot" />
-                    {point}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="auth-preview" aria-hidden="true">
-              <div className="auth-preview-bar">
-                <span>{copy.sampleTitle}</span>
-                <span className="sample">{copy.sample}</span>
+    <div className="hx auth-page" data-theme="light" dir={ar ? 'rtl' : 'ltr'} lang={ar ? 'ar' : 'en'}>
+      <div className="wrap">
+        <aside className="bp">
+          <div className="bp-glow" />
+          <Link href="/" className="brand" style={{ color: '#F2F0EB', position: 'relative', zIndex: 2 }}>
+            <HelixMark size={24} />
+            <span className="word">HELIX</span>
+          </Link>
+          <div className="stage">
+            <div className="back1">مرحباً، لاحظنا اتصالك قبل قليل. كيف نقدر نخدمك؟</div>
+            <div className="sum">
+              <div className="sum-h">
+                <div>
+                  <b>{ar ? 'بينما كنتم مغلقين' : 'While you were closed'}</b>
+                  <small>{ar ? 'الليلة الماضية، ٨ م – ٨ ص' : 'Last night, 8:00 PM – 8:00 AM'}</small>
+                </div>
+                <span className="ex">{ar ? 'مثال' : 'Example'}</span>
               </div>
-              <div className="auth-bubbles" dir="rtl">
-                <div className="bubble out">{copy.bubbleOut}</div>
-                <div className="bubble in">{copy.bubbleIn}</div>
-              </div>
-              <div className="auth-preview-meta">{copy.sampleMeta}</div>
+              <div className="sum-row"><span className="n num">6</span><span>{ar ? 'مكالمات فائتة رُدّ عليها في واتساب' : 'missed calls answered on WhatsApp'}</span><span className="ic"><MessageCircle size={16} /></span></div>
+              <div className="sum-row"><span className="n num">3</span><span>{ar ? 'مواعيد محجوزة' : 'appointments booked'}</span><span className="ic"><CalendarCheck size={16} /></span></div>
+              <div className="sum-row"><span className="n num">1</span><span>{ar ? 'محادثة بانتظار فريقك' : 'conversation waiting for your team'}</span><span className="ic a"><Headset size={16} /></span></div>
             </div>
+            <div className="back2"><b><Check size={16} /> {ar ? 'محجوز · الخميس ٦:١٥ م' : 'Booked · Thu 6:15 PM'}</b><span>{ar ? 'تنظيف أسنان · مريض جديد' : 'Teeth cleaning · new patient'}</span></div>
+          </div>
+          <div className="bp-foot">
+            <h2>{ar ? 'موظف الاستقبال لديك يواصل العمل بعد الإغلاق.' : 'Your front desk keeps working after you close.'}</h2>
+            <p>{ar ? 'مثال توضيحي. تعرض لوحتك نشاطك الفعلي بعد تسجيل الدخول.' : 'Illustrative example. Your dashboard shows your real activity after sign-in.'}</p>
           </div>
         </aside>
-        <section className="auth-pane">
-          <div className="auth-card">{children}</div>
-        </section>
+        <main className="fs">
+          <div className="fs-top">
+            <Link href="/" className="brand m-only"><HelixMark size={22} /><span className="word">HELIX</span></Link>
+            <Link href="/" className="d-only" style={{ color: 'var(--text-2)' }}>{ar ? '→ العودة للموقع' : '← Back to site'}</Link>
+            <span>{ar ? 'جديد على Helix؟' : 'New to Helix?'} <Link className="link" href="/contact">{ar ? 'احجز مكالمة' : 'Book a call'}</Link></span>
+          </div>
+          <div className="form">{children}</div>
+          <div className="fs-foot">
+            <span>{ar ? 'عربي · EN' : 'EN · ع'}</span>
+            <span><Link href="/privacy">{ar ? 'الخصوصية' : 'Privacy'}</Link> · <Link href="/terms">{ar ? 'الشروط' : 'Terms'}</Link></span>
+          </div>
+        </main>
       </div>
     </div>
   )

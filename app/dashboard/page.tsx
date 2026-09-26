@@ -165,149 +165,63 @@ export default async function ClientDashboardPage() {
       .concat(overdueInvoices > 0 ? ['invoices'] : [])
       .concat(degradedIntegrations > 0 ? ['integrations'] : [])
 
+  const empty = (newContacts ?? 0) === 0 && (monthBookings ?? 0) === 0 && (conversationsHandled ?? 0) === 0 && visibleSystems.length === 0
+  const first = (client?.business_name ?? session.user.email ?? 'there').split(' ')[0]
+
   return (
     <ConsoleShell variant="client" email={session.user.email ?? ''} businessName={client?.business_name ?? null}>
-      <div className="w-full">
-        <header className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h1 className="font-display text-h2">{client?.business_name ?? 'Your workspace'}</h1>
-            <p className="mt-1 text-small text-muted-foreground">Here's what happened lately</p>
+      <div className="ph">
+        <div>
+          <h1>{empty ? `Welcome to Helix, ${first}` : `Good morning, ${first}`}</h1>
+          <p>
+            {empty
+              ? 'Your workspace is ready. Connect WhatsApp and your calendar, then the first conversation will show up here.'
+              : `This month your systems recorded ${conversationsHandled ?? 0} conversations and ${monthBookings ?? 0} bookings.`}
+          </p>
+        </div>
+      </div>
+      <div className="kpis">
+        {[
+          ['Appointments booked', String(monthBookings ?? 0)],
+          ['New contacts', String(newContacts ?? 0)],
+          ['Conversations handled', String(conversationsHandled ?? 0)],
+          ['Needs a decision', String(pendingFacts ?? 0)],
+        ].map(([label, value]) => (
+          <div className="kpi" key={label}>
+            <div className="kpi-l">{label}</div>
+            <div className="kpi-v"><b className="num">{empty ? '—' : value}</b></div>
+            <div className="foot">{empty ? 'Appears after your first conversation' : 'From your workspace'}</div>
           </div>
-        </header>
-
-        <section aria-label="Evidence review" className="mt-8 border bg-panel p-4 lg:p-5">
-          <h2 className="font-display text-h3">Evidence review</h2>
-          <p className="mt-1 text-small text-muted-foreground">
-            AI observations waiting for a human decision. Only tool-verified facts are auto-written to contact records; everything else lands here.
-          </p>
-          <p className="mt-4 text-body">
-            {pendingFacts != null && pendingFacts > 0 ? (
-              <span>
-                <span className="font-medium text-foreground">{pendingFacts}</span>{' '}
-                <span className="text-muted-foreground">pending suggestion{pendingFacts === 1 ? '' : 's'}.</span>{' '}
-                <Link href="/dashboard/facts" className="text-accent underline-offset-4 hover:underline">
-                  Review now →
-                </Link>
-              </span>
-            ) : (
-              <span className="text-muted-foreground">
-                Nothing to review right now.
-              </span>
-            )}
-          </p>
-        </section>
-
-        <section aria-label="Your systems" className="mt-8">
-          <h2 className="font-display text-h3">Your systems</h2>
-          {clientError ? (
-            <p role="alert" className="mt-3 border border-status-danger/40 bg-status-danger/10 p-3 text-small">
-              System cards could not be loaded. Retry shortly.
-            </p>
-          ) : visibleSystems.length === 0 ? (
-            <p className="mt-3 text-small text-muted-foreground">
-              No systems are visible to you yet. Your agency installs systems here as onboarding completes.
-            </p>
-          ) : (
-            <div className={`mt-3 grid gap-4 ${visibleSystems.length >= 3 ? 'lg:grid-cols-3' : visibleSystems.length === 2 ? 'sm:grid-cols-2' : ''}`}>
+        ))}
+      </div>
+      {empty ? (
+        <div className="pnl" style={{ marginTop: 14 }}>
+          <div className="pnl-h"><b>Setup</b></div>
+          <p>No activity yet. Once your systems go live, every reply and booking shows up here.</p>
+        </div>
+      ) : (
+        <div className="pnl" style={{ marginTop: 14 }}>
+          <div className="pnl-h"><b>Your systems</b></div>
+          {clientError ? <p role="alert">System cards could not be loaded. Retry shortly.</p> : visibleSystems.length === 0 ? <p>No systems are visible yet.</p> : (
+            <ul className="sys">
               {visibleSystems.map(system => {
                 const activity = activityBySystem.get(system.id)
                 const status = worstIntegration(system.system_type)
-                const systemName = SYSTEM_NAME[system.system_type as SystemType] ?? system.system_type
                 return (
-                  <article key={system.id} className="border bg-panel p-4">
-                    <p className="text-xs font-medium uppercase tracking-[0.08em] text-muted-foreground">System</p>
-                    <h3 className="mt-1 font-display text-h3">{systemName}</h3>
-                    <p className="mt-2 text-body">
-                      {activity && activity.count > 0
-                        ? `${activity.count} ${activity.label} this week`
-                        : `No measured ${activity ? activity.label : 'activity'} in the last 7 days.`}
-                    </p>
-                    {status ? (
-                      <p className="mt-3">
-                        <span
-                          className={`rounded-sm border px-1.5 py-0.5 text-xs font-medium ${
-                            status === 'connected'
-                              ? 'border-status-success/40 bg-status-success/10 text-status-success'
-                              : status === 'degraded'
-                                ? 'border-status-warning/40 bg-status-warning/10 text-status-warning'
-                                : 'border-border bg-raised text-muted-foreground'
-                          }`}
-                        >
-                          {status === 'connected' ? 'Running' : status === 'degraded' ? 'Attention' : 'Off'}
-                        </span>
-                      </p>
-                    ) : null}
-                    <p className="mt-3 text-small text-muted-foreground">
-                      {activity?.last ? `Last activity ${formatShort(activity.last)}` : 'No activity recorded yet in this period.'}
-                    </p>
-                    <Link
-                      href="/dashboard/contacts"
-                      className="mt-2 inline-block text-small text-accent underline-offset-4 hover:underline"
-                    >
-                      Open →
-                    </Link>
-                  </article>
+                  <li key={system.id}>
+                    <div>
+                      <b>{SYSTEM_NAME[system.system_type as SystemType] ?? system.system_type}</b>
+                      <span>{activity?.last ? `Last activity ${formatShort(activity.last)}` : 'No activity recorded yet'}</span>
+                    </div>
+                    <span className={status === 'connected' ? 'st run' : 'st pause'}>{status === 'connected' ? 'Running' : status === 'degraded' ? 'Attention' : 'Off'}</span>
+                  </li>
                 )
               })}
-            </div>
-          )}
-        </section>
-
-        <section aria-label="This month" className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="border bg-panel p-4">
-            <p className="text-small text-muted-foreground">New contacts this month</p>
-            <p className="font-display text-h3 tabular-nums">{newContacts}</p>
-          </div>
-          <div className="border bg-panel p-4">
-            <p className="text-small text-muted-foreground">Bookings this month</p>
-            <p className="font-display text-h3 tabular-nums">{monthBookings}</p>
-          </div>
-          <div className="border bg-panel p-4">
-            <p className="text-small text-muted-foreground">Conversations handled</p>
-            <p className="font-display text-h3 tabular-nums">{conversationsHandled ?? 0}</p>
-          </div>
-          <div className="border bg-panel p-4">
-            <p className="text-small text-muted-foreground">Pipeline</p>
-            <p className="font-display text-h3 tabular-nums">{formatCurrency(pipelineCents)}</p>
-          </div>
-        </section>
-
-        {attentionRows.length > 0 ? (
-          <section aria-label="Needs your attention" className="mt-8 border bg-panel p-4 lg:p-5">
-            <h2 className="font-display text-h3">Needs your attention</h2>
-            <ul className="mt-3 flex flex-col divide-y">
-              {attentionRows.map(row => (
-                <li key={row} className="flex items-center justify-between gap-3 py-2">
-                  {row === 'facts' ? (
-                    <>
-                      <span className="text-body">
-                        <span className="font-medium tabular-nums">{pendingFacts}</span> pending suggestion{pendingFacts === 1 ? '' : 's'}
-                      </span>
-                      <Link href="/dashboard/facts" className="text-small text-accent underline-offset-4 hover:underline">
-                        View →
-                      </Link>
-                    </>
-                  ) : row === 'invoices' ? (
-                    <>
-                      <span className="text-body">
-                        <span className="font-medium tabular-nums">{overdueInvoices}</span> overdue invoice{overdueInvoices === 1 ? '' : 's'}
-                      </span>
-                      <span className="text-small text-muted-foreground">Billing arrives in a later release.</span>
-                    </>
-                  ) : (
-                    <>
-                      <span className="text-body">
-                        <span className="font-medium tabular-nums">{degradedIntegrations}</span> integration{degradedIntegrations === 1 ? '' : 's'} degraded or offline
-                      </span>
-                      <span className="text-small text-muted-foreground">Health arrives in a later release.</span>
-                    </>
-                  )}
-                </li>
-              ))}
             </ul>
-          </section>
-        ) : null}
-      </div>
+          )}
+          {pendingFacts > 0 ? <p style={{ marginTop: 12 }}><Link href="/dashboard/facts">{pendingFacts} item{pendingFacts === 1 ? '' : 's'} need a decision</Link></p> : <p style={{ marginTop: 12 }}>Nothing needs you right now.</p>}
+        </div>
+      )}
     </ConsoleShell>
   )
 }

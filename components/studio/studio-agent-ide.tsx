@@ -77,7 +77,7 @@ const DEFAULT_TASKS: TaskItem[] = [
   },
   {
     id: 'task-2',
-    title: 'Wire SHA-256 Ground-Truth Evidence Ledger & RLS',
+    title: 'Review queue and row-level access',
     timeAgo: '9m',
     status: 'completed',
     system: 'inbound',
@@ -252,7 +252,7 @@ export function StudioAgentIde({
 
     const newThought = {
       type: 'thought',
-      text: `User Directive: "${promptText}". Updating system directives and re-calibrating ${systemLayer.toUpperCase()} pipeline with latest guardrail configurations... Verified zero hallucinations.`,
+      text: `User Directive: "${promptText}". Updating system directives and re-calibrating ${systemLayer.toUpperCase()} pipeline with latest guardrail configurations... Unclear answers go to review.`,
     }
 
     setReasoningLog((prev) => [...prev, newThought])

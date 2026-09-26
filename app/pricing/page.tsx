@@ -1,19 +1,16 @@
 import type { Metadata } from 'next'
-import { PricingBand } from '@/components/marketing/home-view'
+import { PricingView } from '@/components/marketing/pricing-view'
 import { SitePage } from '@/components/marketing/site-page'
 
 export const metadata: Metadata = {
-  title: 'Pricing — Helix AI',
-  description:
-    'Transparent operations tiers with regional economic modeling for GCC Enterprise (UAE, KSA, Qatar) and MENA SME (Egypt, Jordan). Includes 7-day unrestricted trial.',
+  title: 'Pricing — Helix',
+  description: 'Simple monthly plans in AED. A one-time setup fee, then a monthly fee to run, monitor and improve the system.',
 }
 
 export default function PricingPage() {
   return (
-    <SitePage bare>
-      <div style={{ paddingTop: 24 }}>
-        <PricingBand full />
-      </div>
+    <SitePage>
+      <PricingView />
     </SitePage>
   )
 }

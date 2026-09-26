@@ -223,7 +223,7 @@ export function PlaybooksView() {
             {
               title: 'Regional Pricing Engine',
               href: '/pricing',
-              desc: 'Dynamic regional economic model (AED, SAR, EGP, JOD, USD) with 7-day trial.',
+              desc: 'Dynamic regional economic model (AED, SAR, EGP, JOD, USD) across AED, SAR, EGP, JOD and USD.',
             },
             {
               title: 'Autonomous Receptionist',
@@ -284,7 +284,7 @@ export function PlaybooksView() {
             <p className="text-helix-ink/80 leading-relaxed">
               {isAr
                 ? 'الإجابة: صممنا سجل تدقيق حقائق مشفر (Evidence Ledger). أي استفسار غير مألوف أو تقل نسبة الثقة فيه عن 85% يُحوّل تلقائياً إلى طابور مراجعة الإدارة قبل تأكيد أي معاملة.'
-                : 'Response: Our Cryptographic Ground-Truth Ledger routes any inquiry with confidence < 85% to supervisory attention queues before any commitment is confirmed.'}
+                : 'Response: Anything uncertain goes to the review queue before it is saved as fact.'}
             </p>
           </div>
         </div>

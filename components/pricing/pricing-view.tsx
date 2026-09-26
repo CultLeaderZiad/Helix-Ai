@@ -46,7 +46,7 @@ export function PricingView({
           {isAr ? 'خطط وتكاليف شفافة ومدروسة' : 'Transparent Operations Tiers'}
         </div>
         <h1 className="mt-4 font-display text-4xl font-bold tracking-tight text-white sm:text-5xl">
-          {isAr ? 'ابدأ مع تجربة مجانية غير مقيدة لمدة 7 أيام' : 'Start with a 7-day unrestricted trial.'}
+          {isAr ? 'ابدأ مع تجربة مجانية غير مقيدة لمدة 7 أيام' : 'Start with a monthly plan.'}
         </h1>
         <p className="mt-4 text-base text-slate-300">
           {isAr
@@ -166,7 +166,7 @@ export function PricingView({
                     isAr ? 'left-6' : 'right-6'
                   )}
                 >
-                  {isAr ? 'الأكثر طلباً' : 'Most Popular'}
+                  {isAr ? 'موصى بها' : 'Most Popular'}
                 </div>
               )}
 
@@ -188,7 +188,7 @@ export function PricingView({
 
                 <div className="mt-2 flex items-center justify-between text-xs">
                   <span className="font-semibold text-emerald-400">
-                    {isAr ? 'تشمل 7 أيام تجربة غير مقيدة' : 'Includes 7 days unrestricted trial'}
+                    {isAr ? 'تشمل 7 أيام تجربة غير مقيدة' : 'Book a discovery call to confirm scope'}
                   </span>
                   <span className="text-slate-400">
                     {isAr ? 'إعداد لمرة واحدة:' : 'Setup:'} {currency} {setupPrice.toLocaleString()}
@@ -237,12 +237,12 @@ export function PricingView({
         <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-2">
           <div>
             <h4 className="text-base font-semibold text-slate-200">
-              {isAr ? 'كيف تعمل التجربة المجانية لمدة 7 أيام؟' : 'How does the 7-day trial operate?'}
+              {isAr ? 'كيف تعمل التجربة المجانية لمدة 7 أيام؟' : 'What does the setup fee cover?'}
             </h4>
             <p className="mt-2 text-sm text-slate-400 leading-relaxed">
               {isAr
                 ? 'تحصل على وصول كامل وغير مقيد لجميع أدوات النظام، ووكلاء الصوت وربط الواتساب. لا يتم خصم أي مبالغ من بطاقتك أثناء فترة التجربة.'
-                : 'You receive unrestricted access to all features within your selected tier. No credit card is charged during trial onboarding.'}
+                : 'You receive unrestricted access to all features within your selected tier. Book a call is charged during trial onboarding.'}
             </p>
           </div>
 

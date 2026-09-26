@@ -39,7 +39,7 @@ export function StudioDirectivesGuardrails({
 3. إرسال تأكيد الحجز وموقع الفرع عبر واتساب كلاود فور تثبيت الموعد.
 4. في حال رصد استياء من العميل أو طلب مشرف بشري، يتم التحويل فوراً خلال ثانيتين.`
     : `You are the official autonomous operations agent for "${brandName}".
-Your mission: Answer client inquiries with sub-400ms latency across voice and WhatsApp with zero hallucinations.
+Your mission: Answer client inquiries on voice and WhatsApp. Anything uncertain goes to a person.
 Mandatory Rules:
 1. Never invent calendar availability or pricing concessions outside CRM records.
 2. Categorize all extracted assertions into tri-state evidence bands (Verified, Probable, Possible).
