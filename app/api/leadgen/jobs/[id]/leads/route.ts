@@ -38,5 +38,14 @@ export async function GET(
     return NextResponse.json({ error: error.message }, { status: 500, headers })
   }
 
-  return NextResponse.json({ leads: leads ?? [] }, { headers })
+  const normalizedLeads = (leads ?? []).map((lead: any) => ({
+    ...lead,
+    description: lead.description || lead.sources?.description || lead.markdown_excerpt || null,
+    city: lead.city || lead.sources?.city || null,
+    country: lead.country || lead.sources?.country || null,
+    people: lead.people || lead.sources?.people || lead.decision_makers || [],
+    origin: lead.origin || lead.sources?.origin || 'crawl'
+  }))
+
+  return NextResponse.json({ leads: normalizedLeads }, { headers })
 }

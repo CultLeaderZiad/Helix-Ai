@@ -3,9 +3,40 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+  --font-sans: var(--app-font-sans, var(--font-inter), ui-sans-serif, system-ui, sans-serif);
+  --font-display: var(--app-font-sans, var(--font-inter), ui-sans-serif, system-ui, sans-serif);
+  --font-mono: var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace);
+  --font-plex-ar: var(--font-plex-ar, 'IBM Plex Sans Arabic', sans-serif);
+
+  --color-mk-bg: var(--mk-bg);
+  --color-mk-bg-2: var(--mk-bg-2);
+  --color-mk-surface: var(--mk-surface);
+  --color-mk-surface-2: var(--mk-surface-2);
+  --color-mk-line: var(--mk-line);
+  --color-mk-line-2: var(--mk-line-2);
+  --color-mk-text: var(--mk-text);
+  --color-mk-muted: var(--mk-muted);
+  --color-mk-subtle: var(--mk-subtle);
+  --color-mk-accent: var(--mk-accent);
+  --color-mk-accent-ink: var(--mk-accent-ink);
+  --color-mk-accent-bright: var(--mk-accent-bright);
+  --color-mk-accent-soft: var(--mk-accent-soft);
+  --color-mk-glow: var(--mk-glow);
+  --color-mk-warn: var(--mk-warn);
+  --color-mk-danger: var(--mk-danger);
+  --color-mk-dark-band: var(--mk-dark-band);
+
+  --radius-mk-chip: var(--mk-radius-chip);
+  --radius-mk-button: var(--mk-radius-button);
+  --radius-mk-button-lg: var(--mk-radius-button-lg);
+  --radius-mk-panel: var(--mk-radius-panel);
+  --radius-mk-window: var(--mk-radius-window);
+  --radius-mk-card: var(--mk-radius-card);
+  --radius-mk-cta: var(--mk-radius-cta);
+
+  --shadow-mk-cta: var(--mk-shadow-cta);
+  --shadow-mk-window: var(--mk-shadow-window);
+  --shadow-mk-card: var(--mk-shadow-card);
 
   /* Board A type scale: 11 / 12 / 13 / 14 / 15 / 22 / 28 */
   --text-11: 0.6875rem;
@@ -38,23 +69,57 @@
   --text-small: 0.8125rem;
   --text-small--line-height: 1.45;
 
+  --color-helix-sidebar: var(--helix-sidebar);
+  --color-helix-sidebar-surface: var(--helix-sidebar-surface);
+  --color-helix-sidebar-active: var(--helix-sidebar-active);
+  --color-helix-sidebar-border: var(--helix-sidebar-border);
+  --color-helix-sidebar-muted: var(--helix-sidebar-muted);
+  --color-helix-sidebar-label: var(--helix-sidebar-label);
+  --color-helix-sidebar-sub: var(--helix-sidebar-sub);
+  --color-helix-sidebar-rail: var(--helix-sidebar-rail);
+
   --color-helix-canvas: var(--helix-canvas);
   --color-helix-surface: var(--helix-surface);
+  --color-helix-surface-2: var(--helix-surface-2);
+  --color-helix-surface-hover: var(--helix-surface-hover);
+  --color-helix-border: var(--helix-border);
+  --color-helix-border-subtle: var(--helix-border-subtle);
+  --color-helix-border-strong: var(--helix-border-strong);
   --color-helix-ink: var(--helix-ink);
   --color-helix-muted: var(--helix-muted);
-  --color-helix-border: var(--helix-border);
+  --color-helix-subtle: var(--helix-subtle);
+
   --color-helix-accent: var(--helix-accent);
+  --color-helix-accent-2: var(--helix-accent-2);
   --color-helix-accent-soft: var(--helix-accent-soft);
+  --color-helix-selected: var(--helix-selected);
+  --color-helix-cmd-highlight: var(--helix-cmd-highlight);
+
+  --color-helix-info: var(--helix-info);
+  --color-helix-info-soft: var(--helix-info-soft);
   --color-helix-warn: var(--helix-warn);
-  --color-helix-ok: var(--helix-ok);
+  --color-helix-warn-soft: var(--helix-warn-soft);
+  --color-helix-warn-dot: var(--helix-warn-dot);
   --color-helix-danger: var(--helix-danger);
+  --color-helix-danger-soft: var(--helix-danger-soft);
+  --color-helix-ok: var(--helix-ok);
+
+  --color-helix-seg: var(--helix-seg);
+  --color-helix-track: var(--helix-track);
+  --color-helix-skeleton-from: var(--helix-skeleton-from);
+  --color-helix-skeleton-to: var(--helix-skeleton-to);
+
+  --color-helix-log: var(--helix-log);
+  --color-helix-log-text: var(--helix-log-text);
+  --color-helix-log-ts: var(--helix-log-ts);
+  --color-helix-log-live: var(--helix-log-live);
 
   --color-background: var(--helix-canvas);
   --color-foreground: var(--helix-ink);
   --color-canvas: var(--helix-canvas);
   --color-panel: var(--helix-surface);
-  --color-panel-hover: var(--helix-canvas);
-  --color-raised: var(--helix-canvas);
+  --color-panel-hover: var(--helix-surface-hover);
+  --color-raised: var(--helix-surface-2);
   --color-elevated: var(--helix-surface);
   --color-deep: #080c14;
   --color-deep-foreground: #f8fafc;
@@ -63,94 +128,144 @@
   --color-card-foreground: var(--helix-ink);
   --color-popover: var(--helix-surface);
   --color-popover-foreground: var(--helix-ink);
-  --color-primary: var(--helix-ink);
-  --color-primary-foreground: var(--helix-surface);
-  --color-secondary: var(--helix-canvas);
+  --color-primary: #141414;
+  --color-primary-foreground: #FFFFFF;
+  --color-secondary: var(--helix-surface-2);
   --color-secondary-foreground: var(--helix-ink);
-  --color-muted: var(--helix-canvas);
+  --color-muted: var(--helix-surface-2);
   --color-muted-foreground: var(--helix-muted);
   --color-accent: var(--helix-accent);
   --color-accent-foreground: #ffffff;
   --color-destructive: var(--helix-danger);
   --color-border: var(--helix-border);
-  --color-border-subtle: var(--helix-border);
+  --color-border-subtle: var(--helix-border-subtle);
   --color-border-default: var(--helix-border);
   --color-border-active: var(--helix-ink);
   --color-input: var(--helix-border);
-  --color-ring: var(--helix-ink);
+  --color-ring: var(--helix-accent);
 
   --color-status-success: var(--helix-ok);
   --color-status-warning: var(--helix-warn);
   --color-status-danger: var(--helix-danger);
 
-  --color-chart-1: var(--helix-accent);
-  --color-chart-2: var(--helix-ink);
-  --color-chart-3: var(--helix-muted);
-  --color-chart-4: var(--helix-border);
-  --color-chart-5: var(--helix-canvas);
+  --color-chart-1: #0B6E4F;
+  --color-chart-2: #7CCBB0;
+  --color-chart-3: #D9D3C7;
+  --color-chart-4: #0E7490;
+  --color-chart-5: #B45309;
 
-  --color-sidebar: var(--helix-surface);
-  --color-sidebar-foreground: var(--helix-ink);
-  --color-sidebar-primary: var(--helix-ink);
-  --color-sidebar-primary-foreground: var(--helix-surface);
-  --color-sidebar-accent: var(--helix-canvas);
-  --color-sidebar-accent-foreground: var(--helix-ink);
-  --color-sidebar-border: var(--helix-border);
-  --color-sidebar-ring: var(--helix-ink);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --radius-chip: 8px;
+  --radius-control: 10px;
+  --radius-card: 14px;
+  --radius-dialog: 16px;
 
   --radius-sm: 8px;
   --radius-md: 10px;
-  --radius-lg: 12px;
+  --radius-lg: 14px;
   --radius-xl: 16px;
   --radius-2xl: 16px;
   --radius-3xl: 20px;
   --radius-4xl: 24px;
 
+  --shadow-card: var(--helix-shadow-card);
+  --shadow-toast: var(--helix-shadow-toast);
+  --shadow-dialog: var(--helix-shadow-dialog);
   --shadow-helix: var(--helix-shadow);
 }
 
 /*
-  Direction 2: Warm Command
-  Sidebar: #1C1B19 (Dark Ink) | Canvas: #F3F1EC (Warm Paper)
-  Surfaces: #FFFEFA (Warm White) | Borders: #D9D4CB (Stone Border)
-  Ink: #141414 (Deep Charcoal/Black) | Muted: #6E6A63
-  Accent: #0B6E4F (Emerald) | Active Pills & Primary: #141414 (Solid Black)
+  Warm Command 2.0 Design Tokens
+  Sidebar: #161513 | Surface: #1F1E1B | Active/Border: #2A2926 | Muted: #A39F97
+  Canvas: #F4F2ED | Surface: #FFFFFF | Surface-2: #FAF8F4 | Border: #E7E2D9 | Border-Strong: #D9D3C7
+  Ink: #141414 | Muted: #6E6A63 | Subtle: #9A958C
+  Accent: #0B6E4F | Accent-2: #12A579 | Accent-Soft: #E6F3EE
 */
 :root {
+  --app-font-sans: var(--font-geist), var(--font-plex-ar), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   color-scheme: light;
-  --helix-sidebar: #1C1B19;
-  --helix-sidebar-surface: #262522;
-  --helix-sidebar-active: #2B2A27;
-  --helix-sidebar-border: #33312D;
-  --helix-sidebar-ink: #FFFFFF;
-  --helix-sidebar-muted: #9E9B95;
 
-  --helix-canvas: #F3F1EC;
-  --helix-surface: #FFFEFA;
-  --helix-surface-hover: #F8F6F0;
-  --helix-border: #D9D4CB;
-  --helix-border-subtle: #E6E2D9;
+  /* Sidebar */
+  --helix-sidebar: #161513;
+  --helix-sidebar-surface: #1F1E1B;
+  --helix-sidebar-active: #2A2926;
+  --helix-sidebar-border: #2A2926;
+  --helix-sidebar-muted: #A39F97;
+  --helix-sidebar-label: #6D6A64;
+  --helix-sidebar-sub: #8A867F;
+  --helix-sidebar-rail: #34E0A1;
+  --helix-sidebar-ink: #FFFFFF;
+
+  /* Surfaces & Text */
+  --helix-canvas: #F4F2ED;
+  --helix-surface: #FFFFFF;
+  --helix-surface-2: #FAF8F4;
+  --helix-surface-hover: #FAF8F4;
+  --helix-border: #E7E2D9;
+  --helix-border-subtle: #EFEBE3;
+  --helix-border-strong: #D9D3C7;
   --helix-ink: #141414;
   --helix-muted: #6E6A63;
-  --helix-accent: #0B6E4F;
-  --helix-accent-soft: #E6F3EE;
-  --helix-warn: #B45309;
-  --helix-ok: #0B6E4F;
-  --helix-danger: #B42318;
-  --helix-shadow: 0 1px 3px rgba(20, 20, 20, 0.05), 0 8px 24px rgba(20, 20, 20, 0.04);
-  --helix-radius-control: 10px;
-  --helix-radius-shell: 0px;
+  --helix-subtle: #9A958C;
 
+  /* Accent & Status */
+  --helix-accent: #0B6E4F;
+  --helix-accent-2: #12A579;
+  --helix-accent-soft: #E6F3EE;
+  --helix-selected: #F3FAF6;
+  --helix-cmd-highlight: #F1F8F4;
+  --helix-info: #0E7490;
+  --helix-info-soft: #E3F2F6;
+  --helix-warn: #B45309;
+  --helix-warn-soft: #FDF1E1;
+  --helix-warn-dot: #D97706;
+  --helix-danger: #B42318;
+  --helix-danger-soft: #FCE8E6;
+  --helix-ok: #0B6E4F;
+
+  /* Controls */
+  --helix-seg: #EAE6DE;
+  --helix-track: #EEEAE2;
+  --helix-skeleton-from: #EFEBE3;
+  --helix-skeleton-to: #F8F5F0;
+  --helix-log: #141414;
+  --helix-log-text: #C9C3B7;
+  --helix-log-ts: #6D6A64;
+  --helix-log-live: #34E0A1;
+
+  /* Shadows */
+  --helix-shadow-card: 0 1px 2px rgba(20, 20, 20, 0.03);
+  --helix-shadow-toast: 0 20px 50px -12px rgba(0, 0, 0, 0.45);
+  --helix-shadow-dialog: 0 30px 80px -20px rgba(0, 0, 0, 0.35);
+  --helix-scrim: rgba(20, 20, 20, 0.28);
+  --helix-shadow: 0 1px 2px rgba(20, 20, 20, 0.03);
+
+  /* Radii */
+  --radius-chip: 8px;
+  --radius-control: 10px;
+  --radius-card: 14px;
+  --radius-dialog: 16px;
+  --radius: 10px;
+
+  /* shadcn variables */
   --bg-canvas: var(--helix-canvas);
   --bg-panel: var(--helix-surface);
   --bg-panel-hover: var(--helix-surface-hover);
-  --bg-elevated: #FFFFFF;
+  --bg-elevated: var(--helix-surface);
   --border-subtle: var(--helix-border-subtle);
   --border-default: var(--helix-border);
   --border-active: var(--helix-ink);
   --background: var(--helix-canvas);
   --panel: var(--helix-surface);
-  --raised: #EBE7DF;
+  --raised: var(--helix-surface-2);
   --foreground: var(--helix-ink);
   --card: var(--helix-surface);
   --card-foreground: var(--helix-ink);
@@ -158,46 +273,293 @@
   --popover-foreground: var(--helix-ink);
   --primary: #141414;
   --primary-foreground: #FFFFFF;
-  --secondary: #EBE7DF;
+  --secondary: var(--helix-surface-2);
   --secondary-foreground: var(--helix-ink);
-  --muted: #EBE7DF;
+  --muted: var(--helix-surface-2);
   --muted-foreground: var(--helix-muted);
   --accent: var(--helix-accent);
   --accent-foreground: #FFFFFF;
   --destructive: var(--helix-danger);
   --border: var(--helix-border);
   --input: var(--helix-border);
-  --ring: var(--helix-ink);
+  --ring: var(--helix-accent);
   --status-success: var(--helix-ok);
   --status-warning: var(--helix-warn);
   --status-danger: var(--helix-danger);
-  --chart-1: var(--helix-accent);
-  --chart-2: var(--helix-ink);
-  --chart-3: var(--helix-muted);
-  --chart-4: var(--helix-border);
-  --chart-5: #C4BFB5;
-  --radius: 10px;
-  --sidebar: var(--helix-sidebar);
-  --sidebar-foreground: var(--helix-sidebar-ink);
+
+  --chart-1: #0B6E4F;
+  --chart-2: #7CCBB0;
+  --chart-3: #D9D3C7;
+  --chart-4: #0E7490;
+  --chart-5: #B45309;
+
+  --sidebar-width: 15.5rem;
+  --sidebar-width-icon: 3.5rem;
+  --sidebar: #161513;
+  --sidebar-foreground: #A39F97;
   --sidebar-primary: #FFFFFF;
-  --sidebar-primary-foreground: #1C1B19;
-  --sidebar-accent: var(--helix-sidebar-active);
+  --sidebar-primary-foreground: #141414;
+  --sidebar-accent: #2A2926;
   --sidebar-accent-foreground: #FFFFFF;
-  --sidebar-border: var(--helix-sidebar-border);
+  --sidebar-border: #2A2926;
   --sidebar-ring: var(--helix-accent);
+}
+
+/* Dark tokens under [data-dash-theme="dark"] (unexposed to client unless set) */
+[data-dash-theme="dark"] {
+  --helix-sidebar: #121110;
+  --helix-sidebar-surface: #181715;
+  --helix-sidebar-active: #22211E;
+  --helix-sidebar-border: #22211E;
+  --helix-sidebar-muted: #8E8A82;
+  --helix-sidebar-label: #5C5954;
+  --helix-sidebar-sub: #76726B;
+  --helix-sidebar-rail: #34E0A1;
+  --helix-sidebar-ink: #FFFFFF;
+
+  --helix-canvas: #161513;
+  --helix-surface: #1F1E1B;
+  --helix-surface-2: #262522;
+  --helix-surface-hover: #262522;
+  --helix-border: #2A2926;
+  --helix-border-subtle: #22211E;
+  --helix-border-strong: #383632;
+  --helix-ink: #F4F2ED;
+  --helix-muted: #A39F97;
+  --helix-subtle: #6D6A64;
+
+  --helix-accent: #12A579;
+  --helix-accent-2: #34E0A1;
+  --helix-accent-soft: rgba(18, 165, 121, 0.15);
+  --helix-selected: #1C2B24;
+  --helix-cmd-highlight: #1B2822;
+  --helix-info: #38C6E0;
+  --helix-info-soft: rgba(56, 198, 224, 0.15);
+  --helix-warn: #F5B455;
+  --helix-warn-soft: rgba(245, 180, 85, 0.15);
+  --helix-warn-dot: #F59E0B;
+  --helix-danger: #F87171;
+  --helix-danger-soft: rgba(248, 113, 113, 0.15);
+  --helix-ok: #12A579;
+
+  --helix-seg: #2A2926;
+  --helix-track: #22211E;
+  --helix-skeleton-from: #262522;
+  --helix-skeleton-to: #2F2E2A;
+  --helix-log: #100F0E;
+  --helix-log-text: #D9D3C7;
+  --helix-log-ts: #6D6A64;
+  --helix-log-live: #34E0A1;
+
+  --background: var(--helix-canvas);
+  --panel: var(--helix-surface);
+  --foreground: var(--helix-ink);
+  --card: var(--helix-surface);
+  --card-foreground: var(--helix-ink);
+  --popover: var(--helix-surface);
+  --popover-foreground: var(--helix-ink);
+  --primary: var(--helix-accent);
+  --primary-foreground: #FFFFFF;
+  --border: var(--helix-border);
+  --input: var(--helix-border);
+  --ring: var(--helix-accent);
 }
 
 .dark {
   color-scheme: light;
-  --helix-sidebar: #1C1B19;
-  --helix-canvas: #F3F1EC;
-  --helix-surface: #FFFEFA;
-  --helix-border: #D9D4CB;
-  --helix-ink: #141414;
-  --helix-muted: #6E6A63;
-  --helix-accent: #0B6E4F;
-  --helix-accent-soft: #E6F3EE;
-  --helix-ok: #0B6E4F;
+}
+
+/* Warm Command 2.0 Type Scale */
+.dash {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--helix-ink);
+}
+
+.dash-page-title {
+  font-size: 28px;
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--helix-ink);
+}
+
+.dash-card-title {
+  font-size: 14.5px;
+  line-height: 1.35;
+  font-weight: 600;
+  color: var(--helix-ink);
+}
+
+.dash-kpi {
+  font-size: 32px;
+  line-height: 1.1;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  color: var(--helix-ink);
+}
+
+.dash-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--helix-muted);
+}
+
+[dir="rtl"] .dash-label {
+  font-size: 12.5px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.dash-mono {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--helix-skeleton-from) 0%,
+    var(--helix-skeleton-to) 50%,
+    var(--helix-skeleton-from) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-shimmer {
+    animation: none !important;
+    background: var(--helix-skeleton-from) !important;
+  }
+}
+
+[dir="rtl"] {
+  --app-font-sans: var(--font-plex-ar), var(--font-geist), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+[dir="rtl"] .mk {
+  letter-spacing: 0 !important;
+}
+
+/* Marketing Tokens (Night Signal / Daylight Paper) */
+.mk {
+  background-color: var(--mk-bg);
+  color: var(--mk-text);
+  font-family: var(--app-font-sans);
+  min-height: 100vh;
+}
+
+.mk[data-theme="dark"],
+.mk:not([data-theme="light"]) {
+  --mk-bg: #07090C;
+  --mk-bg-2: #0B0E13;
+  --mk-surface: #10141A;
+  --mk-surface-2: #161B23;
+  --mk-line: rgba(255, 255, 255, 0.08);
+  --mk-line-2: rgba(255, 255, 255, 0.14);
+  --mk-text: #F2F4F7;
+  --mk-muted: #9AA3B2;
+  --mk-subtle: #6B7482;
+  --mk-accent: #34E0A1;
+  --mk-accent-ink: #04130D;
+  --mk-accent-bright: #34E0A1;
+  --mk-accent-soft: rgba(52, 224, 161, 0.12);
+  --mk-glow: #38C6E0;
+  --mk-warn: #F5B455;
+  --mk-danger: #F87171;
+  --mk-dark-band: #0B0E13;
+
+  --mk-shadow-cta: 0 0 0 1px rgba(52, 224, 161, 0.5), 0 8px 30px -8px rgba(52, 224, 161, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  --mk-shadow-window: 0 40px 120px -30px rgba(0, 0, 0, 0.9), 0 -20px 80px -40px rgba(52, 224, 161, 0.35);
+  --mk-shadow-card: 0 20px 60px -15px rgba(0, 0, 0, 0.7);
+
+  --mk-radius-chip: 8px;
+  --mk-radius-button: 10px;
+  --mk-radius-button-lg: 12px;
+  --mk-radius-panel: 14px;
+  --mk-radius-window: 18px;
+  --mk-radius-card: 20px;
+  --mk-radius-cta: 24px;
+}
+
+.mk[data-theme="light"] {
+  --mk-bg: #F7F5F0;
+  --mk-bg-2: #F1EEE7;
+  --mk-surface: #FFFFFF;
+  --mk-surface-2: #F1EEE7;
+  --mk-line: #E6E1D7;
+  --mk-line-2: #D9D3C7;
+  --mk-text: #121212;
+  --mk-muted: #5F5A52;
+  --mk-subtle: #8C867C;
+  --mk-accent: #0B6E4F;
+  --mk-accent-bright: #12A579;
+  --mk-accent-soft: #E3F3EC;
+  --mk-accent-ink: #FFFFFF;
+  --mk-glow: #12A579;
+  --mk-warn: #A15C07;
+  --mk-danger: #B42318;
+  --mk-dark-band: #111214;
+
+  --mk-shadow-cta: 0 10px 30px -10px rgba(11, 110, 79, 0.7);
+  --mk-shadow-window: 0 40px 120px -30px rgba(20, 20, 20, 0.25);
+  --mk-shadow-card: 0 1px 2px rgba(20, 20, 20, 0.04), 0 12px 32px -12px rgba(20, 20, 20, 0.10);
+
+  --mk-radius-chip: 999px;
+  --mk-radius-button: 999px;
+  --mk-radius-button-lg: 999px;
+  --mk-radius-panel: 14px;
+  --mk-radius-window: 18px;
+  --mk-radius-card: 20px;
+  --mk-radius-cta: 999px;
+}
+
+/* Terminal Tags */
+.tag-in {
+  background-color: rgba(56, 198, 224, 0.12);
+  color: #7FDDF0;
+}
+.tag-au {
+  background-color: rgba(255, 255, 255, 0.07);
+  color: #B6BFCC;
+}
+.tag-rs {
+  background-color: rgba(245, 180, 85, 0.12);
+  color: #F5C27A;
+}
+.tag-eg {
+  background-color: rgba(255, 255, 255, 0.03);
+  color: #E2E8F0;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+.tag-ds {
+  background-color: rgba(52, 224, 161, 0.12);
+  color: #6EF0BD;
+}
+
+/* Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+  .mk *,
+  .mk *::before,
+  .mk *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }
 
 @layer base {

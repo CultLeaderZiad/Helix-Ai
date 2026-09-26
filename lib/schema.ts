@@ -460,6 +460,7 @@ export type LeadGenStage =
 
 export type LeadGenEngine = 'http' | 'stealth' | 'dynamic' | 'auto'
 export type LeadGenMode = 'crawl' | 'sitemap' | 'shopify' | 'csv_feed' | 'digest'
+export type LeadGenJobKind = 'crawl' | 'enrich' | 'find'
 
 export interface LeadGenJob {
   id: string
@@ -470,6 +471,7 @@ export interface LeadGenJob {
   stage_label: string
   stage_index: number
   stages_total: number
+  job_kind?: LeadGenJobKind
   brief: {
     icp: string
     geos: string[]
@@ -514,6 +516,36 @@ export interface LeadGenJob {
   updated_at: string
 }
 
+export type LeadDescriptionSource =
+  | 'meta'
+  | 'og'
+  | 'jsonld'
+  | 'page'
+  | 'tinyfish_fetch'
+  | 'tinyfish_agent'
+  | 'google_places'
+  | 'none'
+
+export type LeadGeoSource =
+  | 'schema_org'
+  | 'address_text'
+  | 'tld'
+  | 'google_places'
+  | 'foursquare'
+  | 'osm'
+  | 'none'
+
+export type LeadOrigin = 'crawl' | 'enrich_url' | 'find_leads' | 'search_save' | 'watch'
+
+export interface LeadPerson {
+  name: string
+  position?: string
+  email?: string
+  confidence?: number
+  linkedin?: string
+  source?: string
+}
+
 export interface LeadGenLead {
   id: string
   job_id: string
@@ -521,6 +553,17 @@ export interface LeadGenLead {
   company_name: string | null
   website: string | null
   domain: string | null
+  description?: string | null
+  description_source?: LeadDescriptionSource
+  city?: string | null
+  country?: string | null
+  geo_source?: LeadGeoSource
+  place_id?: string | null
+  place_provider?: string | null
+  origin?: LeadOrigin
+  pages_checked?: number
+  places_fetched_at?: string | null
+  people?: LeadPerson[]
   emails: string[]
   phones: string[]
   socials: Record<string, string>
@@ -529,7 +572,7 @@ export interface LeadGenLead {
   markdown_excerpt: string | null
   markdown_artifact_path?: string | null
   extract_status: 'empty' | 'partial' | 'ok' | 'failed'
-  fetch_status: 'ok' | 'blocked' | 'rate_limited' | 'error'
+  fetch_status: 'ok' | 'blocked' | 'rate_limited' | 'error' | 'not_found'
   engine_used: LeadGenEngine | string
   email_source: 'website' | 'hunter' | 'bio' | 'none'
   phone_source: 'website' | 'bio' | 'none'
@@ -548,4 +591,63 @@ export interface LeadGenLead {
   created_at: string
   updated_at: string
 }
+
+export type SearchRequestKind = 'search_web' | 'find_leads' | 'enrich_url' | 'get_watch_results' | 'run_watch'
+export type SearchRequestOrigin = 'search_page' | 'leadgen' | 'watch_cron' | 'watch_open' | 'mcp'
+export type SearchRequestStatus = 'running' | 'succeeded' | 'partial' | 'failed'
+
+export interface SearchRequest {
+  id: string
+  client_id: string
+  user_id?: string | null
+  kind: SearchRequestKind
+  origin: SearchRequestOrigin
+  query: string
+  params: Record<string, unknown>
+  status: SearchRequestStatus
+  providers_used: string[]
+  results_count: number
+  cost_micros: number
+  error_msg?: string | null
+  watch_id?: string | null
+  leadgen_job_id?: string | null
+  created_at: string
+  completed_at?: string | null
+}
+
+export interface SearchEvent {
+  id: number
+  request_id: string
+  client_id: string
+  provider: string
+  status: 'ok' | 'empty' | 'not_found' | 'blocked' | 'rate_limited' | 'quota_blocked' | 'unavailable' | 'error' | 'pending'
+  http_status?: number | null
+  latency_ms?: number | null
+  units: number
+  cost_micros: number
+  external_ref?: string | null
+  detail?: string | null
+  created_at: string
+}
+
+export interface SearchResult {
+  id: string
+  request_id: string
+  client_id: string
+  rank: number
+  result_type: 'business' | 'web_page' | 'social_profile' | 'news'
+  title: string | null
+  url: string | null
+  domain: string | null
+  snippet: string | null
+  sources: string[]
+  place_id?: string | null
+  place_provider?: string | null
+  payload: Record<string, unknown>
+  fingerprint: string
+  is_new: boolean
+  saved_lead_id?: string | null
+  created_at: string
+}
+
 

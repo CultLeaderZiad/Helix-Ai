@@ -12,15 +12,10 @@ export interface BuildUrlQueueOptions {
   mode?: string
 }
 
-const COMMON_CONTACT_PATHS = [
+// Keep 2 primary contact paths for fallback only when no internal links are found
+const FALLBACK_CONTACT_PATHS = [
   '/contact',
-  '/contact-us',
-  '/about',
-  '/about-us',
-  '/ar/contact',
-  '/ar/contact-us',
-  '/ar/about',
-  '/ar/about-us',
+  '/contact-us'
 ]
 
 /**
@@ -108,7 +103,7 @@ export async function buildUrlQueue(options: BuildUrlQueueOptions): Promise<stri
     }
   }
 
-  // 5. If queue still has budget, enqueue contact/about variants for unique seed domains
+  // 5. If queue still has budget, enqueue max 2 contact variants for unique seed domains as fallbacks (F2)
   if (queue.length < maxPages) {
     const seedOrigins = new Set<string>()
     for (const url of queue) {
@@ -121,7 +116,7 @@ export async function buildUrlQueue(options: BuildUrlQueueOptions): Promise<stri
     }
 
     for (const origin of seedOrigins) {
-      for (const path of COMMON_CONTACT_PATHS) {
+      for (const path of FALLBACK_CONTACT_PATHS) {
         if (queue.length >= maxPages) break
         addUrl(`${origin}${path}`)
       }

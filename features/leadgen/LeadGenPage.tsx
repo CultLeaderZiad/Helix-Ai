@@ -4,23 +4,17 @@ import React, { useState } from 'react'
 import { useLeadGenJob } from '@/hooks/useLeadGenJob'
 import { SettingsStrip } from './SettingsStrip'
 import { EmptyState } from './EmptyStates'
-import { BriefForm } from './BriefForm'
-import { SeedInput } from './SeedInput'
-import { EnginePicker } from './EnginePicker'
-import { RecipeLibrary } from './RecipeLibrary'
+import { ModeTabs, LeadGenModeTab } from './ModeTabs'
+import { EnrichForm } from './EnrichForm'
+import { FindForm } from './FindForm'
+import { AdvancedPanel } from './AdvancedPanel'
 import { JobProgress } from './JobProgress'
 import { LeadsTable } from './LeadsTable'
 import { LeadDetail } from './LeadDetail'
 import { ExportBar } from './ExportBar'
 import { CrmUpsertButton } from './CrmUpsertButton'
-import { estimateJobCredits } from '@/lib/leadgen/credits'
-import type {
-  LeadGenBrief,
-  LeadGenSeeds,
-  LeadGenEngine,
-  LeadGenMode,
-  LeadGenRecipe,
-} from '@/lib/leadgen/types'
+import { getExportUrl } from '@/lib/leadgen/client'
+import type { LeadGenEngine } from '@/lib/leadgen/types'
 
 interface LeadGenPageProps {
   businessName?: string | null
@@ -29,39 +23,20 @@ interface LeadGenPageProps {
 
 export function LeadGenPage({ businessName, initialJobId }: LeadGenPageProps) {
   const [isArabic, setIsArabic] = useState(false)
-  const [showCreateForm, setShowCreateForm] = useState(false)
+  const [activeTab, setActiveTab] = useState<LeadGenModeTab>('enrich')
 
-  // Form state
-  const [brief, setBrief] = useState<LeadGenBrief>({
-    icp: 'Commercial construction contractors in Riyadh and Dubai specializing in enterprise fit-outs',
-    geos: ['SA', 'AE', 'JO', 'EG'],
-    languages: ['ar', 'en'],
-    exclude_domains: [],
-    max_pages: 80,
-    max_leads: 50,
-    credit_budget: 50,
-    outreach_min_score: 50,
-  })
-
-  const [seeds, setSeeds] = useState<LeadGenSeeds>({
-    urls: ['https://example.com'],
-    sitemap_url: null,
-    shopify_url: null,
-    domains_csv: null,
-  })
-
-  const [engineDefault, setEngineDefault] = useState<LeadGenEngine>('auto')
-  const [mode, setMode] = useState<LeadGenMode>('crawl')
-  const [recipeId, setRecipeId] = useState<string>('mena-construction-contact')
-  const [robotsObey, setRobotsObey] = useState<boolean>(true)
-  const [adaptive, setAdaptive] = useState<boolean>(true)
-  const [enrichEmails, setEnrichEmails] = useState<boolean>(true)
-  const [generateOutreach, setGenerateOutreach] = useState<boolean>(true)
+  // Form states
+  const [enrichUrls, setEnrichUrls] = useState('')
+  const [findQuery, setFindQuery] = useState('')
+  const [findLimit, setFindLimit] = useState(20)
+  const [hunterEnabled, setHunterEnabled] = useState(false)
+  const [engine, setEngine] = useState<LeadGenEngine>('auto')
+  const [pagesPerSite, setPagesPerSite] = useState(4)
+  const [robotsObey, setRobotsObey] = useState(true)
 
   const {
     state,
     health,
-    recipes,
     jobs,
     activeJob,
     leads,
@@ -76,56 +51,101 @@ export function LeadGenPage({ businessName, initialJobId }: LeadGenPageProps) {
     selectJob,
     selectLead,
     crmUpsert,
-    exportCsv,
     exportJsonl,
     reset,
   } = useLeadGenJob(initialJobId)
 
-  const handleSelectRecipe = (recipe: LeadGenRecipe) => {
-    setRecipeId(recipe.id)
-    setMode(recipe.mode)
-    setEngineDefault(recipe.engine_default)
-    setAdaptive(recipe.adaptive)
-    setRobotsObey(recipe.robots_obey)
-    setBrief(prev => ({
-      ...prev,
-      max_pages: recipe.max_pages ?? prev.max_pages,
-    }))
-  }
-
-  const handleCreateSubmit = async (e: React.FormEvent) => {
+  const handleEnrichSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    const urls = enrichUrls
+      .split(/[\r\n]+/)
+      .map(u => u.trim())
+      .filter(Boolean)
+      .slice(0, 25)
+
+    if (urls.length === 0) return
+
     try {
       await createJob({
-        brief,
-        seeds,
-        engine_default: engineDefault,
-        mode,
-        recipe_id: recipeId,
+        job_kind: 'enrich',
+        seeds: { urls },
+        engine_default: engine,
+        mode: 'crawl',
+        recipe_id: 'mena-construction-contact',
         robots_obey: robotsObey,
-        adaptive,
-        enrich_emails: enrichEmails,
-        generate_outreach: generateOutreach,
+        adaptive: true,
+        enrich_emails: true,
+        generate_outreach: false,
+        hunter: { enabled: hunterEnabled },
+        brief: {
+          icp: 'Direct website enrichment',
+          geos: ['SA', 'AE', 'EG', 'JO'],
+          languages: ['ar', 'en'],
+          exclude_domains: [],
+          max_pages: urls.length * pagesPerSite,
+          max_leads: urls.length,
+          credit_budget: urls.length,
+          outreach_min_score: 50
+        }
       })
-      setShowCreateForm(false)
     } catch {
-      // Error handled by hook
+      // Handled in hook
     }
   }
 
-  const estimatedCredits = estimateJobCredits({
-    maxPages: brief.max_pages,
-    maxLeads: brief.max_leads,
-    enrichEmails,
-    generateOutreach,
-  })
+  const handleFindSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!findQuery.trim()) return
+
+    try {
+      await createJob({
+        job_kind: 'find',
+        find: {
+          query: findQuery.trim(),
+          limit: findLimit,
+          radius_m: 50000
+        },
+        seeds: { urls: [] },
+        engine_default: engine,
+        mode: 'crawl',
+        recipe_id: 'mena-construction-contact',
+        robots_obey: robotsObey,
+        adaptive: true,
+        enrich_emails: true,
+        generate_outreach: false,
+        hunter: { enabled: hunterEnabled },
+        brief: {
+          icp: findQuery.trim(),
+          geos: ['SA', 'AE', 'EG', 'JO'],
+          languages: ['ar', 'en'],
+          exclude_domains: [],
+          max_pages: findLimit * pagesPerSite,
+          max_leads: findLimit,
+          credit_budget: findLimit,
+          outreach_min_score: 50
+        }
+      })
+    } catch {
+      // Handled in hook
+    }
+  }
+
+  const handleExportCsv = (detail: 'simple' | 'full' = 'simple') => {
+    if (!activeJob) return
+    window.open(getExportUrl(activeJob.id, 'csv', detail, isArabic ? 'ar' : 'en'), '_blank')
+  }
+
+  const handleExportXlsx = () => {
+    if (!activeJob) return
+    window.open(getExportUrl(activeJob.id, 'xlsx', 'simple', isArabic ? 'ar' : 'en'), '_blank')
+  }
 
   return (
     <div
       dir={isArabic ? 'rtl' : 'ltr'}
       className="mx-auto max-w-7xl space-y-6 p-4 sm:p-6 lg:p-8 font-sans transition-all text-[#0f141b] dark:text-[#e8ecf2]"
     >
-      {/* Screen Title & Top Navigation Strip */}
+      {/* Top Header Strip */}
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#d9dee6] dark:border-white/10 pb-4">
         <div>
           <div className="flex items-center gap-2">
@@ -138,19 +158,17 @@ export function LeadGenPage({ businessName, initialJobId }: LeadGenPageProps) {
               </span>
             )}
           </div>
-          {/* Labeled exactly "Lead Generation" as required */}
           <h1 className="font-display text-2xl font-bold tracking-tight text-[#0f141b] dark:text-[#e8ecf2]">
-            {isArabic ? 'توليد العملاء (Lead Generation)' : 'Lead Generation'}
+            {isArabic ? 'توليد العملاء' : 'Lead Generation'}
           </h1>
           <p className="mt-1 text-xs text-[#5b6577] dark:text-[#8b95a7]">
             {isArabic
-              ? 'اكتشاف عملاء الشركات من المواقع العامة، الاستخراج المتكيف، والتقييم الذكي بدعم محرك Scrapling.'
-              : 'Public website lead discovery, adaptive extraction & scoring powered by Scrapling.'}
+              ? 'إثراء مواقع الشركات واكتشاف العملاء المحتملين عبر الخرائط ومحركات البحث.'
+              : 'Enrich business websites or find leads using Places and Web search with verified provenance.'}
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          {/* EN/AR Locale Toggle */}
           <button
             type="button"
             onClick={() => setIsArabic(!isArabic)}
@@ -159,16 +177,12 @@ export function LeadGenPage({ businessName, initialJobId }: LeadGenPageProps) {
             {isArabic ? 'English (EN)' : 'العربية (AR)'}
           </button>
 
-          {/* Job History Selector */}
           {jobs.length > 0 && (
             <select
               value={activeJob?.id ?? ''}
               onChange={e => {
                 const j = jobs.find(x => x.id === e.target.value)
-                if (j) {
-                  selectJob(j)
-                  setShowCreateForm(false)
-                }
+                if (j) selectJob(j)
               }}
               className="max-w-[200px] truncate rounded border border-[#cfd6df] dark:border-white/15 bg-white dark:bg-[#11151c] px-2.5 py-1 text-xs font-mono text-[#0f141b] dark:text-[#e8ecf2]"
             >
@@ -180,141 +194,76 @@ export function LeadGenPage({ businessName, initialJobId }: LeadGenPageProps) {
             </select>
           )}
 
-          {/* New Job Button */}
-          <button
-            type="button"
-            onClick={() => {
-              setShowCreateForm(!showCreateForm)
-              if (!showCreateForm) reset()
-            }}
-            className="rounded-md bg-[#0f141b] dark:bg-[#e8ecf2] px-3.5 py-1.5 text-xs font-semibold text-[#f4f6f9] dark:text-[#0b0e13] hover:opacity-90 transition-opacity"
-          >
-            {showCreateForm
-              ? isArabic ? 'إلغاء' : 'Cancel'
-              : isArabic ? '+ مهمة استخراج جديدة' : '+ New Acquisition Job'}
-          </button>
+          {activeJob && (
+            <button
+              type="button"
+              onClick={reset}
+              className="rounded-md border border-[#cfd6df] dark:border-white/15 px-3 py-1.5 text-xs font-medium text-[#5b6577] dark:text-[#8b95a7] hover:text-[#0f141b] dark:hover:text-[#e8ecf2]"
+            >
+              {isArabic ? '+ مهمة جديدة' : '+ New Task'}
+            </button>
+          )}
         </div>
       </div>
 
-      {/* Settings / Worker Health Strip */}
+      {/* Settings / Engine Strip */}
       <SettingsStrip health={health} isArabic={isArabic} />
 
-      {/* Error readout if present */}
+      {/* Error Banner */}
       {error && (
         <div className="rounded-lg border border-[#c62f2a]/20 dark:border-[#f85149]/30 bg-[#c62f2a]/5 dark:bg-[#f85149]/10 p-3 text-xs text-[#c62f2a] dark:text-[#f85149]">
-          <span className="font-semibold">{isArabic ? 'خطأ في العملية:' : 'Error:'}</span> {error}
+          <span className="font-semibold">{isArabic ? 'خطأ:' : 'Error:'}</span> {error}
         </div>
       )}
 
-      {/* Worker Offline Alert if worker is offline */}
-      {health?.worker === 'offline' && !showCreateForm && !activeJob && (
-        <EmptyState type="worker_offline" isArabic={isArabic} />
+      {/* 2-Mode Creation Form (Active when no job or user clicked + New Task) */}
+      {!activeJob && (
+        <div className="rounded-xl border border-[#d9dee6] dark:border-white/10 bg-white dark:bg-[#11151c] p-6 space-y-6">
+          <ModeTabs activeTab={activeTab} onChange={setActiveTab} isArabic={isArabic} />
+
+          {activeTab === 'enrich' ? (
+            <EnrichForm
+              urlsText={enrichUrls}
+              onChangeUrlsText={setEnrichUrls}
+              hunterEnabled={hunterEnabled}
+              onChangeHunterEnabled={setHunterEnabled}
+              hunterAvailable={true}
+              onSubmit={handleEnrichSubmit}
+              isSubmitting={state === 'enqueueing'}
+              isArabic={isArabic}
+            />
+          ) : (
+            <FindForm
+              query={findQuery}
+              onChangeQuery={setFindQuery}
+              limit={findLimit}
+              onChangeLimit={setFindLimit}
+              hunterEnabled={hunterEnabled}
+              onChangeHunterEnabled={setHunterEnabled}
+              hunterAvailable={true}
+              googleAvailable={true}
+              osmAvailable={true}
+              onSubmit={handleFindSubmit}
+              isSubmitting={state === 'enqueueing'}
+              isArabic={isArabic}
+            />
+          )}
+
+          <AdvancedPanel
+            engine={engine}
+            onChangeEngine={v => setEngine(v as LeadGenEngine)}
+            pagesPerSite={pagesPerSite}
+            onChangePagesPerSite={setPagesPerSite}
+            robotsObey={robotsObey}
+            onChangeRobotsObey={setRobotsObey}
+            isArabic={isArabic}
+          />
+        </div>
       )}
 
-      {/* Creation Wizard / Configuration Form */}
-      {showCreateForm ? (
-        <form
-          onSubmit={handleCreateSubmit}
-          className="rounded-xl border border-[#d9dee6] dark:border-white/10 bg-white dark:bg-[#11151c] p-6 space-y-6"
-        >
-          <div className="border-b border-[#d9dee6] dark:border-white/10 pb-3">
-            <h2 className="font-display text-base font-bold text-[#0f141b] dark:text-[#e8ecf2]">
-              {isArabic ? 'تكوين مهمة استخراج عملاء جديدة' : 'Configure New Acquisition Job'}
-            </h2>
-            <p className="mt-0.5 text-xs text-[#5b6577] dark:text-[#8b95a7]">
-              {isArabic
-                ? 'حدد معايير العميل المستهدف، الروابط، والمحرك. ستقوم المنصة بالتحقق وجدولة المهمة في Supabase ليقوم مشغل Scrapling بمعالجتها.'
-                : 'Define ICP brief, seed targets, and extraction engine. Helix-Ai API will validate and enqueue the job for Scrapling worker execution.'}
-            </p>
-          </div>
-
-          {/* 1. Recipe Library Selector */}
-          <RecipeLibrary
-            recipes={recipes}
-            selectedRecipeId={recipeId}
-            onSelectRecipe={handleSelectRecipe}
-            isArabic={isArabic}
-            disabled={state === 'enqueueing'}
-          />
-
-          <hr className="border-[#d9dee6] dark:border-white/10" />
-
-          {/* 2. Brief Form */}
-          <BriefForm
-            brief={brief}
-            onChange={setBrief}
-            isArabic={isArabic}
-            disabled={state === 'enqueueing'}
-          />
-
-          <hr className="border-[#d9dee6] dark:border-white/10" />
-
-          {/* 3. Seed Targets */}
-          <SeedInput
-            seeds={seeds}
-            onChange={setSeeds}
-            isArabic={isArabic}
-            disabled={state === 'enqueueing'}
-          />
-
-          <hr className="border-[#d9dee6] dark:border-white/10" />
-
-          {/* 4. Engine & Guardrails */}
-          <EnginePicker
-            engine={engineDefault}
-            mode={mode}
-            adaptive={adaptive}
-            robotsObey={robotsObey}
-            enrichEmails={enrichEmails}
-            generateOutreach={generateOutreach}
-            enginesAvailable={health?.engines_available}
-            onChange={up => {
-              if (up.engine !== undefined) setEngineDefault(up.engine)
-              if (up.mode !== undefined) setMode(up.mode)
-              if (up.adaptive !== undefined) setAdaptive(up.adaptive)
-              if (up.robotsObey !== undefined) setRobotsObey(up.robotsObey)
-              if (up.enrichEmails !== undefined) setEnrichEmails(up.enrichEmails)
-              if (up.generateOutreach !== undefined) setGenerateOutreach(up.generateOutreach)
-            }}
-            isArabic={isArabic}
-            disabled={state === 'enqueueing'}
-          />
-
-          {/* Submit Action Bar */}
-          <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[#d9dee6] dark:border-white/10 pt-4">
-            <div className="text-xs font-mono text-[#5b6577] dark:text-[#8b95a7]">
-              {isArabic ? 'الرصيد التقديري:' : 'Estimated usage:'}{' '}
-              <span className="font-semibold text-[#0e8da6] dark:text-[#38c6e0]">
-                {estimatedCredits} {isArabic ? 'رصيد' : 'credits'}
-              </span>{' '}
-              · {isArabic ? 'تتبع الاستخدام نشط' : 'tracked on job'}
-            </div>
-
-            <div className="flex items-center gap-3">
-              <button
-                type="button"
-                onClick={() => setShowCreateForm(false)}
-                className="rounded border border-[#cfd6df] dark:border-white/15 px-4 py-2 text-xs font-medium text-[#5b6577] dark:text-[#8b95a7] hover:text-[#0f141b] dark:hover:text-[#e8ecf2]"
-              >
-                {isArabic ? 'إلغاء' : 'Cancel'}
-              </button>
-
-              <button
-                type="submit"
-                disabled={state === 'enqueueing'}
-                className="rounded-md bg-[#0e8da6] dark:bg-[#38c6e0] px-5 py-2 text-xs font-semibold text-white dark:text-[#06141a] hover:opacity-90 disabled:opacity-50 transition-opacity"
-              >
-                {state === 'enqueueing'
-                  ? isArabic ? 'جارٍ الإدراج...' : 'Enqueueing Job...'
-                  : isArabic ? 'بدء مهمة الاستخراج' : 'Enqueue & Launch Job'}
-              </button>
-            </div>
-          </div>
-        </form>
-      ) : activeJob ? (
-        /* Active Job Workspace */
+      {/* Active Job Workspace */}
+      {activeJob && (
         <div className="space-y-6">
-          {/* Real Job Logs & Stage Progress */}
           <JobProgress
             job={activeJob}
             onPause={pause}
@@ -324,11 +273,11 @@ export function LeadGenPage({ businessName, initialJobId }: LeadGenPageProps) {
             isTabPaused={isTabPaused}
           />
 
-          {/* Action Strip: Export + CRM Upsert */}
           <div className="flex flex-wrap items-center justify-between gap-4">
             <ExportBar
               leadCount={leads.length}
-              onExportCsv={exportCsv}
+              onExportCsv={handleExportCsv}
+              onExportXlsx={handleExportXlsx}
               onExportJsonl={exportJsonl}
               isArabic={isArabic}
             />
@@ -341,7 +290,6 @@ export function LeadGenPage({ businessName, initialJobId }: LeadGenPageProps) {
             />
           </div>
 
-          {/* Leads Table or Empty State */}
           {leads.length > 0 ? (
             <LeadsTable
               leads={leads}
@@ -355,7 +303,6 @@ export function LeadGenPage({ businessName, initialJobId }: LeadGenPageProps) {
             <EmptyState type="no_leads" isArabic={isArabic} />
           )}
 
-          {/* Selected Lead Detail Modal / Panel */}
           {selectedLead && (
             <LeadDetail
               lead={selectedLead}
@@ -364,14 +311,6 @@ export function LeadGenPage({ businessName, initialJobId }: LeadGenPageProps) {
             />
           )}
         </div>
-      ) : (
-        /* No Jobs Available State */
-        <EmptyState
-          type="no_jobs"
-          isArabic={isArabic}
-          onAction={() => setShowCreateForm(true)}
-          actionLabel={isArabic ? '+ إنشاء أول مهمة استخراج' : '+ Enqueue First Job'}
-        />
       )}
     </div>
   )

@@ -38,5 +38,10 @@ export async function GET(
     return NextResponse.json({ error: 'Lead generation job not found' }, { status: 404, headers })
   }
 
-  return NextResponse.json({ job }, { headers })
+  const resolvedJob = {
+    ...job,
+    job_kind: job.job_kind || job.brief?.job_kind || 'crawl'
+  }
+
+  return NextResponse.json({ job: resolvedJob }, { headers })
 }

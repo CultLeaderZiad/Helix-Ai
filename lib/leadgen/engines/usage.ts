@@ -34,6 +34,7 @@ export function getEngineCaps(): EngineCaps {
 
 /**
  * Aggregates current usage for UTC day (dynamic browser seconds) and UTC month (stealth requests).
+ * Note (F8): Limits on Cloudflare & Bright Data are account-wide, so cap checks are global.
  */
 export async function getCurrentUsage(clientId?: string | null): Promise<EngineUsageStats> {
   const caps = getEngineCaps()
@@ -44,35 +45,25 @@ export async function getCurrentUsage(clientId?: string | null): Promise<EngineU
   let stealthMonthUsed = 0
 
   try {
-    // 1. Dynamic usage for today
-    let dynamicQuery = adminDb
+    // 1. Dynamic usage for today (account-wide)
+    const { data: dynamicRows } = await adminDb
       .from('leadgen_engine_usage')
       .select('browser_ms')
       .eq('usage_date', todayDate)
       .eq('engine', 'dynamic')
 
-    if (clientId) {
-      dynamicQuery = dynamicQuery.eq('client_id', clientId)
-    }
-
-    const { data: dynamicRows } = await dynamicQuery
     if (dynamicRows) {
       const totalMs = dynamicRows.reduce((acc, row) => acc + (Number(row.browser_ms) || 0), 0)
       browserSecondsUsed = Math.round(totalMs / 1000)
     }
 
-    // 2. Stealth requests for current month
-    let stealthQuery = adminDb
+    // 2. Stealth requests for current month (account-wide)
+    const { data: stealthRows } = await adminDb
       .from('leadgen_engine_usage')
       .select('requests')
       .eq('usage_month', currentMonth)
       .eq('engine', 'stealth')
 
-    if (clientId) {
-      stealthQuery = stealthQuery.eq('client_id', clientId)
-    }
-
-    const { data: stealthRows } = await stealthQuery
     if (stealthRows) {
       stealthMonthUsed = stealthRows.reduce((acc, row) => acc + (Number(row.requests) || 0), 0)
     }
@@ -125,22 +116,34 @@ export async function checkEngineQuota(
 }
 
 /**
- * Records an engine invocation and browser milliseconds into leadgen_engine_usage.
+ * Records an engine/provider invocation and browser milliseconds into leadgen_engine_usage.
+ * Uses atomic RPC increment_provider_usage with select-update fallback.
  */
 export async function recordEngineUsage(
-  engine: 'http' | 'dynamic' | 'stealth',
+  engine: string,
   clientId: string | null,
   browserMs: number = 0,
-  requests: number = 1
+  requests: number = 1,
+  costMicros: number = 0
 ): Promise<void> {
   const { todayDate, currentMonth } = getUTCUsagePeriods()
   const adminDb = createSupabaseAdminClient()
 
   try {
-    // Check if row already exists for this date, month, engine, client_id
+    const { error: rpcError } = await (adminDb as any).rpc('increment_provider_usage', {
+      p_engine: engine,
+      p_client: clientId || null,
+      p_requests: requests,
+      p_browser_ms: browserMs,
+      p_cost_micros: costMicros,
+    })
+
+    if (!rpcError) return
+
+    // Fallback: select and update/insert
     let query = adminDb
       .from('leadgen_engine_usage')
-      .select('id, requests, browser_ms')
+      .select('id, requests, browser_ms, cost_micros')
       .eq('usage_date', todayDate)
       .eq('usage_month', currentMonth)
       .eq('engine', engine)
@@ -159,6 +162,7 @@ export async function recordEngineUsage(
         .update({
           requests: (Number(existing.requests) || 0) + requests,
           browser_ms: (Number(existing.browser_ms) || 0) + browserMs,
+          cost_micros: (Number(existing.cost_micros) || 0) + costMicros,
           updated_at: new Date().toISOString(),
         })
         .eq('id', existing.id)
@@ -170,9 +174,13 @@ export async function recordEngineUsage(
         client_id: clientId || null,
         requests,
         browser_ms: browserMs,
+        cost_micros: costMicros,
       })
     }
   } catch (err) {
     console.error('[leadgen/usage] Failed to record usage:', err)
   }
 }
+
+export const incrementProviderUsage = recordEngineUsage
+

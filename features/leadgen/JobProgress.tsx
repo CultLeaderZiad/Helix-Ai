@@ -32,6 +32,7 @@ export function JobProgress({
   isArabic = false,
   isTabPaused = false,
 }: JobProgressProps) {
+  const [showLogs, setShowLogs] = React.useState(false)
   const terminalRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -211,8 +212,17 @@ export function JobProgress({
       <div>
         <div className="mb-1 flex items-center justify-between text-[11px] font-mono text-[#5b6577] dark:text-[#8b95a7]">
           <span>{isArabic ? 'سجل العمليات المباشر' : 'Live Execution Logs'}</span>
-          <span>{job.logs?.length ?? 0} {isArabic ? 'أسطر' : 'lines'}</span>
+          <button
+            type="button"
+            onClick={() => setShowLogs(!showLogs)}
+            className="text-xs text-[#0e8da6] dark:text-[#38c6e0] hover:underline"
+          >
+            {showLogs
+              ? (isArabic ? 'إخفاء السجل' : 'Hide log')
+              : (isArabic ? 'عرض السجل' : 'Show log')} ({job.logs?.length ?? 0} {isArabic ? 'أسطر' : 'lines'})
+          </button>
         </div>
+        {showLogs && (
         <div
           ref={terminalRef}
           role="log"
@@ -247,6 +257,7 @@ export function JobProgress({
             </div>
           )}
         </div>
+        )}
       </div>
     </div>
   )
