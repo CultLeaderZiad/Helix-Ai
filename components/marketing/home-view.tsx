@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import {
   Calendar,
   CalendarCheck,
@@ -57,6 +57,51 @@ export function HomeView({ plans }: { plans: PricingPlan[] }) {
   const { lang } = useMarketingPrefs()
   const ar = lang === 'ar'
   const [flow, setFlow] = useState(0)
+  const stageRef = useRef<HTMLElement>(null)
+  const chatRef = useRef<HTMLDivElement>(null)
+  const [progress, setProgress] = useState(1)
+  const [scrub, setScrub] = useState(false)
+
+  useLayoutEffect(() => {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const el = stageRef.current
+    if (!el || reduce) {
+      setProgress(1)
+      setScrub(false)
+      return
+    }
+    setScrub(true)
+    const onScroll = () => {
+      const rect = el.getBoundingClientRect()
+      const total = el.offsetHeight - window.innerHeight
+      const seen = total <= 1
+        ? (window.innerHeight - rect.top) / (window.innerHeight + el.offsetHeight)
+        : -rect.top / total
+      setProgress(Math.min(1, Math.max(0, seen)))
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  const chatGates = [0, 0.28, 0.4, 0.52, 0.62, 0.72]
+  const visibleChats = scrub ? CHAT.filter((_, index) => progress >= chatGates[index]).length : CHAT.length
+  const missedIn = !scrub || progress >= 0.1
+  const bookedIn = !scrub || progress >= 0.8
+  const livePath = progress < 0.12
+    ? 'helix.ai/live'
+    : progress < 0.3
+      ? 'helix.ai/live/missed-call'
+      : progress < 0.8
+        ? 'helix.ai/live/whatsapp'
+        : 'helix.ai/live/booked'
+  const sceneStep = progress < 0.3 ? 0 : progress < 0.8 ? 1 : 2
+
+  useEffect(() => {
+    const body = chatRef.current
+    if (!body) return
+    body.scrollTop = body.scrollHeight
+  }, [visibleChats])
 
   const faqs = ar
     ? [
@@ -100,7 +145,8 @@ export function HomeView({ plans }: { plans: PricingPlan[] }) {
 
   return (
     <>
-      <section className="hero">
+      <section className="hero hero-live" ref={stageRef}>
+        <div className="hero-pin">
         <div className="container">
           <div className="hero-grid">
             <div>
@@ -133,7 +179,12 @@ export function HomeView({ plans }: { plans: PricingPlan[] }) {
                 <span>{ar ? 'النظام ملكك بعد الإطلاق' : 'You keep ownership after go-live'}</span>
               </div>
             </div>
-            <div className="visual">
+            <div className={scrub ? 'visual is-scrub' : 'visual'}>
+              <p className="live-url">
+                <span className="hx-live" aria-hidden="true"><span className="hx-live-dot" /></span>
+                <span className="ltr">{livePath}</span>
+                <span className="caret" aria-hidden="true" />
+              </p>
               <div className="glow" />
               <div className="phone">
                 <div className="island" />
@@ -146,9 +197,9 @@ export function HomeView({ plans }: { plans: PricingPlan[] }) {
                       <div className="wa-sub">حساب أعمال · نشط الآن</div>
                     </div>
                   </div>
-                  <div className="wa-body">
+                  <div className={scrub ? 'wa-body is-scrub' : 'wa-body'} ref={chatRef}>
                     <span className="wa-day">اليوم</span>
-                    {CHAT.map(b => (
+                    {CHAT.slice(0, visibleChats).map(b => (
                       <div key={b.text} className={`bub ${b.side}`}>
                         {b.text}
                         <span className="t">{b.time}</span>
@@ -158,7 +209,7 @@ export function HomeView({ plans }: { plans: PricingPlan[] }) {
                   <div className="wa-input"><div className="f">اكتب رسالة</div></div>
                 </div>
               </div>
-              <div className="float c-missed">
+              <div className={missedIn ? 'float c-missed is-in' : 'float c-missed'}>
                 <div className="c-row">
                   <div className="c-ic amber"><PhoneMissed size={18} /></div>
                   <div>
@@ -167,7 +218,7 @@ export function HomeView({ plans }: { plans: PricingPlan[] }) {
                   </div>
                 </div>
               </div>
-              <div className="float c-booked">
+              <div className={bookedIn ? 'float c-booked is-in' : 'float c-booked'}>
                 <div className="c-row">
                   <div className="c-ic green"><CalendarCheck size={18} /></div>
                   <div>
@@ -191,11 +242,12 @@ export function HomeView({ plans }: { plans: PricingPlan[] }) {
               <span className="chip chip-example">{ar ? 'سيناريو توضيحي' : 'Example scenario'}</span>
               <div className="faint small" style={{ marginTop: 8 }}>{ar ? 'مكالمة فائتة واحدة، من البداية للنهاية' : 'One missed call, start to finish'}</div>
             </div>
-            <div><span className="sc-time">{ar ? '9:41 م' : '9:41 PM'}</span><span className="sc-what"><PhoneMissed size={16} />{ar ? 'مكالمة فائتة بعد الدوام' : 'Call missed after hours'}</span></div>
-            <div><span className="sc-time">{ar ? '9:41 م' : '9:41 PM'}</span><span className="sc-what"><MessageCircle size={16} />{ar ? 'أُرسل رد على واتساب' : 'WhatsApp reply sent'}</span></div>
-            <div><span className="sc-time">{ar ? '9:44 م' : '9:44 PM'}</span><span className="sc-what"><CalendarCheck size={16} />{ar ? 'حُجز موعد الخميس' : 'Booked for Thursday'}</span></div>
+            <div className={sceneStep === 0 ? 'is-on' : undefined}><span className="sc-time">{ar ? '9:41 م' : '9:41 PM'}</span><span className="sc-what"><PhoneMissed size={16} />{ar ? 'مكالمة فائتة بعد الدوام' : 'Call missed after hours'}</span></div>
+            <div className={sceneStep === 1 ? 'is-on' : undefined}><span className="sc-time">{ar ? '9:41 م' : '9:41 PM'}</span><span className="sc-what"><MessageCircle size={16} />{ar ? 'أُرسل رد على واتساب' : 'WhatsApp reply sent'}</span></div>
+            <div className={sceneStep === 2 ? 'is-on' : undefined}><span className="sc-time">{ar ? '9:44 م' : '9:44 PM'}</span><span className="sc-what"><CalendarCheck size={16} />{ar ? 'حُجز موعد الخميس' : 'Booked for Thursday'}</span></div>
             <div><span className="sc-out">{ar ? 'ولم يضطر أحد من فريقك للرد على الهاتف.' : 'Nobody on your team had to pick up the phone.'}</span></div>
           </div>
+        </div>
         </div>
       </section>
 

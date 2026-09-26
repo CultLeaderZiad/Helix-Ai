@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default async function SignUpPage() {
   const prefs = await getPublicPrefs()
   return (
-    <AuthShell>
+    <AuthShell variant="signup">
       <SignUpForm lang={prefs.lang} />
     </AuthShell>
   )
