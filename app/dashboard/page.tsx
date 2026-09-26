@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { createSupabaseServerClient } from '@/lib/supabase'
 import { getVerifiedSession } from '@/lib/auth/session'
 import { ConsoleShell } from '@/components/shell/console-shell'
+import { OverviewBoard, emptyOverview, type OverviewModel } from '@/components/dashboard/overview-board'
 import type { DealStage, IntegrationStatus, SystemType } from '@/lib/schema'
 
 const OPEN_STAGES: DealStage[] = [
@@ -165,63 +166,59 @@ export default async function ClientDashboardPage() {
       .concat(overdueInvoices > 0 ? ['invoices'] : [])
       .concat(degradedIntegrations > 0 ? ['integrations'] : [])
 
-  const empty = (newContacts ?? 0) === 0 && (monthBookings ?? 0) === 0 && (conversationsHandled ?? 0) === 0 && visibleSystems.length === 0
-  const first = (client?.business_name ?? session.user.email ?? 'there').split(' ')[0]
+  const empty = (newContacts ?? 0) === 0 && (monthBookings ?? 0) === 0 && (conversationsHandled ?? 0) === 0 && visibleSystems.length === 0 && pendingFacts === 0
+  const first = (client?.business_name ?? session.user.email ?? 'there').split(/[\s@]/)[0] || 'there'
+  const decisions = [
+    pendingFacts > 0 ? { title: 'Confirm a detail', body: `${pendingFacts} suggestion${pendingFacts === 1 ? '' : 's'} waiting. Nothing unclear is saved until you check.`, action: 'Review', href: '/dashboard/facts' } : null,
+    overdueInvoices > 0 ? { title: 'Overdue invoices', body: `${overdueInvoices} invoice${overdueInvoices === 1 ? '' : 's'} past due.`, action: 'Review', href: '/dashboard/billing' } : null,
+    degradedIntegrations > 0 ? { title: 'A connection needs attention', body: `${degradedIntegrations} integration${degradedIntegrations === 1 ? '' : 's'} degraded or offline.`, action: 'Review', href: '/dashboard/integrations' } : null,
+  ].filter((item): item is NonNullable<typeof item> => item !== null)
+
+  const live: OverviewModel = empty
+    ? emptyOverview(first)
+    : {
+        variant: 'live',
+        firstName: first,
+        summary: `This month your systems recorded ${conversationsHandled ?? 0} conversations and ${monthBookings ?? 0} bookings.${decisions.length ? ` ${decisions.length} thing${decisions.length === 1 ? '' : 's'} need your decision.` : ''}`,
+        kpis: [
+          { label: 'Appointments booked', value: String(monthBookings ?? 0), foot: 'From your workspace this month' },
+          { label: 'New contacts', value: String(newContacts ?? 0), foot: 'From your workspace this month' },
+          { label: 'Conversations handled', value: String(conversationsHandled ?? 0), foot: 'From your workspace this month' },
+          { label: 'Needs a decision', value: String(pendingFacts ?? 0), foot: pendingFacts ? 'Waiting in the review queue' : 'Nothing waiting' },
+        ],
+        bars: null,
+        barMax: 4,
+        decisions,
+        activity: visibleSystems.flatMap(system => {
+          const activity = activityBySystem.get(system.id)
+          if (!activity?.last && !activity?.count) return []
+          const name = SYSTEM_NAME[system.system_type as SystemType] ?? system.system_type
+          return [{
+            verb: 'Recorded',
+            text: `${activity?.count ?? 0} ${activity?.label ?? 'events'}`,
+            meta: name,
+            time: activity?.last ? formatShort(activity.last) : '',
+            tone: 'ok' as const,
+          }]
+        }),
+        systems: visibleSystems.map(system => {
+          const activity = activityBySystem.get(system.id)
+          const status = worstIntegration(system.system_type)
+          return {
+            name: SYSTEM_NAME[system.system_type as SystemType] ?? system.system_type,
+            meta: activity?.last ? `Last activity ${formatShort(activity.last)}` : 'No activity recorded yet',
+            status: status === 'connected' ? 'run' as const : 'pause' as const,
+          }
+        }),
+        jobs: [],
+      }
+  if (clientError && !empty) {
+    live.summary = 'Some workspace data could not be loaded. The counts below are what we could read.'
+  }
 
   return (
     <ConsoleShell variant="client" email={session.user.email ?? ''} businessName={client?.business_name ?? null}>
-      <div className="ph">
-        <div>
-          <h1>{empty ? `Welcome to Helix, ${first}` : `Good morning, ${first}`}</h1>
-          <p>
-            {empty
-              ? 'Your workspace is ready. Connect WhatsApp and your calendar, then the first conversation will show up here.'
-              : `This month your systems recorded ${conversationsHandled ?? 0} conversations and ${monthBookings ?? 0} bookings.`}
-          </p>
-        </div>
-      </div>
-      <div className="kpis">
-        {[
-          ['Appointments booked', String(monthBookings ?? 0)],
-          ['New contacts', String(newContacts ?? 0)],
-          ['Conversations handled', String(conversationsHandled ?? 0)],
-          ['Needs a decision', String(pendingFacts ?? 0)],
-        ].map(([label, value]) => (
-          <div className="kpi" key={label}>
-            <div className="kpi-l">{label}</div>
-            <div className="kpi-v"><b className="num">{empty ? '—' : value}</b></div>
-            <div className="foot">{empty ? 'Appears after your first conversation' : 'From your workspace'}</div>
-          </div>
-        ))}
-      </div>
-      {empty ? (
-        <div className="pnl" style={{ marginTop: 14 }}>
-          <div className="pnl-h"><b>Setup</b></div>
-          <p>No activity yet. Once your systems go live, every reply and booking shows up here.</p>
-        </div>
-      ) : (
-        <div className="pnl" style={{ marginTop: 14 }}>
-          <div className="pnl-h"><b>Your systems</b></div>
-          {clientError ? <p role="alert">System cards could not be loaded. Retry shortly.</p> : visibleSystems.length === 0 ? <p>No systems are visible yet.</p> : (
-            <ul className="sys">
-              {visibleSystems.map(system => {
-                const activity = activityBySystem.get(system.id)
-                const status = worstIntegration(system.system_type)
-                return (
-                  <li key={system.id}>
-                    <div>
-                      <b>{SYSTEM_NAME[system.system_type as SystemType] ?? system.system_type}</b>
-                      <span>{activity?.last ? `Last activity ${formatShort(activity.last)}` : 'No activity recorded yet'}</span>
-                    </div>
-                    <span className={status === 'connected' ? 'st run' : 'st pause'}>{status === 'connected' ? 'Running' : status === 'degraded' ? 'Attention' : 'Off'}</span>
-                  </li>
-                )
-              })}
-            </ul>
-          )}
-          {pendingFacts > 0 ? <p style={{ marginTop: 12 }}><Link href="/dashboard/facts">{pendingFacts} item{pendingFacts === 1 ? '' : 's'} need a decision</Link></p> : <p style={{ marginTop: 12 }}>Nothing needs you right now.</p>}
-        </div>
-      )}
+      <OverviewBoard model={live} />
     </ConsoleShell>
   )
 }

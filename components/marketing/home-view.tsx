@@ -1,9 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import {
   ArrowRight,
+  Calendar,
   CalendarCheck,
   ChartColumn,
   Check,
@@ -12,10 +13,12 @@ import {
   Inbox,
   KeyRound,
   MessageCircle,
+  Mic,
   Moon,
   PhoneMissed,
   ShieldCheck,
   Target,
+  Users,
 } from 'lucide-react'
 import { useMarketingPrefs } from '@/components/marketing/public-frame'
 import { HelixMark } from '@/components/marketing/helix-mark'
@@ -35,11 +38,28 @@ function money(n: number) {
   return new Intl.NumberFormat('en-US').format(n)
 }
 
+type FlowPill = { t: string; ok?: boolean }
+type FlowStep = {
+  k: string
+  kAr: string
+  when: string
+  whenAr: string
+  title: string
+  titleAr: string
+  icon: ReactNode
+  body?: string
+  bodyAr?: string
+  bubble?: string
+  pills?: FlowPill[]
+  pillsAr?: FlowPill[]
+}
+
 export function HomeView() {
   const { lang } = useMarketingPrefs()
   const ar = lang === 'ar'
   const plans = REGIONAL_PRICING_CONFIGS.gcc_enterprise.plans
   const [openFaq, setOpenFaq] = useState(0)
+  const [flow, setFlow] = useState(0)
 
   const faqs = ar
     ? [
@@ -56,6 +76,30 @@ export function HomeView() {
         ['How long does setup take?', 'It depends on the system and your tools. After the discovery call you get a written plan with milestones.'],
         ['Who owns the system and the data?', 'You do. After go-live you keep the setup, the integrations and the runbooks.'],
       ]
+
+  const FLOWS: FlowStep[][] = [
+    [
+      { k: 'STEP 1', kAr: 'الخطوة 1', when: '9:41 PM', whenAr: '9:41 م', title: 'A call is missed', titleAr: 'تفوتك مكالمة', body: 'Your phone system tells Helix the moment a call goes unanswered, day or night.', bodyAr: 'يُبلغ نظام الهاتف لديك Helix فور عدم الرد على أي مكالمة، ليلاً أو نهاراً.', icon: <PhoneMissed size={22} /> },
+      { k: 'STEP 2', kAr: 'الخطوة 2', when: 'seconds later', whenAr: 'بعد ثوانٍ', title: 'WhatsApp reply, in their language', titleAr: 'رد على واتساب بلغة العميل', bubble: 'لاحظنا اتصالك قبل قليل. كيف نقدر نخدمك؟', icon: <MessageCircle size={22} /> },
+      { k: 'STEP 3', kAr: 'الخطوة 3', when: '2 messages', whenAr: 'رسالتان', title: 'It asks the right questions', titleAr: 'يسأل الأسئلة الصحيحة', body: 'Which service, how soon, new or returning.', bodyAr: 'أي خدمة، ومتى، وهل هو عميل جديد أم سابق.', pills: [{ t: 'Teeth cleaning' }, { t: 'This week' }, { t: 'New patient' }], pillsAr: [{ t: 'تنظيف أسنان' }, { t: 'هذا الأسبوع' }, { t: 'مريض جديد' }], icon: <Target size={22} /> },
+      { k: 'STEP 4', kAr: 'الخطوة 4', when: '9:44 PM', whenAr: '9:44 م', title: 'Booked and confirmed', titleAr: 'حجز وتأكيد', body: 'Slot taken from your real calendar. Reminder the day before.', bodyAr: 'الموعد من تقويمك الفعلي، مع تذكير قبله بيوم.', pills: [{ t: 'Thu · 6:15 PM', ok: true }], pillsAr: [{ t: 'الخميس · 6:15 م', ok: true }], icon: <CalendarCheck size={22} /> },
+    ],
+    [
+      { k: 'STEP 1', kAr: 'الخطوة 1', when: '11:02 AM', whenAr: '11:02 ص', title: 'An inbound call, in Arabic', titleAr: 'مكالمة واردة بالعربية', body: 'The caller asks for a consultation this week. The reply stays in their dialect.', bodyAr: 'المتصل يطلب استشارة هذا الأسبوع، والرد يبقى بلهجته.', icon: <Mic size={22} /> },
+      { k: 'STEP 2', kAr: 'الخطوة 2', when: 'live calendar', whenAr: 'التقويم الحقيقي', title: 'It checks your real availability', titleAr: 'يراجع توفرك الحقيقي', body: 'Only open slots from your calendar are offered. Nothing is invented.', bodyAr: 'يعرض المواعيد المفتوحة في تقويمك فقط. لا يخترع وقتاً.', icon: <Calendar size={22} /> },
+      { k: 'STEP 3', kAr: 'الخطوة 3', when: '1 choice', whenAr: 'اختيار واحد', title: 'Sunday, 11:00 AM', titleAr: 'الأحد 11:00 ص', body: 'The caller picks a consultation. The slot is taken immediately.', bodyAr: 'يختار المتصل موعد الاستشارة، ويُحجز في لحظته.', pills: [{ t: 'Sun · 11:00 AM', ok: true }], pillsAr: [{ t: 'الأحد · 11:00 ص', ok: true }], icon: <CalendarCheck size={22} /> },
+      { k: 'STEP 4', kAr: 'الخطوة 4', when: 'seconds later', whenAr: 'بعد ثوانٍ', title: 'WhatsApp confirmation', titleAr: 'تأكيد على واتساب', bubble: 'تم تأكيد استشارتك الأحد 11:00 ص. هذا موقع العيادة.', icon: <MessageCircle size={22} /> },
+    ],
+    [
+      { k: 'STEP 1', kAr: 'الخطوة 1', when: 'from an ad', whenAr: 'من إعلان', title: 'A new lead arrives', titleAr: 'يصل عميل جديد', body: 'Instagram, Google, or a website form. The source is kept with the lead.', bodyAr: 'من إنستغرام أو بحث أو نموذج الموقع، ويُحفظ مصدر العميل.', icon: <Target size={22} /> },
+      { k: 'STEP 2', kAr: 'الخطوة 2', when: '3 questions', whenAr: '3 أسئلة', title: 'It asks three qualifying questions', titleAr: 'يسأل ثلاثة أسئلة للتأهيل', body: 'Service, timing, and whether they are ready to book.', bodyAr: 'الخدمة، والتوقيت، وهل هو جاهز للحجز.', icon: <MessageCircle size={22} /> },
+      { k: 'STEP 3', kAr: 'الخطوة 3', when: 'scored', whenAr: 'تقييم', title: 'Scored, then routed', titleAr: 'يُقيَّم ثم يُوجَّه', body: 'Hot leads go to your team. Others get a nurture reply.', bodyAr: 'العميل المهتم يصل لفريقك، وغيره تصله رسالة متابعة.', pills: [{ t: 'Hot', ok: true }, { t: 'Warm' }, { t: 'Nurture' }], pillsAr: [{ t: 'ساخن', ok: true }, { t: 'دافئ' }, { t: 'متابعة لاحقة' }], icon: <Users size={22} /> },
+      { k: 'STEP 4', kAr: 'الخطوة 4', when: 'same hour', whenAr: 'في الساعة نفسها', title: 'Booked, or nurtured', titleAr: 'حجز أو متابعة', body: 'A ready lead gets a real slot. Everyone else stays on a respectful follow-up.', bodyAr: 'الجاهز يحصل على موعد حقيقي، والبقية تبقى على متابعة محترمة.', icon: <CalendarCheck size={22} /> },
+    ],
+  ]
+  const FLOW_LINKS = ['/systems/missed-call-responder', '/systems/booking-receptionist', '/systems/lead-attribution']
+  const FLOW_LINK_EN = ['Explore missed-call triage', 'Explore booking receptionist', 'Explore lead qualification']
+  const FLOW_LINK_AR = ['تعرّف على فرز المكالمات الفائتة', 'تعرّف على موظف الاستقبال', 'تعرّف على تأهيل العملاء']
 
   return (
     <>
@@ -121,8 +165,8 @@ export function HomeView() {
                 <div className="c-row">
                   <div className="c-ic amber"><PhoneMissed size={18} /></div>
                   <div>
-                    <div className="c-title">{ar ? 'مكالمة فائتة · 9:41 م' : 'Missed call · 9:41 PM'}</div>
-                    <div className="c-sub"><bdi className="ltr">+971 50 ••• 4182</bdi><br />{ar ? 'بعد الدوام. لا أحد في الاستقبال.' : 'After hours. Nobody at the desk.'}</div>
+                    <div className="c-title">{ar ? <>مكالمة فائتة · <bdi>9:41</bdi> م</> : 'Missed call · 9:41 PM'}</div>
+                    <div className="c-sub"><bdi className="ltr">+971 50 ••• 4182</bdi><br />{ar ? 'بعد الدوام. لا أحد على الاستقبال.' : 'After hours. Nobody at the desk.'}</div>
                   </div>
                 </div>
               </div>
@@ -135,9 +179,9 @@ export function HomeView() {
                   </div>
                 </div>
                 <div className="cal">
-                  <div className="cal-day"><b>THU</b><span>6:15</span></div>
+                  <div className="cal-day"><b>{ar ? 'الخميس' : 'THU'}</b><span>6:15</span></div>
                   <div>
-                    <div style={{ fontSize: 14, fontWeight: 500 }}>{ar ? 'تنظيف أسنان · م' : 'Teeth cleaning · PM'}</div>
+                    <div style={{ fontSize: 14, fontWeight: 500 }}>{ar ? 'تنظيف أسنان · مساءً' : 'Teeth cleaning · PM'}</div>
                     <div className="c-sub">{ar ? 'مريض جديد · عبر واتساب' : 'New patient · via WhatsApp'}<br />{ar ? 'تذكير يوم الأربعاء' : 'Reminder set for Wednesday'}</div>
                   </div>
                 </div>
@@ -150,10 +194,10 @@ export function HomeView() {
               <span className="chip chip-example">{ar ? 'سيناريو توضيحي' : 'Example scenario'}</span>
               <div className="faint small" style={{ marginTop: 8 }}>{ar ? 'مكالمة فائتة واحدة، من البداية للنهاية' : 'One missed call, start to finish'}</div>
             </div>
-            <div><span className="sc-time">9:41 PM</span><span className="sc-what"><PhoneMissed size={16} />{ar ? 'فاتت مكالمة بعد الدوام' : 'Call missed after hours'}</span></div>
-            <div><span className="sc-time">9:41 PM</span><span className="sc-what"><MessageCircle size={16} />{ar ? 'أُرسل رد واتساب' : 'WhatsApp reply sent'}</span></div>
-            <div><span className="sc-time">9:44 PM</span><span className="sc-what"><CalendarCheck size={16} />{ar ? 'حُجز موعد الخميس' : 'Booked for Thursday'}</span></div>
-            <div><span className="sc-out">{ar ? 'لم يحتج أحد من فريقك لرفع السماعة.' : 'Nobody on your team had to pick up the phone.'}</span></div>
+            <div><span className="sc-time">{ar ? '9:41 م' : '9:41 PM'}</span><span className="sc-what"><PhoneMissed size={16} />{ar ? 'مكالمة فائتة بعد الدوام' : 'Call missed after hours'}</span></div>
+            <div><span className="sc-time">{ar ? '9:41 م' : '9:41 PM'}</span><span className="sc-what"><MessageCircle size={16} />{ar ? 'أُرسل رد على واتساب' : 'WhatsApp reply sent'}</span></div>
+            <div><span className="sc-time">{ar ? '9:44 م' : '9:44 PM'}</span><span className="sc-what"><CalendarCheck size={16} />{ar ? 'حُجز موعد الخميس' : 'Booked for Thursday'}</span></div>
+            <div><span className="sc-out">{ar ? 'ولم يضطر أحد من فريقك للرد على الهاتف.' : 'Nobody on your team had to pick up the phone.'}</span></div>
           </div>
         </div>
       </section>
@@ -181,22 +225,29 @@ export function HomeView() {
           </div>
           <div className="flow-panel">
             <div className="row" style={{ justifyContent: 'space-between' }}>
-              <div className="tabs">
-                <span className="tab on">{ar ? 'فرز المكالمات الفائتة' : 'Missed-call triage'}</span>
-                <span className="tab">{ar ? 'موظف الاستقبال والحجوزات' : 'Booking receptionist'}</span>
-                <span className="tab">{ar ? 'تأهيل العملاء' : 'Lead qualification'}</span>
+              <div className="tabs" role="tablist">
+                {(ar ? ['فرز المكالمات الفائتة', 'موظف الاستقبال والحجوزات', 'تأهيل العملاء'] : ['Missed-call triage', 'Booking receptionist', 'Lead qualification']).map((label, i) => (
+                  <button key={label} type="button" role="tab" aria-selected={flow === i} className={`tab${flow === i ? ' on' : ''}`} onClick={() => setFlow(i)}>{label}</button>
+                ))}
               </div>
               <span className="chip chip-example d-only">{ar ? 'سيناريو توضيحي' : 'Example scenario'}</span>
             </div>
-            <div className="flow">
-              <div className="step done"><div className="step-dot"><div className="inner"><PhoneMissed size={22} /></div></div><div className="step-card"><div className="step-k"><span>{ar ? '١' : 'STEP 1'}</span><span>9:41 PM</span></div><div className="step-t">{ar ? 'تفوتك مكالمة' : 'A call is missed'}</div><div className="step-b">{ar ? 'يُبلَّغ النظام لحظة عدم الرد، ليلاً أو نهاراً.' : 'Your phone system tells Helix the moment a call goes unanswered, day or night.'}</div></div></div>
-              <div className="step done"><div className="step-dot"><div className="inner"><MessageCircle size={22} /></div></div><div className="step-card"><div className="step-k"><span>{ar ? '٢' : 'STEP 2'}</span><span>{ar ? 'بعد ثوانٍ' : 'seconds later'}</span></div><div className="step-t">{ar ? 'رد على واتساب بلغة العميل' : 'WhatsApp reply, in their language'}</div><div className="mini-bub">لاحظنا اتصالك قبل قليل. كيف نقدر نخدمك؟</div></div></div>
-              <div className="step done"><div className="step-dot"><div className="inner"><Target size={22} /></div></div><div className="step-card"><div className="step-k"><span>{ar ? '٣' : 'STEP 3'}</span><span>{ar ? 'رسالتان' : '2 messages'}</span></div><div className="step-t">{ar ? 'يسأل الأسئلة الصحيحة' : 'It asks the right questions'}</div><div className="step-b">{ar ? 'أي خدمة، ومتى، وزيارة أولى أم عودة.' : 'Which service, how soon, new or returning.'}</div><div className="tagline"><span className="pill">{ar ? 'تنظيف أسنان' : 'Teeth cleaning'}</span><span className="pill">{ar ? 'هذا الأسبوع' : 'This week'}</span><span className="pill">{ar ? 'مريض جديد' : 'New patient'}</span></div></div></div>
-              <div className="step done"><div className="step-dot"><div className="inner"><CalendarCheck size={22} /></div></div><div className="step-card"><div className="step-k"><span>{ar ? '٤' : 'STEP 4'}</span><span>9:44 PM</span></div><div className="step-t">{ar ? 'حجز وتأكيد' : 'Booked and confirmed'}</div><div className="step-b">{ar ? 'الموعد من تقويمك الحقيقي، مع تذكير في اليوم السابق.' : 'Slot taken from your real calendar. Reminder the day before.'}</div><div className="tagline"><span className="pill g"><Check size={14} /> Thu · 6:15 PM</span></div></div></div>
+            <div className="flow" role="tabpanel">
+              {FLOWS[flow].map(step => (
+                <div className="step done" key={step.k}>
+                  <div className="step-dot"><div className="inner">{step.icon}</div></div>
+                  <div className="step-card">
+                    <div className="step-k"><span>{ar ? step.kAr : step.k}</span><span>{ar ? step.whenAr : step.when}</span></div>
+                    <div className="step-t">{ar ? step.titleAr : step.title}</div>
+                    {step.bubble ? <div className="mini-bub">{step.bubble}</div> : <div className="step-b">{ar ? step.bodyAr : step.body}</div>}
+                    {step.pills ? <div className="tagline">{(ar ? step.pillsAr ?? step.pills : step.pills).map(pill => <span className={`pill${pill.ok ? ' g' : ''}`} key={pill.t}>{pill.ok ? <Check size={14} /> : null}{pill.t}</span>)}</div> : null}
+                  </div>
+                </div>
+              ))}
             </div>
             <div className="flow-foot">
-              <span><Headset size={16} /> {ar ? 'إذا طلب العميل شخصاً، أو كانت الإجابة غير واضحة، يتولى فريقك المحادثة بكامل سجلها.' : 'If the customer asks for a person, or the answer is unclear, your team takes over with the full conversation.'}</span>
-              <Link className="link" href="/systems/missed-call-responder">{ar ? 'استكشف فرز المكالمات' : 'Explore missed-call triage'} <ArrowRight className="arrow" size={14} /></Link>
+              <span><Headset size={16} /> {ar ? 'إذا طلب العميل التحدث مع شخص، أو كانت الإجابة غير واضحة، يتسلّم فريقك المحادثة كاملة.' : 'If the customer asks for a person, or the answer is unclear, your team takes over with the full conversation.'}</span>
+              <Link className="link" href={FLOW_LINKS[flow]}>{ar ? FLOW_LINK_AR[flow] : FLOW_LINK_EN[flow]} <ArrowRight className="arrow" size={14} /></Link>
             </div>
           </div>
         </div>
@@ -210,20 +261,56 @@ export function HomeView() {
             <p className="lead">{ar ? 'ابدأ بالنظام الذي يسدّ أكبر ثغرة لديك، وأضف التالي عندما يثبت الأول قيمته.' : 'Start with the one that fixes your biggest leak. Add the next when the first has earned its place.'}</p>
           </div>
           <div className="sys-grid">
-            {[
-              { big: true, href: '/systems/missed-call-responder', title: ar ? 'فرز المكالمات الفائتة' : 'Missed-call triage', body: ar ? 'رد واتساب بعد ثوانٍ من المكالمة الفائتة، ثم تأهيل الاستفسار وتوجيهه.' : 'A WhatsApp reply seconds after a missed call. Qualifies the enquiry and routes it to the right person.', meta: ar ? 'عيادات، مقاولون، خدمات منزلية' : 'Best for clinics, contractors, home services' },
-              { big: true, href: '/systems/booking-receptionist', title: ar ? 'موظف الاستقبال والحجوزات' : 'Booking receptionist', body: ar ? 'يرد على المكالمات بالخليجي والإنجليزي، ويحجز من توفرك الحقيقي، ويؤكد على واتساب.' : 'Answers calls in Gulf Arabic and English, books from your real availability, and confirms on WhatsApp.', meta: ar ? 'عيادات، صالونات، عقار' : 'Best for clinics, salons, real estate' },
-              { big: false, href: '/systems/lead-attribution', title: ar ? 'تأهيل وإسناد العملاء' : 'Lead qualification & attribution', body: ar ? 'يقيّم كل عميل جديد ويُظهر أي إعلان أنتج الحجوزات.' : 'Scores every new lead and shows which ad actually produced bookings.', meta: ar ? 'إعلانات، عيادات، عقار' : 'Paid social, clinics, real estate' },
-              { big: false, href: '/systems/lead-reactivation', title: ar ? 'إعادة تنشيط العملاء' : 'Lead reactivation', body: ar ? 'يعيد التواصل مع من وافقوا سابقاً، مع احترام طلب الإيقاف.' : 'Wakes up past enquiries and customers who opted in, with messages that respect “stop”.', meta: ar ? 'عقار، عيادات، شركات' : 'Real estate, clinics, B2B' },
-              { big: false, href: '/systems/ar-invoicing', title: ar ? 'تحصيل المستحقات' : 'B2B collections', body: ar ? 'متابعات مهذبة على واتساب للفواتير التجارية المتأخرة. للشركات فقط.' : 'Courteous WhatsApp follow-ups on overdue commercial invoices. Business clients only.', meta: ar ? 'خدمات الشركات' : 'B2B services, distributors' },
-            ].map(card => (
-              <article key={card.href} className={`sys ${card.big ? 'big' : 'sm'}`}>
-                <div className="sys-vis" />
-                <h3>{card.title}</h3>
-                <p>{card.body}</p>
-                <div className="meta"><span>{card.meta}</span><Link className="link" href={card.href}>{ar ? 'استكشف' : 'Explore'} <ArrowRight className="arrow" size={14} /></Link></div>
-              </article>
-            ))}
+            <article className="sys big">
+              <div className="sys-vis"><div className="vstack" style={{ maxWidth: 340 }}>
+                <div className="vrow"><span className="c-ic amber" style={{ width: 28, height: 28 }}><PhoneMissed size={14} /></span><span>{ar ? 'مكالمة فائتة' : 'Missed call'}</span><span className="faint" style={{ marginInlineStart: 'auto' }}>{ar ? '9:41 م' : '9:41 PM'}</span></div>
+                <div className="vrow"><span className="c-ic green" style={{ width: 28, height: 28 }}><MessageCircle size={14} /></span><span>{ar ? 'أُرسل رد واتساب' : 'WhatsApp reply sent'}</span><span className="faint" style={{ marginInlineStart: 'auto' }}>{ar ? '9:41 م' : '9:41 PM'}</span></div>
+                <div className="vrow"><span className="c-ic green" style={{ width: 28, height: 28 }}><Users size={14} /></span><span>{ar ? 'حُوّل إلى الحجوزات' : 'Routed to bookings'}</span><span className="pill g" style={{ marginInlineStart: 'auto' }}>{ar ? 'مؤهَّل' : 'Qualified'}</span></div>
+              </div></div>
+              <h3>{ar ? 'فرز المكالمات الفائتة' : 'Missed-call triage'}</h3>
+              <p>{ar ? 'رد على واتساب خلال ثوانٍ بعد المكالمة الفائتة، يؤهّل الاستفسار ويوجّهه للشخص المناسب.' : 'A WhatsApp reply seconds after a missed call. Qualifies the enquiry and routes it to the right person.'}</p>
+              <div className="meta"><span>{ar ? 'الأنسب للعيادات والمقاولات وخدمات المنازل' : 'Best for clinics, contractors, home services'}</span><Link className="link" href="/systems/missed-call-responder">{ar ? 'استكشف' : 'Explore'} <ArrowRight className="arrow" size={14} /></Link></div>
+            </article>
+            <article className="sys big">
+              <div className="sys-vis"><div className="vstack" style={{ maxWidth: 340 }}>
+                <div className="vrow"><span className="c-ic green" style={{ width: 28, height: 28 }}><Mic size={14} /></span><span>{ar ? 'مكالمة واردة · عربي' : 'Inbound call · Arabic'}</span><span className="wave" style={{ marginInlineStart: 'auto' }}><i style={{ height: 10 }} /><i style={{ height: 22 }} /><i style={{ height: 14 }} /><i style={{ height: 28 }} /><i style={{ height: 18 }} /><i style={{ height: 9 }} /></span></div>
+                <div className="vrow"><span className="c-ic green" style={{ width: 28, height: 28 }}><Calendar size={14} /></span><span>{ar ? 'استشارة · الأحد 11:00 ص' : 'Consultation · Sun 11:00 AM'}</span><span className="pill g" style={{ marginInlineStart: 'auto' }}>{ar ? 'محجوز' : 'Booked'}</span></div>
+                <div className="vrow"><span className="c-ic green" style={{ width: 28, height: 28 }}><MessageCircle size={14} /></span><span>{ar ? 'تأكيد وموقع العيادة على واتساب' : 'Confirmation + location on WhatsApp'}</span></div>
+              </div></div>
+              <h3>{ar ? 'موظف الاستقبال والحجوزات' : 'Booking receptionist'}</h3>
+              <p>{ar ? 'يرد على المكالمات بالخليجية والإنجليزية، ويحجز من مواعيدك المتاحة فعلاً، ويؤكد عبر واتساب.' : 'Answers calls in Gulf Arabic and English, books from your real availability, and confirms on WhatsApp.'}</p>
+              <div className="meta"><span>{ar ? 'الأنسب للعيادات ومراكز التجميل والعقارات' : 'Best for clinics, salons, real estate'}</span><Link className="link" href="/systems/booking-receptionist">{ar ? 'استكشف' : 'Explore'} <ArrowRight className="arrow" size={14} /></Link></div>
+            </article>
+            <article className="sys sm">
+              <div className="sys-vis"><div className="vstack">
+                <div className="vrow"><span>{ar ? 'إعلان إنستغرام' : 'Instagram ad'}</span><span className="pill g" style={{ marginInlineStart: 'auto' }}>{ar ? 'ساخن' : 'Hot'}</span></div>
+                <div className="vrow"><span>{ar ? 'بحث Google' : 'Google search'}</span><span className="pill a" style={{ marginInlineStart: 'auto' }}>{ar ? 'دافئ' : 'Warm'}</span></div>
+                <div className="vrow"><span>{ar ? 'نموذج الموقع' : 'Website form'}</span><span className="pill" style={{ marginInlineStart: 'auto' }}>{ar ? 'متابعة لاحقة' : 'Nurture'}</span></div>
+              </div></div>
+              <h3>{ar ? 'تأهيل وإسناد العملاء' : 'Lead qualification & attribution'}</h3>
+              <p>{ar ? 'يقيّم كل عميل جديد، ويُظهر أي إعلان جلب حجوزات فعلاً.' : 'Scores every new lead and shows which ad actually produced bookings.'}</p>
+              <div className="meta"><span>{ar ? 'الإعلانات، العيادات، العقارات' : 'Paid social, clinics, real estate'}</span><Link className="link" href="/systems/lead-attribution"><ArrowRight className="arrow" size={14} /></Link></div>
+            </article>
+            <article className="sys sm">
+              <div className="sys-vis"><div className="vstack">
+                <div className="vrow"><span className="faint">{ar ? 'آخر تواصل' : 'Last contact'}</span><span style={{ marginInlineStart: 'auto' }}>{ar ? 'قبل 8 أشهر' : '8 months ago'}</span></div>
+                <div className="vrow"><span>{ar ? 'رسالة متابعة ودّية على واتساب' : 'Friendly WhatsApp check-in'}</span></div>
+                <div className="vrow"><span>{ar ? 'الرد: «نعم، الأسبوع القادم»' : 'Replied: “Yes, next week”'}</span><span className="pill g" style={{ marginInlineStart: 'auto' }}>{ar ? 'عاد للتواصل' : 'Re-engaged'}</span></div>
+              </div></div>
+              <h3>{ar ? 'إعادة تنشيط العملاء' : 'Lead reactivation'}</h3>
+              <p>{ar ? 'يعيد التواصل مع العملاء والاستفسارات السابقة ممن وافقوا على الرسائل، ويحترم طلب «إيقاف».' : 'Wakes up past enquiries and customers who opted in, with messages that respect “stop”.'}</p>
+              <div className="meta"><span>{ar ? 'العقارات، العيادات، الشركات' : 'Real estate, clinics, B2B'}</span><Link className="link" href="/systems/lead-reactivation"><ArrowRight className="arrow" size={14} /></Link></div>
+            </article>
+            <article className="sys sm">
+              <div className="sys-vis"><div className="vstack">
+                <div className="vrow"><span>{ar ? 'فاتورة · متأخرة 14 يوماً' : 'Invoice · 14 days overdue'}</span></div>
+                <div className="vrow"><span>{ar ? 'تذكير مهذّب + رابط دفع' : 'Polite reminder + payment link'}</span></div>
+                <div className="vrow"><span>{ar ? 'تم استلام الدفعة' : 'Payment received'}</span><span className="pill g" style={{ marginInlineStart: 'auto' }}>{ar ? 'مدفوعة' : 'Paid'}</span></div>
+              </div></div>
+              <h3>{ar ? 'تحصيل المستحقات (شركات فقط)' : 'B2B collections'}</h3>
+              <p>{ar ? 'متابعات مهذّبة عبر واتساب للفواتير التجارية المتأخرة. لعملاء الشركات فقط.' : 'Courteous WhatsApp follow-ups on overdue commercial invoices. Business clients only.'}</p>
+              <div className="meta"><span>{ar ? 'خدمات الشركات والموزعون' : 'B2B services, distributors'}</span><Link className="link" href="/systems/ar-invoicing"><ArrowRight className="arrow" size={14} /></Link></div>
+            </article>
           </div>
           <div className="price-foot">
             <span>{ar ? 'تشتري نظاماً واحداً؟ اضبطه وشاهد سعره في الاستوديو.' : 'Buying a single system? Configure it and see its price in Studio.'}</span>

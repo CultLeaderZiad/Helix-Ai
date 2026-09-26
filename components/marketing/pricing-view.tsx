@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useState } from 'react'
 import { ArrowRight, Check, Globe, Headset, KeyRound, MessageCircle, Users } from 'lucide-react'
 import { useMarketingPrefs } from '@/components/marketing/public-frame'
 import { REGIONAL_PRICING_CONFIGS } from '@/lib/pricing/tiers'
@@ -63,6 +64,18 @@ const DISPLAY: Record<string, { en: string[]; ar: string[] }> = {
 export function PricingView() {
   const { lang } = useMarketingPrefs()
   const ar = lang === 'ar'
+  const [openFaq, setOpenFaq] = useState(0)
+  const faqs = ar
+    ? [
+        ['ماذا تشمل رسوم الإعداد؟', 'تصميم النظام حول خدماتك وساعاتك، وربط الهاتف وواتساب والتقويم، وكتابة الردود بالعربية والإنجليزية معك، والاختبار قبل الإطلاق.'],
+        ['هل أبدأ بنظام واحد فقط؟', 'نعم. الاستوديو يسعّر كل نظام على حدة: إعداد لمرة واحدة ورسوم شهرية، فتبدأ صغيراً وتضيف لاحقاً.'],
+        ['ماذا يحدث إذا تجاوزت حد المحادثات؟', 'نؤكد ذلك معك في المكالمة التعريفية. لا تُحتسب رسوم إضافية قبل أن نخبرك.'],
+      ]
+    : [
+        ['What does the setup fee cover?', 'Designing the system around your services and hours, connecting your phone, WhatsApp, calendar and CRM, writing the Arabic and English replies with you, and testing before go-live.'],
+        ['Can I start with just one system?', 'Yes. Studio prices each system on its own, as a one-time setup plus a monthly fee, so you can start small and add more later.'],
+        ['What happens if I go over my conversation limit?', 'We confirm that with you on the discovery call. Nothing extra is charged before we tell you.'],
+      ]
   const plans = REGIONAL_PRICING_CONFIGS.gcc_enterprise.plans
   return (
     <>
@@ -130,6 +143,22 @@ export function PricingView() {
             [ar ? 'الإطلاق والتشغيل' : 'Go live and operate', ar ? 'نراقب ونضبط ونبلّغ. أنت تتابع من لوحتك.' : 'We monitor, tune and report. You watch it work from your dashboard.'],
           ].map(([t, d], i) => (
             <div className="st" key={t}><span className="n">{i + 1}</span><b>{t}</b><span>{d}</span></div>
+          ))}
+        </div>
+      </section>
+      <section className="container inc faq">
+        <div>
+          <span className="kicker">{ar ? 'أسئلة الأسعار' : 'Pricing questions'}</span>
+          <h2 className="display h2" style={{ marginTop: 18 }}>{ar ? 'إجابات مباشرة.' : 'Straight answers.'}</h2>
+        </div>
+        <div>
+          {faqs.map(([q, a], i) => (
+            <div className="qa" key={q}>
+              <button type="button" className="q" onClick={() => setOpenFaq(openFaq === i ? -1 : i)} style={{ width: '100%', background: 'none', border: 0, color: 'inherit', cursor: 'pointer', textAlign: 'start' }}>
+                {q}
+              </button>
+              {openFaq === i ? <div className="a">{a}</div> : null}
+            </div>
           ))}
         </div>
       </section>
