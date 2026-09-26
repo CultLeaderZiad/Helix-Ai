@@ -7,7 +7,7 @@ import { FaqManagerView } from '@/components/admin/faq-manager-view'
 import { getAllAdminFaqs } from '@/lib/faq/actions'
 
 export const metadata = {
-  title: 'FAQ Management — Helix AI Admin',
+  title: 'FAQ Management: Helix AI Admin',
   robots: { index: false, follow: false },
 }
 

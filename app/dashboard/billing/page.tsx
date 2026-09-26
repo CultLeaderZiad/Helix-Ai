@@ -8,7 +8,7 @@ import { DataTable, EmptyState, KpiCard, PageHead, Panel, StatusChip } from '@/c
 import { readDashLang, readDashTheme } from '@/lib/dashboard/lang.server'
 
 export const metadata = {
-  title: 'Helix — Billing',
+  title: 'Helix: Billing',
   robots: { index: false, follow: false },
 }
 
@@ -54,7 +54,7 @@ export default async function BillingPage() {
       <div className="kpis">
         <KpiCard
           label={tx(lang, 'Monthly plan', 'الخطة الشهرية')}
-          value={retainerCents == null ? '—' : money(retainerCents)}
+          value={retainerCents == null ? '-' : money(retainerCents)}
           hint={retainerCents == null ? tx(lang, 'Not on file', 'غير مسجّل') : currency}
         />
         <KpiCard label={tx(lang, 'Invoices on file', 'فواتير مسجّلة')} value={String(invoices.length)} hint={tx(lang, 'No payment page is connected', 'لا توجد صفحة دفع موصولة')} />

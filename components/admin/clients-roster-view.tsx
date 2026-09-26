@@ -37,7 +37,7 @@ const STAGES = ['ALL', 'closed_won', 'proposal_sent', 'engaged', 'new_lead'] as 
 function regionLabel(tier?: RegionTier) {
   if (tier === 'mena_sme') return 'MENA SME'
   if (tier === 'gcc_enterprise') return 'GCC Enterprise'
-  return '—'
+  return '-'
 }
 
 function integrationLabel(status: IntegrationStatus | null, clientStatus: ClientStatus) {

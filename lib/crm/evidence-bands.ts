@@ -2,7 +2,7 @@ import type { EvidenceBand } from '../schema'
 
 /**
  * Explicit source-tool → evidence-band lookup. The band is a property of WHICH
- * tool observed a fact, decided here in application code — never a model
+ * tool observed a fact, decided here in application code: never a model
  * self-confidence score, and never something a caller may pass in.
  *
  * A tool that is not listed here fails closed: evidenceBandForTool returns

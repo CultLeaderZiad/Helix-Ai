@@ -191,7 +191,7 @@ export function WholeCrmView({
         />
         <KpiCard
           title="AI Fact Verification"
-          value={verificationRate == null ? '—' : `${verificationRate}%`}
+          value={verificationRate == null ? '-' : `${verificationRate}%`}
           hint={verificationRate == null ? 'No facts recorded' : 'Verified facts divided by facts on file'}
           icon={<ShieldCheck className="size-4" />}
         />
@@ -297,7 +297,7 @@ export function WholeCrmView({
 
                     {/* Phone */}
                     <TableCell className="font-mono text-xs text-helix-muted">
-                      {contact.phone ?? '—'}
+                      {contact.phone ?? '-'}
                     </TableCell>
 
                     {/* Deal Stage */}
@@ -309,7 +309,7 @@ export function WholeCrmView({
 
                     {/* Last Activity */}
                     <TableCell className="text-xs text-helix-muted font-mono">
-                      {contact.last_activity ? formatShortDate(contact.last_activity) : '—'}
+                      {contact.last_activity ? formatShortDate(contact.last_activity) : '-'}
                     </TableCell>
 
                     {/* AI Observation Status */}
@@ -365,15 +365,15 @@ export function WholeCrmView({
             <div className="mt-5 space-y-3 rounded-xl border border-helix-border bg-helix-canvas p-4 text-xs">
               <div className="flex items-center justify-between">
                 <span className="text-helix-muted flex items-center gap-2"><Mail className="size-3.5 text-helix-muted" /> Email</span>
-                <span className="text-ink font-medium">{selectedContact.email ?? '—'}</span>
+                <span className="text-ink font-medium">{selectedContact.email ?? '-'}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-helix-muted flex items-center gap-2"><Phone className="size-3.5 text-helix-muted" /> Phone</span>
-                <span className="text-ink font-mono">{selectedContact.phone ?? '—'}</span>
+                <span className="text-ink font-mono">{selectedContact.phone ?? '-'}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-helix-muted flex items-center gap-2"><Building className="size-3.5 text-helix-muted" /> Company</span>
-                <span className="text-ink font-medium">{selectedContact.company_name ?? '—'}</span>
+                <span className="text-ink font-medium">{selectedContact.company_name ?? '-'}</span>
               </div>
             </div>
 
@@ -397,7 +397,7 @@ export function WholeCrmView({
                         <p className="text-[11px] font-semibold text-ink">{item.type || 'Activity'}</p>
                         <p className="mt-1 text-xs text-ink">{item.subject || item.body || 'No note stored.'}</p>
                         <p className="mt-1 font-mono text-[10px] text-helix-muted">
-                          {item.occurred_at ? formatShortDate(item.occurred_at) : '—'}
+                          {item.occurred_at ? formatShortDate(item.occurred_at) : '-'}
                         </p>
                       </div>
                     ))

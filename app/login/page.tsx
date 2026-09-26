@@ -8,8 +8,8 @@ import { loginSupportLink } from '@/lib/marketing/whatsapp'
 import { getPublicPrefs } from '@/lib/public-prefs'
 
 export const metadata: Metadata = {
-  title: 'Sign in — Helix AI',
-  robots: { index: false, follow: false },
+  title: 'Sign in: Helix AI',
+  description: 'Sign in to your Helix workspace.',
 }
 
 export default async function LoginPage({

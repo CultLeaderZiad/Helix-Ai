@@ -196,9 +196,9 @@ export default async function AdminClientDetailPage({
                       {system.provenance}
                       {system.active ? '' : ' · Inactive'}
                       {' · '}
-                      Setup {system.setup_fee_cents != null ? formatCurrency(system.setup_fee_cents) : '—'}
+                      Setup {system.setup_fee_cents != null ? formatCurrency(system.setup_fee_cents) : '-'}
                       {' · '}
-                      Retainer {system.monthly_retainer_cents != null ? `${formatCurrency(system.monthly_retainer_cents)}/mo` : '—'}
+                      Retainer {system.monthly_retainer_cents != null ? `${formatCurrency(system.monthly_retainer_cents)}/mo` : '-'}
                     </p>
                   </li>
                 ))}

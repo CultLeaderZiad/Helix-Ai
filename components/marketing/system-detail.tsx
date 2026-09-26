@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowRight, Check } from 'lucide-react'
 import { useMarketingPrefs } from '@/components/marketing/public-frame'
 import { QaAccordion } from '@/components/marketing/qa-accordion'
 import { WhatsAppCta } from '@/components/marketing/whatsapp-cta'
@@ -215,14 +214,14 @@ export function SystemDetail({ system }: { system: SystemDetailModel }) {
         <p className="lead">{leadOverride ? t(leadOverride) : ar ? system.taglineAr : system.tagline}</p>
         <div className="cta-row">
           <Link className="btn btn-primary" href={`/contact?systems=${system.id}`}>
-            {ar ? 'احجز مكالمة تعريفية' : 'Book a discovery call'} <ArrowRight className="arrow" size={16} />
+            {ar ? 'احجز مكالمة تعريفية' : 'Book a discovery call'}
           </Link>
           <Link className="btn btn-ghost" href="/studio">{ar ? 'افتحه في الاستوديو' : 'Open in Studio'}</Link>
         </div>
         <div className="sys-vignette">
           <span className="ex-chip">{ar ? 'مثال' : 'Example'}</span>
           {copy.activity.map(row => (
-            <div className="vrow" key={row.en}><Check size={14} />{t(row)}</div>
+            <div className="vrow" key={row.en}>{t(row)}</div>
           ))}
         </div>
       </section>
@@ -253,7 +252,7 @@ export function SystemDetail({ system }: { system: SystemDetailModel }) {
         <h2 className="display h2">{ar ? 'القواعد التي يلتزم بها' : 'The rules it follows'}</h2>
         <ul className="rule-list">
           {copy.rules.map(rule => (
-            <li key={rule.en}><Check size={16} />{t(rule)}</li>
+            <li key={rule.en}>{t(rule)}</li>
           ))}
         </ul>
       </section>
@@ -303,7 +302,7 @@ export function SystemDetail({ system }: { system: SystemDetailModel }) {
           <h2 className="display">{ar ? 'نبدأ بمكالمة تعريفية حول هذا النظام.' : 'Start with a discovery call about this system.'}</h2>
           <div className="cta-row">
             <Link className="btn btn-primary" href={`/contact?systems=${system.id}`}>
-              {ar ? 'احجز مكالمة تعريفية' : 'Book a discovery call'} <ArrowRight className="arrow" size={16} />
+              {ar ? 'احجز مكالمة تعريفية' : 'Book a discovery call'}
             </Link>
             <WhatsAppCta ar={ar} className="btn btn-ghost" labelEn="Chat on WhatsApp" labelAr="راسلنا على واتساب">
               <MessageCircle size={16} />

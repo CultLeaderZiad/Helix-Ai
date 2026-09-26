@@ -1,5 +1,5 @@
 /**
- * Helix AI — Supabase public-schema contracts.
+ * Helix AI: Supabase public-schema contracts.
  * Auth users and sessions are owned by Supabase Auth, not public tables.
  * Authorization reads signed app_metadata, never editable user_metadata.
  */
@@ -190,7 +190,7 @@ export type CustomPropertyType =
   | 'phone'
   | 'user'
 
-/** Set by WHICH source tool observed a fact — never a model self-score. */
+/** Set by WHICH source tool observed a fact: never a model self-score. */
 export type EvidenceBand = 'verified' | 'probable' | 'possible'
 
 export type FactStatus = 'pending' | 'applied' | 'dismissed' | 'superseded'

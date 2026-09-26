@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
 import { useMarketingPrefs } from '@/components/marketing/public-frame'
 import { WhatsAppCta } from '@/components/marketing/whatsapp-cta'
 import { MessageCircle } from 'lucide-react'
@@ -100,7 +99,7 @@ export function AboutView() {
           <p className="lead">{ar ? 'نحدد أصغر نظام يناسب عملك، ثم نعرضه أمامك.' : 'We map the smallest system for your business, then show it to you live.'}</p>
           <div className="cta-row">
             <Link className="btn btn-primary" href="/contact">
-              {ar ? 'احجز مكالمة تعريفية' : 'Book a discovery call'} <ArrowRight className="arrow" size={16} />
+              {ar ? 'احجز مكالمة تعريفية' : 'Book a discovery call'}
             </Link>
             <WhatsAppCta ar={ar} className="btn btn-ghost" labelEn="Chat on WhatsApp" labelAr="راسلنا على واتساب">
               <MessageCircle size={16} />

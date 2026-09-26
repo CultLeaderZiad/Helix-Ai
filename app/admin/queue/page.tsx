@@ -6,7 +6,7 @@ import { FactReviewList, type ReviewableFact } from '@/components/crm/fact-revie
 import { AdminFrame, EmptyState, PageHead, Panel } from '@/components/admin/v5'
 
 export const metadata = {
-  title: 'Helix AI — Global Agent Queue',
+  title: 'Helix AI: Global Agent Queue',
   robots: { index: false, follow: false },
 }
 

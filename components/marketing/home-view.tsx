@@ -3,19 +3,14 @@
 import Link from 'next/link'
 import { useState, type ReactNode } from 'react'
 import {
-  ArrowRight,
   Calendar,
   CalendarCheck,
   ChartColumn,
-  Check,
-  Globe,
   Headset,
   House,
   Inbox,
-  KeyRound,
   MessageCircle,
   Mic,
-  Moon,
   PhoneMissed,
   Search,
   ShieldCheck,
@@ -128,14 +123,14 @@ export function HomeView({ plans }: { plans: PricingPlan[] }) {
               </p>
               <div className="cta-row">
                 <Link className="btn btn-primary" href="/contact">
-                  {ar ? 'احجز مكالمة تعريفية' : 'Book a discovery call'} <ArrowRight className="arrow" size={16} />
+                  {ar ? 'احجز مكالمة تعريفية' : 'Book a discovery call'}
                 </Link>
                 <Link className="btn btn-ghost" href="#how">{ar ? 'كيف يعمل؟' : 'See how it works'}</Link>
               </div>
               <div className="trust-row">
-                <span><Check size={16} />{ar ? 'عربي وإنجليزي' : 'Arabic & English'}</span>
-                <span><Check size={16} />{ar ? 'على رقم واتساب الخاص بك' : 'Your own WhatsApp number'}</span>
-                <span><Check size={16} />{ar ? 'النظام ملكك بعد الإطلاق' : 'You keep ownership after go-live'}</span>
+                <span>{ar ? 'عربي وإنجليزي' : 'Arabic & English'}</span>
+                <span>{ar ? 'على رقم واتساب الخاص بك' : 'Your own WhatsApp number'}</span>
+                <span>{ar ? 'النظام ملكك بعد الإطلاق' : 'You keep ownership after go-live'}</span>
               </div>
             </div>
             <div className="visual">
@@ -242,14 +237,14 @@ export function HomeView({ plans }: { plans: PricingPlan[] }) {
                     <div className="step-k"><span>{ar ? step.kAr : step.k}</span><span>{ar ? step.whenAr : step.when}</span></div>
                     <div className="step-t">{ar ? step.titleAr : step.title}</div>
                     {step.bubble ? <div className="mini-bub">{step.bubble}</div> : <div className="step-b">{ar ? step.bodyAr : step.body}</div>}
-                    {step.pills ? <div className="tagline">{(ar ? step.pillsAr ?? step.pills : step.pills).map(pill => <span className={`pill${pill.ok ? ' g' : ''}`} key={pill.t}>{pill.ok ? <Check size={14} /> : null}{pill.t}</span>)}</div> : null}
+                    {step.pills ? <div className="tagline">{(ar ? step.pillsAr ?? step.pills : step.pills).map(pill => <span className={`pill${pill.ok ? ' g' : ''}`} key={pill.t}>{pill.t}</span>)}</div> : null}
                   </div>
                 </div>
               ))}
             </div>
             <div className="flow-foot">
               <span><Headset size={16} /> {ar ? 'إذا طلب العميل التحدث مع شخص، أو كانت الإجابة غير واضحة، يتسلّم فريقك المحادثة كاملة.' : 'If the customer asks for a person, or the answer is unclear, your team takes over with the full conversation.'}</span>
-              <Link className="link" href={FLOW_LINKS[flow]}>{ar ? FLOW_LINK_AR[flow] : FLOW_LINK_EN[flow]} <ArrowRight className="arrow" size={14} /></Link>
+              <Link className="link" href={FLOW_LINKS[flow]}>{ar ? FLOW_LINK_AR[flow] : FLOW_LINK_EN[flow]}</Link>
             </div>
           </div>
         </div>
@@ -271,7 +266,7 @@ export function HomeView({ plans }: { plans: PricingPlan[] }) {
               </div></div>
               <h3>{ar ? 'فرز المكالمات الفائتة' : 'Missed-call triage'}</h3>
               <p>{ar ? 'رد على واتساب خلال ثوانٍ بعد المكالمة الفائتة، يؤهّل الاستفسار ويوجّهه للشخص المناسب.' : 'A WhatsApp reply seconds after a missed call. Qualifies the enquiry and routes it to the right person.'}</p>
-              <div className="meta"><span>{ar ? 'الأنسب للعيادات والمقاولات وخدمات المنازل' : 'Best for clinics, contractors, home services'}</span><Link className="link" href="/systems/missed-call-responder">{ar ? 'استكشف' : 'Explore'} <ArrowRight className="arrow" size={14} /></Link></div>
+              <div className="meta"><span>{ar ? 'الأنسب للعيادات والمقاولات وخدمات المنازل' : 'Best for clinics, contractors, home services'}</span><Link className="link" href="/systems/missed-call-responder">{ar ? 'استكشف' : 'Explore'}</Link></div>
             </article>
             <article className="sys big">
               <div className="sys-vis"><div className="vstack" style={{ maxWidth: 340 }}>
@@ -281,7 +276,7 @@ export function HomeView({ plans }: { plans: PricingPlan[] }) {
               </div></div>
               <h3>{ar ? 'موظف الاستقبال والحجوزات' : 'Booking receptionist'}</h3>
               <p>{ar ? 'يرد على المكالمات بالخليجية والإنجليزية، ويحجز من مواعيدك المتاحة فعلاً، ويؤكد عبر واتساب.' : 'Answers calls in Gulf Arabic and English, books from your real availability, and confirms on WhatsApp.'}</p>
-              <div className="meta"><span>{ar ? 'الأنسب للعيادات ومراكز التجميل والعقارات' : 'Best for clinics, salons, real estate'}</span><Link className="link" href="/systems/booking-receptionist">{ar ? 'استكشف' : 'Explore'} <ArrowRight className="arrow" size={14} /></Link></div>
+              <div className="meta"><span>{ar ? 'الأنسب للعيادات ومراكز التجميل والعقارات' : 'Best for clinics, salons, real estate'}</span><Link className="link" href="/systems/booking-receptionist">{ar ? 'استكشف' : 'Explore'}</Link></div>
             </article>
             <article className="sys sm">
               <div className="sys-vis"><div className="vstack">
@@ -291,7 +286,7 @@ export function HomeView({ plans }: { plans: PricingPlan[] }) {
               </div></div>
               <h3>{ar ? 'تأهيل وإسناد العملاء' : 'Lead qualification & attribution'}</h3>
               <p>{ar ? 'يقيّم كل عميل جديد، ويُظهر أي إعلان جلب حجوزات فعلاً.' : 'Scores every new lead and shows which ad actually produced bookings.'}</p>
-              <div className="meta"><span>{ar ? 'الإعلانات، العيادات، العقارات' : 'Paid social, clinics, real estate'}</span><Link className="link" href="/systems/lead-attribution"><ArrowRight className="arrow" size={14} /></Link></div>
+              <div className="meta"><span>{ar ? 'الإعلانات، العيادات، العقارات' : 'Paid social, clinics, real estate'}</span><Link className="link" href="/systems/lead-attribution">{ar ? 'استكشف' : 'Explore'}</Link></div>
             </article>
             <article className="sys sm">
               <div className="sys-vis"><div className="vstack">
@@ -301,7 +296,7 @@ export function HomeView({ plans }: { plans: PricingPlan[] }) {
               </div></div>
               <h3>{ar ? 'إعادة تنشيط العملاء' : 'Lead reactivation'}</h3>
               <p>{ar ? 'يعيد التواصل مع العملاء والاستفسارات السابقة ممن وافقوا على الرسائل، ويحترم طلب «إيقاف».' : 'Wakes up past enquiries and customers who opted in, with messages that respect “stop”.'}</p>
-              <div className="meta"><span>{ar ? 'العقارات، العيادات، الشركات' : 'Real estate, clinics, B2B'}</span><Link className="link" href="/systems/lead-reactivation"><ArrowRight className="arrow" size={14} /></Link></div>
+              <div className="meta"><span>{ar ? 'العقارات، العيادات، الشركات' : 'Real estate, clinics, B2B'}</span><Link className="link" href="/systems/lead-reactivation">{ar ? 'استكشف' : 'Explore'}</Link></div>
             </article>
             <article className="sys sm">
               <div className="sys-vis"><div className="vstack">
@@ -311,12 +306,12 @@ export function HomeView({ plans }: { plans: PricingPlan[] }) {
               </div></div>
               <h3>{ar ? 'تحصيل المستحقات (شركات فقط)' : 'B2B collections'}</h3>
               <p>{ar ? 'متابعات مهذّبة عبر واتساب للفواتير التجارية المتأخرة. لعملاء الشركات فقط.' : 'Courteous WhatsApp follow-ups on overdue commercial invoices. Business clients only.'}</p>
-              <div className="meta"><span>{ar ? 'خدمات الشركات والموزعون' : 'B2B services, distributors'}</span><Link className="link" href="/systems/ar-invoicing"><ArrowRight className="arrow" size={14} /></Link></div>
+              <div className="meta"><span>{ar ? 'خدمات الشركات والموزعون' : 'B2B services, distributors'}</span><Link className="link" href="/systems/ar-invoicing">{ar ? 'استكشف' : 'Explore'}</Link></div>
             </article>
           </div>
           <div className="price-foot">
             <span>{ar ? 'تشتري نظاماً واحداً؟ اضبطه وشاهد سعره في الاستوديو.' : 'Buying a single system? Configure it and see its price in Studio.'}</span>
-            <Link className="link" href="/studio">{ar ? 'افتح الاستوديو' : 'Open Studio'} <ArrowRight className="arrow" size={14} /></Link>
+            <Link className="link" href="/studio">{ar ? 'افتح الاستوديو' : 'Open Studio'}</Link>
           </div>
         </div>
       </section>
@@ -375,10 +370,10 @@ export function HomeView({ plans }: { plans: PricingPlan[] }) {
                 </div>
                 <div className="dp-cols">
                   <div className="panel">
-                    <h6>
+                    <p className="panel-label">
                       {ar ? 'النشاط الأخير' : 'Recent activity'}
-                      <span style={{ color: '#8A8C90', fontWeight: 400 }}>{ar ? 'اليوم' : 'Today'}</span>
-                    </h6>
+                      <span style={{ color: '#5C6168', fontWeight: 400 }}>{ar ? 'اليوم' : 'Today'}</span>
+                    </p>
                     <div className="feed">
                       <div>
                         <span className="d" />
@@ -407,7 +402,7 @@ export function HomeView({ plans }: { plans: PricingPlan[] }) {
                     </div>
                   </div>
                   <div className="panel">
-                    <h6>{ar ? 'حجوزات هذا الأسبوع' : 'Bookings this week'}</h6>
+                    <p className="panel-label">{ar ? 'حجوزات هذا الأسبوع' : 'Bookings this week'}</p>
                     <div className="bars" aria-hidden="true">
                       <i style={{ height: '30%' }} />
                       <i style={{ height: '52%' }} />
@@ -454,10 +449,10 @@ export function HomeView({ plans }: { plans: PricingPlan[] }) {
             <h2 className="display h2">{ar ? 'يتحدث مثل موظف استقبالك، ويلتزم بقواعدك.' : 'Speaks like your front desk. Follows your rules.'}</h2>
           </div>
           <div className="region">
-            <div className="feat"><Globe size={22} /><div><h4>{ar ? 'لهجات عربية والإنجليزية' : 'Arabic dialects and English'}</h4><p>{ar ? 'خليجي ومصري وشامي وإنجليزي، والمزيج الذي يكتبه عملاؤك فعلاً.' : 'Gulf, Egyptian and Levantine Arabic, English, and the mix of both your customers actually write.'}</p><div className="say"><span className="pill ar">أبغى موعد بكرة</span><span className="pill ar">عايز أحجز</span><span className="pill">Can I book for Sunday?</span></div></div></div>
-            <div className="feat"><Headset size={22} /><div><h4>{ar ? 'شخص حقيقي عند الحاجة' : 'A person, whenever it matters'}</h4><p>{ar ? 'إذا طلب العميل بشراً، أو لم يكن النظام متأكداً، تنتقل المحادثة لفريقك مع السياق كاملاً.' : 'If a customer asks for a human, or the system is unsure, the conversation moves to your team with full context.'}</p><div className="say"><span className="pill ar">بشري</span><span className="pill">agent</span></div></div></div>
-            <div className="feat"><Moon size={22} /><div><h4>{ar ? 'محترم افتراضياً' : 'Respectful by default'}</h4><p>{ar ? 'ساعات هدوء، وموافقة مسبقة لرسائل التسويق، واحترام طلب الإيقاف.' : 'Quiet hours, opt-in for marketing messages, and “stop” honoured every time.'}</p><div className="say"><span className="pill ar">إيقاف</span><span className="pill">stop</span></div></div></div>
-            <div className="feat"><KeyRound size={22} /><div><h4>{ar ? 'ما نبنيه ملكك' : 'You own what we build'}</h4><p>{ar ? 'بعد الإطلاق يبقى الإعداد والتكاملات وأدلة التشغيل ملكك. بلا ارتباط إجباري.' : 'After go-live you keep the setup, the integrations and the runbooks. No lock-in.'}</p></div></div>
+            <div className="feat"><div><h3>{ar ? 'لهجات عربية والإنجليزية' : 'Arabic dialects and English'}</h3><p>{ar ? 'خليجي ومصري وشامي وإنجليزي، والمزيج الذي يكتبه عملاؤك فعلاً.' : 'Gulf, Egyptian and Levantine Arabic, English, and the mix of both your customers actually write.'}</p><div className="say"><span className="pill ar">أبغى موعد بكرة</span><span className="pill ar">عايز أحجز</span><span className="pill">Can I book for Sunday?</span></div></div></div>
+            <div className="feat"><div><h3>{ar ? 'شخص حقيقي عند الحاجة' : 'A person, whenever it matters'}</h3><p>{ar ? 'إذا طلب العميل بشراً، أو لم يكن النظام متأكداً، تنتقل المحادثة لفريقك مع السياق كاملاً.' : 'If a customer asks for a human, or the system is unsure, the conversation moves to your team with full context.'}</p><div className="say"><span className="pill ar">بشري</span><span className="pill">agent</span></div></div></div>
+            <div className="feat"><div><h3>{ar ? 'محترم افتراضياً' : 'Respectful by default'}</h3><p>{ar ? 'ساعات هدوء، وموافقة مسبقة لرسائل التسويق، واحترام طلب الإيقاف.' : 'Quiet hours, opt-in for marketing messages, and “stop” honoured every time.'}</p><div className="say"><span className="pill ar">إيقاف</span><span className="pill">stop</span></div></div></div>
+            <div className="feat"><div><h3>{ar ? 'ما نبنيه ملكك' : 'You own what we build'}</h3><p>{ar ? 'بعد الإطلاق يبقى الإعداد والتكاملات وأدلة التشغيل ملكك. بلا ارتباط إجباري.' : 'After go-live you keep the setup, the integrations and the runbooks. No lock-in.'}</p></div></div>
           </div>
         </div>
       </section>
@@ -477,10 +472,10 @@ export function HomeView({ plans }: { plans: PricingPlan[] }) {
             <div className="commit">
               <span className="kicker">{ar ? 'التزاماتنا' : 'Our commitments'}</span>
               <ul style={{ marginTop: 14 }}>
-                <li><Check size={18} /><div><b>{ar ? 'عرض حي قبل تحديد النطاق' : 'Live demo before scope'}</b><span>{ar ? 'ترى النظام على حالة من عملك أولاً.' : 'You see it working on your use case first.'}</span></div></li>
-                <li><Check size={18} /><div><b>{ar ? 'تقارير صادقة' : 'Honest reporting'}</b><span>{ar ? 'لا مقاييس مخترعة، لا في البيع ولا في لوحتك.' : 'No invented metrics, in sales or in your dashboard.'}</span></div></li>
-                <li><Check size={18} /><div><b>{ar ? 'مراحل واضحة بالعربي أو الإنجليزي' : 'Bilingual milestones'}</b><span>{ar ? 'الخطط والتحديثات باللغة التي تختارها.' : 'Plans and updates in Arabic or English.'}</span></div></li>
-                <li><Check size={18} /><div><b>{ar ? 'ملكية واضحة' : 'Clear ownership'}</b><span>{ar ? 'النظام يبقى لك بعد الإطلاق.' : 'You keep the system after go-live.'}</span></div></li>
+                <li><div><b>{ar ? 'عرض حي قبل تحديد النطاق' : 'Live demo before scope'}</b><span>{ar ? 'ترى النظام على حالة من عملك أولاً.' : 'You see it working on your use case first.'}</span></div></li>
+                <li><div><b>{ar ? 'تقارير صادقة' : 'Honest reporting'}</b><span>{ar ? 'لا مقاييس مخترعة، لا في البيع ولا في لوحتك.' : 'No invented metrics, in sales or in your dashboard.'}</span></div></li>
+                <li><div><b>{ar ? 'مراحل واضحة بالعربي أو الإنجليزي' : 'Bilingual milestones'}</b><span>{ar ? 'الخطط والتحديثات باللغة التي تختارها.' : 'Plans and updates in Arabic or English.'}</span></div></li>
+                <li><div><b>{ar ? 'ملكية واضحة' : 'Clear ownership'}</b><span>{ar ? 'النظام يبقى لك بعد الإطلاق.' : 'You keep the system after go-live.'}</span></div></li>
               </ul>
             </div>
           </div>
@@ -494,7 +489,7 @@ export function HomeView({ plans }: { plans: PricingPlan[] }) {
               <span className="kicker">{ar ? 'الباقات الشهرية · درهم' : 'Monthly plans · AED'}</span>
               <h2 className="display h2">{ar ? 'باقات شهرية واضحة، ورسوم إعداد لمرة واحدة.' : 'Clear monthly plans. One-time setup.'}</h2>
             </div>
-            <Link className="link d-only" href="/pricing">{ar ? 'قارن كل الباقات' : 'Compare all plans'} <ArrowRight className="arrow" size={14} /></Link>
+            <Link className="link d-only" href="/pricing">{ar ? 'قارن كل الباقات' : 'Compare all plans'}</Link>
           </div>
           <div className="plans">
             {plans.map(plan => {
@@ -521,8 +516,8 @@ export function HomeView({ plans }: { plans: PricingPlan[] }) {
                     </div>
                   ) : null}
                   <ul>
-                    {copy.features.slice(0, 3).map(feature => (
-                      <li key={feature}><Check size={16} />{feature}</li>
+                    {(copy.home ?? copy.features).slice(0, 3).map(feature => (
+                      <li key={feature}>{feature}</li>
                     ))}
                   </ul>
                   <Link className={`btn ${plan.featured ? 'btn-primary' : 'btn-ghost'}`} href={plan.featured ? `/contact?plan=${plan.id}` : '/pricing'}>
@@ -559,7 +554,7 @@ export function HomeView({ plans }: { plans: PricingPlan[] }) {
             <h2 className="display">{ar ? 'أخبرنا أين تضيع الاستفسارات، وسنريك النظام الذي يلتقطها.' : "Tell us where enquiries slip through. We'll show you the system that catches them."}</h2>
             <p className="lead">{ar ? 'مكالمة تعريفية قصيرة: نحدد أصغر نظام يحل المشكلة، ثم نعرضه أمامك مباشرة، بالعربي أو الإنجليزي.' : 'A short discovery call. We map the smallest system that fixes it, then demo it live, in Arabic or English.'}</p>
             <div className="cta-row">
-              <Link className="btn btn-primary" href="/contact">{ar ? 'احجز مكالمة تعريفية' : 'Book a discovery call'} <ArrowRight className="arrow" size={16} /></Link>
+              <Link className="btn btn-primary" href="/contact">{ar ? 'احجز مكالمة تعريفية' : 'Book a discovery call'}</Link>
               <WhatsAppCta ar={ar} className="btn btn-ghost" labelEn="Chat on WhatsApp" labelAr="راسلنا على واتساب">
                 <MessageCircle size={16} />
               </WhatsAppCta>

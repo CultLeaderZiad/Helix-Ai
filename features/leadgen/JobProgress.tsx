@@ -58,8 +58,8 @@ export function JobProgress({
             <span className="font-mono font-bold">!</span>
             <span>
               {isArabic
-                ? 'متوقف مؤقتاً — أبقِ هذه الصفحة مفتوحة لمواصلة معالجة مهام استخراج العملاء.'
-                : 'Paused — open this page to continue processing.'}
+                ? 'متوقف مؤقتاً: أبقِ هذه الصفحة مفتوحة لمواصلة معالجة مهام استخراج العملاء.'
+                : 'Paused: open this page to continue processing.'}
             </span>
           </div>
           <button
@@ -132,7 +132,7 @@ export function JobProgress({
       {/* 9-Stage Pipeline Sequence */}
       <div>
         <div className="flex items-center justify-between text-[11px] font-mono text-[#5b6577] dark:text-[#8b95a7] mb-2">
-          <span>{isArabic ? 'المرحلة الحالية:' : 'Active Pipeline Stage:'} {job.stage_label}</span>
+          <span>{isArabic ? 'المرحلة الحالية:' : 'Current step:'} {job.stage_label}</span>
           <span>{activeIndex + 1}/9</span>
         </div>
         <div className="grid grid-cols-9 gap-1">

@@ -68,8 +68,8 @@ export function EnginePicker({
       desc: 'Cloudflare /content (bot-identified)',
       descAr: 'Cloudflare Browser Run (غير خفي)',
       isAvailable: enginesAvailable.dynamic,
-      disabledReason: 'Dynamic unavailable — set CF_ACCOUNT_ID + CF_BROWSER_TOKEN on the server.',
-      disabledReasonAr: 'المحرك الديناميكي غير متاح — يرجى ضبط CF_ACCOUNT_ID و CF_BROWSER_TOKEN على الخادم.',
+      disabledReason: 'Dynamic unavailable: set CF_ACCOUNT_ID + CF_BROWSER_TOKEN on the server.',
+      disabledReasonAr: 'المحرك الديناميكي غير متاح: يرجى ضبط CF_ACCOUNT_ID و CF_BROWSER_TOKEN على الخادم.',
     },
     {
       id: 'stealth',
@@ -78,8 +78,8 @@ export function EnginePicker({
       desc: 'Bright Data Web Unlocker',
       descAr: 'Bright Data Web Unlocker لتجاوز الحظر',
       isAvailable: enginesAvailable.stealth,
-      disabledReason: 'Stealth unavailable — set BRIGHTDATA_API_TOKEN on the server.',
-      disabledReasonAr: 'محرك التخفي غير متاح — يرجى ضبط BRIGHTDATA_API_TOKEN على الخادم.',
+      disabledReason: 'Stealth unavailable: set BRIGHTDATA_API_TOKEN on the server.',
+      disabledReasonAr: 'محرك التخفي غير متاح: يرجى ضبط BRIGHTDATA_API_TOKEN على الخادم.',
     },
   ]
 

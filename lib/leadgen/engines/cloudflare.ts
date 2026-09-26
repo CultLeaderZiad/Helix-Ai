@@ -1,5 +1,5 @@
 /**
- * Cloudflare Browser Run — /content Quick Action (Dynamic Engine)
+ * Cloudflare Browser Run: /content Quick Action (Dynamic Engine)
  *
  * Verified API Reference & Documentation:
  * - Quick Action: https://developers.cloudflare.com/browser-run/quick-actions/content-endpoint/

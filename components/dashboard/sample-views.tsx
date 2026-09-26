@@ -141,7 +141,7 @@ export function SampleOverview() {
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 440px', gap: 16, marginTop: 16 }}>
         <div className="card">
-          <div className="ch"><h3>Activity</h3><span className="chip ok"><span className="dot pulse" />Live</span><span className="grow" /><span style={{ fontSize: 12, color: 'var(--subtle)' }}>Realtime · Supabase</span></div>
+          <div className="ch"><h3>Activity</h3><span className="chip ok"><span className="dot pulse" />Live</span><span className="grow" /><span style={{ fontSize: 12, color: 'var(--subtle)' }}>Example</span></div>
           <Activity icon={<MessageCircle size={14} />} tone="info" title={<>WhatsApp reply qualified as <b>booking</b></>} meta="+971 50 *** 4182 · Probable" time="2m" tint />
           <Activity icon={<CalendarCheck size={14} />} tone="ok" title={<>Booking held <b>Thu 17:15</b> on Cal.com</>} meta="Booking receptionist" time="6m" />
           <Activity icon={<Radar size={14} />} tone="ok" title={<>Lead Gen job <b>dental clinics Dubai</b> enriched 14/20</>} meta="Find leads · running" time="9m" />
@@ -216,7 +216,7 @@ export function SampleLeadgen() {
       <div className="row" style={{ justifyContent: 'space-between', alignItems: 'flex-end' }}>
         <div>
           <div className="row" style={{ gap: 10 }}><h1 className="pt">Lead Generation</h1><span className="sample">Sample data</span></div>
-          <div className="sub">Find businesses or enrich your own list. Every field shows where it came from — empty stays empty.</div>
+          <div className="sub">Find businesses or enrich your own list. Every field shows where it came from: empty stays empty.</div>
         </div>
         <span className="btn btn-out"><History size={14} />History · 12 jobs</span>
       </div>
@@ -234,7 +234,7 @@ export function SampleLeadgen() {
               <div className="row" style={{ gap: 10 }}><span style={{ width: 32, height: 32, borderRadius: 9, display: 'grid', placeItems: 'center', background: '#fff', border: '1px solid var(--line)' }}><Globe size={14} /></span><div className="grow"><div style={{ fontWeight: 500 }}>Enrich websites</div><div style={{ fontSize: 12.5, color: 'var(--muted)' }}>Paste up to 25 URLs you already have</div></div></div>
             </div>
             <div style={{ border: '1.5px solid var(--accent)', borderRadius: 12, padding: '14px 16px', background: '#F3FAF6', boxShadow: '0 0 0 4px rgba(18,165,121,.10)' }}>
-              <div className="row" style={{ gap: 10 }}><span style={{ width: 32, height: 32, borderRadius: 9, display: 'grid', placeItems: 'center', background: 'var(--accent)', color: '#fff' }}><Radar size={14} /></span><div className="grow"><div style={{ fontWeight: 500 }}>Find leads</div><div style={{ fontSize: 12.5, color: 'var(--muted)' }}>Describe who you want — we search maps + web</div></div><span style={{ width: 16, height: 16, borderRadius: '50%', border: '5px solid var(--accent)' }} /></div>
+              <div className="row" style={{ gap: 10 }}><span style={{ width: 32, height: 32, borderRadius: 9, display: 'grid', placeItems: 'center', background: 'var(--accent)', color: '#fff' }}><Radar size={14} /></span><div className="grow"><div style={{ fontWeight: 500 }}>Find leads</div><div style={{ fontSize: 12.5, color: 'var(--muted)' }}>Describe who you want: we search maps + web</div></div><span style={{ width: 16, height: 16, borderRadius: '50%', border: '5px solid var(--accent)' }} /></div>
             </div>
           </div>
           <div style={{ marginTop: 18, fontSize: 13, fontWeight: 500 }}>What are you looking for?</div>
@@ -307,10 +307,10 @@ export function SampleLeadgen() {
           <thead><tr><th>Company</th><th>Description</th><th>Email</th><th>Phone</th><th>City</th><th>Score</th><th>Source</th></tr></thead>
           <tbody>
             <LeadRow selected name="Pearl Smile Dental" domain="pearlsmile.example" desc="Family and cosmetic dentistry in Jumeirah; WhatsApp bookings." email="info@pearlsmile…" phone="+971 4 3•• ••••" city="Dubai" score={86} source="Google Maps · site" />
-            <LeadRow name="Marina Dental Care" domain="marinadental.example" desc="Implants, orthodontics and emergency dental care." email="—" phone="+971 4 4•• ••••" city="Dubai" score={78} source="Google Maps" />
+            <LeadRow name="Marina Dental Care" domain="marinadental.example" desc="Implants, orthodontics and emergency dental care." email="-" phone="+971 4 4•• ••••" city="Dubai" score={78} source="Google Maps" />
             <LeadRow name="Al Barsha Dental Studio" domain="barshadental.example" desc="Clinic page lists Arabic & English speaking staff." email="hello@barsha…" phone="+971 50 •••" city="Dubai" score={72} source="Web search · site" />
-            <LeadRow name="Jumeirah Family Clinic" domain="jfc.example" desc="Multi-specialty clinic; dental department on 2nd floor." email="—" phone="+971 4 3•• ••••" city="Dubai" score={61} source="OSM · site" warn />
-            <LeadRow name="Deira Smile Centre" domain="deirasmile.example" desc="Description not found on site" email="—" phone="—" city="Dubai" score={40} source="Google Maps" empty />
+            <LeadRow name="Jumeirah Family Clinic" domain="jfc.example" desc="Multi-specialty clinic; dental department on 2nd floor." email="-" phone="+971 4 3•• ••••" city="Dubai" score={61} source="OSM · site" warn />
+            <LeadRow name="Deira Smile Centre" domain="deirasmile.example" desc="Description not found on site" email="-" phone="-" city="Dubai" score={40} source="Google Maps" empty />
           </tbody>
         </table>
       </div>
@@ -390,8 +390,8 @@ export function SampleSearch({ note }: { note?: string }) {
           <Result selected name="Red Sea Roofing Co." domain="redsearoofing.example" kind="Business" body="Commercial roofing and waterproofing contractor serving Jeddah and Makkah." meta={['Jeddah, SA', '+966 12 6•• ••••', 'info@redsea…']} actions={['Enrich', 'Save', 'Watch']} />
           <Result name="Al Hamra Waterproofing" domain="alhamra-wp.example" kind="Business" saved body="Page description: “Roof insulation, membranes and maintenance contracts.”" meta={['Jeddah, SA', '+966 55 •••', 'no email found']} actions={['Open lead']} />
           <Result name="Obhur Building Services" domain="obhur-bs.example" kind="Business" body="" loading />
-          <Result name="Top roofing companies in Jeddah — directory" domain="dir.example" kind="Web" body="Directory page listing 30+ roofing and insulation contractors with phone numbers." meta={['Web page · Arabic + English']} actions={['Extract companies', 'Open']} />
-          <Result name="@jeddah.roofing.pro" domain="instagram.com" kind="Social profile" info body="Bio: “Roof repair & waterproofing · Jeddah · WhatsApp in bio” — URL, title and snippet only." meta={['Instagram', 'bio website: jrp.example']} actions={['Enrich bio website']} />
+          <Result name="Top roofing companies in Jeddah: directory" domain="dir.example" kind="Web" body="Directory page listing 30+ roofing and insulation contractors with phone numbers." meta={['Web page · Arabic + English']} actions={['Extract companies', 'Open']} />
+          <Result name="@jeddah.roofing.pro" domain="instagram.com" kind="Social profile" info body="Bio: “Roof repair & waterproofing · Jeddah · WhatsApp in bio”: URL, title and snippet only." meta={['Instagram', 'bio website: jrp.example']} actions={['Enrich bio website']} />
           <div className="row" style={{ justifyContent: 'center', padding: 14 }}><span className="btn btn-ghost">Load more <ChevronDown size={14} /></span></div>
         </div>
         <div className="col" style={{ gap: 16 }}>
@@ -469,6 +469,6 @@ function Result({ selected, name, domain, kind, body, meta = [], actions = [], s
 
 export function SearchWorkspace() {
   return (
-    <SampleSearch note="Example layout. Maps, web search, and Hunter are not connected yet — results below are a labeled sample, not a live search. Nothing is saved." />
+    <SampleSearch note="Example layout. Maps, web search, and Hunter are not connected yet: results below are a labeled sample, not a live search. Nothing is saved." />
   )
 }

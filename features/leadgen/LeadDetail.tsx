@@ -97,15 +97,15 @@ export function LeadDetail({ lead, onClose, isArabic = false }: LeadDetailProps)
           <div className="grid grid-cols-2 gap-3">
             <div>
               <span className="text-[#5b6577] dark:text-[#8b95a7] font-medium">{isArabic ? 'اسم المنشأة:' : 'Company Name:'}</span>
-              <div className="mt-0.5 font-semibold text-[#0f141b] dark:text-[#e8ecf2]">{lead.company_name || '—'}</div>
+              <div className="mt-0.5 font-semibold text-[#0f141b] dark:text-[#e8ecf2]">{lead.company_name || '-'}</div>
             </div>
             <div>
               <span className="text-[#5b6577] dark:text-[#8b95a7] font-medium">{isArabic ? 'النطاق الأساسي:' : 'Domain:'}</span>
-              <div className="mt-0.5 font-mono text-[#0f141b] dark:text-[#e8ecf2]">{lead.domain || '—'}</div>
+              <div className="mt-0.5 font-mono text-[#0f141b] dark:text-[#e8ecf2]">{lead.domain || '-'}</div>
             </div>
             <div>
               <span className="text-[#5b6577] dark:text-[#8b95a7] font-medium">{isArabic ? 'العنوان أو الموقع:' : 'Physical Address:'}</span>
-              <div className="mt-0.5 text-[#0f141b] dark:text-[#e8ecf2]">{lead.address || '—'}</div>
+              <div className="mt-0.5 text-[#0f141b] dark:text-[#e8ecf2]">{lead.address || '-'}</div>
             </div>
             <div>
               <span className="text-[#5b6577] dark:text-[#8b95a7] font-medium">{isArabic ? 'المحرك المستخدم:' : 'Engine Used:'}</span>
@@ -266,8 +266,8 @@ export function LeadDetail({ lead, onClose, isArabic = false }: LeadDetailProps)
           </div>
           <p className="text-[11px] text-[#5b6577] dark:text-[#8b95a7] leading-relaxed">
             {isArabic
-              ? 'عند الضغط على "نقل إلى CRM"، سيتم إنشاء أو تحديث جهة الاتصال والشركة بمصدر leadgen_scrapling مع تسجيل ContactFact موثق.'
-              : 'Pushing to CRM creates contacts with source=leadgen_scrapling and inserts immutable ContactFact evidence rows without fabricating data.'}
+              ? 'عند الضغط على "نقل إلى جهات الاتصال"، تُنشأ جهة الاتصال أو تُحدَّث من الحقول التي وُجدت فعلاً. الحقول الفارغة تبقى فارغة.'
+              : 'Saving to contacts writes only the fields that were found. Empty fields stay empty.'}
           </p>
         </div>
       )}

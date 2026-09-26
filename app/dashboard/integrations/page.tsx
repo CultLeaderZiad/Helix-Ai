@@ -9,7 +9,7 @@ import type { ClientIntegration } from '@/lib/schema'
 import { readDashLang, readDashTheme } from '@/lib/dashboard/lang.server'
 
 export const metadata = {
-  title: 'Helix AI — Integrations Health',
+  title: 'Helix AI: Integrations Health',
   robots: { index: false, follow: false },
 }
 

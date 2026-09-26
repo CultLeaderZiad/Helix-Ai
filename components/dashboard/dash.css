@@ -1,8 +1,8 @@
 /* Helix v5 client dashboard. Logical properties only. */
 .dash {
   --f-display: var(--font-instrument), Georgia, serif;
-  --f-sans: var(--font-geist), system-ui, sans-serif;
-  --f-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --f-sans: var(--font-hanken), "Hanken Grotesk", system-ui, sans-serif;
+  --f-mono: var(--font-plex-mono), "IBM Plex Mono", ui-monospace, monospace;
   --f-ar: var(--font-plex), "IBM Plex Sans Arabic", sans-serif;
   min-height: 100vh;
   background: var(--bg);
@@ -73,7 +73,6 @@
 }
 .dash .side {
   border-inline-end: 1px solid var(--line);
-  border-right: 0;
   padding: 18px 14px;
   display: flex;
   flex-direction: column;
@@ -127,13 +126,11 @@
 .dash .it.on {
   background: var(--surface);
   color: var(--text);
-  box-shadow: 0 1px 2px rgba(20, 22, 18, 0.06), 0 0 0 1px var(--line);
+  box-shadow: 0 0 0 1px var(--line);
 }
 .dash .it .badge,
 .dash .it .new {
   margin-inline-start: auto;
-  margin-left: 0;
-  margin-right: 0;
 }
 .dash .it .badge {
   min-width: 20px;
@@ -266,7 +263,7 @@
   background: transparent;
   cursor: pointer;
 }
-.dash .seg .on { background: var(--surface); color: var(--text); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06); }
+.dash .seg .on { background: var(--surface); color: var(--text); box-shadow: 0 0 0 1px var(--line); }
 .dash .btn-o, .dash .btn-d {
   height: 38px;
   padding-inline: 14px;
@@ -289,8 +286,7 @@
   border: 1px solid var(--line);
   border-radius: 16px;
   padding: 18px 20px;
-  box-shadow: 0 1px 2px rgba(20, 22, 18, 0.04);
-}
+  }
 .dash .kpi-l { color: var(--text-2); font-size: 13.5px; }
 .dash .kpi-v b { font-size: 36px; font-weight: 600; letter-spacing: -0.03em; line-height: 1; display: block; margin-block-start: 14px; }
 .dash .kpi-v b small { font-size: 15px; color: var(--text-3); font-weight: 500; letter-spacing: 0; margin-inline-start: 4px; }
@@ -314,8 +310,7 @@
   border: 1px solid var(--line);
   border-radius: 16px;
   padding: 20px 22px;
-  box-shadow: 0 1px 2px rgba(20, 22, 18, 0.04);
-  position: relative;
+    position: relative;
 }
 .dash .pnl-h { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-block-end: 16px; }
 .dash .pnl-h b { font-size: 15px; font-weight: 600; }
@@ -387,8 +382,6 @@
 .dash .att span, .dash .sys span, .dash .setup span { font-size: 13px; color: var(--text-2); }
 .dash .att .act, .dash .setup .act {
   margin-inline-start: auto;
-  margin-left: 0;
-  margin-right: 0;
   height: 30px;
   padding-inline: 12px;
   border-radius: 8px;
@@ -636,7 +629,7 @@
     border-radius: 16px;
     padding: 8px;
     z-index: 41;
-    box-shadow: var(--shadow-float, 0 12px 32px rgba(0, 0, 0, 0.12));
+    box-shadow: none;
     max-height: min(70vh, 480px);
     overflow: auto;
   }

@@ -6,7 +6,7 @@ import { ConsoleShell } from '@/components/shell/console-shell'
 import { AdminFrame, DataTable, EmptyState, PageHead, Panel, Stat } from '@/components/admin/v5'
 
 export const metadata = {
-  title: 'HELIX AI — Analytics',
+  title: 'HELIX AI: Analytics',
   robots: { index: false, follow: false },
 }
 
@@ -287,7 +287,7 @@ export default async function AnalyticsPage({
                       <td>{row.platform}</td>
                       <td style={{ textAlign: 'end' }}>{row.won}</td>
                       <td style={{ textAlign: 'end' }}>{row.lost}</td>
-                      <td style={{ textAlign: 'end' }}>{row.winRate == null ? '—' : `${row.winRate}%`}</td>
+                      <td style={{ textAlign: 'end' }}>{row.winRate == null ? '-' : `${row.winRate}%`}</td>
                       <td style={{ textAlign: 'end' }}>{currency(row.revenueCents)}</td>
                     </tr>
                   ))}

@@ -7,7 +7,7 @@ import { parseTenantClaims } from '@/lib/auth/claims'
 /**
  * Lightweight server-side auth check for the public header and footer.
  * Returns { isAuthenticated, consoleHref } without throwing or redirecting.
- * Does NOT validate JWT claims alignment — use getVerifiedSession for protected routes.
+ * Does NOT validate JWT claims alignment: use getVerifiedSession for protected routes.
  */
 // Request-scoped only: never share authorization or personalized output across users.
 export const getNavAuth = cache(async (): Promise<{ isAuthenticated: boolean; consoleHref: string }> => {

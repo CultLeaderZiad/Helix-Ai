@@ -8,7 +8,7 @@ import { UsersManager } from '@/components/admin/users-manager'
 import type { Profile } from '@/lib/schema'
 
 export const metadata = {
-  title: 'Helix AI — Team & Roles Management',
+  title: 'Helix AI: Team & Roles Management',
   robots: { index: false, follow: false },
 }
 

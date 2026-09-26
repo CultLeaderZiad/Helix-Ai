@@ -4,7 +4,7 @@ import { SignUpForm } from '@/components/auth/signup-form'
 import { getPublicPrefs } from '@/lib/public-prefs'
 
 export const metadata: Metadata = {
-  title: 'Create your workspace — Helix',
+  title: 'Create your workspace: Helix',
   description: 'Create your Helix workspace.',
   robots: { index: false, follow: false },
 }

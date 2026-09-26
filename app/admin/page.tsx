@@ -7,7 +7,7 @@ import { ClientsRosterView, type ClientRosterItem } from '@/components/admin/cli
 import type { IntegrationStatus, ClientStatus, RegionTier } from '@/lib/schema'
 
 export const metadata = {
-  title: 'HELIX AI — Agency Admin',
+  title: 'HELIX AI: Agency Admin',
   robots: { index: false, follow: false },
 }
 

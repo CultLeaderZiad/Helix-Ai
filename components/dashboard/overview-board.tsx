@@ -96,10 +96,10 @@ export function emptyOverview(firstName: string, lang: DashLang = 'en'): Overvie
       'مساحة العمل جاهزة. اربط واتساب والتقويم، ثم ستظهر أول محادثة هنا.',
     ),
     kpis: [
-      { label: tx(lang, 'Appointments booked', 'المواعيد المحجوزة'), value: '—', hint: foot },
-      { label: tx(lang, 'Missed calls answered', 'المكالمات الفائتة التي تم الرد عليها'), value: '—', hint: foot },
-      { label: tx(lang, 'Conversations handled', 'المحادثات المُدارة'), value: '—', hint: foot },
-      { label: tx(lang, 'Median first reply', 'متوسط زمن أول رد'), value: '—', hint: foot },
+      { label: tx(lang, 'Appointments booked', 'المواعيد المحجوزة'), value: '-', hint: foot },
+      { label: tx(lang, 'Missed calls answered', 'المكالمات الفائتة التي تم الرد عليها'), value: '-', hint: foot },
+      { label: tx(lang, 'Conversations handled', 'المحادثات المُدارة'), value: '-', hint: foot },
+      { label: tx(lang, 'Median first reply', 'متوسط زمن أول رد'), value: '-', hint: foot },
     ],
     bars: null,
     barMax: 4,
@@ -128,7 +128,7 @@ export function OverviewBoard({ model, lang = 'en' }: { model: OverviewModel; la
   const title = model.title ?? (empty ? `Welcome to Helix, ${model.firstName}` : `Good morning, ${model.firstName}`)
   const split = model.barsMode !== 'total'
   const hasBars = Boolean(model.bars && model.bars.some(bar => bar.whatsapp + bar.phone > 0))
-  const rangeLabel = tx(lang, `last ${range} days`, range === 7 ? 'آخر 7 أيام' : range === 30 ? 'آخر 30 يوماً' : 'آخر 90 يوماً')
+  const rangeLabel = tx(lang, `last ${range} days`, range === 7 ? 'الأسبوع الأخير' : range === 30 ? 'آخر 30 يوماً' : 'آخر 90 يوماً')
 
   return (
     <>

@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
-import { ArrowRight } from 'lucide-react'
 import { useMarketingPrefs } from '@/components/marketing/public-frame'
 import {
   formatUsdFromCents,
@@ -137,13 +136,11 @@ export function StudioConfigurator() {
           <p className="faint small">{ar ? 'السعر النهائي يُؤكَّد في المكالمة التعريفية.' : 'Final price confirmed on your discovery call.'}</p>
           <Link className="btn btn-primary" href={`/contact?systems=${query}`}>
             {ar ? 'احجز مكالمة تعريفية بهذا الاختيار' : 'Book a discovery call with this selection'}
-            <ArrowRight className="arrow" size={16} />
           </Link>
         </>
       )}
       <Link className="link" href="/pricing">
         {ar ? 'تفضل باقة شهرية مجمّعة؟ شاهد الباقات بالدرهم' : 'Prefer a bundled plan? See AED plans'}
-        <ArrowRight className="arrow" size={14} />
       </Link>
     </aside>
   )

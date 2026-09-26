@@ -11,7 +11,8 @@
     "verify:crm": "node scripts/verify-crm-intelligence.mjs --confirm-development",
     "verify:crm:e2e": "node scripts/verify-crm-intelligence.mjs --confirm-development --with-cron",
     "check:copy": "node scripts/check-banned-phrases.mjs",
-    "test": "node --experimental-strip-types --test tests/functional-audit.test.ts tests/login-routing.test.ts",
+    "screenshots": "node scripts/screenshots.mjs",
+    "test": "node --experimental-strip-types --test tests/functional-audit.test.ts tests/login-routing.test.ts tests/pricing-display.test.ts",
     "verify:crm:contact": "node scripts/verify-crm-contact-roundtrip.mjs",
     "verify:leadgen": "node scripts/verify-leadgen-v2.mjs"
   },
@@ -43,6 +44,7 @@
     "@types/node": "^24",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "playwright": "^1.63.0",
     "postcss": "^8.5",
     "tailwindcss": "^4.3.3",
     "typescript": "5.7.3"

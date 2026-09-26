@@ -3,7 +3,7 @@ import { createSupabaseServerClient } from '@/lib/supabase'
 import { getVerifiedSession } from '@/lib/auth/session'
 
 export const metadata = {
-  title: 'Helix — Systems',
+  title: 'Helix: Systems',
   robots: { index: false, follow: false },
 }
 

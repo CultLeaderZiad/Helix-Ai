@@ -1,21 +1,23 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
-import { Geist, Geist_Mono, IBM_Plex_Sans_Arabic, Instrument_Serif } from 'next/font/google'
+import { Hanken_Grotesk, IBM_Plex_Mono, IBM_Plex_Sans_Arabic, Instrument_Serif } from 'next/font/google'
 import { AuthHashHandler } from '@/components/auth/auth-hash-handler'
 import { AppProviders } from '@/components/providers/app-providers'
 import { getPublicPrefs } from '@/lib/public-prefs'
 import './globals.css'
 import './v5.css'
 
-const geist = Geist({
+const hanken = Hanken_Grotesk({
   subsets: ['latin'],
-  variable: '--font-geist',
+  weight: ['400', '500', '600'],
+  variable: '--font-hanken',
   display: 'swap',
 })
 
-const geistMono = Geist_Mono({
+const plexMono = IBM_Plex_Mono({
   subsets: ['latin'],
-  variable: '--font-geist-mono',
+  weight: ['400', '500'],
+  variable: '--font-plex-mono',
   display: 'swap',
 })
 
@@ -38,12 +40,12 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: 'Helix — AI front desk for clinics and service businesses in the GCC',
+  title: 'Helix: AI front desk for clinics and service businesses in the GCC',
   description:
     'Helix builds and runs AI systems for clinics, real-estate and service businesses across the GCC and MENA. Missed calls get a WhatsApp reply, a real conversation, and a confirmed booking.',
   authors: [{ name: 'Helix' }],
   openGraph: {
-    title: 'Helix — Missed calls answered. Appointments booked.',
+    title: 'Helix: Missed calls answered. Appointments booked.',
     description:
       'Helix builds and runs AI systems for clinics, real-estate and service businesses. Every missed call gets a WhatsApp reply and a confirmed booking.',
     url: siteUrl,
@@ -84,7 +86,7 @@ export default async function RootLayout({
       lang={lang}
       dir={prefs.lang === 'ar' ? 'rtl' : 'ltr'}
       data-theme={prefs.theme}
-      className={`${geist.variable} ${geistMono.variable} ${plexArabic.variable} ${instrument.variable}`}
+      className={`${hanken.variable} ${plexMono.variable} ${instrument.variable}${lang === 'ar' ? ` ${plexArabic.variable}` : ''}`}
       suppressHydrationWarning
     >
       <head>

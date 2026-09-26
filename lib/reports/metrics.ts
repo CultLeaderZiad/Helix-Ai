@@ -50,7 +50,7 @@ export function summarizeMonthlyReport(input: ReportMetricInput): ReportMetricRe
   const totalInvoicedCents = input.invoicedCents
   const recovered = input.wonValueCents
   const roiBase = totalInvoicedCents > 0 ? totalInvoicedCents : monthlyRetainerCents
-  const roiMultiplier = roiBase > 0 ? `${(recovered / roiBase).toFixed(1)}x` : '—'
+  const roiMultiplier = roiBase > 0 ? `${(recovered / roiBase).toFixed(1)}x` : '-'
   const factAccuracyRate =
     input.totalFacts > 0 ? Math.round((input.verifiedFacts / input.totalFacts) * 100) : null
 

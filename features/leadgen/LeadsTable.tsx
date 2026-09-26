@@ -132,7 +132,7 @@ export function LeadsTable({ leads, selectedLeadId, onSelectLead, isArabic = fal
 
                     {/* Phone */}
                     <td className="px-3 py-2.5 font-mono text-[11px] text-[#5b6577] dark:text-[#8b95a7]">
-                      {lead.phones && lead.phones.length > 0 ? lead.phones[0] : '—'}
+                      {lead.phones && lead.phones.length > 0 ? lead.phones[0] : '-'}
                     </td>
 
                     {/* Socials (chips/text) */}
@@ -146,13 +146,13 @@ export function LeadsTable({ leads, selectedLeadId, onSelectLead, isArabic = fal
                           ))}
                         </div>
                       ) : (
-                        <span className="text-[#8b95a7] text-[10px]">—</span>
+                        <span className="text-[#8b95a7] text-[10px]">-</span>
                       )}
                     </td>
 
                     {/* City */}
                     <td className="px-3 py-2.5 text-[#5b6577] dark:text-[#8b95a7]">
-                      {lead.city || lead.country || '—'}
+                      {lead.city || lead.country || '-'}
                     </td>
 
                     {/* Score */}

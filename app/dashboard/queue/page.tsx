@@ -9,7 +9,7 @@ import { InlineError, PageHead, Panel } from '@/components/dashboard/ui'
 import { readDashLang, readDashTheme } from '@/lib/dashboard/lang.server'
 
 export const metadata = {
-  title: 'Helix — Review queue',
+  title: 'Helix: Review queue',
   robots: { index: false, follow: false },
 }
 

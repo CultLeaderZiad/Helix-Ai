@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowRight, Check, Globe, Headset, KeyRound, LayoutGrid, MessageCircle, Users } from 'lucide-react'
+import { MessageCircle } from 'lucide-react'
 import { useMarketingPrefs } from '@/components/marketing/public-frame'
 import { QaAccordion } from '@/components/marketing/qa-accordion'
 import { WhatsAppCta } from '@/components/marketing/whatsapp-cta'
@@ -35,7 +35,7 @@ export function PricingView({ plans }: { plans: PricingPlan[] }) {
       <section className="container">
         <div className="cap">
           <span className="chip">{ar ? 'الباقات الشهرية · درهم' : 'Monthly plans · AED'}</span>
-          <Link className="link" href="/studio">{ar ? 'تشتري نظاماً واحداً؟ شاهد أسعار كل نظام في الاستوديو' : 'Buying a single system? See per-system prices in Studio'} <ArrowRight className="arrow" size={14} /></Link>
+          <Link className="link" href="/studio">{ar ? 'تشتري نظاماً واحداً؟ شاهد أسعار كل نظام في الاستوديو' : 'Buying a single system? See per-system prices in Studio'}</Link>
         </div>
         <div className="plans">
           {plans.map(plan => {
@@ -60,10 +60,10 @@ export function PricingView({ plans }: { plans: PricingPlan[] }) {
                   <div className="setup">{ar ? <>+ <bdi>{money(setup)}</bdi> درهم إعداد لمرة واحدة</> : <>+ AED <bdi>{money(setup)}</bdi> one-time setup</>}</div>
                 ) : null}
                 <ul>
-                  {copy.features.map(feature => <li key={feature}><Check size={16} />{feature}</li>)}
+                  {copy.features.map(feature => <li key={feature}>{feature}</li>)}
                 </ul>
                 <Link className="btn btn-primary" href={`/contact?plan=${plan.id}`} style={{ marginTop: 'auto' }}>
-                  {ar ? 'احجز مكالمة تعريفية' : 'Book a discovery call'} {plan.featured ? <ArrowRight className="arrow" size={16} /> : null}
+                  {ar ? 'احجز مكالمة تعريفية' : 'Book a discovery call'}
                 </Link>
               </div>
             )
@@ -71,7 +71,7 @@ export function PricingView({ plans }: { plans: PricingPlan[] }) {
         </div>
         <div className="below">
           <span>{ar ? 'تحتاج شيئاً مخصّصاً، أو أكثر من علامة تجارية بقواعد مختلفة؟' : 'Need something bespoke, or more than one brand with different rules?'}</span>
-          <Link className="link" href="/contact?scope=custom">{ar ? 'بناء مخصّص، لنحدد النطاق' : "Custom build, let's scope it"} <ArrowRight className="arrow" size={14} /></Link>
+          <Link className="link" href="/contact?scope=custom">{ar ? 'بناء مخصّص، لنحدد النطاق' : "Custom build, let's scope it"}</Link>
         </div>
       </section>
       <section className="container inc">
@@ -80,12 +80,12 @@ export function PricingView({ plans }: { plans: PricingPlan[] }) {
           <h2 className="display h2">{ar ? 'ما تحصل عليه، أيّاً كانت الباقة.' : 'What you get, whichever plan you choose.'}</h2>
         </div>
         <div className="inc-grid">
-          <div><Users size={20} /><div><b>{ar ? 'إعداد كامل ننفّذه عنك' : 'Done-for-you setup'}</b><span>{ar ? 'نبني ونربط ونختبر. فريقك لا يضبط شيئاً.' : "We build, connect and test it. Your team doesn't configure anything."}</span></div></div>
-          <div><Globe size={20} /><div><b>{ar ? 'العربية والإنجليزية' : 'Arabic and English'}</b><span>{ar ? 'ردود تراعي اللهجة، بما فيها الرسائل المختلطة.' : 'Dialect-aware replies, including mixed-language messages.'}</span></div></div>
-          <div><Headset size={20} /><div><b>{ar ? 'تحويل لموظف بشري' : 'Human hand-off'}</b><span>{ar ? 'يمكن لفريقك تولي أي محادثة مع السياق كاملاً.' : 'Your team can take over any conversation, with full context.'}</span></div></div>
-          <div><MessageCircle size={20} /><div><b>{ar ? 'رقم واتساب الخاص بك' : 'Your own WhatsApp number'}</b><span>{ar ? 'العملاء يتحدثون مع نشاطك، لا معنا.' : 'Customers talk to your business, not to us.'}</span></div></div>
-          <div><LayoutGrid size={20} /><div><b>{ar ? 'لوحة متابعة للعميل' : 'Client dashboard'}</b><span>{ar ? 'كل رد وحجز وتحويل بلغة واضحة.' : 'Every reply, booking and hand-off, in plain language.'}</span></div></div>
-          <div><KeyRound size={20} /><div><b>{ar ? 'الملكية لك' : 'You keep ownership'}</b><span>{ar ? 'بعد الإطلاق، الإعداد والتكاملات وأدلة التشغيل ملكك.' : 'After go-live, the setup, integrations and runbooks are yours.'}</span></div></div>
+          <div><div><b>{ar ? 'إعداد كامل ننفّذه عنك' : 'Done-for-you setup'}</b><span>{ar ? 'نبني ونربط ونختبر. فريقك لا يضبط شيئاً.' : "We build, connect and test it. Your team doesn't configure anything."}</span></div></div>
+          <div><div><b>{ar ? 'العربية والإنجليزية' : 'Arabic and English'}</b><span>{ar ? 'ردود تراعي اللهجة، بما فيها الرسائل المختلطة.' : 'Dialect-aware replies, including mixed-language messages.'}</span></div></div>
+          <div><div><b>{ar ? 'تحويل لموظف بشري' : 'Human hand-off'}</b><span>{ar ? 'يمكن لفريقك تولي أي محادثة مع السياق كاملاً.' : 'Your team can take over any conversation, with full context.'}</span></div></div>
+          <div><div><b>{ar ? 'رقم واتساب الخاص بك' : 'Your own WhatsApp number'}</b><span>{ar ? 'العملاء يتحدثون مع نشاطك، لا معنا.' : 'Customers talk to your business, not to us.'}</span></div></div>
+          <div><div><b>{ar ? 'لوحة متابعة للعميل' : 'Client dashboard'}</b><span>{ar ? 'كل رد وحجز وتحويل بلغة واضحة.' : 'Every reply, booking and hand-off, in plain language.'}</span></div></div>
+          <div><div><b>{ar ? 'الملكية لك' : 'You keep ownership'}</b><span>{ar ? 'بعد الإطلاق، الإعداد والتكاملات وأدلة التشغيل ملكك.' : 'After go-live, the setup, integrations and runbooks are yours.'}</span></div></div>
         </div>
       </section>
       <section className="container inc">
@@ -118,7 +118,7 @@ export function PricingView({ plans }: { plans: PricingPlan[] }) {
             <p>{ar ? 'أخبرنا كيف تصلك الاستفسارات اليوم. سنقترح أصغر إعداد ينفع.' : "Tell us how enquiries reach you today. We'll recommend the smallest setup that works."}</p>
           </div>
           <div className="row gap-12">
-            <Link className="btn btn-primary" href="/contact">{ar ? 'احجز مكالمة تعريفية' : 'Book a discovery call'} <ArrowRight className="arrow" size={16} /></Link>
+            <Link className="btn btn-primary" href="/contact">{ar ? 'احجز مكالمة تعريفية' : 'Book a discovery call'}</Link>
             <WhatsAppCta ar={ar} className="btn btn-ghost" labelEn="WhatsApp" labelAr="واتساب">
               <MessageCircle size={16} />
             </WhatsAppCta>

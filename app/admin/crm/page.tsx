@@ -7,7 +7,7 @@ import { WholeCrmView } from '@/components/crm/whole-crm-view'
 import { mapDirectoryContacts, sumDealValueCents, type DirectoryActivity } from '@/lib/crm/directory'
 
 export const metadata = {
-  title: 'Helix AI — Cross-Client CRM',
+  title: 'Helix AI: Cross-Client CRM',
   robots: { index: false, follow: false },
 }
 

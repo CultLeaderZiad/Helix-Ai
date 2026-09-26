@@ -1,9 +1,8 @@
 import type { Metadata } from 'next'
 import { LegalDocument, type LegalSection } from '@/components/marketing/legal-document'
-import { SitePage } from '@/components/marketing/site-page'
 
 export const metadata: Metadata = {
-  title: 'Privacy — Helix',
+  title: 'Privacy: Helix',
   description: 'How Helix handles conversations, bookings and account details.',
 }
 
@@ -96,8 +95,7 @@ const SECTIONS: LegalSection[] = [
 
 export default function PrivacyPage() {
   return (
-    <SitePage>
-      <LegalDocument
+          <LegalDocument
         kickerEn="Privacy"
         kickerAr="الخصوصية"
         titleEn="Privacy"
@@ -106,6 +104,5 @@ export default function PrivacyPage() {
         updatedAr="آخر تحديث 26 سبتمبر 2026"
         sections={SECTIONS}
       />
-    </SitePage>
-  )
+      )
 }

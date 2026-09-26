@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { SitePage } from '@/components/marketing/site-page'
 import { SystemDetail, type SystemDetailModel } from '@/components/marketing/system-detail'
 import { getSystemTemplate, SYSTEM_TEMPLATES } from '@/lib/studio/templates'
 
@@ -20,7 +19,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
   const template = getSystemTemplate(ALIASES[slug] ?? slug)
-  return { title: template ? `${template.en.name} — Helix` : 'System — Helix' }
+  return { title: template ? `${template.en.name}: Helix` : 'System: Helix' }
 }
 
 export default async function SystemDetailPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -39,8 +38,6 @@ export default async function SystemDetailPage({ params }: { params: Promise<{ s
     monthlyRetainerCents: template.monthlyRetainerCents,
   }
   return (
-    <SitePage>
-      <SystemDetail system={system} />
-    </SitePage>
-  )
+          <SystemDetail system={system} />
+      )
 }

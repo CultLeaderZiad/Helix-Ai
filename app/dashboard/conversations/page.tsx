@@ -7,7 +7,7 @@ import { DataTable, EmptyState, InlineError, PageHead, Panel, StatusChip } from 
 import { readDashLang, readDashTheme } from '@/lib/dashboard/lang.server'
 
 export const metadata = {
-  title: 'Helix — Conversations',
+  title: 'Helix: Conversations',
   robots: { index: false, follow: false },
 }
 
@@ -102,7 +102,7 @@ export default async function ConversationsPage() {
                 { key: 'contact', header: tx(lang, 'Contact', 'جهة الاتصال'), render: row => row.contact },
                 { key: 'channel', header: tx(lang, 'Channel', 'القناة'), render: row => row.channel },
                 { key: 'preview', header: tx(lang, 'Last message', 'آخر رسالة'), render: row => row.preview },
-                { key: 'when', header: tx(lang, 'When', 'الوقت'), render: row => row.when || '—' },
+                { key: 'when', header: tx(lang, 'When', 'الوقت'), render: row => row.when || '-' },
                 {
                   key: 'status',
                   header: tx(lang, 'Status', 'الحالة'),

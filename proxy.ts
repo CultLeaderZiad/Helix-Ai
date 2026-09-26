@@ -12,7 +12,7 @@ export async function proxy(request: NextRequest) {
   function finish(result: NextResponse) {
     for (const cookie of response.cookies.getAll()) result.cookies.set(cookie)
     result.headers.set('Cache-Control', 'private, no-store')
-    result.headers.set('X-Robots-Tag', 'noindex, nofollow')
+    if (!isLogin) result.headers.set('X-Robots-Tag', 'noindex, nofollow')
     return result
   }
 

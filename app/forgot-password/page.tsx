@@ -4,7 +4,7 @@ import { ForgotForm } from '@/components/auth/forgot-form'
 import { getPublicPrefs } from '@/lib/public-prefs'
 
 export const metadata: Metadata = {
-  title: 'Reset password — Helix AI',
+  title: 'Reset password: Helix AI',
   robots: { index: false, follow: false },
 }
 

@@ -11,7 +11,7 @@ export interface GenerateOutreachOptions {
 
 /**
  * Generates an outreach draft ONLY if score >= outreachMinScore and real contact exists.
- * Strictly draft only — never auto-sends.
+ * Strictly draft only: never auto-sends.
  */
 export function generateOutreachDraft(options: GenerateOutreachOptions): OutreachDraft | null {
   const { contacts, targetUrl, score, outreachMinScore, enabled } = options

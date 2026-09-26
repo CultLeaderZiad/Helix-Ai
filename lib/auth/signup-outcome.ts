@@ -16,7 +16,7 @@ export type SignUpOutcome =
 /**
  * Map a Supabase signUp payload to what the UI is allowed to claim.
  * An empty identities array is Supabase's signal that the email is already
- * registered while confirmations are on — it is not proof that a message was sent.
+ * registered while confirmations are on: it is not proof that a message was sent.
  */
 export function interpretSignUp(input: {
   error: SignUpApiError | null

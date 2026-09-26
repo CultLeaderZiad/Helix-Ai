@@ -25,7 +25,7 @@ export function MonthlyReportView({ report, lang }: { report: MonthlyReportData;
       <p className="faint">{report.clientBusinessName} · {report.cyclePeriod}</p>
       {quiet ? (
         <EmptyState
-          title={tx(active, 'Your first weekly report appears after 7 days of activity.', 'يظهر أول تقرير أسبوعي بعد 7 أيام من النشاط.')}
+          title={tx(active, 'Your first weekly report appears after a week of activity.', 'يظهر أول تقرير أسبوعي بعد أسبوع من النشاط.')}
         />
       ) : null}
       <div className="kpis">
@@ -33,7 +33,7 @@ export function MonthlyReportView({ report, lang }: { report: MonthlyReportData;
         <KpiCard label={tx(active, 'WhatsApp messages', 'رسائل واتساب')} value={String(report.totalWhatsAppMessages)} hint={tx(active, 'From the activity log', 'من سجل النشاط')} />
         <KpiCard
           label={tx(active, 'Checked details', 'تفاصيل تم التحقق منها')}
-          value={report.factAccuracyRate == null ? '—' : `${report.factAccuracyRate}%`}
+          value={report.factAccuracyRate == null ? '-' : `${report.factAccuracyRate}%`}
           hint={report.factAccuracyRate == null ? tx(active, 'No details recorded', 'لا توجد تفاصيل مسجّلة') : tx(active, 'Checked share of details on file', 'نسبة التفاصيل التي تم التحقق منها')}
         />
         <KpiCard

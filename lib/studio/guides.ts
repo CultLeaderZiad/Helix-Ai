@@ -98,8 +98,8 @@ const GUIDES: Record<string, SystemGuide> = {
   },
   'ar-invoicing': {
     id: 'ar-invoicing',
-    who: 'B2B teams collecting commercial invoices — never consumer debt.',
-    whoAr: 'فرق الشركات التي تحصّل فواتير تجارية — ليست ديون المستهلك.',
+    who: 'B2B teams collecting commercial invoices: never consumer debt.',
+    whoAr: 'فرق الشركات التي تحصّل فواتير تجارية: ليست ديون المستهلك.',
     what: 'Polite WhatsApp follow-ups with MENA payment links (Tap, Paymob, Moyasar).',
     whatAr: 'متابعات واتساب مهذبة مع روابط دفع إقليمية (Tap و Paymob و Moyasar).',
     steps: [

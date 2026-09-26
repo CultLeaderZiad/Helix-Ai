@@ -7,7 +7,7 @@ import { PricingManagerView } from '@/components/admin/pricing-manager-view'
 import { getPricingAction } from '@/lib/pricing/actions'
 
 export const metadata = {
-  title: 'Pricing Management — Helix AI Admin',
+  title: 'Pricing Management: Helix AI Admin',
   robots: { index: false, follow: false },
 }
 

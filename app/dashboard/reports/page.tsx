@@ -8,7 +8,7 @@ import { MonthlyReportView } from '@/components/reports/monthly-report-view'
 import { readDashLang, readDashTheme } from '@/lib/dashboard/lang.server'
 
 export const metadata = {
-  title: 'Helix AI — Monthly Performance Report',
+  title: 'Helix AI: Monthly Performance Report',
   robots: { index: false, follow: false },
 }
 

@@ -41,27 +41,36 @@ const NAV = {
 export function PublicFrame({
   initialTheme,
   initialLang,
+  themeChosen = false,
   isAuthenticated,
   consoleHref,
   children,
-  themeMode = 'site',
 }: {
   initialTheme: HelixTheme
   initialLang: HelixLang
+  themeChosen?: boolean
   isAuthenticated: boolean
   consoleHref: string
   children: React.ReactNode
-  themeMode?: 'site' | 'light' | 'dark'
 }) {
   const [theme, setThemeState] = useState<HelixTheme>(initialTheme)
   const [lang, setLangState] = useState<HelixLang>(initialLang)
+  const [picked, setPicked] = useState(themeChosen)
   const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const pathname = usePathname()
   const router = useRouter()
   const ar = lang === 'ar'
   const copy = NAV[lang]
-  const forced = themeMode === 'light' ? 'day' : themeMode === 'dark' ? 'night' : theme
-  const dataTheme = forced === 'day' ? 'light' : 'dark'
+  const effective: HelixTheme = pathname === '/pricing' && !picked ? 'day' : theme
+  const dataTheme = effective === 'day' ? 'light' : 'dark'
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   useEffect(() => {
     document.documentElement.lang = ar ? 'ar' : 'en'
@@ -69,6 +78,7 @@ export function PublicFrame({
   }, [ar])
 
   function setTheme(next: HelixTheme) {
+    setPicked(true)
     setThemeState(next)
     writeCookie('helix_theme', next)
   }
@@ -82,7 +92,8 @@ export function PublicFrame({
   return (
     <PrefsContext.Provider value={{ theme, lang, setTheme, setLang }}>
       <div className="hx" data-theme={dataTheme} dir={ar ? 'rtl' : 'ltr'} lang={ar ? 'ar' : 'en'}>
-        <header className="container nav">
+        <header className={`site-header${scrolled || open ? ' is-scrolled' : ''}`}>
+        <div className="container nav">
           <Link href="/" className="brand" aria-label="Helix">
             <HelixMark size={24} />
             <span className="word">HELIX</span>
@@ -105,10 +116,11 @@ export function PublicFrame({
             <Link className="btn btn-primary btn-sm d-only" href="/contact">
               {ar ? 'احجز مكالمة' : 'Book a call'}
             </Link>
-            <button type="button" className="m-only" aria-label={open ? 'Close' : 'Menu'} onClick={() => setOpen(v => !v)} style={{ background: 'none', border: 0, color: 'var(--text)' }}>
-              {open ? <X size={22} /> : <Menu size={22} />}
+            <button type="button" className="m-only" aria-expanded={open} aria-label={open ? 'Close' : 'Menu'} onClick={() => setOpen(v => !v)} style={{ background: 'none', border: 0, color: 'var(--text)', width: 44, height: 44 }}>
+              {open ? <X size={22} strokeWidth={1.5} /> : <Menu size={22} strokeWidth={1.5} />}
             </button>
           </div>
+        </div>
         </header>
         {open ? (
           <div className="m-only" style={{ position: 'fixed', inset: 0, background: 'var(--bg)', zIndex: 30, padding: '88px 24px', display: 'flex', flexDirection: 'column', gap: 22 }}>
@@ -117,10 +129,17 @@ export function PublicFrame({
                 {item.label}
               </Link>
             ))}
-            <Link href={isAuthenticated ? consoleHref : '/login'} onClick={() => setOpen(false)} style={{ fontSize: 28 }}>
-              {ar ? 'تسجيل الدخول' : 'Sign in'}
+            <div className="lang" role="group" aria-label="Language">
+              <button type="button" className={!ar ? 'on' : undefined} onClick={() => setLang('en')}>EN</button>
+              <button type="button" className={`ar ${ar ? 'on' : ''}`} onClick={() => setLang('ar')}>ع</button>
+            </div>
+            <button type="button" onClick={() => setTheme(effective === 'day' ? 'night' : 'day')} style={{ background: 'none', border: 0, color: 'inherit', cursor: 'pointer', minHeight: 44, textAlign: 'start' }}>
+              {effective === 'day' ? (ar ? 'داكن' : 'Dark') : ar ? 'فاتح' : 'Light'}
+            </button>
+            <Link className="btn btn-ghost" href={isAuthenticated ? consoleHref : '/login'} onClick={() => setOpen(false)} style={{ justifyContent: 'center' }}>
+              {isAuthenticated ? (ar ? 'لوحتك' : 'Dashboard') : ar ? 'تسجيل الدخول' : 'Sign in'}
             </Link>
-            <Link className="btn btn-primary" href="/contact" onClick={() => setOpen(false)} style={{ justifyContent: 'center' }}>
+            <Link className="btn btn-primary" href="/contact" onClick={() => setOpen(false)} style={{ justifyContent: 'center', width: '100%' }}>
               {ar ? 'احجز مكالمة' : 'Book a call'}
             </Link>
           </div>
@@ -141,20 +160,20 @@ export function PublicFrame({
                 </p>
               </div>
               <div>
-                <h6>{ar ? 'المنتج' : 'Product'}</h6>
+                <p className="foot-label">{ar ? 'المنتج' : 'Product'}</p>
                 <Link href="/#systems">{ar ? 'الأنظمة' : 'Systems'}</Link>
                 <Link href="/studio">{ar ? 'الاستوديو' : 'Studio'}</Link>
                 <Link href="/pricing">{ar ? 'الأسعار' : 'Pricing'}</Link>
                 <Link href="/login">{ar ? 'دخول العملاء' : 'Client sign in'}</Link>
               </div>
               <div>
-                <h6>{ar ? 'الشركة' : 'Company'}</h6>
+                <p className="foot-label">{ar ? 'الشركة' : 'Company'}</p>
                 <Link href="/about">{ar ? 'من نحن' : 'About'}</Link>
                 <Link href="/contact">{ar ? 'تواصل' : 'Contact'}</Link>
                 <Link href="/updates">{ar ? 'التحديثات' : 'Updates'}</Link>
               </div>
               <div>
-                <h6>{ar ? 'قانوني' : 'Legal'}</h6>
+                <p className="foot-label">{ar ? 'قانوني' : 'Legal'}</p>
                 <Link href="/privacy">{ar ? 'الخصوصية' : 'Privacy'}</Link>
                 <Link href="/terms">{ar ? 'الشروط' : 'Terms'}</Link>
               </div>
@@ -166,8 +185,8 @@ export function PublicFrame({
                   {ar ? 'English' : 'العربية'}
                 </button>
                 {' · '}
-                <button type="button" onClick={() => setTheme(theme === 'day' ? 'night' : 'day')} style={{ background: 'none', border: 0, color: 'inherit', cursor: 'pointer' }}>
-                  {theme === 'day' ? (ar ? 'داكن' : 'Dark') : ar ? 'فاتح' : 'Light'}
+                <button type="button" onClick={() => setTheme(effective === 'day' ? 'night' : 'day')} style={{ background: 'none', border: 0, color: 'inherit', cursor: 'pointer' }}>
+                  {effective === 'day' ? (ar ? 'داكن' : 'Dark') : ar ? 'فاتح' : 'Light'}
                 </button>
               </span>
             </div>

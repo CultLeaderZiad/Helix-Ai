@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
 import { useMarketingPrefs } from '@/components/marketing/public-frame'
 import type { PlatformUpdate } from '@/lib/updates/updates-store'
 
@@ -36,7 +35,7 @@ export function UpdatesView({ releases }: { releases: PlatformUpdate[] }) {
                 ))}
               </ul>
               <Link className="link" href="/contact">
-                {ar ? 'احجز مكالمة' : 'Book a call'} <ArrowRight className="arrow" size={14} />
+                {ar ? 'احجز مكالمة' : 'Book a call'}
               </Link>
             </article>
           )

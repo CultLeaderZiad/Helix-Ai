@@ -68,7 +68,7 @@ export function PlaybooksView() {
                 onClick={() =>
                   copyToClipboard(
                     'script-a',
-                    `Hi [Name], quick question—have you ever called your own clinic line at 8:30 PM to see what a new patient hears? When patients search for appointments after hours, they hang up and book with whoever answers first. We deployed an autonomous bilingual voice receptionist that answers in < 400ms in Gulf Arabic, confirms calendar slots on Cal.com, and sends an instant WhatsApp itinerary. Can I send you a 1-minute test sandbox to test on your phone?`
+                    `Hi [Name], quick question-have you ever called your own clinic line at 8:30 PM to see what a new patient hears? When patients search for appointments after hours, they hang up and book with whoever answers first. We deployed an autonomous bilingual voice receptionist that answers in < 400ms in Gulf Arabic, confirms calendar slots on Cal.com, and sends an instant WhatsApp itinerary. Can I send you a 1-minute test sandbox to test on your phone?`
                   )
                 }
                 className="flex items-center gap-1.5 rounded-lg border border-helix-border bg-helix-surface px-3 py-1.5 text-xs font-medium text-ink hover:bg-helix-border/40 transition-colors"
@@ -115,7 +115,7 @@ export function PlaybooksView() {
                 onClick={() =>
                   copyToClipboard(
                     'script-b',
-                    `Hi [Name], in emergency home services, 70% of missed calls hire a competitor within 3 minutes. When your line is busy, Helix AI fires a WhatsApp in under 4 seconds: 'Hi, we missed your call—what emergency service do you need right now?' It captures the address and pings your technician dispatch queue instantly.`
+                    `Hi [Name], in emergency home services, 70% of missed calls hire a competitor within 3 minutes. When your line is busy, Helix AI fires a WhatsApp in under 4 seconds: 'Hi, we missed your call-what emergency service do you need right now?' It captures the address and pings your technician dispatch queue instantly.`
                   )
                 }
                 className="flex items-center gap-1.5 rounded-lg border border-helix-border bg-helix-surface px-3 py-1.5 text-xs font-medium text-ink hover:bg-helix-border/40 transition-colors"

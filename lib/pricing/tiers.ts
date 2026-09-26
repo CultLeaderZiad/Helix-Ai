@@ -34,6 +34,8 @@ export interface PlanCopy {
   tagline: string
   taglineShort: string
   features: string[]
+  /** Three short rows for the home teaser. Pricing uses `features`. */
+  home?: string[]
 }
 
 /** Section 8 display copy. Prices stay on the plan objects. */
@@ -50,6 +52,11 @@ export const GCC_PLAN_DISPLAY: Record<string, { en: PlanCopy; ar: PlanCopy }> = 
         'Human review before anything uncertain is saved',
         'UAE and KSA VAT-compliant invoices',
       ],
+      home: [
+        'Up to 1,500 conversations a month',
+        'Voice agent in Gulf Arabic & English',
+        'Calendar sync and WhatsApp confirmations',
+      ],
     },
     ar: {
       tagline: 'لموقع واحد يؤتمت الهاتف وواتساب.',
@@ -61,6 +68,11 @@ export const GCC_PLAN_DISPLAY: Record<string, { en: PlanCopy; ar: PlanCopy }> = 
         'مزامنة مع Cal.com وتقويم Google',
         'مراجعة بشرية قبل حفظ أي معلومة غير مؤكدة',
         'فواتير متوافقة مع ضريبة القيمة المضافة في الإمارات والسعودية',
+      ],
+      home: [
+        'حتى 1,500 محادثة شهرياً',
+        'وكيل صوتي بالخليجي والإنجليزية',
+        'مزامنة التقويم وتأكيدات واتساب',
       ],
     },
   },
@@ -74,15 +86,25 @@ export const GCC_PLAN_DISPLAY: Record<string, { en: PlanCopy; ar: PlanCopy }> = 
         'Missed-call WhatsApp text-back and triage, in seconds',
         'B2B payment reminders with Mada and Apple Pay links',
       ],
+      home: [
+        'Up to 10,000 conversations a month',
+        'Voice, WhatsApp and email automation',
+        'Missed-call WhatsApp text-back and triage',
+      ],
     },
     ar: {
-      tagline: 'فرز المكالمات الفائتة والصوت وواتساب يعملون معاً.',
+      tagline: 'فرز المكالمات الفائتة والصوت وواتساب معاً.',
       taglineShort: 'فرز المكالمات الفائتة، الصوت وواتساب معاً.',
       features: [
         'حتى 10,000 محادثة مع العملاء شهرياً',
         'أتمتة الصوت وواتساب والبريد الإلكتروني',
         'رد على المكالمات الفائتة عبر واتساب وفرزها، خلال ثوانٍ',
         'تذكيرات دفع للشركات مع روابط مدى وApple Pay',
+      ],
+      home: [
+        'حتى 10,000 محادثة شهرياً',
+        'أتمتة الصوت وواتساب والبريد الإلكتروني',
+        'رد على المكالمات الفائتة عبر واتساب وفرزها',
       ],
     },
   },
@@ -97,6 +119,11 @@ export const GCC_PLAN_DISPLAY: Record<string, { en: PlanCopy; ar: PlanCopy }> = 
         'Cross-branch CRM governance and exports',
         'Priority escalation support',
       ],
+      home: [
+        'Unlimited workspaces across branches',
+        'Custom dialect tuning',
+        'Priority escalation support',
+      ],
     },
     ar: {
       tagline: 'للمجموعات التي تدير عدة فروع وعلامات تجارية.',
@@ -106,6 +133,11 @@ export const GCC_PLAN_DISPLAY: Record<string, { en: PlanCopy; ar: PlanCopy }> = 
         'ضبط اللهجات: الإماراتية والنجدية والحجازية والقطرية',
         'تحصيل مستحقات الشركات ومعالجة الاعتراضات',
         'حوكمة بيانات العملاء وتصديرها عبر الفروع',
+        'دعم تصعيد ذو أولوية',
+      ],
+      home: [
+        'مساحات عمل غير محدودة للفروع',
+        'ضبط اللهجات',
         'دعم تصعيد ذو أولوية',
       ],
     },
@@ -132,8 +164,8 @@ export const REGIONAL_PRICING_CONFIGS: Record<RegionTier, RegionPricingConfig> =
     nameAr: 'المؤسسات الكبرى في الخليج العربي (الإمارات، السعودية، قطر)',
     defaultCurrency: 'AED',
     availableCurrencies: ['AED', 'SAR', 'USD'],
-    badge: 'HIGH-RETAINER ENTERPRISE',
-    badgeAr: 'باقات المؤسسات المتميزة',
+    badge: 'GCC plans',
+    badgeAr: 'باقات الخليج',
     description:
       'Built and run for multi-location businesses in the GCC.',
     descriptionAr: 'نبنيها ونشغّلها للأعمال متعددة الفروع في الخليج.',
@@ -147,45 +179,21 @@ export const REGIONAL_PRICING_CONFIGS: Record<RegionTier, RegionPricingConfig> =
         display: GCC_PLAN_DISPLAY['starter-gcc'],
         prices: { AED: 1800, SAR: 1850, USD: 490 },
         setupFee: { AED: 4500, SAR: 4600, USD: 1200 },
-        features: [
-          'Up to 1,500 active customer conversations / mo',
-          'Bilingual Voice Agent (Gulf Arabic + English)',
-          'Meta Verified WhatsApp Cloud API WABA Integration',
-          'Cal.com & Google Calendar autonomous synchronization',
-          'Supervisory Evidence Queue with human-in-the-loop review',
-          'UAE & KSA Tax/VAT compliant invoice outputs',
-        ],
-        featuresAr: [
-          'حتى 1,500 محادثة ومكالمة عميل نشطة شهرياً',
-          'وكيل صوتي ذكي ثنائي اللغة (اللهجة الخليجية + الإنجليزية)',
-          'ربط مباشر مع WhatsApp Business Cloud API الموثق',
-          'مزامنة المواعيد مع Cal.com وتقويم Google',
-          'لوحة مراجعة الأدلة وتدقيق صحة الحقائق قبل التحديث',
-          'فواتير ضريبية متوافقة مع متطلبات هيئة الزكاة والضريبة والجمارك',
-        ],
+        features: GCC_PLAN_DISPLAY['starter-gcc'].en.features,
+        featuresAr: GCC_PLAN_DISPLAY['starter-gcc'].ar.features,
       },
       {
         id: 'growth-gcc',
         name: 'Growth Enterprise',
         nameAr: 'نمو المؤسسات',
         tagline: 'Missed-call triage, voice and WhatsApp working together.',
-        taglineAr: 'فرز المكالمات الفائتة والصوت وواتساب يعملون معاً.',
+        taglineAr: 'فرز المكالمات الفائتة والصوت وواتساب معاً.',
         display: GCC_PLAN_DISPLAY['growth-gcc'],
         featured: true,
         prices: { AED: 4600, SAR: 4700, USD: 1250 },
         setupFee: { AED: 7500, SAR: 7650, USD: 2000 },
-        features: [
-          'Up to 10,000 active customer conversations / mo',
-          'Multi-channel voice, WhatsApp, & email automation',
-          'Missed-call WhatsApp text-back and triage, in seconds',
-          'Automated A/R payment reminders with Mada & Apple Pay links',
-        ],
-        featuresAr: [
-          'حتى 10,000 محادثة ومكالمة عميل نشطة شهرياً',
-          'أتمتة متعددة القنوات: صوت، واتساب، وبريد إلكتروني',
-          'رد على المكالمات الفائتة عبر واتساب وفرزها، خلال ثوانٍ',
-          'تذكيرات تحصيل المستحقات وروابط دفع سريعة (مدى / Apple Pay)',
-        ],
+        features: GCC_PLAN_DISPLAY['growth-gcc'].en.features,
+        featuresAr: GCC_PLAN_DISPLAY['growth-gcc'].ar.features,
       },
       {
         id: 'scale-gcc',
@@ -196,20 +204,8 @@ export const REGIONAL_PRICING_CONFIGS: Record<RegionTier, RegionPricingConfig> =
         display: GCC_PLAN_DISPLAY['scale-gcc'],
         prices: { AED: 10200, SAR: 10500, USD: 2800 },
         setupFee: { AED: 15000, SAR: 15500, USD: 4000 },
-        features: [
-          'Unlimited workspaces across subsidiaries & brands',
-          'Custom dialect fine-tuning (Emirati, Najdi, Hijazi, Qatari)',
-          'Autonomous A/R collections & dispute resolution engine',
-          'Cross-client CRM data governance & export compliance',
-          'Priority escalation support',
-        ],
-        featuresAr: [
-          'مساحات عمل وفروع غير محدودة مع عزل تام للبيانات',
-          'تدريب خاص على اللهجات المحلية (الإماراتية، النجدية، الحجازية)',
-          'نظام متقدم لتسوية الديون والتحصيل الآلي للشركات',
-          'حوكمة شاملة لبيانات العملاء في CRM وتصدير التقارير',
-          'دعم تصعيد ذو أولوية',
-        ],
+        features: GCC_PLAN_DISPLAY['scale-gcc'].en.features,
+        featuresAr: GCC_PLAN_DISPLAY['scale-gcc'].ar.features,
       },
     ],
   },
@@ -219,12 +215,12 @@ export const REGIONAL_PRICING_CONFIGS: Record<RegionTier, RegionPricingConfig> =
     nameAr: 'الشركات الناشئة والمتوسطة (مصر، الأردن، وشمال إفريقيا)',
     defaultCurrency: 'EGP',
     availableCurrencies: ['EGP', 'JOD', 'USD'],
-    badge: 'HIGH-VELOCITY SME GROWTH',
-    badgeAr: 'باقات مخصصة للنمو السريع',
+    badge: 'MENA plans',
+    badgeAr: 'باقات المنطقة',
     description:
-      'Tailored for ambitious SMEs, local clinics, maintenance contractors, and e-commerce brands in Cairo, Alexandria, and Amman needing rapid ROI, accessible monthly retainers, and WhatsApp-driven lead capture.',
+      'Hidden catalogue for clinics and service businesses in Egypt and Jordan. Not shown on the public pricing page.',
     descriptionAr:
-      'باقات اقتصادية مصممة للشركات والمصانع والعيادات في مصر والأردن لتحقيق أقصى عائد استثماري بأقساط وتكاليف شهرية مدروسة بالجنيه المصري والدينار الأردني.',
+      'دليل مخفي للعيادات وأعمال الخدمات في مصر والأردن. لا يظهر في صفحة الأسعار العامة.',
     plans: [
       {
         id: 'starter-mena',
@@ -236,7 +232,7 @@ export const REGIONAL_PRICING_CONFIGS: Record<RegionTier, RegionPricingConfig> =
         setupFee: { EGP: 15000, JOD: 280, USD: 400 },
         features: [
           'Up to 800 WhatsApp lead conversations / mo',
-          'Instant 5-second WhatsApp response for missed calls',
+          'WhatsApp reply when a call is missed',
           'Lead qualification and technician / sales routing',
           'Core CRM contact list & conversation logging',
           'Fawry & local card payment collection links',
@@ -266,7 +262,7 @@ export const REGIONAL_PRICING_CONFIGS: Record<RegionTier, RegionPricingConfig> =
           'Automated WhatsApp appointment booking & reminders',
           'Dormant lead reactivation campaigns for old CRM contacts',
           'Automated WhatsApp invoice payment links (InstaPay / CliQ ready)',
-          'Bi-weekly performance & ROI report generator',
+          'A written summary of what the system did',
         ],
         featuresAr: [
           'حتى 3,500 محادثة واستفسار نشط شهرياً',
@@ -290,8 +286,8 @@ export const REGIONAL_PRICING_CONFIGS: Record<RegionTier, RegionPricingConfig> =
           'Full A/R accounts receivable & debt collection sequences',
           'Multi-branch lead distribution & role-based access',
           'Anything uncertain goes to your review queue, never saved as fact',
-          'Custom webhook integrations with ERP & custom CRMs',
-          'Dedicated implementation consultant with direct phone line',
+          'Connections to the accounting tools you already use',
+          'A setup walkthrough with your team',
         ],
         featuresAr: [
           'حتى 10,000 محادثة ومكالمة عبر الصوت والواتساب',

@@ -9,7 +9,7 @@ import { DataTable, EmptyState, InlineError, PageHead, Panel } from '@/component
 import { readDashLang, readDashTheme } from '@/lib/dashboard/lang.server'
 
 export const metadata = {
-  title: 'Helix — Contacts',
+  title: 'Helix: Contacts',
   robots: { index: false, follow: false },
 }
 

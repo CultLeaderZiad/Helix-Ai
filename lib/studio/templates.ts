@@ -147,7 +147,7 @@ export const SYSTEM_TEMPLATES: SystemTemplate[] = [
     badge: undefined,
     en: {
       name: 'Lead reactivation',
-      category: 'Pipeline',
+      category: 'Follow-up',
       vertical: 'Real estate, B2B services, clinics, high-value retail',
       tagline: 'Wake dormant CRM contacts with contextual WhatsApp sequences.',
       description: 'Wake dormant CRM contacts with contextual WhatsApp sequences.',
@@ -157,7 +157,7 @@ export const SYSTEM_TEMPLATES: SystemTemplate[] = [
         { label: 'Replies rescued', value: 'Sample demo', trend: 'Demo script' },
         { label: 'Stop words honored', value: 'إيقاف / stop', trend: 'Required' },
       ],
-      simulatedViews: ['WhatsApp sequence', 'Reactivation pipeline', 'Reply classifier'],
+      simulatedViews: ['WhatsApp sequence', 'Reactivation steps', 'Reply classifier'],
     },
     ar: {
       name: 'إعادة تنشيط العملاء',
@@ -165,7 +165,7 @@ export const SYSTEM_TEMPLATES: SystemTemplate[] = [
       vertical: 'العقارات، خدمات الأعمال، العيادات، والتجزئة الراقية',
       tagline: 'إيقاظ جهات CRM الخاملة بتسلسل واتساب سياقي.',
       description: 'إيقاظ جهات CRM الخاملة بتسلسل واتساب سياقي.',
-      badge: 'أعلى عائد',
+      badge: '',
       metrics: [
         { label: 'جهات خاملة', value: 'من CRM', trend: 'بموافقة تسويقية فقط' },
         { label: 'ردود مستعادة', value: 'عرض تجريبي', trend: 'سيناريو توضيحي' },
@@ -191,7 +191,7 @@ export const SYSTEM_TEMPLATES: SystemTemplate[] = [
       metrics: [
         { label: 'Source tracking', value: 'UTM + forms', trend: 'No invented ROAS' },
         { label: 'Score', value: 'Hot / warm / cold', trend: 'Human override' },
-        { label: 'Attribution sync', value: 'Ad spend join', trend: 'n8n attribution' },
+        { label: 'Attribution sync', value: 'Ad spend join', trend: 'Example' },
       ],
       simulatedViews: ['Source card', 'Qualification score', 'Booking join'],
     },
@@ -225,7 +225,7 @@ export const SYSTEM_TEMPLATES: SystemTemplate[] = [
       vertical: 'Wholesale, trading, logistics, retainers, contractors',
       tagline: 'Polite WhatsApp payment follow-ups for commercial invoices. MENA payment links.',
       description:
-        'Polite WhatsApp payment follow-ups for commercial invoices only. Payment links via Tap, Paymob, or Moyasar — strictly commercial B2B AR, never consumer debt.',
+        'Polite WhatsApp payment follow-ups for commercial invoices only. Payment links via Tap, Paymob, or Moyasar: strictly commercial B2B AR, never consumer debt.',
       badge: 'B2B only',
       metrics: [
         { label: 'Scope', value: 'B2B invoices', trend: 'Commercial AR only' },
@@ -240,7 +240,7 @@ export const SYSTEM_TEMPLATES: SystemTemplate[] = [
       vertical: 'التوريد، المقاولات، الخدمات اللوجستية، والاشتراكات',
       tagline: 'متابعات واتساب مهذبة لفواتير الشركات. روابط دفع إقليمية.',
       description:
-        'متابعات واتساب مهذبة لفواتير الشركات فقط. روابط الدفع عبر Tap أو Paymob أو Moyasar — مستحقات تجارية فقط وليس استهلاكية.',
+        'متابعات واتساب مهذبة لفواتير الشركات فقط. روابط الدفع عبر Tap أو Paymob أو Moyasar: مستحقات تجارية فقط وليس استهلاكية.',
       badge: 'شركات فقط',
       metrics: [
         { label: 'النطاق', value: 'فواتير B2B', trend: 'مستحقات تجارية فقط' },
@@ -421,7 +421,7 @@ export const SYSTEM_TEMPLATES: SystemTemplate[] = [
       category: 'Preview · Media',
       vertical: 'Podcasts, webinars, course creators, brand media',
       tagline: 'Long-form video → 8–10 captioned vertical short clips for social.',
-      description: 'Automated video ingest pipeline turning long webinars and client presentations into curated vertical clips with animated captions.',
+      description: 'Turns long webinars and client presentations into short vertical clips with captions.',
       badge: 'Preview',
       metrics: [
         { label: 'Input', value: 'Webinar / Video URL', trend: 'Long form' },
@@ -459,11 +459,11 @@ export const SYSTEM_TEMPLATES: SystemTemplate[] = [
       name: 'Lead Generation',
       category: 'Add-on · Acquisition',
       vertical: 'B2B services, contractors, clinics, regional wholesale',
-      tagline: 'Public website lead discovery, adaptive extraction & scoring powered by Scrapling.',
+      tagline: 'Finds businesses on the public web and fills only the fields it can verify.',
       description: 'Crawls public business websites, extracts verified emails and phone numbers with provenance, scores ICP match, and drafts targeted outreach.',
       badge: 'Add-on',
       metrics: [
-        { label: 'Extraction engine', value: 'Scrapling worker', trend: 'Live worker status' },
+        { label: 'Lookup', value: 'Public web', trend: 'Example' },
         { label: 'Contact provenance', value: 'Website / Hunter', trend: 'Zero fake leads' },
         { label: 'Outreach mode', value: 'Drafts only', trend: 'Never auto-send' },
       ],
@@ -473,11 +473,11 @@ export const SYSTEM_TEMPLATES: SystemTemplate[] = [
       name: 'توليد العملاء (Lead Generation)',
       category: 'إضافة · اكتساب العملاء',
       vertical: 'خدمات الشركات، المقاولات، العيادات، والتجارة الإقليمية',
-      tagline: 'اكتشاف عملاء الشركات وتوليد جهات الاتصال الموثوقة عبر محرك Scrapling.',
+      tagline: 'يبحث عن الأعمال في الويب العام ويملأ الحقول التي يمكن التحقق منها فقط.',
       description: 'استخراج جهات اتصال موثوقة من مواقع الشركات العامة مع توثيق المصدر، تقييم المطابقة، وصياغة مسودات المراسلة دون إرسال آلي.',
       badge: 'إضافة',
       metrics: [
-        { label: 'محرك الاستخراج', value: 'محرك Scrapling', trend: 'حالة المشغل المباشرة' },
+        { label: 'البحث', value: 'الويب العام', trend: 'مثال' },
         { label: 'مصدر البيانات', value: 'الموقع / Hunter', trend: 'بدون اختلاق' },
         { label: 'المراسلة', value: 'مسودات فقط', trend: 'لا إرسال آلي' },
       ],

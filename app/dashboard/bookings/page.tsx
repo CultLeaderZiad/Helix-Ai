@@ -7,7 +7,7 @@ import { DataTable, EmptyState, InlineError, PageHead, Panel, StatusChip } from 
 import { readDashLang, readDashTheme } from '@/lib/dashboard/lang.server'
 
 export const metadata = {
-  title: 'Helix — Bookings',
+  title: 'Helix: Bookings',
   robots: { index: false, follow: false },
 }
 

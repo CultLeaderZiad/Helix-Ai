@@ -6,7 +6,7 @@ import { AdminFrame, PageHead } from '@/components/admin/v5'
 import { PlaybooksView } from '@/components/admin/playbooks-view'
 
 export const metadata = {
-  title: 'Helix AI — Sales Playbooks & Outreach',
+  title: 'Helix AI: Sales Playbooks & Outreach',
   robots: { index: false, follow: false },
 }
 

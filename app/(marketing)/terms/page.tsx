@@ -1,9 +1,8 @@
 import type { Metadata } from 'next'
 import { LegalDocument, type LegalSection } from '@/components/marketing/legal-document'
-import { SitePage } from '@/components/marketing/site-page'
 
 export const metadata: Metadata = {
-  title: 'Terms — Helix',
+  title: 'Terms: Helix',
   description: 'The terms for using Helix systems, in plain language.',
 }
 
@@ -115,8 +114,7 @@ const SECTIONS: LegalSection[] = [
 
 export default function TermsPage() {
   return (
-    <SitePage>
-      <LegalDocument
+          <LegalDocument
         kickerEn="Terms"
         kickerAr="الشروط"
         titleEn="Terms"
@@ -125,6 +123,5 @@ export default function TermsPage() {
         updatedAr="آخر تحديث 26 سبتمبر 2026"
         sections={SECTIONS}
       />
-    </SitePage>
-  )
+      )
 }

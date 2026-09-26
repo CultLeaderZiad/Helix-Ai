@@ -90,7 +90,7 @@ export function extractContactsFromHtml(html: string, targetUrl: string): Extrac
   const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i)
   if (titleMatch && titleMatch[1]) {
     const rawTitle = titleMatch[1].trim()
-    const firstPart = rawTitle.split(/[|\-–—•]/)[0]?.trim()
+    const firstPart = rawTitle.split(/[|\-–-•]/)[0]?.trim()
     if (firstPart && firstPart.length > 1) {
       company_name = firstPart
     }

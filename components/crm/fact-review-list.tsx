@@ -58,7 +58,7 @@ function FactRow({ fact, lang }: { fact: ReviewableFact; lang: DashLang }) {
       <div style={{ minWidth: 0, flex: 1 }}>
         <b>{who}</b>
         <span>
-          {tx(lang, 'Suggested', 'القيمة المقترحة')}: {plainField(fact.field_name)} — {fact.field_value}
+          {tx(lang, 'Suggested', 'القيمة المقترحة')}: {plainField(fact.field_name)}: {fact.field_value}
         </span>
         <span className="faint"> · {when}</span>
       </div>

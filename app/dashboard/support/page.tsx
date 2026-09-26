@@ -8,7 +8,7 @@ import { PageHead } from '@/components/dashboard/ui'
 import { readDashLang, readDashTheme } from '@/lib/dashboard/lang.server'
 
 export const metadata = {
-  title: 'Support — Helix AI Dashboard',
+  title: 'Support: Helix AI Dashboard',
   robots: { index: false, follow: false },
 }
 

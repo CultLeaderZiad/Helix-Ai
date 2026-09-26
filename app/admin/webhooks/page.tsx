@@ -7,7 +7,7 @@ import { WebhooksManagerView } from '@/components/admin/webhooks-manager-view'
 import type { Client, SystemWebhook } from '@/lib/schema'
 
 export const metadata = {
-  title: 'HELIX AI — Webhook Registry & n8n Control Plane',
+  title: 'HELIX AI: Webhook Registry & n8n Control Plane',
   robots: { index: false, follow: false },
 }
 

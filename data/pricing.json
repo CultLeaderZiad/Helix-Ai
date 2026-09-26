@@ -4,88 +4,210 @@
     "name": "GCC Enterprise (UAE, KSA, Qatar)",
     "nameAr": "المؤسسات الكبرى في الخليج العربي (الإمارات، السعودية، قطر)",
     "defaultCurrency": "AED",
-    "availableCurrencies": ["AED", "SAR", "USD"],
-    "badge": "HIGH-RETAINER ENTERPRISE",
-    "badgeAr": "باقات المؤسسات المتميزة",
-    "description": "Engineered for premium healthcare networks, high-ticket legal & real estate, and government-contracted enterprises requiring 99.9% uptime and bilingual Arabic/English SLA.",
-    "descriptionAr": "مصممة لشبكات الرعاية الصحية الراقية، الشركات العقارية الكبرى، والقطاع الاستشاري مع التزام بمستوى خدمة فائق ووكلاء صوت وواتساب باللهجة الخليجية.",
+    "availableCurrencies": [
+      "AED",
+      "SAR",
+      "USD"
+    ],
+    "badge": "GCC plans",
+    "badgeAr": "باقات الخليج",
+    "description": "Built and run for multi-location businesses in the GCC.",
+    "descriptionAr": "نبنيها ونشغّلها للأعمال متعددة الفروع في الخليج.",
     "plans": [
       {
         "id": "starter-gcc",
         "name": "Enterprise Starter",
         "nameAr": "انطلاقة المؤسسات",
-        "tagline": "Single-location operations automating primary phone & WhatsApp channels.",
-        "taglineAr": "للأفرع والمنشآت التي ترغب في أتمتة الهاتف والواتساب دون فقدان أي عميل.",
-        "featured": false,
-        "prices": { "AED": 1800, "SAR": 1850, "USD": 490 },
-        "setupFee": { "AED": 4500, "SAR": 4600, "USD": 1200 },
+        "tagline": "For a single location automating its phone and WhatsApp.",
+        "taglineAr": "لموقع واحد يؤتمت الهاتف وواتساب.",
+        "display": {
+          "en": {
+            "tagline": "For a single location automating its phone and WhatsApp.",
+            "taglineShort": "Single location, phone and WhatsApp.",
+            "features": [
+              "Up to 1,500 customer conversations a month",
+              "Bilingual voice agent, Gulf Arabic and English",
+              "Official WhatsApp Business connection",
+              "Cal.com and Google Calendar sync",
+              "Human review before anything uncertain is saved",
+              "UAE and KSA VAT-compliant invoices"
+            ],
+            "home": [
+              "Up to 1,500 conversations a month",
+              "Voice agent in Gulf Arabic & English",
+              "Calendar sync and WhatsApp confirmations"
+            ]
+          },
+          "ar": {
+            "tagline": "لموقع واحد يؤتمت الهاتف وواتساب.",
+            "taglineShort": "موقع واحد، هاتف وواتساب.",
+            "features": [
+              "حتى 1,500 محادثة مع العملاء شهرياً",
+              "وكيل صوتي ثنائي اللغة: خليجي وإنجليزي",
+              "ربط رسمي مع واتساب للأعمال",
+              "مزامنة مع Cal.com وتقويم Google",
+              "مراجعة بشرية قبل حفظ أي معلومة غير مؤكدة",
+              "فواتير متوافقة مع ضريبة القيمة المضافة في الإمارات والسعودية"
+            ],
+            "home": [
+              "حتى 1,500 محادثة شهرياً",
+              "وكيل صوتي بالخليجي والإنجليزية",
+              "مزامنة التقويم وتأكيدات واتساب"
+            ]
+          }
+        },
+        "prices": {
+          "AED": 1800,
+          "SAR": 1850,
+          "USD": 490
+        },
+        "setupFee": {
+          "AED": 4500,
+          "SAR": 4600,
+          "USD": 1200
+        },
         "features": [
-          "Up to 1,500 active customer conversations / mo",
-          "Bilingual Voice Agent (Gulf Arabic + English)",
-          "Meta Verified WhatsApp Cloud API WABA Integration",
-          "Cal.com & Google Calendar autonomous synchronization",
-          "Supervisory Evidence Queue with human-in-the-loop review",
-          "UAE & KSA Tax/VAT compliant invoice outputs"
+          "Up to 1,500 customer conversations a month",
+          "Bilingual voice agent, Gulf Arabic and English",
+          "Official WhatsApp Business connection",
+          "Cal.com and Google Calendar sync",
+          "Human review before anything uncertain is saved",
+          "UAE and KSA VAT-compliant invoices"
         ],
         "featuresAr": [
-          "حتى 1,500 محادثة ومكالمة عميل نشطة شهرياً",
-          "وكيل صوتي ذكي ثنائي اللغة (اللهجة الخليجية + الإنجليزية)",
-          "ربط مباشر مع WhatsApp Business Cloud API الموثق",
-          "مزامنة المواعيد مع Cal.com وتقويم Google",
-          "لوحة مراجعة الأدلة وتدقيق صحة الحقائق قبل التحديث",
-          "فواتير ضريبية متوافقة مع متطلبات هيئة الزكاة والضريبة والجمارك"
+          "حتى 1,500 محادثة مع العملاء شهرياً",
+          "وكيل صوتي ثنائي اللغة: خليجي وإنجليزي",
+          "ربط رسمي مع واتساب للأعمال",
+          "مزامنة مع Cal.com وتقويم Google",
+          "مراجعة بشرية قبل حفظ أي معلومة غير مؤكدة",
+          "فواتير متوافقة مع ضريبة القيمة المضافة في الإمارات والسعودية"
         ]
       },
       {
         "id": "growth-gcc",
         "name": "Growth Enterprise",
-        "nameAr": "نمو المؤسسات (الأكثر طلباً)",
-        "tagline": "Multi-channel autonomous engine with instant missed-call triage & voice dispatch.",
-        "taglineAr": "محرك أوتوماتيكي متكامل يشمل الرد على المكالمات الفائتة وجدولة المواعيد.",
+        "nameAr": "نمو المؤسسات",
+        "tagline": "Missed-call triage, voice and WhatsApp working together.",
+        "taglineAr": "فرز المكالمات الفائتة والصوت وواتساب معاً.",
+        "display": {
+          "en": {
+            "tagline": "Missed-call triage, voice and WhatsApp working together.",
+            "taglineShort": "Missed-call triage, voice and WhatsApp together.",
+            "features": [
+              "Up to 10,000 customer conversations a month",
+              "Voice, WhatsApp and email automation",
+              "Missed-call WhatsApp text-back and triage, in seconds",
+              "B2B payment reminders with Mada and Apple Pay links"
+            ],
+            "home": [
+              "Up to 10,000 conversations a month",
+              "Voice, WhatsApp and email automation",
+              "Missed-call WhatsApp text-back and triage"
+            ]
+          },
+          "ar": {
+            "tagline": "فرز المكالمات الفائتة والصوت وواتساب معاً.",
+            "taglineShort": "فرز المكالمات الفائتة، الصوت وواتساب معاً.",
+            "features": [
+              "حتى 10,000 محادثة مع العملاء شهرياً",
+              "أتمتة الصوت وواتساب والبريد الإلكتروني",
+              "رد على المكالمات الفائتة عبر واتساب وفرزها، خلال ثوانٍ",
+              "تذكيرات دفع للشركات مع روابط مدى وApple Pay"
+            ],
+            "home": [
+              "حتى 10,000 محادثة شهرياً",
+              "أتمتة الصوت وواتساب والبريد الإلكتروني",
+              "رد على المكالمات الفائتة عبر واتساب وفرزها"
+            ]
+          }
+        },
         "featured": true,
-        "prices": { "AED": 4600, "SAR": 4700, "USD": 1250 },
-        "setupFee": { "AED": 7500, "SAR": 7650, "USD": 2000 },
+        "prices": {
+          "AED": 4600,
+          "SAR": 4700,
+          "USD": 1250
+        },
+        "setupFee": {
+          "AED": 7500,
+          "SAR": 7650,
+          "USD": 2000
+        },
         "features": [
-          "Up to 10,000 active customer conversations / mo",
-          "Multi-channel voice, WhatsApp, & email automation",
-          "Sub-5-second missed-call WhatsApp text-back & triage",
-          "Cryptographic Ground-Truth Evidence Ledger (SHA-256)",
-          "Automated A/R payment reminders with Mada & Apple Pay links",
-          "Dedicated Technical Account Manager in Dubai / Riyadh"
+          "Up to 10,000 customer conversations a month",
+          "Voice, WhatsApp and email automation",
+          "Missed-call WhatsApp text-back and triage, in seconds",
+          "B2B payment reminders with Mada and Apple Pay links"
         ],
         "featuresAr": [
-          "حتى 10,000 محادثة ومكالمة عميل نشطة شهرياً",
-          "أتمتة متعددة القنوات: صوت، واتساب، وبريد إلكتروني",
-          "رد تلقائي على المكالمات الفائتة عبر الواتساب في أقل من 5 ثوانٍ",
-          "سجل تدقيق مشفر بالكامل للحماية من هلوسة الذكاء الاصطناعي",
-          "تذكيرات تحصيل المستحقات وروابط دفع سريعة (مدى / Apple Pay)",
-          "مدير حسابات تقني مخصص في دبي والرياض"
+          "حتى 10,000 محادثة مع العملاء شهرياً",
+          "أتمتة الصوت وواتساب والبريد الإلكتروني",
+          "رد على المكالمات الفائتة عبر واتساب وفرزها، خلال ثوانٍ",
+          "تذكيرات دفع للشركات مع روابط مدى وApple Pay"
         ]
       },
       {
         "id": "scale-gcc",
         "name": "Sovereign Scale",
         "nameAr": "المؤسسات الكبرى متعددة الفروع",
-        "tagline": "Unlimited multi-tenant client workspaces with bespoke LLM tuning & zero shared data.",
-        "taglineAr": "مساحات عمل غير محدودة للشركات القابضة مع تخصيص عميق للنماذج الذكية.",
-        "featured": false,
-        "prices": { "AED": 10200, "SAR": 10500, "USD": 2800 },
-        "setupFee": { "AED": 15000, "SAR": 15500, "USD": 4000 },
+        "tagline": "For groups running multiple branches and brands.",
+        "taglineAr": "للمجموعات التي تدير عدة فروع وعلامات تجارية.",
+        "display": {
+          "en": {
+            "tagline": "For groups running multiple branches and brands.",
+            "taglineShort": "Multiple branches and brands.",
+            "features": [
+              "Unlimited workspaces across branches and brands",
+              "Dialect tuning: Emirati, Najdi, Hijazi, Qatari",
+              "B2B collections and dispute handling",
+              "Cross-branch CRM governance and exports",
+              "Priority escalation support"
+            ],
+            "home": [
+              "Unlimited workspaces across branches",
+              "Custom dialect tuning",
+              "Priority escalation support"
+            ]
+          },
+          "ar": {
+            "tagline": "للمجموعات التي تدير عدة فروع وعلامات تجارية.",
+            "taglineShort": "عدة فروع وعلامات تجارية.",
+            "features": [
+              "مساحات عمل غير محدودة لكل الفروع والعلامات",
+              "ضبط اللهجات: الإماراتية والنجدية والحجازية والقطرية",
+              "تحصيل مستحقات الشركات ومعالجة الاعتراضات",
+              "حوكمة بيانات العملاء وتصديرها عبر الفروع",
+              "دعم تصعيد ذو أولوية"
+            ],
+            "home": [
+              "مساحات عمل غير محدودة للفروع",
+              "ضبط اللهجات",
+              "دعم تصعيد ذو أولوية"
+            ]
+          }
+        },
+        "prices": {
+          "AED": 10200,
+          "SAR": 10500,
+          "USD": 2800
+        },
+        "setupFee": {
+          "AED": 15000,
+          "SAR": 15500,
+          "USD": 4000
+        },
         "features": [
-          "Unlimited workspaces across subsidiaries & brands",
-          "Dedicated Retell SIP trunking & localized GPU compute",
-          "Custom dialect fine-tuning (Emirati, Najdi, Hijazi, Qatari)",
-          "Autonomous A/R collections & dispute resolution engine",
-          "Cross-client CRM data governance & export compliance",
-          "24/7 VIP escalation phone support & custom integrations"
+          "Unlimited workspaces across branches and brands",
+          "Dialect tuning: Emirati, Najdi, Hijazi, Qatari",
+          "B2B collections and dispute handling",
+          "Cross-branch CRM governance and exports",
+          "Priority escalation support"
         ],
         "featuresAr": [
-          "مساحات عمل وفروع غير محدودة مع عزل تام للبيانات",
-          "خوادم صوتية مخصصة للاتصال فائق السرعة عبر SIP",
-          "تدريب خاص على اللهجات المحلية (الإماراتية، النجدية، الحجازية)",
-          "نظام متقدم لتسوية الديون والتحصيل الآلي للشركات",
-          "حوكمة شاملة لبيانات العملاء في CRM وتصدير التقارير",
-          "دعم هاتفي مباشر لكبار الشخصيات على مدار الساعة"
+          "مساحات عمل غير محدودة لكل الفروع والعلامات",
+          "ضبط اللهجات: الإماراتية والنجدية والحجازية والقطرية",
+          "تحصيل مستحقات الشركات ومعالجة الاعتراضات",
+          "حوكمة بيانات العملاء وتصديرها عبر الفروع",
+          "دعم تصعيد ذو أولوية"
         ]
       }
     ]
@@ -95,11 +217,15 @@
     "name": "MENA SME & High-Velocity Business (Egypt & Jordan)",
     "nameAr": "الشركات الناشئة والمتوسطة (مصر، الأردن، وشمال إفريقيا)",
     "defaultCurrency": "EGP",
-    "availableCurrencies": ["EGP", "JOD", "USD"],
-    "badge": "HIGH-VELOCITY SME GROWTH",
-    "badgeAr": "باقات مخصصة للنمو السريع",
-    "description": "Tailored for ambitious SMEs, local clinics, maintenance contractors, and e-commerce brands in Cairo, Alexandria, and Amman needing rapid ROI, accessible monthly retainers, and WhatsApp-driven lead capture.",
-    "descriptionAr": "باقات اقتصادية مصممة للشركات والمصانع والعيادات في مصر والأردن لتحقيق أقصى عائد استثماري بأقساط وتكاليف شهرية مدروسة بالجنيه المصري والدينار الأردني.",
+    "availableCurrencies": [
+      "EGP",
+      "JOD",
+      "USD"
+    ],
+    "badge": "MENA plans",
+    "badgeAr": "باقات المنطقة",
+    "description": "Hidden catalogue for clinics and service businesses in Egypt and Jordan. Not shown on the public pricing page.",
+    "descriptionAr": "دليل مخفي للعيادات وأعمال الخدمات في مصر والأردن. لا يظهر في صفحة الأسعار العامة.",
     "plans": [
       {
         "id": "starter-mena",
@@ -107,12 +233,19 @@
         "nameAr": "باقة البداية للشركات",
         "tagline": "High-speed missed-call WhatsApp text-back to capture lost leads instantly.",
         "taglineAr": "الرد السريع على المكالمات الفائتة عبر الواتساب لمنع ضياع أي زبون.",
-        "featured": false,
-        "prices": { "EGP": 9500, "JOD": 175, "USD": 250 },
-        "setupFee": { "EGP": 15000, "JOD": 280, "USD": 400 },
+        "prices": {
+          "EGP": 9500,
+          "JOD": 175,
+          "USD": 250
+        },
+        "setupFee": {
+          "EGP": 15000,
+          "JOD": 280,
+          "USD": 400
+        },
         "features": [
           "Up to 800 WhatsApp lead conversations / mo",
-          "Instant 5-second WhatsApp response for missed calls",
+          "WhatsApp reply when a call is missed",
           "Lead qualification and technician / sales routing",
           "Core CRM contact list & conversation logging",
           "Fawry & local card payment collection links",
@@ -130,19 +263,27 @@
       {
         "id": "accelerator-mena",
         "name": "Business Accelerator",
-        "nameAr": "مسرّع الأعمال (الأكثر شعبية)",
+        "nameAr": "مسرّع الأعمال",
         "tagline": "Automated booking agent + CRM lead reactivation to drive repeat customer revenue.",
         "taglineAr": "حجز المواعيد تلقائياً وإعادة تنشيط الزبائن القدامى لزيادة المبيعات.",
         "featured": true,
-        "prices": { "EGP": 19500, "JOD": 350, "USD": 500 },
-        "setupFee": { "EGP": 25000, "JOD": 450, "USD": 650 },
+        "prices": {
+          "EGP": 19500,
+          "JOD": 350,
+          "USD": 500
+        },
+        "setupFee": {
+          "EGP": 25000,
+          "JOD": 450,
+          "USD": 650
+        },
         "features": [
           "Up to 3,500 active customer conversations / mo",
           "Voice AI receptionist in Egyptian & Levantine Arabic",
           "Automated WhatsApp appointment booking & reminders",
           "Dormant lead reactivation campaigns for old CRM contacts",
           "Automated WhatsApp invoice payment links (InstaPay / CliQ ready)",
-          "Bi-weekly performance & ROI report generator"
+          "A written summary of what the system did"
         ],
         "featuresAr": [
           "حتى 3,500 محادثة واستفسار نشط شهرياً",
@@ -159,16 +300,23 @@
         "nameAr": "العمليات المتكاملة الشاملة",
         "tagline": "Full agency automation covering voice, WhatsApp, lead reactivation, and debt collection.",
         "taglineAr": "أتمتة شاملة للصوت والواتساب ومتابعة التحصيل والتنشيط لفروع متعددة.",
-        "featured": false,
-        "prices": { "EGP": 38000, "JOD": 690, "USD": 980 },
-        "setupFee": { "EGP": 45000, "JOD": 800, "USD": 1200 },
+        "prices": {
+          "EGP": 38000,
+          "JOD": 690,
+          "USD": 980
+        },
+        "setupFee": {
+          "EGP": 45000,
+          "JOD": 800,
+          "USD": 1200
+        },
         "features": [
           "Up to 10,000 conversations across voice & WhatsApp",
           "Full A/R accounts receivable & debt collection sequences",
           "Multi-branch lead distribution & role-based access",
-          "Cryptographic evidence ledger & zero hallucinations",
-          "Custom webhook integrations with ERP & custom CRMs",
-          "Dedicated implementation consultant with direct phone line"
+          "Anything uncertain goes to your review queue, never saved as fact",
+          "Connections to the accounting tools you already use",
+          "A setup walkthrough with your team"
         ],
         "featuresAr": [
           "حتى 10,000 محادثة ومكالمة عبر الصوت والواتساب",

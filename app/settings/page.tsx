@@ -8,7 +8,7 @@ import { PageHead, Panel } from '@/components/dashboard/ui'
 import { readDashLang, readDashTheme } from '@/lib/dashboard/lang.server'
 
 export const metadata = {
-  title: 'Helix — Settings',
+  title: 'Helix: Settings',
   robots: { index: false, follow: false },
 }
 
@@ -53,7 +53,7 @@ export default async function SettingsPage() {
             </div>
             <div>
               <dt className="faint">{tx(lang, 'Email', 'البريد')}</dt>
-              <dd><bdi dir="ltr">{session.user.email ?? '—'}</bdi></dd>
+              <dd><bdi dir="ltr">{session.user.email ?? '-'}</bdi></dd>
             </div>
             <div>
               <dt className="faint">{tx(lang, 'Role', 'الدور')}</dt>

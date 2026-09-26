@@ -6,7 +6,7 @@ import { AiEngineView } from '@/components/engine/ai-engine-view'
 import type { RegionTier } from '@/lib/schema'
 
 export const metadata = {
-  title: 'Helix AI — AI Diagnostic Engine',
+  title: 'Helix AI: AI Diagnostic Engine',
   robots: { index: false, follow: false },
 }
 

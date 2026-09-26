@@ -9,7 +9,7 @@ import { readDashLang, readDashTheme } from '@/lib/dashboard/lang.server'
 import type { IntegrationStatus, SystemType } from '@/lib/schema'
 
 export const metadata = {
-  title: 'Helix — Systems',
+  title: 'Helix: Systems',
   robots: { index: false, follow: false },
 }
 

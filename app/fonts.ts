@@ -1,13 +1,15 @@
-import { Geist, Geist_Mono, IBM_Plex_Sans_Arabic } from 'next/font/google'
+import { Hanken_Grotesk, IBM_Plex_Mono, IBM_Plex_Sans_Arabic } from 'next/font/google'
 
-export const geistSans = Geist({
-  variable: '--font-geist',
+export const hanken = Hanken_Grotesk({
+  variable: '--font-hanken',
+  weight: ['400', '500', '600'],
   subsets: ['latin'],
   display: 'swap',
 })
 
-export const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+export const plexMono = IBM_Plex_Mono({
+  variable: '--font-plex-mono',
+  weight: ['400', '500'],
   subsets: ['latin'],
   display: 'swap',
 })

@@ -251,7 +251,7 @@ function getDeterministicRecommendation(
       headlineAr: `بالنسبة لـ ${input.businessName}، تقل الضياعات خارج الدوام وفي الذروة عندما يحجز الصوت والواتساب في Cal.com تلقائياً.`,
       rationale: `For ${input.businessName}, staff miss bookings when the line is busy. The receptionist answers in Gulf Arabic and English, books a real Cal.com slot, and sends WhatsApp confirmation.`,
       rationaleAr: `بالنسبة لـ ${input.businessName}، يضيع الفريق الحجوزات عند انشغال الخط. يجيب موظف الاستقبال بالخليجية والإنجليزية، يحجز موعد Cal.com حقيقي، ويرسل تأكيد واتساب.`,
-      estimatedMonthlyRoi: 'Illustrative only — recovered bookings vs fee, not a live metric',
+      estimatedMonthlyRoi: 'Illustrative only: recovered bookings vs fee, not a live metric',
       suggestedSteps: [
         'Connect Twilio / Retell SIP trunk to existing phone lines',
         'Configure calendar availability & Cal.com webhook integration',
@@ -273,7 +273,7 @@ function getDeterministicRecommendation(
       headlineAr: 'واتساب خلال ثوانٍ بعد المكالمة الفائتة. تأهيل النية وتوجيه العميل.',
       rationale: `In ${input.vertical}, callers immediately dial competitors when unanswered. The instant WhatsApp responder captures project details and coordinates technician dispatch automatically.`,
       rationaleAr: `في قطاع ${input.vertical}، يتصل العميل بالمنافسين فوراً عند عدم الرد. يقوم النظام بمراسلته فوراً عبر الواتساب وجمع تفاصيل الطلب والموقع وتعيين فريق العمل.`,
-      estimatedMonthlyRoi: 'Illustrative only — rescued leads vs fee, not a live metric',
+      estimatedMonthlyRoi: 'Illustrative only: rescued leads vs fee, not a live metric',
       suggestedSteps: [
         'Implement telephony missed-call webhook trigger',
         'Deploy interactive WhatsApp triage sequence for qualification',
@@ -295,7 +295,7 @@ function getDeterministicRecommendation(
       headlineAr: 'إيقاظ جهات CRM الخاملة بتسلسل واتساب سياقي.',
       rationale: `Past inquiries in ${input.businessName}'s database remain warm. Automated WhatsApp sequences re-engage legacy contacts with contextual offers and friction-free booking links.`,
       rationaleAr: `جهات الاتصال القديمة لدى ${input.businessName} تمثل فرصة نمو هائلة. تقوم السلسلة الذكية بإعادة تنشيطهم بعروض مخصصة بناءً على طلباتهم السابقة.`,
-      estimatedMonthlyRoi: 'Illustrative only — reactivated pipeline vs fee, not a live metric',
+      estimatedMonthlyRoi: 'Illustrative only: reactivated pipeline vs fee, not a live metric',
       suggestedSteps: [
         'Audit & import legacy CRM contacts into segmented tiers',
         'Configure WhatsApp conversational reactivation sequences',
@@ -317,7 +317,7 @@ function getDeterministicRecommendation(
       headlineAr: 'حقائق تُراجع قبل الكتابة في CRM. مراجعة بشرية للادعاءات المحتملة.',
       rationale: `Enterprises in ${input.vertical} cannot let unverified claims write into CRM. Verified facts may auto-apply; probable and possible wait in the review queue.`,
       rationaleAr: `المؤسسات في قطاع ${input.vertical} لا تسمح بكتابة ادعاءات غير مؤكدة في CRM. الحقائق المؤكدة قد تُطبَّق تلقائياً؛ المحتملة والضعيفة تنتظر المراجعة.`,
-      estimatedMonthlyRoi: 'Illustrative only — audit readiness is not a live ROI figure',
+      estimatedMonthlyRoi: 'Illustrative only: audit readiness is not a live ROI figure',
       suggestedSteps: [
         'Connect audio transcript and WhatsApp message ingestion pipeline',
         'Configure supervisory approval gates for high-value claims',
@@ -337,9 +337,9 @@ function getDeterministicRecommendation(
       matchScore: 94,
       headline: 'Polite WhatsApp follow-ups for commercial invoices. MENA payment links. B2B only.',
       headlineAr: 'متابعات واتساب مهذبة لفواتير الشركات. روابط دفع إقليمية. للشركات فقط.',
-      rationale: `Manual collection calls burn staff time. The B2B WhatsApp follow-up sends itemized commercial invoices with Tap, Paymob, or Moyasar payment links — strictly commercial B2B AR, never consumer debt.`,
-      rationaleAr: `المتابعة اليدوية تستهلك وقت الفريق. متابعة الواتساب للشركات ترسل الفواتير التجارية مع روابط سداد إقليمية — مستحقات تجارية فقط.`,
-      estimatedMonthlyRoi: 'Illustrative only — recovered AR vs fee, not a live metric',
+      rationale: `Manual collection calls burn staff time. The B2B WhatsApp follow-up sends itemized commercial invoices with Tap, Paymob, or Moyasar payment links: strictly commercial B2B AR, never consumer debt.`,
+      rationaleAr: `المتابعة اليدوية تستهلك وقت الفريق. متابعة الواتساب للشركات ترسل الفواتير التجارية مع روابط سداد إقليمية: مستحقات تجارية فقط.`,
+      estimatedMonthlyRoi: 'Illustrative only: recovered AR vs fee, not a live metric',
       suggestedSteps: [
         'Sync open accounts receivable ledger to Supabase',
         'Configure polite tiered WhatsApp payment notification schedules',
@@ -361,7 +361,7 @@ function getDeterministicRecommendation(
       headlineAr: 'رصد آلي لتحركات أسعار ومخزون المنافسين مع تنبيهات واتساب.',
       rationale: `In ${input.vertical}, pricing shifts happen daily. Rival Watch scrapes competitor public catalogs and alerts your pricing team to market changes via WhatsApp.`,
       rationaleAr: `في قطاع ${input.vertical}، تتغير الأسعار بشكل دوري. يقوم نظام رصد المنافسين بجمع الأسعار العامة وإشعار فريقك بأي تغييرات في السوق.`,
-      estimatedMonthlyRoi: 'Illustrative only — margin preservation vs fee',
+      estimatedMonthlyRoi: 'Illustrative only: margin preservation vs fee',
       suggestedSteps: [
         'Submit list of competitor public storefront URLs',
         'Configure scraping interval & price delta threshold',
@@ -383,7 +383,7 @@ function getDeterministicRecommendation(
       headlineAr: 'مساعد ذكي خاص بالموظفين مدرب على سياسات وإجراءات الشركة بدقة.',
       rationale: `Internal operations staff waste hours searching PDFs for operational guidelines. Handbook Answers provides instant grounded answers with citations.`,
       rationaleAr: `يستهلك فريق التشغيل وقتاً طويلاً في البحث داخل الملفات. يقدم بوت دليل التشغيل إجابات دقيقة وموثقة من لوائح الشركة المعتمدة فوراً.`,
-      estimatedMonthlyRoi: 'Illustrative only — internal labor hours saved',
+      estimatedMonthlyRoi: 'Illustrative only: internal labor hours saved',
       suggestedSteps: [
         'Upload verified company SOP documents and handbooks',
         'Configure private retrieval-augmented generation vector store',
@@ -405,7 +405,7 @@ function getDeterministicRecommendation(
       headlineAr: 'بطاقة تقييم شهرية للظهور المحلي مع أهم ٣ حلول لتحسين الترتيب.',
       rationale: `Local service businesses lose organic inquiries when Google Business Profile signals decay. Visibility Scorecard identifies missing rank signals automatically.`,
       rationaleAr: `تفقد الشركات المحلية العملاء عند تراجع إشارات خرائط جوجل. تقوم بطاقة الظهور بكشف الفجوات وتحديد أهم 3 تحسينات مطلوبة.`,
-      estimatedMonthlyRoi: 'Illustrative only — pipeline door opener',
+      estimatedMonthlyRoi: 'Illustrative only: pipeline door opener',
       suggestedSteps: [
         'Input business location and primary search keywords',
         'Run automated Google Business Profile & local directory audit',
@@ -427,7 +427,7 @@ function getDeterministicRecommendation(
       headlineAr: '٨ حقول → عرض تقديمي PPTX بهوية العميل جاهز للتعديل خلال دقائق.',
       rationale: `Agency deals stall when proposal creation takes days. Deck Factory generates custom client-ready presentations on the discovery call and advances deal stage.`,
       rationaleAr: `تتعطل الصفقات عندما يتأخر إعداد العروض لأيام. يقوم مصنع العروض بإنشاء عرض مقترح مخصص وقابل للتعديل أثناء المكالمة فوراً.`,
-      estimatedMonthlyRoi: 'Illustrative only — sales velocity acceleration',
+      estimatedMonthlyRoi: 'Illustrative only: sales velocity acceleration',
       suggestedSteps: [
         'Complete the 8-field discovery qualification form',
         'Trigger automated proposal presentation generation',
@@ -449,7 +449,7 @@ function getDeterministicRecommendation(
       headlineAr: 'تحويل الفيديوهات والندوات الطويلة إلى ٨-١٠ مقاطع رأسية مع ترجمة توضيحية.',
       rationale: `Creating short-form video for social distribution requires hours of manual editing. Clip Factory segments long recordings into viral vertical clips automatically.`,
       rationaleAr: `صناعة المقاطع القصيرة تستنزف ساعات من المونتاج اليدوي. يقوم مصنع المقاطع بتقطيع التسجيلات الطويلة إلى مقاطع رأسية مصنفة مع ترجمة نصوص ديناميكية.`,
-      estimatedMonthlyRoi: 'Illustrative only — media repurposing speed',
+      estimatedMonthlyRoi: 'Illustrative only: media repurposing speed',
       suggestedSteps: [
         'Provide long-form recording URL (webinar, podcast, or presentation)',
         'Automated AI transcript analysis identifies high-engagement hooks',

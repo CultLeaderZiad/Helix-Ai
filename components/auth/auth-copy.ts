@@ -2,8 +2,8 @@ import type { HelixLang } from '@/lib/public-prefs'
 
 const en = {
   brand: 'Helix AI',
-  kicker: 'Operations console',
-  headline: 'The console that tells you exactly what happened.',
+  kicker: 'Workspace',
+  headline: 'Missed calls answered. Appointments booked.',
   points: [
     'WhatsApp and voice, in Gulf Arabic and English.',
     'Every action is logged for your team to review.',
@@ -18,7 +18,7 @@ const en = {
   signInTitle: 'Sign in',
   signInLead: 'Open the workspace your team already runs.',
   workspace: 'Workspace',
-  agency: 'Agency console',
+  agency: 'Agency sign-in',
   agencyHint: 'Agency administrators',
   client: 'Client portal',
   clientHint: 'Client users and staff',
@@ -33,7 +33,7 @@ const en = {
   noAccount: 'Don’t have an account?',
   trial: 'Create your workspace',
   verifyFailed: 'That confirmation link could not be verified. Request a new one, or sign in if you already have access.',
-  switchAgency: 'Switch to Agency console',
+  switchAgency: 'Agency sign-in',
   switchClient: 'Switch to Client portal',
   signupTitle: 'Create your workspace',
   signupLead: 'For Helix clients and businesses starting with us.',
@@ -174,7 +174,7 @@ const AR_ERRORS: Record<string, string> = {
   'Too many sign-in requests. Please wait before trying again.': 'محاولات كثيرة. انتظر قليلاً ثم أعد المحاولة.',
   'Authentication is temporarily unavailable. Please try again later.': 'المصادقة غير متاحة مؤقتاً. أعد المحاولة لاحقاً.',
   'Authentication is not configured. Add SUPABASE_URL and SUPABASE_ANON_KEY to .env.local and restart the app.':
-    'المصادقة غير مهيأة. أضف مفاتيح Supabase إلى البيئة ثم أعد التشغيل.',
+    'تسجيل الدخول غير مهيأ بعد. أعد المحاولة لاحقاً.',
   'Workspace access has not been provisioned. Contact your account manager.':
     'لم يُجهَّز الوصول إلى مساحة العمل. تواصل مع مدير حسابك.',
   'Enter your full name.': 'أدخل اسمك الكامل.',

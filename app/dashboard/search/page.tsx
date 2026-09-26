@@ -7,7 +7,7 @@ import { SearchPage } from '@/features/search/SearchPage'
 import { readDashLang, readDashTheme } from '@/lib/dashboard/lang.server'
 
 export const metadata = {
-  title: 'Helix AI — Search',
+  title: 'Helix AI: Search',
   description: 'Research a business or topic. Results show their source.',
   robots: { index: false, follow: false },
 }

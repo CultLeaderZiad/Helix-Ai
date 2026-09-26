@@ -9,7 +9,7 @@ import { AdminFrame, PageHead, Panel } from '@/components/admin/v5'
 import { SystemCatalogGrid } from '@/components/studio/system-card'
 
 export const metadata = {
-  title: 'Helix AI — System catalog',
+  title: 'Helix AI: System catalog',
   robots: { index: false, follow: false },
 }
 

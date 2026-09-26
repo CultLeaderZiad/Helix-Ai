@@ -8,7 +8,7 @@ import { AdminFrame, DataTable, EmptyState, PageHead, Panel, Stat } from '@/comp
 import { getCurrentUsage, getEngineCaps, getUTCUsagePeriods } from '@/lib/leadgen/engines/usage'
 
 export const metadata = {
-  title: 'HELIX AI — Lead Gen Engine Usage & Soft Caps',
+  title: 'HELIX AI: Lead Gen Engine Usage & Soft Caps',
   robots: { index: false, follow: false },
 }
 
@@ -122,7 +122,7 @@ export default async function AdminLeadGenUsagePage() {
                     <td>{row.usage_month}</td>
                     <td>{row.engine}</td>
                     <td>{row.requests}</td>
-                    <td>{row.browser_ms ? `${(Number(row.browser_ms) / 1000).toFixed(1)}s` : '—'}</td>
+                    <td>{row.browser_ms ? `${(Number(row.browser_ms) / 1000).toFixed(1)}s` : '-'}</td>
                     <td>{clientName}</td>
                     <td>{new Date(row.updated_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
                   </tr>

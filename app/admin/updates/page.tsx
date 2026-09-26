@@ -7,7 +7,7 @@ import { UpdatesManagerView } from '@/components/admin/updates-manager-view'
 import { getUpdatesAction } from '@/lib/updates/actions'
 
 export const metadata = {
-  title: 'Updates & Changelog Management — Helix AI Admin',
+  title: 'Updates & Changelog Management: Helix AI Admin',
   robots: { index: false, follow: false },
 }
 

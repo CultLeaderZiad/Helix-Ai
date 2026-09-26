@@ -6,7 +6,7 @@ import { AdminFrame, PageHead } from '@/components/admin/v5'
 import { SupportDashboard } from '@/components/support/support-dashboard'
 
 export const metadata = {
-  title: 'Support Tickets — Helix AI Admin',
+  title: 'Support Tickets: Helix AI Admin',
   robots: { index: false, follow: false },
 }
 

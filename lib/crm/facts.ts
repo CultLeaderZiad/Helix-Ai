@@ -21,7 +21,7 @@ export interface RecordFactInput {
 
 /**
  * The only sanctioned insert path for AI-observed facts. The evidence band
- * comes from the explicit tool lookup in evidence-bands.ts — not from the
+ * comes from the explicit tool lookup in evidence-bands.ts: not from the
  * caller, not from any model. Unknown tools are refused outright.
  *
  * Pass the service-role client (lib/supabase-admin): contact_facts is

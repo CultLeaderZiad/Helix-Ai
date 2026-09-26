@@ -48,7 +48,7 @@ const ACTIVITY_SOURCE: Record<SystemType, { table: string; ts: string; en: strin
 }
 
 export const metadata = {
-  title: 'Helix — Overview',
+  title: 'Helix: Overview',
   robots: { index: false, follow: false },
 }
 
@@ -252,7 +252,7 @@ export default async function ClientDashboardPage({
 
   const measured = (newContacts ?? 0) + (windowBookings ?? 0) + (conversationsHandled ?? 0) + openDealCount
   const empty = measured === 0 && visibleSystems.length === 0 && pendingFacts === 0 && jobs.length === 0 && !clientRes.error
-  const when = tx(lang, `In the last ${range} days`, range === 7 ? 'خلال آخر 7 أيام' : range === 30 ? 'خلال آخر 30 يوماً' : 'خلال آخر 90 يوماً')
+  const when = tx(lang, `In the last ${range} days`, range === 7 ? 'خلال الأسبوع الأخير' : range === 30 ? 'خلال آخر 30 يوماً' : 'خلال آخر 90 يوماً')
   const summary = `${when} ${tx(
     lang,
     `your workspace recorded ${conversationsHandled ?? 0} conversations and ${windowBookings ?? 0} appointments.`,
@@ -275,25 +275,25 @@ export default async function ClientDashboardPage({
         kpis: [
           {
             label: tx(lang, 'Appointments booked', 'المواعيد المحجوزة'),
-            value: windowBookings == null ? '—' : String(windowBookings),
-            hint: tx(lang, `Last ${range} days`, range === 7 ? 'آخر 7 أيام' : range === 30 ? 'آخر 30 يوماً' : 'آخر 90 يوماً'),
+            value: windowBookings == null ? '-' : String(windowBookings),
+            hint: tx(lang, `Last ${range} days`, range === 7 ? 'الأسبوع الأخير' : range === 30 ? 'آخر 30 يوماً' : 'آخر 90 يوماً'),
             delta: signedDelta(windowBookings ?? 0, bookingsCountRes.error || prevBookingsRes.error ? null : (prevBookingsRes.count ?? 0)),
           },
           {
             label: tx(lang, 'New contacts', 'جهات اتصال جديدة'),
-            value: newContacts == null ? '—' : String(newContacts),
-            hint: tx(lang, `Last ${range} days`, range === 7 ? 'آخر 7 أيام' : range === 30 ? 'آخر 30 يوماً' : 'آخر 90 يوماً'),
+            value: newContacts == null ? '-' : String(newContacts),
+            hint: tx(lang, `Last ${range} days`, range === 7 ? 'الأسبوع الأخير' : range === 30 ? 'آخر 30 يوماً' : 'آخر 90 يوماً'),
             delta: signedDelta(newContacts ?? 0, newContactsRes.error || prevContactsRes.error ? null : (prevContactsRes.count ?? 0)),
           },
           {
             label: tx(lang, 'Conversations handled', 'المحادثات المُدارة'),
-            value: conversationsHandled == null ? '—' : String(conversationsHandled),
+            value: conversationsHandled == null ? '-' : String(conversationsHandled),
             hint: tx(lang, 'Recorded activity in this window', 'نشاط مسجّل في هذه المدة'),
             delta: signedDelta(conversationsHandled ?? 0, conversationsRes.error || prevConversationsRes.error ? null : (prevConversationsRes.count ?? 0)),
           },
           {
             label: tx(lang, 'Needs a decision', 'يحتاج قراراً'),
-            value: pendingFactsRes.error ? '—' : String(pendingFacts),
+            value: pendingFactsRes.error ? '-' : String(pendingFacts),
             hint: pendingFacts ? tx(lang, 'Waiting in the review queue', 'بانتظارك في قائمة المراجعة') : tx(lang, 'Nothing waiting', 'لا شيء بانتظارك'),
           },
         ],

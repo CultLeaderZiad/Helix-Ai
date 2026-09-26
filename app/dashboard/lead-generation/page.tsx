@@ -7,7 +7,7 @@ import { LeadGenPage } from '@/features/leadgen/LeadGenPage'
 import { readDashLang, readDashTheme } from '@/lib/dashboard/lang.server'
 
 export const metadata = {
-  title: 'Helix AI — Lead Generation',
+  title: 'Helix AI: Lead Generation',
   description: 'Find businesses to contact, or enrich a list you already have.',
   robots: { index: false, follow: false },
 }

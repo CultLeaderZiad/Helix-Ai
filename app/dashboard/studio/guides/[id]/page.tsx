@@ -10,7 +10,7 @@ import { PageHead, Panel, StatusChip } from '@/components/dashboard/ui'
 import { readDashLang, readDashTheme } from '@/lib/dashboard/lang.server'
 
 export const metadata = {
-  title: 'Helix — System guide',
+  title: 'Helix: System guide',
   robots: { index: false, follow: false },
 }
 

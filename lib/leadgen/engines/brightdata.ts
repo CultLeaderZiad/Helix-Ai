@@ -1,5 +1,5 @@
 /**
- * Bright Data Web Unlocker — Direct API (Stealth Engine)
+ * Bright Data Web Unlocker: Direct API (Stealth Engine)
  *
  * Verified API Reference & Documentation:
  * - Send first request: https://docs.brightdata.com/scraping-automation/web-unlocker/send-your-first-request
