@@ -2,7 +2,7 @@
 
 **Audience:** Agency Engineers, n8n Workflow Authors, Vapi Integration Leads  
 **Repository:** `CultLeaderZiad/Helix-Ai`  
-**Date:** 2026-09-19  
+**Date:** 2026-10-01  
 
 ---
 
@@ -43,7 +43,8 @@ Agency Admins can configure, toggle, and test n8n production webhooks for each c
 | `system_type` | `text` | Core system or Add-on identifier |
 | `direction` | `text` | `helix_to_n8n` (outbound) or `n8n_to_helix` (inbound) |
 | `webhook_url` | `text` | Production n8n HTTPS webhook URL |
-| `secret_hash` | `text` | Optional tenant-specific signing secret |
+| `secret_ciphertext` | `text` | Tenant signing secret. Used only as an HMAC key. Never sent on the wire. |
+| `secret_hash` | `text` | Same signing secret when the admin API stored a copy in this column. Not a hash. |
 | `enabled` | `boolean` | Master active switch |
 | `last_ping_at`| `timestamptz` | Timestamp of last ping or event dispatch |
 | `last_status` | `text` | `healthy` \| `degraded` \| `failed` \| `pending` |
@@ -74,39 +75,148 @@ When events occur in Helix (e.g. incoming call, ad click, payment trigger), Heli
 }
 ```
 
-### Signature Verification in n8n (Code Node)
+### Signing secret
 
-Each egress request includes three security headers:
-- `X-Helix-Timestamp`: Unix epoch timestamp (seconds)
-- `X-Helix-Signature`: HMAC-SHA256 hex digest of `<timestamp>.<raw_json_body>`
-- `Authorization`: `Bearer <secret>`
+Helix picks the first non-empty value:
 
-To verify the signature inside an n8n Code Node:
+1. `secret_ciphertext` on the `helix_to_n8n` row
+2. `secret_hash` on that same row
+3. The `HELIX_WEBHOOK_SECRET` environment variable
+
+If none of those is set, Helix does not send the request. There is no built-in default secret.
+
+### Request headers
+
+Helix sends these headers and no `Authorization` header. The signing secret is not a Bearer token.
+
+| Header | Value |
+|---|---|
+| `Content-Type` | `application/json` |
+| `User-Agent` | `Helix-AI-ControlPlane/1.0` |
+| `X-Helix-Timestamp` | Unix time in seconds. Decimal integer, no leading zeros. |
+| `X-Helix-Signature` | Lowercase hex HMAC-SHA256 of the exact string below. |
+| `X-Helix-Event-Id` | Envelope `id` (`evt_` + 24 hex characters). |
+| `X-Helix-Event-Type` | Envelope `type`, for example `call.missed`. |
+
+### Signature string
+
+```
+{X-Helix-Timestamp}.{rawBody}
+```
+
+`rawBody` is the exact UTF-8 body of the HTTP request, including key order and whitespace. It is not a re-serialized object.
+
+Example. Timestamp `1758300000` and body `{"id":"evt_1"}` produce this HMAC input:
+
+```
+1758300000.{"id":"evt_1"}
+```
+
+The digest is HMAC-SHA256, encoded as lowercase hex (64 characters).
+
+### Freshness window
+
+Reject the request when `abs(now - X-Helix-Timestamp) > 300` seconds. Five minutes is the maximum clock skew Helix uses on ingress, and n8n must use the same window when verifying egress. A valid signature over an old timestamp is a replay and must be rejected.
+
+### Verify in n8n (Code node)
+
+Put this node directly after the Webhook trigger. The Webhook node has to expose the raw body (`rawBody`, or the binary body). `JSON.stringify($json)` is not the signed body: key order and whitespace will not match.
 
 ```javascript
 const crypto = require('crypto');
 
+const MAX_AGE_SECONDS = 300;
 const secret = $env.HELIX_WEBHOOK_SECRET;
-const timestamp = $headers['x-helix-timestamp'];
-const signature = $headers['x-helix-signature'];
-const rawBody = $input.item.binary?.data ? $input.item.binary.data : JSON.stringify($json);
+if (!secret) {
+  throw new Error('Webhook signing secret is not configured');
+}
 
-const payload = `${timestamp}.${rawBody}`;
-const expectedSignature = crypto.createHmac('sha256', secret).update(payload).digest('hex');
+const timestamp = String($json.headers['x-helix-timestamp'] || '');
+const signature = String($json.headers['x-helix-signature'] || '');
+const rawBody = String($json.rawBody || '');
 
-if (signature !== expectedSignature) {
-  throw new Error('401 Unauthorized: Invalid Helix signature');
+if (!/^[0-9]{1,12}$/.test(timestamp) || !/^[0-9a-f]{64}$/.test(signature) || !rawBody) {
+  throw new Error('401 Unauthorized');
+}
+
+const now = Math.floor(Date.now() / 1000);
+if (Math.abs(now - Number(timestamp)) > MAX_AGE_SECONDS) {
+  throw new Error('401 Unauthorized: timestamp is outside the 5 minute window');
+}
+
+const expected = crypto.createHmac('sha256', secret).update(`${timestamp}.${rawBody}`).digest('hex');
+const left = Buffer.from(signature);
+const right = Buffer.from(expected);
+if (left.length !== right.length || !crypto.timingSafeEqual(left, right)) {
+  throw new Error('401 Unauthorized: invalid signature');
 }
 
 return $input.item;
 ```
 
+Use the tenant row's secret here when that row has one. Use `HELIX_WEBHOOK_SECRET` only when the row has no secret. Do not read or expect an `Authorization` header.
+
 ---
 
 ## 4. Inbound Ingress (n8n → Helix)
 
-n8n nodes post verified callbacks to:  
+n8n posts callbacks to:
+
 `POST https://<helix-domain>/api/webhooks/n8n/{event}`
+
+The signature format is the same string as egress: `{X-Helix-Timestamp}.{rawBody}`, HMAC-SHA256, lowercase hex. The timestamp must be within 300 seconds of Helix's clock. Helix does not accept `Authorization: Bearer <secret>`.
+
+### Ingress headers
+
+| Header | Required | Value |
+|---|---|---|
+| `Content-Type` | yes | `application/json` |
+| `X-Helix-Timestamp` | yes | Unix time in seconds, decimal, no leading zeros. |
+| `X-Helix-Signature` | yes | Lowercase hex HMAC-SHA256 of `{timestamp}.{rawBody}`. |
+| `X-Helix-Tenant` | yes, unless the JSON body includes `tenant_id` or `client_id` | Client workspace UUID. |
+| `X-Helix-System` | when the tenant has more than one inbound system | `system_type` of the `n8n_to_helix` row whose secret signed the body. `system_type` in the JSON body is equivalent. |
+
+### Which secret Helix checks
+
+Helix loads every `n8n_to_helix` row for the tenant. That lookup is a list, not a single-row query, so a second inbound system does not fail the query.
+
+- If `X-Helix-System` or body `system_type` is set, only that system's secret is accepted. A signature from a sibling system is rejected.
+- If the system is omitted, a signature that matches any enabled inbound secret for the tenant is accepted.
+- If the tenant has inbound rows, Helix does not fall back to `HELIX_WEBHOOK_SECRET` when those rows have no secret, when the named system is missing, or when the query errors.
+- `HELIX_WEBHOOK_SECRET` is used only when the request has no tenant id, or the tenant has no inbound rows.
+- If no secret is configured, Helix rejects the request.
+
+Comparisons use a constant-time equality check on the signature. A Bearer token is ignored.
+
+### Sign in n8n before the HTTP Request node
+
+The HTTP Request node must send `rawBody` as the body, unchanged.
+
+```javascript
+const crypto = require('crypto');
+
+const secret = $env.HELIX_WEBHOOK_SECRET;
+if (!secret) {
+  throw new Error('Webhook signing secret is not configured');
+}
+
+const rawBody = JSON.stringify($json.payload);
+const timestamp = Math.floor(Date.now() / 1000).toString();
+const signature = crypto.createHmac('sha256', secret).update(`${timestamp}.${rawBody}`).digest('hex');
+
+return [{
+  json: {
+    rawBody,
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Helix-Timestamp': timestamp,
+      'X-Helix-Signature': signature,
+      'X-Helix-Tenant': $json.tenant_id,
+      'X-Helix-System': $json.system_type,
+    },
+  },
+}];
+```
 
 Supported events:
 

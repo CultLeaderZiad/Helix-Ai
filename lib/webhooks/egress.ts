@@ -1,6 +1,9 @@
 import crypto from 'crypto'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { SystemType, WebhookStatus } from '@/lib/schema'
+import { helixWebhookHeaders, resolveEgressSecret } from './signature'
+
+export { signHelixPayload } from './signature'
 
 export interface HelixEventEnvelope<T = Record<string, unknown>> {
   id: string
@@ -31,14 +34,6 @@ export interface EgressResult {
 }
 
 /**
- * Generate an HMAC signature for the webhook payload.
- */
-export function signHelixPayload(secret: string, rawBody: string, timestamp: number): string {
-  const signaturePayload = `${timestamp}.${rawBody}`
-  return crypto.createHmac('sha256', secret).update(signaturePayload).digest('hex')
-}
-
-/**
  * Dispatches an event to the tenant's configured n8n webhook for this system.
  */
 export async function sendHelixWebhookEvent<T = Record<string, unknown>>({
@@ -57,7 +52,7 @@ export async function sendHelixWebhookEvent<T = Record<string, unknown>>({
   // 1. Fetch webhook config for this tenant & system
   const { data: webhook, error: fetchErr } = await supabase
     .from('system_webhooks')
-    .select('id, webhook_url, secret_hash, enabled')
+    .select('id, webhook_url, secret_ciphertext, secret_hash, enabled')
     .eq('client_id', clientId)
     .eq('system_type', systemType)
     .eq('direction', 'helix_to_n8n')
@@ -81,8 +76,34 @@ export async function sendHelixWebhookEvent<T = Record<string, unknown>>({
   }
 
   const rawBody = JSON.stringify(envelope)
-  const secret = webhook.secret_hash || process.env.HELIX_WEBHOOK_SECRET || 'helix_default_secret'
-  const signature = signHelixPayload(secret, rawBody, timestamp)
+  const secret = resolveEgressSecret(webhook, process.env.HELIX_WEBHOOK_SECRET)
+  if (!secret) {
+    const errorMsg = 'Webhook signing secret is not configured'
+    await supabase
+      .from('system_webhooks')
+      .update({
+        last_ping_at: nowIso,
+        last_status: 'failed',
+        last_error: errorMsg,
+        updated_at: nowIso,
+      })
+      .eq('id', webhook.id)
+
+    return {
+      delivered: false,
+      webhookId: webhook.id,
+      status: 'failed',
+      error: errorMsg,
+    }
+  }
+
+  const headers = helixWebhookHeaders({
+    secret,
+    rawBody,
+    timestamp,
+    eventId,
+    eventType,
+  })
 
   try {
     const controller = new AbortController()
@@ -90,15 +111,7 @@ export async function sendHelixWebhookEvent<T = Record<string, unknown>>({
 
     const response = await fetch(webhook.webhook_url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'User-Agent': 'Helix-AI-ControlPlane/1.0',
-        'X-Helix-Signature': signature,
-        'X-Helix-Timestamp': String(timestamp),
-        'X-Helix-Event-Id': eventId,
-        'X-Helix-Event-Type': eventType,
-        'Authorization': `Bearer ${secret}`,
-      },
+      headers,
       body: rawBody,
       signal: controller.signal,
     })
@@ -166,7 +179,7 @@ export async function pingWebhookEndpoint(
 ): Promise<{ success: boolean; status: WebhookStatus; error?: string; latencyMs?: number }> {
   const { data: webhook, error } = await supabase
     .from('system_webhooks')
-    .select('id, client_id, system_type, webhook_url, secret_hash, enabled')
+    .select('id, client_id, system_type, webhook_url, secret_ciphertext, secret_hash, enabled')
     .eq('id', webhookId)
     .single()
 
