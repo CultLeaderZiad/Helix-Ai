@@ -1,62 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server'
-import crypto from 'crypto'
 import { createSupabaseAdminClient } from '@/lib/supabase-admin'
-import { signHelixPayload } from '@/lib/webhooks/egress'
+import {
+  authorizeIngress,
+  type InboundWebhookRow,
+} from '@/lib/webhooks/signature'
 
-async function verifyTenantAuth(
-  req: NextRequest,
-  rawBody: string,
-  tenantId?: string
-): Promise<boolean> {
-  const globalSecret = process.env.HELIX_WEBHOOK_SECRET?.trim()
-  const allowedSecrets = globalSecret ? [globalSecret] : []
+async function loadInboundWebhooks(tenantId: string): Promise<{
+  rows: InboundWebhookRow[] | null
+  error: string | null
+}> {
+  try {
+    const supabase = createSupabaseAdminClient()
+    const { data, error } = await supabase
+      .from('system_webhooks')
+      .select('system_type, secret_ciphertext, secret_hash, enabled')
+      .eq('client_id', tenantId)
+      .eq('direction', 'n8n_to_helix')
 
-  // If tenant ID is known, lookup tenant's ingress webhook secret
-  if (tenantId) {
-    try {
-      const supabase = createSupabaseAdminClient()
-      const { data: webhook } = await supabase
-        .from('system_webhooks')
-        .select('secret_ciphertext, secret_hash')
-        .eq('client_id', tenantId)
-        .eq('direction', 'n8n_to_helix')
-        .maybeSingle()
-
-      if (webhook) {
-        if (webhook.secret_ciphertext) allowedSecrets.push(webhook.secret_ciphertext)
-        if (webhook.secret_hash && webhook.secret_hash !== webhook.secret_ciphertext) {
-          allowedSecrets.push(webhook.secret_hash)
-        }
-      }
-    } catch {
-      // Fallback to global secret
-    }
+    if (error) return { rows: null, error: error.message }
+    return { rows: data ?? [], error: null }
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Inbound webhook lookup failed'
+    return { rows: null, error: message }
   }
-
-  // 1. Check Bearer Token
-  const authHeader = req.headers.get('authorization')
-  if (authHeader && authHeader.startsWith('Bearer ')) {
-    const token = authHeader.slice(7).trim()
-    if (allowedSecrets.includes(token)) return true
-  }
-
-  // 2. Check HMAC Signature
-  const signature = req.headers.get('x-helix-signature')
-  const timestamp = req.headers.get('x-helix-timestamp')
-  if (signature && timestamp) {
-    const ts = parseInt(timestamp, 10)
-    for (const sec of allowedSecrets) {
-      const expectedSig = signHelixPayload(sec, rawBody, ts)
-      if (
-        signature.length === expectedSig.length &&
-        crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSig))
-      ) {
-        return true
-      }
-    }
-  }
-
-  return false
 }
 
 export async function POST(
@@ -78,12 +44,29 @@ export async function POST(
     payload.tenant_id ||
     payload.client_id
 
-  const isAuthed = await verifyTenantAuth(req, rawBody, tenantId)
-  if (!isAuthed) {
-    return NextResponse.json(
-      { error: 'Unauthorized: Invalid Bearer token or HMAC signature' },
-      { status: 401 }
-    )
+  const systemType =
+    req.headers.get('x-helix-system') ||
+    (typeof payload.system_type === 'string' ? payload.system_type : null) ||
+    (typeof payload.data?.system_type === 'string' ? payload.data.system_type : null)
+
+  const loaded = tenantId
+    ? await loadInboundWebhooks(String(tenantId))
+    : { rows: [] as InboundWebhookRow[], error: null }
+
+  const decision = authorizeIngress({
+    rawBody,
+    signature: req.headers.get('x-helix-signature'),
+    timestamp: req.headers.get('x-helix-timestamp'),
+    authorization: req.headers.get('authorization'),
+    tenantId: tenantId ? String(tenantId) : null,
+    systemType,
+    globalSecret: process.env.HELIX_WEBHOOK_SECRET,
+    lookupError: loaded.error,
+    rows: loaded.rows,
+  })
+
+  if (!decision.ok) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   const data = payload.data || payload
