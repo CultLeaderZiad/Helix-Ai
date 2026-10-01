@@ -1,6 +1,7 @@
 import crypto from 'crypto'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { SystemType, WebhookStatus } from '@/lib/schema'
+import { createSupabaseAdminClient } from '@/lib/supabase-admin'
 
 export interface HelixEventEnvelope<T = Record<string, unknown>> {
   id: string
@@ -13,6 +14,10 @@ export interface HelixEventEnvelope<T = Record<string, unknown>> {
 }
 
 export interface SendEventOptions<T = Record<string, unknown>> {
+  /**
+   * Accepted so existing callers keep compiling. Storage uses the service
+   * role: authenticated sessions are not granted secret_ciphertext.
+   */
   supabase: SupabaseClient
   clientId: string
   systemType: SystemType
@@ -42,7 +47,6 @@ export function signHelixPayload(secret: string, rawBody: string, timestamp: num
  * Dispatches an event to the tenant's configured n8n webhook for this system.
  */
 export async function sendHelixWebhookEvent<T = Record<string, unknown>>({
-  supabase,
   clientId,
   systemType,
   eventType,
@@ -53,11 +57,13 @@ export async function sendHelixWebhookEvent<T = Record<string, unknown>>({
   const nowIso = new Date().toISOString()
   const timestamp = Math.floor(Date.now() / 1000)
   const finalIdempotencyKey = idempotencyKey || `idemp_${crypto.randomUUID()}`
+  const store = createSupabaseAdminClient()
 
-  // 1. Fetch webhook config for this tenant & system
-  const { data: webhook, error: fetchErr } = await supabase
+  // 1. Fetch webhook config for this tenant & system. The signing secret is
+  // secret_ciphertext; secret_hash is only the digest and cannot sign.
+  const { data: webhook, error: fetchErr } = await store
     .from('system_webhooks')
-    .select('id, webhook_url, secret_hash, enabled')
+    .select('id, webhook_url, secret_ciphertext, enabled')
     .eq('client_id', clientId)
     .eq('system_type', systemType)
     .eq('direction', 'helix_to_n8n')
@@ -81,7 +87,8 @@ export async function sendHelixWebhookEvent<T = Record<string, unknown>>({
   }
 
   const rawBody = JSON.stringify(envelope)
-  const secret = webhook.secret_hash || process.env.HELIX_WEBHOOK_SECRET || 'helix_default_secret'
+  const configured = typeof webhook.secret_ciphertext === 'string' ? webhook.secret_ciphertext.trim() : ''
+  const secret = configured || process.env.HELIX_WEBHOOK_SECRET || 'helix_default_secret'
   const signature = signHelixPayload(secret, rawBody, timestamp)
 
   try {
@@ -116,8 +123,7 @@ export async function sendHelixWebhookEvent<T = Record<string, unknown>>({
     const status: WebhookStatus = isOk ? 'ok' : 'failed'
     const errorMsg = isOk ? null : `HTTP ${response.status}: ${JSON.stringify(responseData).slice(0, 200)}`
 
-    // Update telemetry in background
-    await supabase
+    await store
       .from('system_webhooks')
       .update({
         last_ping_at: nowIso,
@@ -138,7 +144,7 @@ export async function sendHelixWebhookEvent<T = Record<string, unknown>>({
   } catch (err: any) {
     const errorMsg = err.name === 'AbortError' ? 'Webhook dispatch timed out after 8s' : err.message || 'Network error'
 
-    await supabase
+    await store
       .from('system_webhooks')
       .update({
         last_ping_at: nowIso,
@@ -161,12 +167,12 @@ export async function sendHelixWebhookEvent<T = Record<string, unknown>>({
  * Diagnostic ping test for admin to verify connection to n8n webhook.
  */
 export async function pingWebhookEndpoint(
-  webhookId: string,
-  supabase: SupabaseClient
+  webhookId: string
 ): Promise<{ success: boolean; status: WebhookStatus; error?: string; latencyMs?: number }> {
-  const { data: webhook, error } = await supabase
+  const store = createSupabaseAdminClient()
+  const { data: webhook, error } = await store
     .from('system_webhooks')
-    .select('id, client_id, system_type, webhook_url, secret_hash, enabled')
+    .select('id, client_id, system_type, webhook_url, enabled')
     .eq('id', webhookId)
     .single()
 
@@ -176,7 +182,7 @@ export async function pingWebhookEndpoint(
 
   const startTime = Date.now()
   const result = await sendHelixWebhookEvent({
-    supabase,
+    supabase: store,
     clientId: webhook.client_id,
     systemType: webhook.system_type as SystemType,
     eventType: 'system.health',

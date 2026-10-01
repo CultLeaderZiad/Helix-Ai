@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { parseEnv } from 'node:util'
-import { randomUUID } from 'node:crypto'
+import { createHash, randomUUID } from 'node:crypto'
 import { createClient } from '@supabase/supabase-js'
 
 const expectedHost = 'vxiabktipenckdzencpu.supabase.co'
@@ -36,6 +36,9 @@ function record(name, passed, detail) {
 function must(result, label) {
   if (result.error) throw new Error(`${label}: ${result.error.code ?? result.error.status ?? 'request_failed'}`)
   return result.data
+}
+function sha256Hex(value) {
+  return createHash('sha256').update(value.trim(), 'utf8').digest('hex')
 }
 function claims(token) {
   // Decoding is only for test inspection. Password sign-in issues the token;
@@ -135,9 +138,92 @@ try {
     must(await service.from('billing_accounts').insert({ client_id }), 'seed billing')
   }
 
+  const webhookSecret = `whsec_${randomUUID()}`
+  const whatsappToken = `wa_${randomUUID()}`
+  const whatsappVerify = `wv_${randomUUID()}`
+  const webhookRow = must(await service.from('system_webhooks').insert({
+    client_id: clientIds[0],
+    system_type: 'missed_call_response',
+    direction: 'helix_to_n8n',
+    webhook_url: 'https://example.com/hooks/rls-verification',
+    label: 'RLS verification',
+    secret_ciphertext: webhookSecret,
+    secret_hash: webhookSecret,
+  }).select('secret_ciphertext, secret_hash, has_secret').single(), 'seed webhook secret')
+  record('Service role stores ciphertext and a real secret_hash',
+    webhookRow.secret_ciphertext === webhookSecret &&
+      webhookRow.secret_hash === sha256Hex(webhookSecret) &&
+      webhookRow.secret_hash !== webhookSecret &&
+      webhookRow.has_secret === true,
+    `hash_len=${webhookRow.secret_hash?.length ?? 0}; has_secret=${webhookRow.has_secret === true}`)
+  must(await service.from('whatsapp_credentials').insert({
+    client_id: clientIds[0],
+    phone_number: '+15555550100',
+    access_token: whatsappToken,
+    webhook_verify_token: whatsappVerify,
+  }).select('id').single(), 'seed whatsapp credential')
+
   const a = await makeUser('a', 'client_user', clientIds[0])
   const b = await makeUser('b', 'client_user', clientIds[1])
   const admin = await makeUser('admin', 'agency_admin', null)
+
+  const secretColumns = [
+    ['system_webhooks', 'secret_ciphertext'],
+    ['system_webhooks', 'secret_hash'],
+    ['whatsapp_credentials', 'access_token'],
+    ['whatsapp_credentials', 'webhook_verify_token'],
+  ]
+  for (const [who, token] of [['Client', a.token], ['Admin', admin.token]]) {
+    for (const [table, column] of secretColumns) {
+      const read = await rest(token, table, `select=${column}&client_id=eq.${clientIds[0]}`)
+      const body = JSON.stringify(read.data ?? null)
+      record(`${who} JWT cannot select ${table}.${column}`,
+        read.status === 403 && !Array.isArray(read.data) &&
+          !body.includes(webhookSecret) && !body.includes(whatsappToken) && !body.includes(whatsappVerify),
+        `HTTP ${read.status}; code=${read.data?.code ?? 'none'}`)
+    }
+  }
+
+  const ownHooks = await rest(a.token, 'system_webhooks_safe', `select=id,system_type,has_secret&client_id=eq.${clientIds[0]}`)
+  const ownHookBody = JSON.stringify(ownHooks.data ?? null)
+  record('Client reads own webhook safe view without secrets',
+    ownHooks.status === 200 && Array.isArray(ownHooks.data) && ownHooks.data.length === 1 &&
+      ownHooks.data[0].has_secret === true &&
+      !('secret_ciphertext' in ownHooks.data[0]) && !('secret_hash' in ownHooks.data[0]) &&
+      !ownHookBody.includes(webhookSecret),
+    `HTTP ${ownHooks.status}; rows=${ownHooks.data?.length ?? 'error'}`)
+  const otherHooks = await rest(b.token, 'system_webhooks_safe', `select=id,has_secret&client_id=eq.${clientIds[0]}`)
+  record('Client B cannot read tenant A webhook safe view',
+    otherHooks.status === 200 && Array.isArray(otherHooks.data) && otherHooks.data.length === 0,
+    `HTTP ${otherHooks.status}; rows=${otherHooks.data?.length ?? 'error'}`)
+  const ownWa = await rest(a.token, 'whatsapp_credentials_safe', `select=id,has_access_token,phone_number&client_id=eq.${clientIds[0]}`)
+  const ownWaBody = JSON.stringify(ownWa.data ?? null)
+  record('Client reads own WhatsApp status without access_token',
+    ownWa.status === 200 && Array.isArray(ownWa.data) && ownWa.data.length === 1 &&
+      ownWa.data[0].has_access_token === true &&
+      !('access_token' in ownWa.data[0]) && !('webhook_verify_token' in ownWa.data[0]) &&
+      !ownWaBody.includes(whatsappToken) && !ownWaBody.includes(whatsappVerify),
+    `HTTP ${ownWa.status}; rows=${ownWa.data?.length ?? 'error'}`)
+  for (const [table, column, leaked] of [
+    ['system_webhooks_safe', 'secret_ciphertext', webhookSecret],
+    ['whatsapp_credentials_safe', 'access_token', whatsappToken],
+  ]) {
+    const read = await rest(a.token, table, `select=${column}&client_id=eq.${clientIds[0]}`)
+    const body = JSON.stringify(read.data ?? null)
+    record(`Safe view ${table} has no ${column} column`,
+      read.status !== 200 && !body.includes(leaked),
+      `HTTP ${read.status}; code=${read.data?.code ?? 'none'}`)
+  }
+  const star = await rest(a.token, 'system_webhooks', `select=*&client_id=eq.${clientIds[0]}`)
+  const starBody = JSON.stringify(star.data ?? null)
+  record('Client select=* on system_webhooks does not return the signing secret',
+    !starBody.includes(webhookSecret) && !starBody.includes(sha256Hex(webhookSecret)),
+    `HTTP ${star.status}`)
+  const waStar = await rest(a.token, 'whatsapp_credentials', `select=*&client_id=eq.${clientIds[0]}`)
+  const waStarBody = JSON.stringify(waStar.data ?? null)
+  record('Client select=* on whatsapp_credentials does not return access_token',
+    !waStarBody.includes(whatsappToken) && !waStarBody.includes(whatsappVerify),
+    `HTTP ${waStar.status}`)
 
   for (const table of ['contacts', 'invoices', 'bookings']) {
     for (const [label, user, own, other] of [
@@ -249,7 +335,7 @@ try {
   // Only preallocated tenant IDs and Auth IDs returned by this run are touched.
   // Child-first cleanup avoids assumptions about pre-existing delete actions.
   if (clientsCreated) {
-    for (const table of ['bookings', 'invoices', 'client_systems', 'client_integrations', 'billing_accounts', 'contacts']) {
+    for (const table of ['system_webhooks', 'whatsapp_credentials', 'bookings', 'invoices', 'client_systems', 'client_integrations', 'billing_accounts', 'contacts']) {
       const removed = await service.from(table).delete().in('client_id', clientIds)
       record(`Cleanup ${table}`, !removed.error, removed.error?.code ?? 'deleted run-owned rows')
     }

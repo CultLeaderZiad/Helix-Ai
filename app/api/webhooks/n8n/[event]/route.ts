@@ -17,17 +17,12 @@ async function verifyTenantAuth(
       const supabase = createSupabaseAdminClient()
       const { data: webhook } = await supabase
         .from('system_webhooks')
-        .select('secret_ciphertext, secret_hash')
+        .select('secret_ciphertext')
         .eq('client_id', tenantId)
         .eq('direction', 'n8n_to_helix')
         .maybeSingle()
 
-      if (webhook) {
-        if (webhook.secret_ciphertext) allowedSecrets.push(webhook.secret_ciphertext)
-        if (webhook.secret_hash && webhook.secret_hash !== webhook.secret_ciphertext) {
-          allowedSecrets.push(webhook.secret_hash)
-        }
-      }
+      if (webhook?.secret_ciphertext) allowedSecrets.push(webhook.secret_ciphertext)
     } catch {
       // Fallback to global secret
     }

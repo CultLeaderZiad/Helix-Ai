@@ -28,8 +28,12 @@ export interface SystemWebhook {
   direction: WebhookDirection
   label?: string | null
   webhook_url: string
+  /** Service-role only. Never select this with a user session. */
   secret_ciphertext?: string | null
+  /** SHA-256 hex of secret_ciphertext. Service-role only. Not the secret. */
   secret_hash?: string | null
+  /** Set on system_webhooks_safe. True when a signing secret is stored. */
+  has_secret?: boolean
   enabled: boolean
   last_ping_at?: string | null
   last_status?: WebhookStatus | null

@@ -43,7 +43,7 @@ Agency Admins can configure, toggle, and test n8n production webhooks for each c
 | `system_type` | `text` | Core system or Add-on identifier |
 | `direction` | `text` | `helix_to_n8n` (outbound) or `n8n_to_helix` (inbound) |
 | `webhook_url` | `text` | Production n8n HTTPS webhook URL |
-| `secret_hash` | `text` | Optional tenant-specific signing secret |
+| `secret_hash` | `text` | SHA-256 hex of the signing secret. Not the secret. Service-role only. The recoverable secret is `secret_ciphertext`, also service-role only. |
 | `enabled` | `boolean` | Master active switch |
 | `last_ping_at`| `timestamptz` | Timestamp of last ping or event dispatch |
 | `last_status` | `text` | `healthy` \| `degraded` \| `failed` \| `pending` |

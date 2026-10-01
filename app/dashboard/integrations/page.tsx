@@ -26,7 +26,10 @@ export default async function IntegrationsHealthPage() {
   const clientId = session.claims.client_id!
   const [clientRes, integrationsRes] = await Promise.all([
     supabase.from('clients').select('business_name').eq('id', clientId).maybeSingle(),
-    supabase.from('client_integrations').select('*').eq('client_id', clientId),
+    supabase
+      .from('client_integrations')
+      .select('id, client_id, system_type, status, last_ping_at, created_at')
+      .eq('client_id', clientId),
   ])
 
   const client = clientRes.data
@@ -42,7 +45,7 @@ export default async function IntegrationsHealthPage() {
 
     const targetClientId = currentSession.claims.client_id
     const { data: hooks, error: hookError } = await serverSupabase
-      .from('system_webhooks')
+      .from('system_webhooks_safe')
       .select('id, webhook_url, enabled, system_type')
       .eq('client_id', targetClientId)
       .eq('enabled', true)
