@@ -2,16 +2,19 @@
 
 import { revalidatePath } from 'next/cache'
 import { createSupabaseServerClient } from '@/lib/supabase'
+import { createSupabaseAdminClient } from '@/lib/supabase-admin'
 import { getVerifiedSession } from '@/lib/auth/session'
-import { pingWebhookEndpoint, sendHelixWebhookEvent } from '@/lib/webhooks/egress'
-import type { SystemType, WebhookDirection, WebhookStatus } from '@/lib/schema'
+import { pingWebhookEndpoint } from '@/lib/webhooks/egress'
+import { hashWebhookSecret, SYSTEM_WEBHOOK_SAFE_COLUMNS } from '@/lib/webhooks/secret'
+import type { SystemType, WebhookDirection } from '@/lib/schema'
 
 export interface SaveWebhookParams {
   clientId: string
   systemType: SystemType
   direction: WebhookDirection
   webhookUrl: string
-  secretHash?: string
+  /** Raw signing secret. Stored as ciphertext; secret_hash receives its SHA-256. */
+  secret?: string
   enabled: boolean
 }
 
@@ -36,21 +39,25 @@ export async function saveSystemWebhook(params: SaveWebhookParams) {
   }
 
   const now = new Date().toISOString()
-  const { data, error } = await supabase
+  const upsertData: Record<string, unknown> = {
+    client_id: params.clientId,
+    system_type: params.systemType,
+    direction: params.direction,
+    webhook_url: params.webhookUrl,
+    enabled: params.enabled,
+    updated_at: now,
+  }
+  const cleanSecret = params.secret?.trim()
+  if (cleanSecret) {
+    upsertData.secret_ciphertext = cleanSecret
+    upsertData.secret_hash = hashWebhookSecret(cleanSecret)
+  }
+
+  const admin = createSupabaseAdminClient()
+  const { data, error } = await admin
     .from('system_webhooks')
-    .upsert(
-      {
-        client_id: params.clientId,
-        system_type: params.systemType,
-        direction: params.direction,
-        webhook_url: params.webhookUrl,
-        secret_hash: params.secretHash || null,
-        enabled: params.enabled,
-        updated_at: now,
-      },
-      { onConflict: 'client_id,system_type,direction' }
-    )
-    .select('id, webhook_url, enabled, last_status')
+    .upsert(upsertData, { onConflict: 'client_id,system_type,direction' })
+    .select(SYSTEM_WEBHOOK_SAFE_COLUMNS)
     .single()
 
   if (error) {
@@ -69,7 +76,7 @@ export async function triggerWebhookPing(webhookId: string) {
     return { success: false, error: 'Unauthorized' }
   }
 
-  const result = await pingWebhookEndpoint(webhookId, supabase)
+  const result = await pingWebhookEndpoint(webhookId)
   revalidatePath('/admin/webhooks')
   return result
 }

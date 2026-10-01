@@ -543,7 +543,7 @@ export function WebhooksManagerView({
                   <div className="relative flex-1 max-w-md">
                     <Input
                       type={showSecret ? 'text' : 'password'}
-                      placeholder={webhook?.secret_hash || (webhook as any)?.has_secret ? '•••••••••••• (Leave blank to keep current secret)' : 'Enter webhook secret (or leave blank for default)'}
+                      placeholder={webhook?.has_secret ? '•••••••••••• (Leave blank to keep current secret)' : 'Enter webhook secret (or leave blank for default)'}
                       value={enteredSecret}
                       onChange={e => handleSecretChange(sys.systemType, e.target.value)}
                       className="h-8 pr-8 font-mono text-11 bg-helix-surface-2 border-helix-border text-ink focus:border-helix-accent focus:bg-helix-surface"
@@ -558,7 +558,7 @@ export function WebhooksManagerView({
                     </button>
                   </div>
                   <span className="text-[11px] font-mono text-helix-subtle">
-                    {webhook?.secret_hash || (webhook as any)?.has_secret ? 'Secret configured ✓' : 'Using global secret'}
+                    {webhook?.has_secret ? 'Secret configured ✓' : 'Using global secret'}
                   </span>
                 </div>
               </div>

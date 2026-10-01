@@ -5,6 +5,7 @@ import { ConsoleShell } from '@/components/shell/console-shell'
 import { AdminFrame, EmptyState, PageHead } from '@/components/admin/v5'
 import { WebhooksManagerView } from '@/components/admin/webhooks-manager-view'
 import type { Client, SystemWebhook } from '@/lib/schema'
+import { SYSTEM_WEBHOOK_SAFE_COLUMNS } from '@/lib/webhooks/secret'
 
 export const metadata = {
   title: 'HELIX AI: Webhook Registry & n8n Control Plane',
@@ -32,7 +33,7 @@ export default async function WebhooksPage() {
   // Load existing system webhooks
   let webhooks: SystemWebhook[] = []
   try {
-    const { data } = await supabase.from('system_webhooks').select('*')
+    const { data } = await supabase.from('system_webhooks_safe').select(SYSTEM_WEBHOOK_SAFE_COLUMNS)
     if (data) {
       webhooks = data as SystemWebhook[]
     }

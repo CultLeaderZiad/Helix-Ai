@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createSupabaseServerClient } from '@/lib/supabase'
+import { createSupabaseAdminClient } from '@/lib/supabase-admin'
 import { getVerifiedSession } from '@/lib/auth/session'
+import { hashWebhookSecret, SYSTEM_WEBHOOK_SAFE_COLUMNS } from '@/lib/webhooks/secret'
 import type { SystemType, WebhookDirection } from '@/lib/schema'
 
 const VALID_SYSTEM_TYPES: SystemType[] = [
@@ -42,17 +44,16 @@ export async function GET(request: NextRequest) {
     }
 
     const { data: webhooks, error } = await supabase
-      .from('system_webhooks')
-      .select('id, client_id, system_type, direction, label, webhook_url, enabled, last_ping_at, last_status, last_error, created_at, updated_at, secret_ciphertext, secret_hash')
+      .from('system_webhooks_safe')
+      .select(SYSTEM_WEBHOOK_SAFE_COLUMNS)
       .eq('client_id', clientId)
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500, headers })
     }
 
-    // Mask secrets before sending to client
     const sanitized = (webhooks || []).map(w => {
-      const hasSecret = Boolean(w.secret_ciphertext || w.secret_hash)
+      const hasSecret = Boolean(w.has_secret)
       return {
         id: w.id,
         client_id: w.client_id,
@@ -139,17 +140,17 @@ export async function PUT(request: NextRequest) {
       updated_at: new Date().toISOString(),
     }
 
-    // Only update secret if provided
     if (secret && typeof secret === 'string' && secret.trim().length > 0) {
       const cleanSecret = secret.trim()
       upsertData.secret_ciphertext = cleanSecret
-      upsertData.secret_hash = cleanSecret
+      upsertData.secret_hash = hashWebhookSecret(cleanSecret)
     }
 
-    const { data: saved, error } = await supabase
+    const admin = createSupabaseAdminClient()
+    const { data: saved, error } = await admin
       .from('system_webhooks')
       .upsert(upsertData, { onConflict: 'client_id, system_type, direction' })
-      .select('id, client_id, system_type, direction, label, webhook_url, enabled, last_ping_at, last_status, last_error, created_at, updated_at')
+      .select(SYSTEM_WEBHOOK_SAFE_COLUMNS)
       .single()
 
     if (error) {

@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     if (!webhookId && body.client_id && body.system_type) {
       const direction = body.direction || 'helix_to_n8n'
       const { data: found } = await supabase
-        .from('system_webhooks')
+        .from('system_webhooks_safe')
         .select('id')
         .eq('client_id', body.client_id)
         .eq('system_type', body.system_type)
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'webhook_id or (client_id, system_type) is required' }, { status: 400, headers })
     }
 
-    const pingResult = await pingWebhookEndpoint(webhookId, supabase)
+    const pingResult = await pingWebhookEndpoint(webhookId)
 
     return NextResponse.json({
       ok: pingResult.success,
