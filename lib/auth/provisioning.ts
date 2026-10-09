@@ -101,13 +101,13 @@ export async function ensureUserProvisioned(userId: string): Promise<TenantClaim
     console.error('Failed to create profile:', profileError)
   }
 
-  // 4. Seed initial systems and integrations for client workspace
+  // 4. Seed initial systems and integrations for client workspace (unpaid / inactive by default)
   await Promise.allSettled([
-    admin.from('billing_accounts').insert({ client_id: clientId }),
+    admin.from('billing_accounts').insert({ client_id: clientId, status: 'trial' }), // or whatever default
     admin.from('client_systems').insert([
-      { client_id: clientId, system_type: 'missed_call_response', active: true, visible_to_client: true, config: {} },
-      { client_id: clientId, system_type: 'booking_receptionist', active: true, visible_to_client: true, config: {} },
-      { client_id: clientId, system_type: 'lead_attribution', active: true, visible_to_client: true, config: {} },
+      { client_id: clientId, system_type: 'missed_call_response', active: false, visible_to_client: true, config: {} },
+      { client_id: clientId, system_type: 'booking_receptionist', active: false, visible_to_client: true, config: {} },
+      { client_id: clientId, system_type: 'lead_attribution', active: false, visible_to_client: true, config: {} },
     ]),
     admin.from('client_integrations').insert([
       { client_id: clientId, system_type: 'missed_call_response', status: 'disconnected' },

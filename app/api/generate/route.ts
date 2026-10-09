@@ -16,6 +16,12 @@ export async function POST() {
     if (session.claims.role !== 'agency_admin') {
       return NextResponse.json({ error: 'Access denied.' }, { status: 403, headers })
     }
+
+    const { checkCapability } = await import('@/lib/auth/capabilities')
+    const hasCapability = await checkCapability(session.claims.client_id || '', 'proposal_deck_factory')
+    if (!hasCapability) {
+      return NextResponse.json({ error: 'Upgrade required' }, { status: 403, headers })
+    }
     return NextResponse.json(
       { error: 'Tenant-scoped generation is not part of the current delivery. Contact your account manager.' },
       { status: 501, headers },

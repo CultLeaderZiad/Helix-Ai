@@ -88,3 +88,43 @@ export async function createContact(
     messageAr: 'تم حفظ جهة الاتصال.',
   }
 }
+
+export async function getContacts(clientId: string, cursor?: string, limit: number = 20) {
+  const supabase = createSupabaseAdminClient()
+  
+  let query = supabase
+    .from('contacts')
+    .select('id, full_name, email, phone, company_name, lead_status, source, created_at')
+    .eq('client_id', clientId)
+    .order('created_at', { ascending: false })
+    .order('id', { ascending: false })
+    .limit(limit + 1)
+    
+  if (cursor) {
+    // Decoding cursor, assuming it's a base64 string of { created_at, id }
+    try {
+      const decoded = JSON.parse(Buffer.from(cursor, 'base64').toString('utf-8'))
+      // Cursor pagination: less than or equal created_at, but if equal, less than id
+      query = query.or(`created_at.lt.${decoded.created_at},and(created_at.eq.${decoded.created_at},id.lt.${decoded.id})`)
+    } catch (e) {
+      console.warn('Invalid cursor', e)
+    }
+  }
+
+  const { data, error } = await query
+
+  if (error || !data) {
+    return { contacts: [], nextCursor: null }
+  }
+
+  const hasNextPage = data.length > limit
+  const contacts = hasNextPage ? data.slice(0, -1) : data
+  
+  let nextCursor = null
+  if (hasNextPage) {
+    const lastItem = contacts[contacts.length - 1]
+    nextCursor = Buffer.from(JSON.stringify({ created_at: lastItem.created_at, id: lastItem.id })).toString('base64')
+  }
+
+  return { contacts, nextCursor }
+}

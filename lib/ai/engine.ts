@@ -37,7 +37,7 @@ export interface RecommendationResult {
     | 'clip-factory'
   systemName: string
   systemNameAr: string
-  matchScore: number
+  
   headline: string
   headlineAr: string
   rationale: string
@@ -129,7 +129,7 @@ Client context:
 
 Output a strictly valid JSON object matching this schema:
 {
-  "matchScore": number (use 0; do not invent a confidence percentage),
+  
   "headline": string (punchy executive summary that does not claim live telemetry),
   "headlineAr": string (Arabic translation),
   "rationale": string (2 sentences on why this architecture solves their specific bottleneck),
@@ -162,7 +162,7 @@ Output a strictly valid JSON object matching this schema:
           systemId,
           systemName: getSystemName(systemId, 'en'),
           systemNameAr: getSystemName(systemId, 'ar'),
-          matchScore: typeof parsed.matchScore === 'number' ? parsed.matchScore : 0,
+          
           headline: parsed.headline,
           headlineAr: parsed.headlineAr,
           rationale: parsed.rationale,
@@ -246,7 +246,7 @@ function getDeterministicRecommendation(
     'booking-receptionist': {
       systemName: 'Booking receptionist',
       systemNameAr: 'موظف الاستقبال والحجوزات',
-      matchScore: 96,
+      
       headline: `For ${input.businessName}, after-hours and peak overflow drop when voice + WhatsApp book into Cal.com automatically.`,
       headlineAr: `بالنسبة لـ ${input.businessName}، تقل الضياعات خارج الدوام وفي الذروة عندما يحجز الصوت والواتساب في Cal.com تلقائياً.`,
       rationale: `For ${input.businessName}, staff miss bookings when the line is busy. The receptionist answers in Gulf Arabic and English, books a real Cal.com slot, and sends WhatsApp confirmation.`,
@@ -268,7 +268,7 @@ function getDeterministicRecommendation(
     'missed-call-responder': {
       systemName: 'Missed-call triage',
       systemNameAr: 'فرز المكالمات الفائتة',
-      matchScore: 98,
+      
       headline: 'WhatsApp in seconds after a missed call. Qualify intent, route the lead.',
       headlineAr: 'واتساب خلال ثوانٍ بعد المكالمة الفائتة. تأهيل النية وتوجيه العميل.',
       rationale: `In ${input.vertical}, callers immediately dial competitors when unanswered. The instant WhatsApp responder captures project details and coordinates technician dispatch automatically.`,
@@ -290,7 +290,7 @@ function getDeterministicRecommendation(
     'lead-reactivation': {
       systemName: 'Lead reactivation',
       systemNameAr: 'إعادة تنشيط العملاء',
-      matchScore: 92,
+      
       headline: 'Wake dormant CRM contacts with contextual WhatsApp sequences.',
       headlineAr: 'إيقاظ جهات CRM الخاملة بتسلسل واتساب سياقي.',
       rationale: `Past inquiries in ${input.businessName}'s database remain warm. Automated WhatsApp sequences re-engage legacy contacts with contextual offers and friction-free booking links.`,
@@ -312,7 +312,7 @@ function getDeterministicRecommendation(
     'evidence-console': {
       systemName: 'Saved details',
       systemNameAr: 'التفاصيل المحفوظة',
-      matchScore: 95,
+      
       headline: 'Facts verified before CRM writes. Human review for probable claims.',
       headlineAr: 'حقائق تُراجع قبل الكتابة في CRM. مراجعة بشرية للادعاءات المحتملة.',
       rationale: `Enterprises in ${input.vertical} cannot let unverified claims write into CRM. Verified facts may auto-apply; probable and possible wait in the review queue.`,
@@ -334,7 +334,7 @@ function getDeterministicRecommendation(
     'ar-invoicing': {
       systemName: 'AR collections (B2B only)',
       systemNameAr: 'تحصيل المستحقات (شركات فقط)',
-      matchScore: 94,
+      
       headline: 'Polite WhatsApp follow-ups for commercial invoices. MENA payment links. B2B only.',
       headlineAr: 'متابعات واتساب مهذبة لفواتير الشركات. روابط دفع إقليمية. للشركات فقط.',
       rationale: `Manual collection calls burn staff time. The B2B WhatsApp follow-up sends itemized commercial invoices with Tap, Paymob, or Moyasar payment links: strictly commercial B2B AR, never consumer debt.`,
@@ -356,7 +356,7 @@ function getDeterministicRecommendation(
     'rival-watch': {
       systemName: 'Rival Watch',
       systemNameAr: 'رصد المنافسين',
-      matchScore: 93,
+      
       headline: 'Automated competitor pricing and stock intelligence alerts on WhatsApp.',
       headlineAr: 'رصد آلي لتحركات أسعار ومخزون المنافسين مع تنبيهات واتساب.',
       rationale: `In ${input.vertical}, pricing shifts happen daily. Rival Watch scrapes competitor public catalogs and alerts your pricing team to market changes via WhatsApp.`,
@@ -378,7 +378,7 @@ function getDeterministicRecommendation(
     'handbook-answers': {
       systemName: 'Handbook Answers',
       systemNameAr: 'إجابات دليل التشغيل',
-      matchScore: 91,
+      
       headline: 'Private staff assistant trained strictly on company SOPs and policies.',
       headlineAr: 'مساعد ذكي خاص بالموظفين مدرب على سياسات وإجراءات الشركة بدقة.',
       rationale: `Internal operations staff waste hours searching PDFs for operational guidelines. Handbook Answers provides instant grounded answers with citations.`,
@@ -400,7 +400,7 @@ function getDeterministicRecommendation(
     'seo-scorecard': {
       systemName: 'Visibility Scorecard',
       systemNameAr: 'بطاقة الظهور المحلي',
-      matchScore: 90,
+      
       headline: 'Monthly local visibility scorecard + top 3 high-impact ranking fixes.',
       headlineAr: 'بطاقة تقييم شهرية للظهور المحلي مع أهم ٣ حلول لتحسين الترتيب.',
       rationale: `Local service businesses lose organic inquiries when Google Business Profile signals decay. Visibility Scorecard identifies missing rank signals automatically.`,
@@ -422,7 +422,7 @@ function getDeterministicRecommendation(
     'proposal-deck-factory': {
       systemName: 'Deck Factory',
       systemNameAr: 'مصنع العروض',
-      matchScore: 94,
+      
       headline: '8 fields → branded editable PPTX client proposal deck in minutes.',
       headlineAr: '٨ حقول → عرض تقديمي PPTX بهوية العميل جاهز للتعديل خلال دقائق.',
       rationale: `Agency deals stall when proposal creation takes days. Deck Factory generates custom client-ready presentations on the discovery call and advances deal stage.`,
@@ -444,7 +444,7 @@ function getDeterministicRecommendation(
     'clip-factory': {
       systemName: 'Clip Factory',
       systemNameAr: 'مصنع المقاطع',
-      matchScore: 89,
+      
       headline: 'Long-form webinar or podcast video → 8–10 captioned vertical short clips.',
       headlineAr: 'تحويل الفيديوهات والندوات الطويلة إلى ٨-١٠ مقاطع رأسية مع ترجمة توضيحية.',
       rationale: `Creating short-form video for social distribution requires hours of manual editing. Clip Factory segments long recordings into viral vertical clips automatically.`,

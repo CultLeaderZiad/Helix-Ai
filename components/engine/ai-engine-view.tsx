@@ -23,7 +23,7 @@ const PAIN = [
     systemName: 'Booking receptionist',
     systemNameAr: 'موظف الاستقبال والحجوزات',
     systemId: 'booking-receptionist',
-    matchScore: 96,
+    
     setupFee: 1500,
     monthlyRetainer: 450,
     headline: 'Rules-based recommendation for the selected pain point. Not a live model score.',
@@ -36,7 +36,7 @@ const PAIN = [
     systemName: 'Missed-call triage',
     systemNameAr: 'فرز واستعادة المكالمات الفائتة',
     systemId: 'missed-call-responder',
-    matchScore: 94,
+    
     setupFee: 1200,
     monthlyRetainer: 350,
     headline: 'Sub-60s SMS + WhatsApp outreach for missed inbound inquiries with instant calendar booking.',
@@ -49,7 +49,7 @@ const PAIN = [
     systemName: 'Lead reactivation',
     systemNameAr: 'إعادة تنشيط العملاء المتوقفين',
     systemId: 'lead-reactivation',
-    matchScore: 92,
+    
     setupFee: 2000,
     monthlyRetainer: 600,
     headline: 'Revives cold database contacts via contextual WhatsApp workflows without spamming.',
@@ -62,7 +62,7 @@ const PAIN = [
     systemName: 'AR collections (B2B only)',
     systemNameAr: 'تحصيل المستحقات والمديونيات (B2B فقط)',
     systemId: 'ar-invoicing',
-    matchScore: 95,
+    
     setupFee: 1800,
     monthlyRetainer: 500,
     headline: 'Strictly B2B payment reconciliation and polite WhatsApp follow-ups with accounting ERP audit trail.',
@@ -75,7 +75,7 @@ const PAIN = [
     systemName: 'Saved details',
     systemNameAr: 'سجل تدقيق الأدلة والامتثال',
     systemId: 'evidence-console',
-    matchScore: 98,
+    
     setupFee: 2500,
     monthlyRetainer: 750,
     headline: 'Human-in-the-loop truth engine: AI assertions are verified before permanent CRM commit.',
@@ -113,7 +113,7 @@ export function AiEngineView({
         systemId: serverRec.systemId,
         systemName: serverRec.systemName,
         systemNameAr: serverRec.systemNameAr,
-        matchScore: serverRec.matchScore,
+        
         headline: serverRec.headline,
         headlineAr: serverRec.headlineAr,
         setupFee: Math.round(serverRec.setupFeeCents / 100),
@@ -123,7 +123,7 @@ export function AiEngineView({
         systemId: activePainPreset.systemId,
         systemName: activePainPreset.systemName,
         systemNameAr: activePainPreset.systemNameAr,
-        matchScore: activePainPreset.matchScore,
+        
         headline: activePainPreset.headline,
         headlineAr: activePainPreset.headlineAr,
         setupFee: activePainPreset.setupFee,
@@ -277,9 +277,6 @@ export function AiEngineView({
               <h3 className="text-16 font-semibold text-[#141414]">
                 {isAr ? currentRec.systemNameAr : currentRec.systemName}
               </h3>
-              <span className="text-13 font-semibold text-[#0B6E4F]">
-                {isAr ? `تطابق ${currentRec.matchScore}%` : `Match ${currentRec.matchScore}%`}
-              </span>
             </div>
 
             <p className="mt-2 text-13 leading-relaxed text-[#4A4844]">

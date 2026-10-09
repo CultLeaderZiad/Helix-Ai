@@ -3,6 +3,7 @@ import { authenticateMcpKey } from '@/lib/search/mcp/auth'
 import { MCP_TOOLS } from '@/lib/search/mcp/tools'
 import { runAction } from '@/lib/search/bus'
 import { createSupabaseAdminClient } from '@/lib/supabase-admin'
+import { checkRateLimit } from '@/lib/security/rate-limit'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -21,6 +22,19 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { jsonrpc: '2.0', error: { code: -32001, message: 'Unauthorized API key' }, id: null },
       { status: 401 }
+    )
+  }
+
+  // Resolve tenant client_id for rate limits
+  // (Agency keys might pass client_id in params later, but we check rate limit on the key's main tenant if present)
+  // Wait, if it's an agency key, it has no client_id. If no client_id, we rate limit based on agency ID or IP?
+  // Let's rate limit based on the key record id.
+  const rateLimitId = keyInfo.client_id || `agency-${keyInfo.id}`
+  const rl = await checkRateLimit(rateLimitId)
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { jsonrpc: '2.0', error: { code: -32005, message: 'Rate limit exceeded or inactive plan' }, id: null },
+      { status: 429 }
     )
   }
 

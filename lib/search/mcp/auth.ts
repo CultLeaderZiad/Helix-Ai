@@ -65,3 +65,23 @@ export async function authenticateMcpKey(authHeader: string | null): Promise<Aut
     rate_per_minute: keyRecord.rate_per_minute || 10
   }
 }
+
+export async function revokeKey(keyId: string, revokedBy: string) {
+  const supabase = createSupabaseAdminClient()
+  await (supabase as any)
+    .from('helix_api_keys')
+    .update({ revoked_at: new Date().toISOString(), revoked_by: revokedBy })
+    .eq('id', keyId)
+
+  await auditKeyUsage(keyId, 'REVOKED', { revokedBy })
+}
+
+export async function auditKeyUsage(keyId: string, action: string, meta: any) {
+  const supabase = createSupabaseAdminClient()
+  await (supabase as any).from('activity_log').insert({
+    entity_id: keyId,
+    entity_type: 'api_key',
+    action,
+    metadata: meta
+  })
+}

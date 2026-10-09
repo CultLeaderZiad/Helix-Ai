@@ -80,7 +80,6 @@ export async function evaluateProspectAndSaveDeal(
           monthly_call_volume: input.monthlyCallVolume,
           primary_pain_point: input.primaryPainPoint,
           recommended_system: recommendation.systemId,
-          match_score: recommendation.matchScore,
         },
       })
       .select('id')
@@ -99,7 +98,6 @@ export async function evaluateProspectAndSaveDeal(
         source: 'ai_engine_assessment',
         custom_fields: {
           system_id: recommendation.systemId,
-          match_score: recommendation.matchScore,
           monthly_roi: recommendation.estimatedMonthlyRoi,
           setup_fee_cents: recommendation.setupFeeCents,
           monthly_retainer_cents: recommendation.monthlyRetainerCents,
@@ -123,14 +121,14 @@ export async function evaluateProspectAndSaveDeal(
       contact_id: contact?.id ?? null,
       deal_id: deal?.id ?? null,
       type: 'enrichment',
-      body: `Engine recommendation: ${recommendation.systemName}. Match: ${recommendation.matchScore}%.`,
+      body: `Engine recommendation: ${recommendation.systemName}.`,
     })
 
     return {
       success: true,
       message: contact
-        ? 'Assessment saved as a contact and a deal. The match score is not a measured probability.'
-        : 'Deal saved. The contact row was not created. The match score is not a measured probability.',
+        ? 'Assessment saved as a contact and a deal.'
+        : 'Deal saved. The contact row was not created.',
       recommendation,
       dealId: deal?.id,
     }
