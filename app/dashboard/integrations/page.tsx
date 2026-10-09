@@ -2,7 +2,9 @@ import { type DashLang, type DashTheme } from '@/lib/dashboard/lang'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { createSupabaseServerClient } from '@/lib/supabase'
+import { createSupabaseAdminClient } from '@/lib/supabase-admin'
 import { getVerifiedSession } from '@/lib/auth/session'
+import { safeFetch } from '@/lib/leadgen/ssrf'
 import { ConsoleShell } from '@/components/shell/console-shell'
 import { IntegrationsHealthView } from '@/components/integrations/integrations-health-view'
 import type { ClientIntegration } from '@/lib/schema'
@@ -26,7 +28,7 @@ export default async function IntegrationsHealthPage() {
   const clientId = session.claims.client_id!
   const [clientRes, integrationsRes] = await Promise.all([
     supabase.from('clients').select('business_name').eq('id', clientId).maybeSingle(),
-    supabase.from('client_integrations').select('*').eq('client_id', clientId),
+    supabase.from('client_integrations').select('id, client_id, system_type, status, last_ping_at, created_at').eq('client_id', clientId),
   ])
 
   const client = clientRes.data
@@ -55,11 +57,12 @@ export default async function IntegrationsHealthPage() {
     }
 
     const now = new Date().toISOString()
+    const adminDb = createSupabaseAdminClient()
     let reachable = 0
     for (const hook of hooks) {
       let status: 'connected' | 'degraded' = 'degraded'
       try {
-        const response = await fetch(hook.webhook_url, { method: 'GET', signal: AbortSignal.timeout(5000) })
+        const response = await safeFetch(hook.webhook_url, { method: 'GET', signal: AbortSignal.timeout(5000) })
         if (response.ok) {
           status = 'connected'
           reachable += 1
@@ -67,7 +70,7 @@ export default async function IntegrationsHealthPage() {
       } catch {
         status = 'degraded'
       }
-      await serverSupabase
+      await adminDb
         .from('client_integrations')
         .update({ last_ping_at: now, status })
         .eq('client_id', targetClientId)

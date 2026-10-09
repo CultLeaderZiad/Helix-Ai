@@ -1,6 +1,7 @@
 import crypto from 'crypto'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { SystemType, WebhookStatus } from '@/lib/schema'
+import { safeFetch } from '@/lib/leadgen/ssrf'
 
 export interface HelixEventEnvelope<T = Record<string, unknown>> {
   id: string
@@ -81,14 +82,20 @@ export async function sendHelixWebhookEvent<T = Record<string, unknown>>({
   }
 
   const rawBody = JSON.stringify(envelope)
-  const secret = webhook.secret_hash || process.env.HELIX_WEBHOOK_SECRET || 'helix_default_secret'
+  const secret = webhook.secret_hash || process.env.HELIX_WEBHOOK_SECRET
+  if (!secret) {
+    return {
+      delivered: false,
+      error: 'No webhook secret configured',
+    }
+  }
   const signature = signHelixPayload(secret, rawBody, timestamp)
 
   try {
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), 8000)
 
-    const response = await fetch(webhook.webhook_url, {
+    const response = await safeFetch(webhook.webhook_url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

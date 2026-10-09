@@ -36,6 +36,7 @@ export async function POST(request: NextRequest) {
     .select('*')
     .eq('request_id', request_id)
     .in('id', result_ids)
+    .eq('client_id', clientId)
 
   if (fetchErr || !results || results.length === 0) {
     return NextResponse.json({ error: 'No matching search results found' }, { status: 404, headers })
@@ -170,11 +171,15 @@ export async function POST(request: NextRequest) {
     if (!leadErr && leadRow) {
       savedLeadIds.push(leadRow.id)
       // Link search_results.saved_lead_id
-      await (adminDb as any)
-        .from('search_results')
-        .update({ saved_lead_id: leadRow.id })
-        .eq('id', item.id)
-        .catch(() => {})
+      try {
+        await (adminDb as any)
+          .from('search_results')
+          .update({ saved_lead_id: leadRow.id })
+          .eq('id', item.id)
+          .eq('client_id', clientId)
+      } catch (err) {
+        // ignore
+      }
     }
   }
 

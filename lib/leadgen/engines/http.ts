@@ -1,4 +1,4 @@
-import { isPrivateOrLocalhost } from '@/lib/leadgen/ssrf'
+import { isPrivateOrLocalhost, safeFetch } from '@/lib/leadgen/ssrf'
 import { isUrlAllowedByRobots } from '@/lib/leadgen/pipeline/robots'
 import type { FetchResult } from '@/lib/leadgen/pipeline/types'
 
@@ -41,9 +41,8 @@ export async function fetchHttp(
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS)
 
   try {
-    const res = await fetch(targetUrl, {
+    const res = await safeFetch(targetUrl, {
       signal: controller.signal,
-      redirect: 'follow',
       headers: {
         'User-Agent':
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 HelixLeadGen/1.0',
@@ -56,18 +55,6 @@ export async function fetchHttp(
       },
     })
     clearTimeout(timer)
-
-    // Validate redirect target for SSRF
-    if (res.url && res.url !== targetUrl && isPrivateOrLocalhost(res.url)) {
-      return {
-        ok: false,
-        engine: 'http',
-        status: 400,
-        fetch_status: 'error',
-        html: '',
-        error: 'SSRF protection: Redirected to disallowed host',
-      }
-    }
 
     const contentType = res.headers.get('content-type') || ''
     const isHtmlOrText =
