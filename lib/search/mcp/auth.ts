@@ -49,11 +49,12 @@ export async function authenticateMcpKey(authHeader: string | null): Promise<Aut
   }
 
   // Update last_used_at
-  await (supabase as any)
-    .from('helix_api_keys')
-    .update({ last_used_at: new Date().toISOString() })
-    .eq('id', keyRecord.id)
-    .catch(() => {})
+  try {
+    await (supabase as any)
+      .from('helix_api_keys')
+      .update({ last_used_at: new Date().toISOString() })
+      .eq('id', keyRecord.id)
+  } catch {}
 
   return {
     id: keyRecord.id,

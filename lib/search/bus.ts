@@ -77,7 +77,7 @@ export async function runAction(payload: SearchActionPayload): Promise<SearchAct
             cost_micros: 0,
             detail: `Enriched ${enrichRes.domain} (${enrichRes.pages_checked} pages)`
           })
-          .catch(() => {})
+          
 
         await (supabase as any)
           .from('search_requests')
@@ -88,7 +88,7 @@ export async function runAction(payload: SearchActionPayload): Promise<SearchAct
             completed_at: new Date().toISOString()
           })
           .eq('id', requestId)
-          .catch(() => {})
+          
       }
 
       return {
@@ -161,7 +161,7 @@ export async function runAction(payload: SearchActionPayload): Promise<SearchAct
                 units: 1,
                 detail: rep.detail || `Returned ${rep.hits_count} hits`
               })
-              .catch(() => {})
+              
           }
         }
       }
@@ -188,7 +188,7 @@ export async function runAction(payload: SearchActionPayload): Promise<SearchAct
               units: 1,
               detail: webRes.detail || `Returned ${webRes.data?.results?.length ?? 0} results`
             })
-            .catch(() => {})
+            
         }
       }
 
@@ -229,7 +229,7 @@ export async function runAction(payload: SearchActionPayload): Promise<SearchAct
               payload: res.payload,
               fingerprint: res.fingerprint
             })
-            .catch(() => {})
+            
         }
 
         await (supabase as any)
@@ -241,7 +241,7 @@ export async function runAction(payload: SearchActionPayload): Promise<SearchAct
             completed_at: new Date().toISOString()
           })
           .eq('id', requestId)
-          .catch(() => {})
+          
       }
 
       return {
@@ -273,7 +273,7 @@ export async function runAction(payload: SearchActionPayload): Promise<SearchAct
           completed_at: new Date().toISOString()
         })
         .eq('id', requestId)
-        .catch(() => {})
+        
     }
 
     return {
@@ -284,3 +284,4 @@ export async function runAction(payload: SearchActionPayload): Promise<SearchAct
     }
   }
 }
+

@@ -63,17 +63,18 @@ export async function geocodeLocation(
             const point: GeoPoint = { lat: loc.lat, lng: loc.lng, country: countryHint }
 
             // Store in cache
-            await (supabase as any)
-              .from('search_geo_cache')
-              .upsert({
-                key: cacheKey,
-                provider: 'google_geocode',
-                lat: loc.lat,
-                lng: loc.lng,
-                country: countryHint || null,
-                fetched_at: new Date().toISOString()
-              })
-              .catch(() => {})
+            try {
+              await (supabase as any)
+                .from('search_geo_cache')
+                .upsert({
+                  key: cacheKey,
+                  provider: 'google_geocode',
+                  lat: loc.lat,
+                  lng: loc.lng,
+                  country: countryHint || null,
+                  fetched_at: new Date().toISOString()
+                })
+            } catch {}
 
             return point
           }
@@ -109,17 +110,18 @@ export async function geocodeLocation(
           const point: GeoPoint = { lat, lng, country: item.address?.country_code?.toUpperCase() || countryHint }
 
           // Store in cache
-          await (supabase as any)
-            .from('search_geo_cache')
-            .upsert({
-              key: cacheKey,
-              provider: 'nominatim',
-              lat,
-              lng,
-              country: point.country || null,
-              fetched_at: new Date().toISOString()
-            })
-            .catch(() => {})
+          try {
+            await (supabase as any)
+              .from('search_geo_cache')
+              .upsert({
+                key: cacheKey,
+                provider: 'nominatim',
+                lat,
+                lng,
+                country: point.country || null,
+                fetched_at: new Date().toISOString()
+              })
+          } catch {}
 
           return point
         }

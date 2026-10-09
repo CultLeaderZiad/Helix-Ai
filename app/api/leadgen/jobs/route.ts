@@ -281,29 +281,30 @@ export async function POST(request: NextRequest) {
           .insert(fullPlacePayload)
 
         if (seedErr && (seedErr.message?.includes('column') || seedErr.code === 'PGRST204')) {
-          await (adminDb as any)
-            .from('leadgen_leads')
-            .insert({
-              job_id: job.id,
-              client_id: clientId,
-              company_name: hit.name,
-              website: hit.maps_url || null,
-              domain: null,
-              address: hit.address || null,
-              phones: hit.phone ? [hit.phone] : [],
-              socials: {},
-              decision_makers: [],
-              markdown_excerpt: hit.name,
-              extract_status: 'partial',
-              fetch_status: 'ok',
-              engine_used: 'builtin',
-              email_source: 'none',
-              phone_source: hit.phone ? 'website' : 'none',
-              lead_score: 25,
-              priority: 'low',
-              sources: { place_hit: hit, city: hit.city, country: hit.country, place_id: hit.provider_place_id, place_provider: hit.provider, origin: 'find_leads' }
-            })
-            .catch(() => {})
+          try {
+            await (adminDb as any)
+              .from('leadgen_leads')
+              .insert({
+                job_id: job.id,
+                client_id: clientId,
+                company_name: hit.name,
+                website: hit.maps_url || null,
+                domain: null,
+                address: hit.address || null,
+                phones: hit.phone ? [hit.phone] : [],
+                socials: {},
+                decision_makers: [],
+                markdown_excerpt: hit.name,
+                extract_status: 'partial',
+                fetch_status: 'ok',
+                engine_used: 'builtin',
+                email_source: 'none',
+                phone_source: hit.phone ? 'website' : 'none',
+                lead_score: 25,
+                priority: 'low',
+                sources: { place_hit: hit, city: hit.city, country: hit.country, place_id: hit.provider_place_id, place_provider: hit.provider, origin: 'find_leads' }
+              })
+          } catch {}
         }
       }
     }
