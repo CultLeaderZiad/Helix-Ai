@@ -9,6 +9,8 @@ create table public.support_tickets (
   updated_at timestamptz not null default now()
 );
 
+alter table public.support_tickets add constraint support_tickets_client_id_id_key unique (client_id, id);
+
 create table public.support_messages (
   id uuid primary key default gen_random_uuid(),
   ticket_id uuid not null,
@@ -18,8 +20,6 @@ create table public.support_messages (
   created_at timestamptz not null default now(),
   constraint support_messages_tenant_ticket_fk foreign key (client_id, ticket_id) references public.support_tickets(client_id, id) on delete cascade
 );
-
-alter table public.support_tickets add constraint support_tickets_client_id_id_key unique (client_id, id);
 
 create index idx_support_tickets_client on public.support_tickets (client_id);
 create index idx_support_messages_ticket on public.support_messages (ticket_id);
