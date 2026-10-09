@@ -120,7 +120,7 @@ export default async function RootLayout({
           <AuthHashHandler />
           {children}
         </AppProviders>
-        {process.env.NODE_ENV === 'production' && <Analytics />}
+        <Analytics />
       </body>
     </html>
   )
