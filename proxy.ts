@@ -58,9 +58,13 @@ export async function proxy(request: NextRequest) {
   }
 }
 
-// Cron endpoints carry their own shared-secret guard (CRON_SECRET) and must
-// stay reachable by the scheduler without a browser session. /api/mcp carries its
-// own API key verification header. Every other /api path still requires a verified session.
+// These routes authenticate themselves and must stay reachable without a browser
+// session. Next invokes `proxy` only when `config.matcher` matches, so a skipped
+// path never hits the session check above:
+// - /api/cron/* carries CRON_SECRET
+// - /api/mcp carries its own API key header
+// - /api/webhooks/n8n/:event verifies HMAC (x-helix-signature) or Bearer in the route
+// Every other /api path still requires a verified session.
 export const config = {
   matcher: [
     '/login',
@@ -70,6 +74,6 @@ export const config = {
     '/dashboard',
     '/dashboard/:path*',
     '/client/:path*',
-    '/api/((?!cron/|mcp$).*)',
+    '/api/((?!cron/|webhooks/n8n/|mcp$).*)',
   ],
 }

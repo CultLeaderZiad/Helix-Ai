@@ -12,7 +12,7 @@
     "verify:crm:e2e": "node scripts/verify-crm-intelligence.mjs --confirm-development --with-cron",
     "check:copy": "node scripts/check-banned-phrases.mjs",
     "screenshots": "node scripts/screenshots.mjs",
-    "test": "node --experimental-strip-types --test tests/functional-audit.test.ts tests/login-routing.test.ts tests/pricing-display.test.ts",
+    "test": "node --experimental-strip-types --test tests/functional-audit.test.ts tests/login-routing.test.ts tests/pricing-display.test.ts tests/n8n-webhook-proxy.test.ts",
     "verify:crm:contact": "node scripts/verify-crm-contact-roundtrip.mjs",
     "verify:leadgen": "node scripts/verify-leadgen-v2.mjs"
   },
