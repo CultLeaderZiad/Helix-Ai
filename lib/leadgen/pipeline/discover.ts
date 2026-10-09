@@ -1,4 +1,4 @@
-import { isPrivateOrLocalhost, cleanDomain } from '@/lib/leadgen/ssrf'
+import { isPrivateOrLocalhost, cleanDomain } from '@/lib/http/safe-fetch'
 import { fetchHttp } from '@/lib/leadgen/engines/http'
 
 export interface BuildUrlQueueOptions {

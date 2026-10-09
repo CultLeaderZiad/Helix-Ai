@@ -1,4 +1,4 @@
-import { isPrivateOrLocalhost } from '@/lib/leadgen/ssrf'
+import { isPrivateOrLocalhost } from '@/lib/http/safe-fetch'
 
 interface RobotsCacheEntry {
   disallowedPrefixes: string[]

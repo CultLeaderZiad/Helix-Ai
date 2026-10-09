@@ -13,7 +13,7 @@ export async function ensureUserProvisioned(userId: string): Promise<TenantClaim
   if (userError || !userData.user) return null
 
   const user = userData.user
-  const allowlist = [process.env.SUPABASE_TEST_EMAIL_ADMIN, process.env.AGENCY_ADMIN_EMAILS]
+  const allowlist = [process.env.AGENCY_ADMIN_EMAILS]
     .flatMap(value => (value || '').split(','))
     .map(value => value.trim().toLowerCase())
     .filter(Boolean)

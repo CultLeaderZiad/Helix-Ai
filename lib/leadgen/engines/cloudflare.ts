@@ -11,7 +11,7 @@
  * It executes JavaScript and renders SPAs, but is NOT stealthy against Cloudflare bot management.
  */
 
-import { isPrivateOrLocalhost } from '@/lib/leadgen/ssrf'
+import { isPrivateOrLocalhost } from '@/lib/http/safe-fetch'
 import type { FetchResult } from '@/lib/leadgen/pipeline/types'
 
 export interface CloudflareContentResponse {

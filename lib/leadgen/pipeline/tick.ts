@@ -1,5 +1,5 @@
 import { createSupabaseAdminClient } from '@/lib/supabase-admin'
-import { cleanDomain } from '@/lib/leadgen/ssrf'
+import { cleanDomain } from '@/lib/http/safe-fetch'
 import { buildUrlQueue } from './discover'
 import { enrichDomain } from '@/lib/search/enrich/enrich-domain'
 import { routeFetchTarget } from '@/lib/leadgen/engines/router'

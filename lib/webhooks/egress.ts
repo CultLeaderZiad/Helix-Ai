@@ -1,7 +1,7 @@
 import crypto from 'crypto'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { SystemType, WebhookStatus } from '@/lib/schema'
-import { safeFetch } from '@/lib/leadgen/ssrf'
+import { safeFetchFull } from '@/lib/http/safe-fetch'
 
 export interface HelixEventEnvelope<T = Record<string, unknown>> {
   id: string
@@ -25,7 +25,7 @@ export interface SendEventOptions<T = Record<string, unknown>> {
 export interface EgressResult {
   delivered: boolean
   webhookId?: string
-  status?: WebhookStatus
+  status?: WebhookStatus | 'pending'
   statusCode?: number
   responsePayload?: unknown
   error?: string
@@ -40,7 +40,7 @@ export function signHelixPayload(secret: string, rawBody: string, timestamp: num
 }
 
 /**
- * Dispatches an event to the tenant's configured n8n webhook for this system.
+ * Dispatches an event to the tenant's configured n8n webhook outbox.
  */
 export async function sendHelixWebhookEvent<T = Record<string, unknown>>({
   supabase,
@@ -52,22 +52,28 @@ export async function sendHelixWebhookEvent<T = Record<string, unknown>>({
 }: SendEventOptions<T>): Promise<EgressResult> {
   const eventId = `evt_${crypto.randomBytes(12).toString('hex')}`
   const nowIso = new Date().toISOString()
-  const timestamp = Math.floor(Date.now() / 1000)
   const finalIdempotencyKey = idempotencyKey || `idemp_${crypto.randomUUID()}`
 
   // 1. Fetch webhook config for this tenant & system
   const { data: webhook, error: fetchErr } = await supabase
     .from('system_webhooks')
-    .select('id, webhook_url, secret_hash, enabled')
+    .select('id, enabled, secret_hash')
     .eq('client_id', clientId)
     .eq('system_type', systemType)
     .eq('direction', 'helix_to_n8n')
     .maybeSingle()
 
-  if (fetchErr || !webhook || !webhook.enabled || !webhook.webhook_url) {
+  if (fetchErr || !webhook || !webhook.enabled) {
     return {
       delivered: false,
       error: fetchErr ? fetchErr.message : 'No enabled egress webhook found for tenant and system',
+    }
+  }
+  
+  if (!webhook.secret_hash) {
+    return {
+      delivered: false,
+      error: 'No webhook secret configured',
     }
   }
 
@@ -81,91 +87,34 @@ export async function sendHelixWebhookEvent<T = Record<string, unknown>>({
     data,
   }
 
-  const rawBody = JSON.stringify(envelope)
-  const secret = webhook.secret_hash || process.env.HELIX_WEBHOOK_SECRET
-  if (!secret) {
-    return {
-      delivered: false,
-      error: 'No webhook secret configured',
-    }
-  }
-  const signature = signHelixPayload(secret, rawBody, timestamp)
-
-  try {
-    const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), 8000)
-
-    const response = await safeFetch(webhook.webhook_url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'User-Agent': 'Helix-AI-ControlPlane/1.0',
-        'X-Helix-Signature': signature,
-        'X-Helix-Timestamp': String(timestamp),
-        'X-Helix-Event-Id': eventId,
-        'X-Helix-Event-Type': eventType,
-        'Authorization': `Bearer ${secret}`,
-      },
-      body: rawBody,
-      signal: controller.signal,
+  // AI15: Write to outbox instead of inline fetch
+  const { error: insertErr } = await (supabase as any)
+    .from('system_webhook_outbox')
+    .insert({
+      webhook_id: webhook.id,
+      client_id: clientId,
+      event_type: eventType,
+      payload: envelope,
+      idempotency_key: finalIdempotencyKey,
+      status: 'pending'
     })
 
-    clearTimeout(timeout)
-
-    let responseData: unknown = null
-    try {
-      responseData = await response.json()
-    } catch {
-      responseData = await response.text()
-    }
-
-    const isOk = response.ok
-    const status: WebhookStatus = isOk ? 'ok' : 'failed'
-    const errorMsg = isOk ? null : `HTTP ${response.status}: ${JSON.stringify(responseData).slice(0, 200)}`
-
-    // Update telemetry in background
-    await supabase
-      .from('system_webhooks')
-      .update({
-        last_ping_at: nowIso,
-        last_status: status,
-        last_error: errorMsg,
-        updated_at: nowIso,
-      })
-      .eq('id', webhook.id)
-
-    return {
-      delivered: isOk,
-      webhookId: webhook.id,
-      status,
-      statusCode: response.status,
-      responsePayload: responseData,
-      error: errorMsg || undefined,
-    }
-  } catch (err: any) {
-    const errorMsg = err.name === 'AbortError' ? 'Webhook dispatch timed out after 8s' : err.message || 'Network error'
-
-    await supabase
-      .from('system_webhooks')
-      .update({
-        last_ping_at: nowIso,
-        last_status: 'failed',
-        last_error: errorMsg,
-        updated_at: nowIso,
-      })
-      .eq('id', webhook.id)
-
+  if (insertErr) {
     return {
       delivered: false,
-      webhookId: webhook.id,
-      status: 'failed',
-      error: errorMsg,
+      error: 'Failed to enqueue webhook event: ' + insertErr.message
     }
+  }
+
+  return {
+    delivered: true, // Successfully enqueued
+    webhookId: webhook.id,
+    status: 'pending'
   }
 }
 
 /**
- * Diagnostic ping test for admin to verify connection to n8n webhook.
+ * Diagnostic ping test for admin to verify connection to n8n webhook inline.
  */
 export async function pingWebhookEndpoint(
   webhookId: string,
@@ -181,26 +130,78 @@ export async function pingWebhookEndpoint(
     return { success: false, status: 'failed', error: 'Webhook record not found' }
   }
 
-  const startTime = Date.now()
-  const result = await sendHelixWebhookEvent({
-    supabase,
-    clientId: webhook.client_id,
-    systemType: webhook.system_type as SystemType,
-    eventType: 'system.health',
+  if (!webhook.secret_hash) {
+    return { success: false, status: 'failed', error: 'No webhook secret configured' }
+  }
+
+  const eventId = `ping_${crypto.randomBytes(6).toString('hex')}`
+  const timestamp = Math.floor(Date.now() / 1000)
+  
+  const envelope: HelixEventEnvelope<any> = {
+    id: eventId,
+    type: 'system.health',
+    tenant_id: webhook.client_id,
+    system_type: webhook.system_type as SystemType,
+    occurred_at: new Date().toISOString(),
+    idempotency_key: eventId,
     data: {
       action: 'ping',
       sample: true,
       timestamp: new Date().toISOString(),
       agent: 'Helix Control Plane Ping Diagnostic',
-    },
-  })
+    }
+  }
+
+  const rawBody = JSON.stringify(envelope)
+  const signature = signHelixPayload(webhook.secret_hash, rawBody, timestamp)
+
+  const startTime = Date.now()
+  let isOk = false
+  let errorMsg: string | undefined
+
+  try {
+    const { res, data, text } = await safeFetchFull(webhook.webhook_url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'Helix-AI-ControlPlane/1.0',
+        'X-Helix-Signature': signature,
+        'X-Helix-Timestamp': String(timestamp),
+        'X-Helix-Event-Id': eventId,
+        'X-Helix-Event-Type': 'system.health',
+        'Authorization': `Bearer ${webhook.secret_hash}`,
+      },
+      body: rawBody,
+      timeoutMs: 8000
+    })
+
+    isOk = res.ok
+    if (!isOk) {
+      const responseData = data !== null ? data : text
+      errorMsg = `HTTP ${res.status}: ${JSON.stringify(responseData).slice(0, 200)}`
+    }
+  } catch (err: any) {
+    isOk = false
+    errorMsg = err.name === 'AbortError' ? 'Ping timed out' : err.message || 'Network error'
+  }
 
   const latencyMs = Date.now() - startTime
 
+  // Update telemetry
+  await supabase
+    .from('system_webhooks')
+    .update({
+      last_ping_at: new Date().toISOString(),
+      last_status: isOk ? 'ok' : 'failed',
+      last_error: errorMsg || null,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', webhook.id)
+
   return {
-    success: result.delivered,
-    status: result.status || (result.delivered ? 'ok' : 'failed'),
-    error: result.error,
+    success: isOk,
+    status: isOk ? 'ok' : 'failed',
+    error: errorMsg,
     latencyMs,
   }
 }

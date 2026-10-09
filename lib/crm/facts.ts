@@ -39,6 +39,9 @@ export async function recordContactFact(
       `Source tool '${input.source_tool}' is not registered in the evidence-band lookup; fact refused.`,
     )
   }
+  const destructiveFields = ['do_not_contact', 'dnc', 'opt_out', 'email', 'phone', 'lead_status']
+  const approvalRequired = input.score == null || input.score < 80 || destructiveFields.includes(input.field_name.toLowerCase()) || band !== 'verified'
+
   const { data, error } = await supabase
     .from('contact_facts')
     .insert({
@@ -53,9 +56,10 @@ export async function recordContactFact(
       source_url: input.source_url ?? null,
       session_id: input.session_id ?? null,
       score: input.score ?? null,
+      approval_required: approvalRequired
     })
     .select(
-      'id, client_id, contact_id, field_name, field_value, evidence_band, source_tool, status, evidence, score, method, source_url, session_id, reviewed_by, reviewed_at, observed_at, superseded_at, created_at',
+      'id, client_id, contact_id, field_name, field_value, evidence_band, source_tool, status, evidence, score, method, source_url, session_id, reviewed_by, reviewed_at, observed_at, superseded_at, created_at, approval_required',
     )
     .single()
   if (error || !data) {

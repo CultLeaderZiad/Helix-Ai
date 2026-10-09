@@ -1,5 +1,5 @@
 import { createSupabaseAdminClient } from '@/lib/supabase-admin'
-import { isPrivateOrLocalhost } from '@/lib/leadgen/ssrf'
+import { isPrivateOrLocalhost } from '@/lib/http/safe-fetch'
 import { SearchActionPayload, SearchActionResult } from './types'
 import { enrichDomain } from './enrich/enrich-domain'
 import { findLeadsPipeline } from './find-leads'

@@ -1,4 +1,4 @@
-import { cleanDomain } from '@/lib/leadgen/ssrf'
+import { cleanDomain } from '@/lib/http/safe-fetch'
 import { fetchHttp } from './http'
 import { fetchCloudflareBrowser, isCloudflareConfigured } from './cloudflare'
 import { fetchBrightDataStealth, isBrightDataConfigured } from './brightdata'

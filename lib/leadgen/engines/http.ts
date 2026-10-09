@@ -1,4 +1,4 @@
-import { isPrivateOrLocalhost, safeFetch } from '@/lib/leadgen/ssrf'
+import { isPrivateOrLocalhost, safeFetch } from '@/lib/http/safe-fetch'
 import { isUrlAllowedByRobots } from '@/lib/leadgen/pipeline/robots'
 import type { FetchResult } from '@/lib/leadgen/pipeline/types'
 

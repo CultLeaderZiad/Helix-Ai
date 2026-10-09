@@ -1,4 +1,4 @@
-import { isPrivateOrLocalhost } from '../../leadgen/ssrf'
+import { isPrivateOrLocalhost } from '@/lib/http/safe-fetch'
 import { incrementProviderUsage } from '../../leadgen/engines/usage'
 
 export interface HunterEmail {

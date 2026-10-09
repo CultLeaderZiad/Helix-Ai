@@ -1,4 +1,4 @@
-import { cleanDomain, isPrivateOrLocalhost } from '@/lib/leadgen/ssrf'
+import { cleanDomain, isPrivateOrLocalhost } from '@/lib/http/safe-fetch'
 import { routeFetchTarget } from '@/lib/leadgen/engines/router'
 import { extractContactsFromHtml } from '@/lib/leadgen/pipeline/extract'
 import { extractSocialLinks } from '@/lib/search/enrich/socials'

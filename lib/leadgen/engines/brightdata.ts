@@ -8,7 +8,7 @@
  * - Error codes: https://docs.brightdata.com/scraping-automation/web-unlocker/error-codes
  */
 
-import { isPrivateOrLocalhost } from '@/lib/leadgen/ssrf'
+import { isPrivateOrLocalhost } from '@/lib/http/safe-fetch'
 import type { FetchResult } from '@/lib/leadgen/pipeline/types'
 
 export function isBrightDataConfigured(): boolean {

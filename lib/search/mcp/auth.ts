@@ -1,5 +1,6 @@
 import crypto from 'node:crypto'
 import { createSupabaseAdminClient } from '@/lib/supabase-admin'
+import { serverConfig } from '@/lib/config/server'
 
 export interface AuthenticatedApiKey {
   id: string
@@ -23,7 +24,7 @@ export async function authenticateMcpKey(authHeader: string | null): Promise<Aut
     return null
   }
 
-  const pepper = process.env.HELIX_API_KEY_PEPPER || 'helix-default-salt-pepper'
+  const pepper = serverConfig.HELIX_API_KEY_PEPPER
   const computedHash = crypto
     .createHash('sha256')
     .update(`${pepper}${token}`)
