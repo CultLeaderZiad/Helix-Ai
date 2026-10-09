@@ -3,6 +3,7 @@
 import { useActionState, useId, useState } from 'react'
 import Link from 'next/link'
 import { ArrowRight, Eye, EyeOff, Loader2 } from 'lucide-react'
+import { HELIX_ADMIN_EMAIL } from '@/lib/auth/admin-email'
 import { signIn, type SignInState } from '@/lib/auth/sign-in'
 import { localizeAuthError } from '@/components/auth/auth-copy'
 import { ResendConfirmation } from '@/components/auth/resend-confirmation'
@@ -14,14 +15,10 @@ export function LoginForm({
   lang,
   verifyFailed = false,
   portal = null,
-  supportHref = '/contact',
-  supportLabel,
 }: {
   lang: HelixLang
   verifyFailed?: boolean
   portal?: 'agency' | 'admin' | null
-  supportHref?: string
-  supportLabel?: string
 }) {
   const ar = lang === 'ar'
   const [state, formAction, pending] = useActionState(signIn, initialState)
@@ -30,9 +27,6 @@ export function LoginForm({
   const ids = { email: useId(), password: useId(), emailErr: useId(), passwordErr: useId(), banner: useId() }
   const fieldErrors = state.status === 'field_error' ? state.errors : {}
   const authError = state.status === 'auth_error' ? state : null
-  const helpLabel = supportLabel ?? (ar ? 'تواصل' : 'Contact')
-  const externalSupport = supportHref.startsWith('http')
-
   return (
     <>
       <h1>{ar ? 'أهلاً بعودتك' : 'Welcome back'}</h1>
@@ -84,7 +78,8 @@ export function LoginForm({
           {pending ? <><Loader2 size={16} className="spin" /> {ar ? 'جارٍ تسجيل الدخول…' : 'Signing in…'}</> : <>{ar ? 'تسجيل الدخول' : 'Sign in'} <ArrowRight size={16} className="arrow" /></>}
         </button>
         <div className="alt">
-          <span>{ar ? 'تواجه مشكلة؟' : 'Trouble signing in?'} <Link href={supportHref} {...(externalSupport ? { target: '_blank', rel: 'noreferrer' } : {})}>{helpLabel}</Link></span>
+          <span>{ar ? 'ليس لديك حساب؟' : 'No account yet?'} <Link href="/signup">{ar ? 'أنشئ حسابك' : 'Create your account'}</Link></span>
+          <span>{ar ? 'تواجه مشكلة؟' : 'Trouble signing in?'} <a href={`mailto:${HELIX_ADMIN_EMAIL}`}>{HELIX_ADMIN_EMAIL}</a></span>
           <span>{ar ? 'من فريق Helix؟' : 'Helix team member?'} <Link href="/login?portal=agency">{ar ? 'دخول الوكالة' : 'Agency sign-in'}</Link></span>
         </div>
       </form>

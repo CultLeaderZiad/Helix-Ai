@@ -1,9 +1,19 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
+import { HELIX_ADMIN_EMAIL, isAgencyAdminEmail } from '../lib/auth/admin-email.ts'
 import { authCallbackUrl, getPublicSiteUrl, safeNextPath } from '../lib/auth/site-url.ts'
 import { interpretSignUp } from '../lib/auth/signup-outcome.ts'
 import { mapDirectoryContacts, sumDealValueCents } from '../lib/crm/directory.ts'
 import { summarizeMonthlyReport } from '../lib/reports/metrics.ts'
+
+describe('agency admin email', () => {
+  it('treats the owner inbox as an agency admin', () => {
+    assert.equal(isAgencyAdminEmail(HELIX_ADMIN_EMAIL), true)
+    assert.equal(isAgencyAdminEmail('CultLeaderZoz.Dev@gmail.com'), true)
+    assert.equal(isAgencyAdminEmail('someone@example.com'), false)
+    assert.equal(isAgencyAdminEmail('someone@example.com', ['someone@example.com']), true)
+  })
+})
 
 describe('auth redirect origin', () => {
   it('uses the configured site URL', () => {

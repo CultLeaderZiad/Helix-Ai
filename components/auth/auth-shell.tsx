@@ -3,7 +3,13 @@ import { CalendarCheck, Check, Headset, MessageCircle } from 'lucide-react'
 import { HelixMark } from '@/components/marketing/helix-mark'
 import { getPublicPrefs } from '@/lib/public-prefs'
 
-export async function AuthShell({ children }: { children: React.ReactNode }) {
+export async function AuthShell({
+  children,
+  variant = 'login',
+}: {
+  children: React.ReactNode
+  variant?: 'login' | 'signup'
+}) {
   const prefs = await getPublicPrefs()
   const ar = prefs.lang === 'ar'
   return (
@@ -40,7 +46,19 @@ export async function AuthShell({ children }: { children: React.ReactNode }) {
           <div className="fs-top">
             <Link href="/" className="brand m-only"><HelixMark size={22} /><span className="word">HELIX</span></Link>
             <Link href="/" className="d-only" style={{ color: 'var(--text-2)' }}>{ar ? '→ العودة للموقع' : '← Back to site'}</Link>
-            <span>{ar ? 'جديد على Helix؟' : 'New to Helix?'} <Link className="link" href="/contact">{ar ? 'احجز مكالمة' : 'Book a call'}</Link></span>
+            <span>
+              {variant === 'signup' ? (
+                <>
+                  {ar ? 'لديك حساب؟' : 'Already have an account?'}{' '}
+                  <Link className="link" href="/login">{ar ? 'تسجيل الدخول' : 'Sign in'}</Link>
+                </>
+              ) : (
+                <>
+                  {ar ? 'جديد على Helix؟' : 'New to Helix?'}{' '}
+                  <Link className="link" href="/signup">{ar ? 'أنشئ حسابك' : 'Create your account'}</Link>
+                </>
+              )}
+            </span>
           </div>
           <div className="form">{children}</div>
           <div className="fs-foot">
